@@ -6,7 +6,7 @@ namespace ItHappend.Domain
     public class EventTracker
     {
         public Guid Id { get; }
-        public string Name { get; set; }
+        public string Name { get; }
         public IList<Event> Events { get; private set; }
 
         public Guid CreatorUserId { get; } 
