@@ -3,7 +3,9 @@ using ItHappend.Domain;
 
 namespace ItHappend
 {
-    class EventService 
+ 
+
+    class EventService : IEventService
     {
         private readonly IEventRepository _eventRepository;
 
