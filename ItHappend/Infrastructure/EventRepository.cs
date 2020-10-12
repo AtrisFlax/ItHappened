@@ -8,12 +8,12 @@ namespace ItHappend.Infrastructure
     public class EventRepository : IEventRepository
     {
         private readonly Dictionary<Guid, Event> _events = new Dictionary<Guid, Event>();
-        public void SaveEvent(Event newEvent)
+        public void AddEvent(Event newEvent)
         {
             _events.Add(newEvent.EventId, newEvent);
         }
 
-        public Event LoadEvent(Guid eventId)
+        public Event GetEvent(Guid eventId)
         {
             if (!_events.ContainsKey(eventId))
             {

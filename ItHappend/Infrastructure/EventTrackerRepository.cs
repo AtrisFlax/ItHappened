@@ -8,12 +8,12 @@ namespace ItHappend.Infrastructure
     public class EventTrackerRepository : IEventTrackerRepository
     {
         private readonly Dictionary<Guid, EventTracker> _eventTrackers = new Dictionary<Guid, EventTracker>();
-        public void SaveEventTracker(EventTracker newEventTracker)
+        public void AddEventTracker(EventTracker newEventTracker)
         {
             _eventTrackers.Add(newEventTracker.Id, newEventTracker);
         }
 
-        public EventTracker LoadEvent(Guid eventTrackerId)
+        public EventTracker GetEventTracker(Guid eventTrackerId)
         {
             if (!_eventTrackers.ContainsKey(eventTrackerId))
             {
@@ -23,7 +23,7 @@ namespace ItHappend.Infrastructure
             return _eventTrackers[eventTrackerId];
         }
 
-        public void DeleteEvent(Guid eventId)
+        public void DeleteEventTracker(Guid eventId)
         {
             _eventTrackers.Remove(eventId);
         }
