@@ -3,8 +3,6 @@ using ItHappend.Domain;
 
 namespace ItHappend
 {
- 
-
     class EventService : IEventService
     {
         private readonly IEventRepository _eventRepository;
@@ -19,14 +17,16 @@ namespace ItHappend
             var loadedEvent = _eventRepository.LoadEvent(eventId);
             return loadedEvent.CreatorUserId != eventCreatorId ? null : loadedEvent;
         }
-
+        //CreationDate предлагаю не передавать, а создават в конструкторе создаваемой сущности
+        //evaluation тоже не передавать, т.к. это опциональный параметр
         public Guid CreateEvent(Guid eventId, Guid creatorId, string name, DateTimeOffset creationDate,
             decimal evaluation)
         {
             var newEvent = new Event(eventId, creatorId, name, creationDate, evaluation);
             return _eventRepository.SaveEvent(newEvent);
         }
-
+        //То же самое
+        // в If условие должно быть !=
         public void EditEvent(Guid eventId, Guid eventCreatorId, string newName, DateTimeOffset eventHappensDate,
             decimal evaluation)
         {
@@ -38,7 +38,7 @@ namespace ItHappend
             forEditingEvent.EditEvent(newName, eventHappensDate, evaluation);
             _eventRepository.SaveEvent(forEditingEvent);
         }
-
+        // в If условие должно быть !=
         public void DeleteEvent(Guid eventId, Guid creatorId)
         {
             var forDeleteEvent = _eventRepository.LoadEvent(eventId);
