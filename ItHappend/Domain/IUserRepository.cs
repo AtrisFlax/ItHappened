@@ -6,6 +6,6 @@ namespace ItHappend
     {
         void AddUser(UserAuthInfo userAuthInfo);
         Guid GetUser(string login, object securePasswordHasher);
-        (string userId, string hash) GetAuthInfo(string login);
+        UserAuthInfo GetAuthInfo(string login);
     }
 }
