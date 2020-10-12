@@ -1,7 +1,7 @@
 ﻿using System;
 using ItHappend.Domain;
 
-namespace ItHappend.Infrastructure
+namespace ItHappend.Application
 {
     class UserService : IUserService
     {
