@@ -3,7 +3,7 @@ using ItHappend.Domain;
 
 namespace ItHappend
 {
-    class EventService : IEventTrackerService
+    class EventService 
     {
         private readonly IEventRepository _eventRepository;
 
@@ -15,7 +15,7 @@ namespace ItHappend
         public Event GetEvent(Guid eventId, Guid eventCreatorId)
         {
             var loadedEvent = _eventRepository.LoadEvent(eventId);
-            return loadedEvent.CreatorId != eventCreatorId ? null : loadedEvent;
+            return loadedEvent.CreatorUserId != eventCreatorId ? null : loadedEvent;
         }
 
         public Guid CreateEvent(Guid eventId, Guid creatorId, string name, DateTimeOffset creationDate,
@@ -29,7 +29,7 @@ namespace ItHappend
             decimal evaluation)
         {
             var forEditingEvent = _eventRepository.LoadEvent(eventId);
-            if (eventCreatorId == forEditingEvent.CreatorId)
+            if (eventCreatorId == forEditingEvent.CreatorUserId)
             {
                 throw new Exception();
             }
@@ -37,10 +37,14 @@ namespace ItHappend
             _eventRepository.SaveEvent(forEditingEvent);
         }
 
-        public void DeleteEvent(Guid eventId, Guid creatorId, Guid userId)
+        public void DeleteEvent(Guid eventId, Guid creatorId)
         {
             var forDeleteEvent = _eventRepository.LoadEvent(eventId);
-            _eventRepository.DeleteEvent(eventId, userId);
+            if (creatorId == forDeleteEvent.CreatorUserId)
+            {
+                throw new Exception();
+            }
+            _eventRepository.DeleteEvent(eventId);
         }
     }
 }

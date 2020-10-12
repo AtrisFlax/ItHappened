@@ -6,7 +6,7 @@ namespace ItHappend.Domain
     {
         public Guid EventId { get; }
 
-        public Guid CreatorId { get; }
+        public Guid CreatorUserId { get; }
 
         public DateTimeOffset EventHappensDate { get; private set; }
         public string Name { get; private set; }
@@ -14,7 +14,7 @@ namespace ItHappend.Domain
 
         public Event(Guid eventId, Guid creatorId, string name, DateTimeOffset eventHappensDate, decimal evaluation)
         {
-            CreatorId = creatorId;
+            CreatorUserId = creatorId;
             EventId = eventId;
             Name = name;
             EventHappensDate = eventHappensDate;

@@ -9,11 +9,14 @@ namespace ItHappend.Domain
         public string Name { get; set; }
         public IList<Event> Events { get; private set; }
 
-        public EventTracker(Guid id, string name, IList<Event> events)
+        public Guid CreatorUserId { get; } 
+
+        public EventTracker(Guid id, string name, IList<Event> events, Guid creatorUserId)
         {
             Id = id;
             Name = name;
             Events = events;
+            CreatorUserId = creatorUserId;
         }
 
         public void AddEvent(Event newEvent)
