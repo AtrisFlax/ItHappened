@@ -5,6 +5,8 @@ namespace ItHappend.Infrastructure
 {
     class UserService : IUserService
     {
+        //Переименовать в RegisterUser
+        //Следуя стилю Виталика я бы возвращал Guid
         public UserAuthInfo RegistrateUser(string login, string password, IPasswordHasher securePasswordHasher,
             IUserRepository userRepository)
         {
@@ -12,7 +14,9 @@ namespace ItHappend.Infrastructure
             userRepository.AddUser(user);
             return user;
         }
-
+        //переименовать AuthenticateUser
+        //Тут тоже мне кажется достаточно Guid возвращать, а те кто его получит
+        //выгрузят все данные из eventTrackerRepository
         public User AuntificateUser(string login, string password, IUserRepository userRepository,
             IEventTrackerRepository eventTrackerRepository, IPasswordHasher securePasswordHasher)
         {
