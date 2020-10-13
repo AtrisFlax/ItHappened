@@ -5,25 +5,25 @@ namespace ItHappend.Application
 {
     class UserService : IUserService
     {
-        public UserAuthInfo RegistrateUser(string login, string password, IPasswordHasher securePasswordHasher,
+        public UserAuthInfo RegisterUser(string login, string password, IPasswordHasher securePasswordHasher,
             IUserRepository userRepository)
         {
             var user = CreateUser(login, password, securePasswordHasher);
-            userRepository.AddUser(user);
+            userRepository.SaveUser(user);
             return user;
         }
 
-        public User AuntificateUser(string login, string password, IUserRepository userRepository,
+        public UserInfo AuthenticateUser(string login, string password, IUserRepository userRepository,
             IEventTrackerRepository eventTrackerRepository, IPasswordHasher securePasswordHasher)
         {
-            var userAuthInfo = userRepository.GetAuthInfo(login);
+            var userAuthInfo = userRepository.LoadUserAuthInfo(login);
             if (!securePasswordHasher.Verify(password, userAuthInfo.PasswordHash))
             {
                 return null;
             }
 
-            var userInfo = eventTrackerRepository.GetUserInfo(userAuthInfo.userId);
-            return new User(userInfo.EventTrackers, userInfo.SubscriptionType);
+            var userEventTrackers = eventTrackerRepository.LoadUserTrackers(userAuthInfo.userId);
+            return new UserInfo(userEventTrackers, userAuthInfo.SubscriptionType);
         }
 
         private static UserAuthInfo CreateUser(string login, string password, IPasswordHasher securePasswordHasher)

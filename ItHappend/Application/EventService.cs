@@ -1,10 +1,9 @@
 ﻿using System;
+using System.Security.Authentication;
 using ItHappend.Domain;
 
-namespace ItHappend
+namespace ItHappend.Application
 {
- 
-
     class EventService : IEventService
     {
         private readonly IEventRepository _eventRepository;
@@ -17,23 +16,23 @@ namespace ItHappend
         public Event GetEvent(Guid eventId, Guid eventCreatorId)
         {
             var loadedEvent = _eventRepository.LoadEvent(eventId);
-            return loadedEvent.CreatorUserId != eventCreatorId ? null : loadedEvent;
+            return loadedEvent.CreatorId != eventCreatorId ? null : loadedEvent;
         }
 
-        public Guid CreateEvent(Guid eventId, Guid creatorId, string name, DateTimeOffset creationDate,
+        public void CreateEvent(Guid eventId, Guid creatorId, string name, DateTimeOffset creationDate,
             decimal evaluation)
         {
             var newEvent = new Event(eventId, creatorId, name, creationDate, evaluation);
-            return _eventRepository.SaveEvent(newEvent);
+            _eventRepository.SaveEvent(newEvent);
         }
 
         public void EditEvent(Guid eventId, Guid eventCreatorId, string newName, DateTimeOffset eventHappensDate,
             decimal evaluation)
         {
             var forEditingEvent = _eventRepository.LoadEvent(eventId);
-            if (eventCreatorId == forEditingEvent.CreatorUserId)
+            if (eventCreatorId != forEditingEvent.CreatorId)
             {
-                throw new Exception();
+                throw new AuthenticationException();
             }
             forEditingEvent.EditEvent(newName, eventHappensDate, evaluation);
             _eventRepository.SaveEvent(forEditingEvent);
@@ -42,9 +41,9 @@ namespace ItHappend
         public void DeleteEvent(Guid eventId, Guid creatorId)
         {
             var forDeleteEvent = _eventRepository.LoadEvent(eventId);
-            if (creatorId == forDeleteEvent.CreatorUserId)
+            if (creatorId != forDeleteEvent.CreatorId)
             {
-                throw new Exception();
+                throw new AuthenticationException();
             }
             _eventRepository.DeleteEvent(eventId);
         }

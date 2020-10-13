@@ -1,9 +1,13 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace ItHappend.Domain
 {
     interface IEventTrackerRepository
     {
-        UserInfo GetUserInfo(Guid userId);
+        void SaveEventTracker(EventTracker newEventTracker);
+        EventTracker LoadEventTracker(Guid eventTrackerId);
+        IList<EventTracker> LoadUserTrackers(Guid userId);
+        void DeleteEventTracker(Guid eventId);
     }
 }

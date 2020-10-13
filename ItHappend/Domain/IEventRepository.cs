@@ -1,11 +1,10 @@
 ﻿using System;
-using ItHappend.Domain;
 
-namespace ItHappend
+namespace ItHappend.Domain
 {
     internal interface IEventRepository
     {
-        Guid SaveEvent(Event newEvent);
+        void SaveEvent(Event newEvent);
         Event LoadEvent(Guid eventId);
         void DeleteEvent(Guid eventId);
     }

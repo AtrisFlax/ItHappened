@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using ItHappend.Domain;
 using ItHappend.Domain.Exceptions;
 
 namespace ItHappend.Infrastructure
@@ -8,12 +9,12 @@ namespace ItHappend.Infrastructure
     public class UserRepository : IUserRepository
     {
         private readonly Dictionary<Guid, UserAuthInfo> _users = new Dictionary<Guid, UserAuthInfo>();
-        public void AddUser(UserAuthInfo newUser)
+        public void SaveUser(UserAuthInfo newUser)
         {
             _users.Add(newUser.Guid, newUser);
         }
 
-        public UserAuthInfo GetUser(Guid userId)
+        public UserAuthInfo LoadUserAuthInfo(Guid userId)
         {
             if (!_users.ContainsKey(userId))
             {
@@ -23,7 +24,7 @@ namespace ItHappend.Infrastructure
             return _users[userId];
         }
 
-        public UserAuthInfo GetAuthInfo(string login)
+        public UserAuthInfo LoadUserAuthInfo(string login)
         {
             var isUserExist = _users
                 .Any(dictionaryItem => dictionaryItem.Value.Login == login);
