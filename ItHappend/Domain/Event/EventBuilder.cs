@@ -11,7 +11,7 @@ namespace ItHappend.Domain
 
         public double Evaluation { get; private set; }
 
-        
+
         internal Optional<Photo> Photo = Optional<Photo>.None();
         internal Optional<Scale> Scale = Optional<Scale>.None();
         internal Optional<Rating> Rating = Optional<Rating>.None();
