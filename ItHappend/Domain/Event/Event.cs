@@ -19,20 +19,24 @@ namespace ItHappend.Domain
             get => _evaluation;
             set
             {
-                if (value < MinEvaluationValue || value > MaxEvaluationValue)
+                if (value < MinEvaluationValue)
                 {
                     _evaluation = MinEvaluationValue;
+                    return;
                 }
-                else
+
+                if (value > MaxEvaluationValue)
                 {
-                    _evaluation = value;
+                    _evaluation = MaxEvaluationValue;
+                    return;
                 }
+                _evaluation = value;
             }
         }
 
         public Optional<Photo> Photo { get; set; }
         public Optional<Scale> Scale { get; set; }
-        public Optional<Rating> Raiting { get; set; }
+        public Optional<Rating> Rating { get; set; }
         public Optional<GeoTag> GeoTag { get; set; }
         public Optional<Comment> Comment { get; set; }
 
@@ -45,7 +49,7 @@ namespace ItHappend.Domain
             Evaluation = eventBuilder.Evaluation;
             Photo = eventBuilder.Photo;
             Scale = eventBuilder.Scale;
-            Raiting = eventBuilder.Rating;
+            Rating = eventBuilder.Rating;
             GeoTag = eventBuilder.GeoTag;
             Comment = eventBuilder.Comment;
         }

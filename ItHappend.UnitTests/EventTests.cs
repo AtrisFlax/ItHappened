@@ -31,7 +31,7 @@ namespace ItHappend.UnitTests
             Assert.IsFalse(newEvent.Comment.HasValue);
             Assert.IsFalse(newEvent.Scale.HasValue);
             Assert.IsFalse(newEvent.Photo.HasValue);
-            Assert.IsFalse(newEvent.Raiting.HasValue);
+            Assert.IsFalse(newEvent.Rating.HasValue);
             Assert.IsFalse(newEvent.GeoTag.HasValue);
         }
 
@@ -71,13 +71,13 @@ namespace ItHappend.UnitTests
             Assert.IsTrue(newEvent.Comment.HasValue);
             Assert.IsTrue(newEvent.Scale.HasValue);
             Assert.IsTrue(newEvent.Photo.HasValue);
-            Assert.IsTrue(newEvent.Raiting.HasValue);
+            Assert.IsTrue(newEvent.Rating.HasValue);
             Assert.IsTrue(newEvent.GeoTag.HasValue);
 
             newEvent.Comment.Do(val => Assert.AreEqual(textComment, val.Text));
             newEvent.Scale.Do(val => Assert.AreEqual(scale, val.Value));
             newEvent.Photo.Do(val => Assert.AreEqual(photo, val.PhotoBytes));
-            newEvent.Raiting.Do(val => Assert.AreEqual(rating, val.Value));
+            newEvent.Rating.Do(val => Assert.AreEqual(rating, val.Value));
             newEvent.GeoTag.Do(val => Assert.AreEqual(geoTag, val));
         }
 
@@ -135,13 +135,13 @@ namespace ItHappend.UnitTests
             Assert.IsTrue(newEvent.Comment.HasValue);
             Assert.IsTrue(newEvent.Scale.HasValue);
             Assert.IsFalse(newEvent.Photo.HasValue);
-            Assert.IsTrue(newEvent.Raiting.HasValue);
+            Assert.IsTrue(newEvent.Rating.HasValue);
             Assert.IsTrue(newEvent.GeoTag.HasValue);
 
             newEvent.Comment.Do(val => Assert.AreEqual(textComment, val.Text));
             newEvent.Scale.Do(val => Assert.AreEqual(scale, val.Value));
             newEvent.Photo.Do(val => Assert.Pass());
-            newEvent.Raiting.Do(val => Assert.AreEqual(rating, val.Value));
+            newEvent.Rating.Do(val => Assert.AreEqual(rating, val.Value));
             newEvent.GeoTag.Do(val => Assert.AreEqual(geoTag, val));
         }
 
@@ -154,7 +154,7 @@ namespace ItHappend.UnitTests
             var date = DateTimeOffset.Now;
             const string title = "Title";
             const double lessThenMinEvaluation = Event.MinEvaluationValue - 1.0;
-            const double expectedEvaluation = 0.0;
+            const double expectedEvaluation = Event.MinEvaluationValue;
 
             //act
             var newEventLessThenMinEvaluation =
@@ -170,7 +170,7 @@ namespace ItHappend.UnitTests
             Assert.IsFalse(newEventLessThenMinEvaluation.Comment.HasValue);
             Assert.IsFalse(newEventLessThenMinEvaluation.Scale.HasValue);
             Assert.IsFalse(newEventLessThenMinEvaluation.Photo.HasValue);
-            Assert.IsFalse(newEventLessThenMinEvaluation.Raiting.HasValue);
+            Assert.IsFalse(newEventLessThenMinEvaluation.Rating.HasValue);
             Assert.IsFalse(newEventLessThenMinEvaluation.GeoTag.HasValue);
         }
 
@@ -183,7 +183,7 @@ namespace ItHappend.UnitTests
             var date = DateTimeOffset.Now;
             const string title = "Title";
             const double moreThenMaxEvaluation = Event.MaxEvaluationValue + 1.0;
-            const double expectedEvaluation = 0.0;
+            const double expectedEvaluation = Event.MaxEvaluationValue;
 
             //act
             var newEventMoreThenMaxEvaluation =
@@ -199,7 +199,7 @@ namespace ItHappend.UnitTests
             Assert.IsFalse(newEventMoreThenMaxEvaluation.Comment.HasValue);
             Assert.IsFalse(newEventMoreThenMaxEvaluation.Scale.HasValue);
             Assert.IsFalse(newEventMoreThenMaxEvaluation.Photo.HasValue);
-            Assert.IsFalse(newEventMoreThenMaxEvaluation.Raiting.HasValue);
+            Assert.IsFalse(newEventMoreThenMaxEvaluation.Rating.HasValue);
             Assert.IsFalse(newEventMoreThenMaxEvaluation.GeoTag.HasValue);
         }
     }
