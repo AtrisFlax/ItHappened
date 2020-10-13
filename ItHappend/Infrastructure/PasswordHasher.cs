@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Security.Cryptography;
+using System.Text;
 
 namespace ItHappend.Infrastructure
 {
-    class PasswordHasher : IPasswordHasher
+    public class PasswordHasher : IPasswordHasher
     {
         private const int SaltSize = 16;
         private const int HashSize = 20;
@@ -12,26 +13,31 @@ namespace ItHappend.Infrastructure
         {
             var saltBytes = GenerateSalt();
             var passwordHashBytes = HashPasswordUsingSalt(password, saltBytes);
-            var passwordHash = CombinePasswordWithSaltHashes(passwordHashBytes, saltBytes);
-            return Convert.ToBase64String(passwordHash);
+            var completePasswordHashBytes = CombinePasswordWithSaltHashes(passwordHashBytes, saltBytes);
+            return Convert.ToBase64String(completePasswordHashBytes);
         }
 
-        public bool Verify(string password, string hashedPassword)
+        public bool Verify(string passwordToVerify, string hashedPassword)
         {
             var hashBytes = Convert.FromBase64String(hashedPassword);
-            var salt = new byte[SaltSize];
-            Array.Copy(hashBytes, 0, salt, 0, SaltSize);
-            var pbkdf2Cypher = new Rfc2898DeriveBytes(password, salt, HashIterationsNumber);
-            var hash = pbkdf2Cypher.GetBytes(HashSize);
+            var salt = GetSaltFromHash(hashBytes);
+            var passwordToVerifyWithSalt = HashPasswordUsingSalt(passwordToVerify, salt);
             for (var i = 0; i < HashSize; i++)
             {
-                if (hashBytes[i + SaltSize] != hash[i])
+                if (hashBytes[i + SaltSize] != passwordToVerifyWithSalt[i])
                     return false;
             }
 
             return true;
-        } 
-        
+        }
+
+        private static byte[] GetSaltFromHash(byte[] hashBytes)
+        {
+            var salt = new byte[SaltSize];
+            Array.Copy(hashBytes, 0, salt, 0, SaltSize);
+            return salt;
+        }
+
         private byte[] GenerateSalt()
         {
             byte[] salt;
@@ -41,8 +47,7 @@ namespace ItHappend.Infrastructure
 
         private byte[] HashPasswordUsingSalt(string password, byte[] saltBytes)
         {
-            var passwordBytes = Convert.FromBase64String(password);
-            var pbkdf2Cypher = new Rfc2898DeriveBytes(passwordBytes, saltBytes, HashIterationsNumber);
+            var pbkdf2Cypher = new Rfc2898DeriveBytes(password, saltBytes, HashIterationsNumber);
             var passwordSaltedHash = pbkdf2Cypher.GetBytes(HashSize);
             return passwordSaltedHash;
         }
