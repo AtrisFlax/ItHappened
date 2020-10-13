@@ -1,11 +1,15 @@
 ﻿using System.Collections.Generic;
-using ItHappend.Domain;
 
-namespace ItHappend
+namespace ItHappend.Domain
 {
-    class UserInfo
+    public class UserInfo
     {
         public IList<EventTracker> EventTrackers { get; }
         public SubscriptionType SubscriptionType { get; }
+        public UserInfo(IList<EventTracker> eventTrackers, SubscriptionType subscriptionType)
+        {
+            EventTrackers = eventTrackers;
+            SubscriptionType = subscriptionType;
+        }
     }
 }

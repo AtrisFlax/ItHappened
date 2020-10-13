@@ -4,18 +4,16 @@ namespace ItHappend.Domain
 {
     public class Event
     {
-        public Guid EventId { get; }
-
-        public Guid CreatorUserId { get; }
-
+        public Guid Id { get; }
+        public Guid CreatorId { get; }
         public DateTimeOffset EventHappensDate { get; private set; }
         public string Name { get; private set; }
         public decimal Evaluation { get; private set; }
 
-        public Event(Guid eventId, Guid creatorId, string name, DateTimeOffset eventHappensDate, decimal evaluation)
+        public Event(Guid id, Guid creatorId, string name, DateTimeOffset eventHappensDate, decimal evaluation)
         {
-            CreatorUserId = creatorId;
-            EventId = eventId;
+            CreatorId = creatorId;
+            Id = id;
             Name = name;
             EventHappensDate = eventHappensDate;
             Evaluation = evaluation;

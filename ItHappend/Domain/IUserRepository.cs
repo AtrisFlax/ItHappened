@@ -1,11 +1,11 @@
 ﻿using System;
 
-namespace ItHappend
+namespace ItHappend.Domain
 {
     interface IUserRepository
     {
-        void AddUser(UserAuthInfo userAuthInfo);
-        Guid GetUser(string login, object securePasswordHasher);
-        UserAuthInfo GetAuthInfo(string login);
+        void SaveUser(UserAuthInfo userAuthInfo);
+        UserAuthInfo LoadUserAuthInfo(Guid userId);
+        UserAuthInfo LoadUserAuthInfo(string login);
     }
 }
