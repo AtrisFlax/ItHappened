@@ -28,5 +28,6 @@ namespace ItHappend.Domain
         {
             return Events.Remove(newEvent);
         }
+        
     }
 }
