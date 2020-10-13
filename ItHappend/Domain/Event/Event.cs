@@ -12,20 +12,20 @@ namespace ItHappend.Domain
         public DateTimeOffset HappensDate { get; set; }
         public string Title { get; set; }
 
-        private double _Evaluation;
+        private double _evaluation;
 
         public double Evaluation
         {
-            get => _Evaluation;
-            private set
+            get => _evaluation;
+            set
             {
                 if (value < MinEvaluationValue || value > MaxEvaluationValue)
                 {
-                    _Evaluation = MinEvaluationValue;
+                    _evaluation = MinEvaluationValue;
                 }
                 else
                 {
-                    _Evaluation = value;
+                    _evaluation = value;
                 }
             }
         }
