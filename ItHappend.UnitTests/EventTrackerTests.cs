@@ -12,47 +12,39 @@ namespace ItHappend.UnitTests
         public void AddEventToTracker()
         {
             //arrange
-            var eventList = new List<Event>();
-            var initEvent = EventBuilder
-                .Event(Guid.NewGuid(), Guid.NewGuid(), DateTimeOffset.Now, "Title",
-                    0.5)
-                .Build();
-            eventList.Add(initEvent);
-            var eventForAdding = EventBuilder
-                .Event(Guid.NewGuid(), Guid.NewGuid(), DateTimeOffset.Now, "Added Title",
-                    0.5)
-                .Build();
-
+            var initEvent = CreateEvent("Title");
+            var eventForAdding = CreateEvent("Added Title");
+            var eventList = new List<Event> {initEvent};
 
             //act
             var eventTracker = CreateEventTracker(false, eventList);
             eventTracker.AddEvent(eventForAdding);
-            
+
             //assert
             Assert.That(eventTracker.Events, Is.EquivalentTo(new List<Event> {initEvent, eventForAdding}));
         }
         
+        [Test]
         public void RemoveEventFromTracker()
         {
             //arrange
-            var eventList = new List<Event>();
-            var initEvent = EventBuilder
-                .Event(Guid.NewGuid(), Guid.NewGuid(), DateTimeOffset.Now, "Title",
-                    0.5)
-                .Build();
-            eventList.Add(initEvent);
-            var eventForAdding = EventBuilder
-                .Event(Guid.NewGuid(), Guid.NewGuid(), DateTimeOffset.Now, "Added Title",
-                    0.5)
-                .Build();
-
-
+            var firstEvent = CreateEvent("Should left");
+            var secondEvent = CreateEvent("For remove");
+            var eventList = new List<Event>{firstEvent, secondEvent};
+            
             //act
             var eventTracker = CreateEventTracker(false, eventList);
-            eventTracker.RemoveEvent(eventForAdding);
-            
+            eventTracker.RemoveEvent(secondEvent);
+
             //assert
-            Assert.That(eventTracker.Events, Is.EquivalentTo(new List<Event> {initEvent, eventForAdding}));
+            Assert.That(eventTracker.Events, Is.EquivalentTo(new List<Event> {firstEvent}));
+        }
+
+        private static Event CreateEvent(string tittle)
+        {
+            return EventBuilder
+                .Event(Guid.NewGuid(), Guid.NewGuid(), DateTimeOffset.Now, tittle, 0.5)
+                .Build();
         }
 
         private static EventTracker CreateEventTracker(bool empty, List<Event> eventList)
