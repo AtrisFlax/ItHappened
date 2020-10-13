@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Reflection.Metadata.Ecma335;
 using System.Security.Authentication;
 using ItHappend.Domain;
 
@@ -19,23 +20,23 @@ namespace ItHappend.Application
             return loadedEvent.CreatorId != eventCreatorId ? null : loadedEvent;
         }
 
-        public void CreateEvent(Guid eventId, Guid creatorId, string name, DateTimeOffset creationDate,
-            decimal evaluation)
+        public void CreateEvent(Event newEvent)
         {
-            var newEvent = new Event(eventId, creatorId, name, creationDate, evaluation);
             _eventRepository.SaveEvent(newEvent);
         }
 
-        public void EditEvent(Guid eventId, Guid eventCreatorId, string newName, DateTimeOffset eventHappensDate,
-            decimal evaluation)
+        public void EditEvent(Guid eventId, Guid eventCreatorId, Event newEvent)
         {
             var forEditingEvent = _eventRepository.LoadEvent(eventId);
             if (eventCreatorId != forEditingEvent.CreatorId)
             {
                 throw new AuthenticationException();
             }
-            forEditingEvent.EditEvent(newName, eventHappensDate, evaluation);
-            _eventRepository.SaveEvent(forEditingEvent);
+            if (newEvent.Id != eventId)
+            {
+                throw new Exception();
+            }
+            _eventRepository.SaveEvent(newEvent);
         }
 
         public void DeleteEvent(Guid eventId, Guid creatorId)

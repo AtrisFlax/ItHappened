@@ -1,19 +1,13 @@
 ﻿using System;
 using ItHappend.Domain;
-using Microsoft.VisualBasic.FileIO;
 
 namespace ItHappend
 {
     internal interface IEventService
     {
         Event GetEvent(Guid eventId, Guid eventCreatorId);
-
-        void CreateEvent(Guid eventId, Guid creatorId, string name, DateTimeOffset creationDate,
-            decimal evaluation);
-
-        void EditEvent(Guid eventId, Guid eventCreatorId, string newName, DateTimeOffset eventHappensDate,
-            decimal evaluation);
-
+        void CreateEvent(Event newEvent);
+        void EditEvent(Guid eventId, Guid eventCreatorId, Event newEvent);
         void DeleteEvent(Guid eventId, Guid creatorId);
     }
 }
