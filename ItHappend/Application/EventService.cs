@@ -1,7 +1,6 @@
 ﻿using System;
-using System.Reflection.Metadata.Ecma335;
-using System.Security.Authentication;
 using ItHappend.Domain;
+using Status = ItHappend.Application.UserServiceStatusCodes;
 
 namespace ItHappend.Application
 {
@@ -14,39 +13,33 @@ namespace ItHappend.Application
             _eventRepository = eventRepository;
         }
 
-        public Event GetEvent(Guid eventId, Guid eventCreatorId)
+        public (Event @event, Status operationStatus) TryGetEvent(Guid eventId, Guid eventCreatorId)
         {
             var loadedEvent = _eventRepository.LoadEvent(eventId);
-            return loadedEvent.CreatorId != eventCreatorId ? null : loadedEvent;
+            return loadedEvent.CreatorId != eventCreatorId ? (null, Status.WrongCreatorId) : (loadedEvent, Status.Ok);
         }
 
-        public void CreateEvent(Event newEvent)
+        public Status CreateEvent(Event newEvent)
         {
             _eventRepository.SaveEvent(newEvent);
+            return Status.Ok;
         }
 
-        public void EditEvent(Guid eventId, Guid eventCreatorId, Event newEvent)
+        public Status TryEditEvent(Guid eventId, Guid eventCreatorId, Event newEvent)
         {
             var forEditingEvent = _eventRepository.LoadEvent(eventId);
-            if (eventCreatorId != forEditingEvent.CreatorId)
-            {
-                throw new AuthenticationException();
-            }
-            if (newEvent.Id != eventId)
-            {
-                throw new Exception();
-            }
+            if (eventCreatorId != forEditingEvent.CreatorId) return Status.WrongCreatorId;
+            if (newEvent.Id != eventId) return Status.WrongEventId;
             _eventRepository.SaveEvent(newEvent);
+            return Status.Ok;
         }
 
-        public void DeleteEvent(Guid eventId, Guid creatorId)
+        public Status TryDeleteEvent(Guid eventId, Guid creatorId)
         {
             var forDeleteEvent = _eventRepository.LoadEvent(eventId);
-            if (creatorId != forDeleteEvent.CreatorId)
-            {
-                throw new AuthenticationException();
-            }
+            if (creatorId != forDeleteEvent.CreatorId) return Status.WrongCreatorId;
             _eventRepository.DeleteEvent(eventId);
+            return Status.Ok;
         }
     }
 }

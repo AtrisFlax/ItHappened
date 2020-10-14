@@ -21,7 +21,6 @@ namespace ItHappend.Application
             {
                 return null;
             }
-
             var userEventTrackers = eventTrackerRepository.LoadUserTrackers(userAuthInfo.userId);
             return new UserInfo(userEventTrackers, userAuthInfo.SubscriptionType);
         }

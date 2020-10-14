@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using ItHappend.Domain;
-using ItHappend.Domain.Exceptions;
 
 namespace ItHappend.Infrastructure
 {
@@ -16,11 +15,6 @@ namespace ItHappend.Infrastructure
 
         public UserAuthInfo LoadUserAuthInfo(Guid userId)
         {
-            if (!_users.ContainsKey(userId))
-            {
-                throw new UserNotFoundException(userId);
-            }
-
             return _users[userId];
         }
 
@@ -28,11 +22,6 @@ namespace ItHappend.Infrastructure
         {
             var isUserExist = _users
                 .Any(dictionaryItem => dictionaryItem.Value.Login == login);
-            if (!isUserExist)
-            {
-                throw new UserNotFoundException(login);
-            }
-
             return _users
                 .First(dictionaryItem => dictionaryItem.Value.Login == login)
                 .Value;

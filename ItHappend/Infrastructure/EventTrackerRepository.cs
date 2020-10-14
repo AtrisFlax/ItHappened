@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using ItHappend.Domain;
-using ItHappend.Domain.Exceptions;
 
 namespace ItHappend.Infrastructure
 {
@@ -16,11 +15,6 @@ namespace ItHappend.Infrastructure
 
         public EventTracker LoadEventTracker(Guid eventTrackerId)
         {
-            if (!_eventTrackers.ContainsKey(eventTrackerId))
-            {
-                throw new EventTrackerNotFoundException(eventTrackerId);
-            }
-
             return _eventTrackers[eventTrackerId];
         }
 
