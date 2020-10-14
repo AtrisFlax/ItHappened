@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using ItHappend.Domain;
 
-namespace ItHappend.Application
+namespace ItHappend
 {
     public class EventTrackerService
     {
@@ -66,7 +67,13 @@ namespace ItHappend.Application
         public IReadOnlyCollection<Event> FilterTrackerEventsByTimeSpan(Guid trackerId, Guid initiatorId, 
             DateTimeOffset from, DateTimeOffset to)
         {
-            
+            var requiredTracker = _eventTrackerRepository.LoadEventTracker(trackerId);
+            if (initiatorId != requiredTracker.CreatorId)
+            {
+                throw new Exception();
+            }
+
+            return requiredTracker.FilterEventsByTimeSpan(from, to);
         }
     }
 }
