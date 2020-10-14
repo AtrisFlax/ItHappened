@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace ItHappend.Domain
 {
@@ -24,9 +25,17 @@ namespace ItHappend.Domain
             Events.Add(newEvent);
         }
         
-        public bool RemoveEvent(Event newEvent)
+        public bool RemoveEvent(Event eventToRemove)
         {
-            return Events.Remove(newEvent);
+            return Events.Remove(eventToRemove);
+        }
+
+        public IReadOnlyCollection<Event> FilterEventsByTimeSpan(DateTimeOffset from, DateTimeOffset to)
+        {
+            var filteredEvents = Events.Where(eventItem =>
+                eventItem.HappensDate.UtcDateTime >= from.UtcDateTime && 
+                eventItem.HappensDate.UtcDateTime <= to.UtcDateTime).ToArray();
+            return filteredEvents;
         }
         
     }

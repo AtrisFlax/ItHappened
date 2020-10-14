@@ -2,7 +2,7 @@
 
 namespace ItHappend.Domain
 {
-    interface IUserRepository
+    public interface IUserRepository
     {
         void TrySaveUser(UserAuthInfo userAuthInfo);
         UserAuthInfo TryLoadUserAuthInfo(Guid userId);

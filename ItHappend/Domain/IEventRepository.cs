@@ -2,7 +2,7 @@
 
 namespace ItHappend.Domain
 {
-    internal interface IEventRepository
+    public interface IEventRepository
     {
         void SaveEvent(Event newEvent);
         Event TryLoadEvent(Guid eventId);
