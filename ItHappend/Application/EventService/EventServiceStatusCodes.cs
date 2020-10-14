@@ -1,6 +1,6 @@
 ﻿namespace ItHappend.Application
 {
-    enum UserServiceStatusCodes
+    public enum EventServiceStatusCodes
     {
         Ok,
         WrongCreatorId,

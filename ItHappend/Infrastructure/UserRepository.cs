@@ -8,20 +8,18 @@ namespace ItHappend.Infrastructure
     public class UserRepository : IUserRepository
     {
         private readonly Dictionary<Guid, UserAuthInfo> _users = new Dictionary<Guid, UserAuthInfo>();
-        public void SaveUser(UserAuthInfo newUser)
+        public void TrySaveUser(UserAuthInfo newUser)
         {
             _users.Add(newUser.Guid, newUser);
         }
 
-        public UserAuthInfo LoadUserAuthInfo(Guid userId)
+        public UserAuthInfo TryLoadUserAuthInfo(Guid userId)
         {
             return _users[userId];
         }
 
-        public UserAuthInfo LoadUserAuthInfo(string login)
+        public UserAuthInfo TryLoadUserAuthInfo(string login)
         {
-            var isUserExist = _users
-                .Any(dictionaryItem => dictionaryItem.Value.Login == login);
             return _users
                 .First(dictionaryItem => dictionaryItem.Value.Login == login)
                 .Value;

@@ -4,8 +4,8 @@ namespace ItHappend.Domain
 {
     interface IUserRepository
     {
-        void SaveUser(UserAuthInfo userAuthInfo);
-        UserAuthInfo LoadUserAuthInfo(Guid userId);
-        UserAuthInfo LoadUserAuthInfo(string login);
+        void TrySaveUser(UserAuthInfo userAuthInfo);
+        UserAuthInfo TryLoadUserAuthInfo(Guid userId);
+        UserAuthInfo TryLoadUserAuthInfo(string login);
     }
 }
