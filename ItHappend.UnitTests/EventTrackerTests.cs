@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq.Expressions;
 using ItHappend.Domain;
 using NUnit.Framework;
 
@@ -17,7 +16,7 @@ namespace ItHappend.UnitTests
             var eventList = new List<Event> {initEvent};
 
             //act
-            var eventTracker = CreateEventTracker(false, eventList);
+            var eventTracker = CreateEventTracker(eventList);
             eventTracker.AddEvent(eventForAdding);
 
             //assert
@@ -33,7 +32,7 @@ namespace ItHappend.UnitTests
             var eventList = new List<Event>{firstEvent, secondEvent};
             
             //act
-            var eventTracker = CreateEventTracker(false, eventList);
+            var eventTracker = CreateEventTracker(eventList);
             eventTracker.RemoveEvent(secondEvent);
 
             //assert
@@ -47,7 +46,7 @@ namespace ItHappend.UnitTests
                 .Build();
         }
 
-        private static EventTracker CreateEventTracker(bool empty, List<Event> eventList)
+        private static EventTracker CreateEventTracker(IList<Event> eventList)
         {
             return new EventTracker(Guid.NewGuid(),
                 "name1",
