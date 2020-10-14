@@ -20,12 +20,13 @@ namespace ItHappend
             _eventRepository = eventRepository;
         }
 
-        public Guid CreateTracker(Guid creatorId)
+        public Guid CreateTracker(Guid creatorId, string trackerName)
         {
-            var creator = _userRepository.LoadUserAuthInfo(creatorId);
+            var creator = _userRepository.TryLoadUserAuthInfo(creatorId);
             var newTrackerId = Guid.NewGuid();
             var eventTracker = new EventTracker(
                 newTrackerId,
+                trackerName, 
                 new List<Event>(),
                 creatorId
                 );
@@ -39,7 +40,7 @@ namespace ItHappend
             {
                 throw new Exception();
             }
-            var eventToAdd = _eventRepository.LoadEvent(eventId);
+            var eventToAdd = _eventRepository.TryLoadEvent(eventId);
             requiredTracker.AddEvent(eventToAdd);
         }
 
@@ -50,7 +51,7 @@ namespace ItHappend
             {
                 throw new Exception();
             }
-            var eventToRemove = _eventRepository.LoadEvent(eventId);
+            var eventToRemove = _eventRepository.TryLoadEvent(eventId);
             requiredTracker.RemoveEvent(eventToRemove);
         }
 
