@@ -3,6 +3,6 @@
     interface IPasswordHasher
     {
         string Hash(string password);
-        bool Verify(string password, string hashedPassword);
+        bool Verify(string passwordToVerify, string hashedPassword);
     }
 }
