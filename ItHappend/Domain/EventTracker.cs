@@ -28,9 +28,9 @@ namespace ItHappend.Domain
             Events.Add(newEvent);
         }
         
-        public bool RemoveEvent(Event newEvent)
+        public bool RemoveEvent(Event eventToRemove)
         {
-            return Events.Remove(newEvent);
+            return Events.Remove(eventToRemove);
         }
     }
 }

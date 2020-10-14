@@ -10,6 +10,15 @@ namespace ItHappend.Application
         private readonly IUserRepository _userRepository;
         private readonly IEventRepository _eventRepository;
 
+        public EventTrackerService(IEventTrackerRepository eventTrackerRepository, 
+            IUserRepository userRepository, 
+            IEventRepository eventRepository)
+        {
+            _eventTrackerRepository = eventTrackerRepository;
+            _userRepository = userRepository;
+            _eventRepository = eventRepository;
+        }
+
         public Guid CreateTracker(Guid creatorId)
         {
             var creator = _userRepository.LoadUserAuthInfo(creatorId);
@@ -22,21 +31,42 @@ namespace ItHappend.Application
             return newTrackerId;
         }
 
-        public void AddEventToTracker(Guid trackerId, Guid eventId)
+        public void AddEventToTracker(Guid trackerId, Guid eventId, Guid initiatorId)
         {
             var requiredTracker = _eventTrackerRepository.LoadEventTracker(trackerId);
+            if (initiatorId != requiredTracker.CreatorId)
+            {
+                throw new Exception();
+            }
             var eventToAdd = _eventRepository.LoadEvent(eventId);
             requiredTracker.AddEvent(eventToAdd);
         }
 
-        public void RemoveEventFromTracker(Guid trackerId, Guid eventId)
+        public void RemoveEventFromTracker(Guid trackerId, Guid eventId, Guid initiatorId)
         {
-            throw new NotImplementedException();
+            var requiredTracker = _eventTrackerRepository.LoadEventTracker(trackerId);
+            if (initiatorId != requiredTracker.CreatorId)
+            {
+                throw new Exception();
+            }
+            var eventToRemove = _eventRepository.LoadEvent(eventId);
+            requiredTracker.RemoveEvent(eventToRemove);
         }
 
-        public void DeleteTracker(Guid trackerOwnerId, Guid tracker)
+        public void DeleteTracker(Guid trackerId, Guid initiatorId)
         {
-            throw new NotImplementedException();
+            var requiredTracker = _eventTrackerRepository.LoadEventTracker(trackerId);
+            if (initiatorId != requiredTracker.CreatorId)
+            {
+                throw new Exception();
+            }
+            _eventTrackerRepository.DeleteEventTracker(trackerId);
+        }
+
+        public IReadOnlyCollection<Event> FilterTrackerEventsByTimeSpan(Guid trackerId, Guid initiatorId, 
+            DateTimeOffset from, DateTimeOffset to)
+        {
+            
         }
     }
 }
