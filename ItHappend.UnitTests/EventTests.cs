@@ -166,12 +166,6 @@ namespace ItHappend.UnitTests
             Assert.AreEqual(date, newEventLessThenMinEvaluation.HappensDate);
             Assert.AreEqual(title, newEventLessThenMinEvaluation.Title);
             Assert.AreEqual(expectedEvaluation, newEventLessThenMinEvaluation.Evaluation);
-
-            Assert.IsFalse(newEventLessThenMinEvaluation.Comment.HasValue);
-            Assert.IsFalse(newEventLessThenMinEvaluation.Scale.HasValue);
-            Assert.IsFalse(newEventLessThenMinEvaluation.Photo.HasValue);
-            Assert.IsFalse(newEventLessThenMinEvaluation.Raiting.HasValue);
-            Assert.IsFalse(newEventLessThenMinEvaluation.GeoTag.HasValue);
         }
 
         [Test]
@@ -195,12 +189,6 @@ namespace ItHappend.UnitTests
             Assert.AreEqual(date, newEventMoreThenMaxEvaluation.HappensDate);
             Assert.AreEqual(title, newEventMoreThenMaxEvaluation.Title);
             Assert.AreEqual(expectedEvaluation, newEventMoreThenMaxEvaluation.Evaluation);
-
-            Assert.IsFalse(newEventMoreThenMaxEvaluation.Comment.HasValue);
-            Assert.IsFalse(newEventMoreThenMaxEvaluation.Scale.HasValue);
-            Assert.IsFalse(newEventMoreThenMaxEvaluation.Photo.HasValue);
-            Assert.IsFalse(newEventMoreThenMaxEvaluation.Raiting.HasValue);
-            Assert.IsFalse(newEventMoreThenMaxEvaluation.GeoTag.HasValue);
         }
     }
 }
