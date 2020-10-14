@@ -7,7 +7,7 @@ namespace ItHappend.Infrastructure
     public class EventRepository : IEventRepository
     {
         private readonly Dictionary<Guid, Event> _events = new Dictionary<Guid, Event>();
-        public void TrySaveEvent(Event newEvent)
+        public void SaveEvent(Event newEvent)
         {
             _events.Add(newEvent.Id, newEvent);
         }
@@ -17,7 +17,7 @@ namespace ItHappend.Infrastructure
             return _events[eventId];
         }
 
-        public void TryDeleteEvent(Guid eventId)
+        public void DeleteEvent(Guid eventId)
         {
             _events.Remove(eventId);
         }

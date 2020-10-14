@@ -4,8 +4,8 @@ namespace ItHappend.Domain
 {
     internal interface IEventRepository
     {
-        void TrySaveEvent(Event newEvent);
+        void SaveEvent(Event newEvent);
         Event TryLoadEvent(Guid eventId);
-        void TryDeleteEvent(Guid eventId);
+        void DeleteEvent(Guid eventId);
     }
 }

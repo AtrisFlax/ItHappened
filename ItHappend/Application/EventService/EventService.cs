@@ -21,7 +21,7 @@ namespace ItHappend.Application
 
         public Status CreateEvent(Event newEvent)
         {
-            _eventRepository.TrySaveEvent(newEvent);
+            _eventRepository.SaveEvent(newEvent);
             return Status.Ok;
         }
 
@@ -30,7 +30,7 @@ namespace ItHappend.Application
             var forEditingEvent = _eventRepository.TryLoadEvent(eventId);
             if (eventCreatorId != forEditingEvent.CreatorId) return Status.WrongCreatorId;
             if (newEvent.Id != eventId) return Status.WrongEventId;
-            _eventRepository.TrySaveEvent(newEvent);
+            _eventRepository.SaveEvent(newEvent);
             return Status.Ok;
         }
 
@@ -38,7 +38,7 @@ namespace ItHappend.Application
         {
             var forDeleteEvent = _eventRepository.TryLoadEvent(eventId);
             if (creatorId != forDeleteEvent.CreatorId) return Status.WrongCreatorId;
-            _eventRepository.TryDeleteEvent(eventId);
+            _eventRepository.DeleteEvent(eventId);
             return Status.Ok;
         }
     }
