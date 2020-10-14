@@ -11,10 +11,6 @@ namespace ItHappend.Domain
 
         public Guid CreatorId { get; } 
         
-        public EventTracker(Guid id, IList<Event> events, Guid creatorUserId) : this (id, null, events, creatorUserId)
-        {
-        }
-
         public EventTracker(Guid id, string name, IList<Event> events, Guid creatorId)
         {
             Id = id;
@@ -32,5 +28,6 @@ namespace ItHappend.Domain
         {
             return Events.Remove(newEvent);
         }
+        
     }
 }

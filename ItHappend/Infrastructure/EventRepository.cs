@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using ItHappend.Domain;
-using ItHappend.Domain.Exceptions;
 
 namespace ItHappend.Infrastructure
 {
@@ -13,13 +12,8 @@ namespace ItHappend.Infrastructure
             _events.Add(newEvent.Id, newEvent);
         }
 
-        public Event LoadEvent(Guid eventId)
+        public Event TryLoadEvent(Guid eventId)
         {
-            if (!_events.ContainsKey(eventId))
-            {
-                throw new EventNotFoundException(eventId);
-            }
-
             return _events[eventId];
         }
 
