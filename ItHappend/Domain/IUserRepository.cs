@@ -4,7 +4,7 @@ namespace ItHappend.Domain
 {
     public interface IUserRepository
     {
-        void TrySaveUser(UserAuthInfo userAuthInfo);
+        void SaveUser(UserAuthInfo userAuthInfo);
         UserAuthInfo TryLoadUserAuthInfo(Guid userId);
         UserAuthInfo TryLoadUserAuthInfo(string login);
     }

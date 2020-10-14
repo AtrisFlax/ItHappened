@@ -8,7 +8,7 @@ namespace ItHappend.Infrastructure
     public class UserRepository : IUserRepository
     {
         private readonly Dictionary<Guid, UserAuthInfo> _users = new Dictionary<Guid, UserAuthInfo>();
-        public void TrySaveUser(UserAuthInfo newUser)
+        public void SaveUser(UserAuthInfo newUser)
         {
             _users.Add(newUser.Guid, newUser);
         }

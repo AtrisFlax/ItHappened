@@ -4,7 +4,7 @@ using Status = ItHappend.Application.EventServiceStatusCodes;
 
 namespace ItHappend.Application
 {
-    class EventService : IEventService
+    public class EventService : IEventService
     {
         private readonly IEventRepository _eventRepository;
 
