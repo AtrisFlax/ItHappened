@@ -1,9 +1,10 @@
-﻿namespace ItHappend.Application
+﻿﻿namespace ItHappend.Application
 {
     public enum EventServiceStatusCodes
     {
         Ok,
         WrongCreatorId,
-        WrongEventId
+        WrongEventId,
+        WrongCustomizationField
     }
 }

@@ -29,7 +29,7 @@ namespace ItHappend.Domain
             //TODO calculation Description, Priority, TrackingName, EventsPeriod
 
             //TODO Type = nameof(MostFrequentEvent)
-            return (new MostFrequentEvent( /*TODO  pass arguments for constructor */), Status.Ok);
+            return (new MostFrequentEvent( /*TODO  pass arguments for constructor */), Status.Created);
         }
     }
 }

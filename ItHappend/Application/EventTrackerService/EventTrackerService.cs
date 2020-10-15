@@ -34,15 +34,15 @@ namespace ItHappend
             return newTrackerId;
         }
 
-        public void AddEventToTracker(Guid trackerId, Guid eventId, Guid initiatorId)
+        public bool TryAddEventToTracker(Guid trackerId, Guid eventId, Guid initiatorId)
         {
             var requiredTracker = _eventTrackerRepository.LoadEventTracker(trackerId);
             if (initiatorId != requiredTracker.CreatorId)
             {
-                throw new Exception();
+                return false;
             }
             var eventToAdd = _eventRepository.TryLoadEvent(eventId);
-            requiredTracker.AddEvent(eventToAdd);
+            return requiredTracker.TryAddEvent(eventToAdd);
         }
 
         public void RemoveEventFromTracker(Guid trackerId, Guid eventId, Guid initiatorId)

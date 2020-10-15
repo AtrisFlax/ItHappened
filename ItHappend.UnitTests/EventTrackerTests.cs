@@ -17,7 +17,7 @@ namespace ItHappend.UnitTests
 
             //act
             var eventTracker = CreateEventTracker(eventList);
-            eventTracker.AddEvent(eventForAdding);
+            eventTracker.TryAddEvent(eventForAdding);
 
             //assert
             Assert.That(eventTracker.Events, Is.EquivalentTo(new List<Event> {initEvent, eventForAdding}));
@@ -84,7 +84,7 @@ namespace ItHappend.UnitTests
         private static Event CreateEvent(string tittle)
         {
             return EventBuilder
-                .Event(Guid.NewGuid(), Guid.NewGuid(), DateTimeOffset.Now, tittle, 0.5)
+                .Event(Guid.NewGuid(), Guid.NewGuid(), DateTimeOffset.Now, tittle)
                 .Build();
         }
 

@@ -2,7 +2,12 @@
 {
     public enum StatisticServiceStatusCodes
     {
-        Ok,
-        ApplicabilityFunctionDoesNotCompute
+        Created,
+        ApplicabilityFunctionDoesNotCompute,
+        NoRatingInEventTrackers,
+        NotEnoughEventsInEventTracker,
+        EventTrackerHasNoRating,
+        EventTrackerHasNotEnoughEvents,
+        NotAllEventInTrackerHasRating
     }
 }

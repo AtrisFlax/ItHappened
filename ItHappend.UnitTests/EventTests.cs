@@ -7,26 +7,43 @@ namespace ItHappend.UnitTests
     public class EventTests
     {
         private Guid _eventId;
-        
+        private Guid _creatorId;
+        private DateTimeOffset _date;
+        private string _title;
+        private string _textComment;
+        private double _scale;
+        private Photo _photo;
+        private double _rating;
+        private GeoTag _geoTag;
+
+
+        [SetUp]
+        public void Init()
+        {
+            _eventId = Guid.NewGuid();
+            _creatorId = Guid.NewGuid();
+            _date = DateTimeOffset.Now;
+            _title = "Title";
+            _textComment = "Comment For Event";
+            _scale = 15;
+            _photo = new Photo( new byte[] {0x1, 0x2, 0x3});
+            _rating = 299.0;
+            _geoTag = new GeoTag(55.790514, 37.584822);
+        }
+
         [Test]
         public void CreationEventWithRequiredParameters()
         {
             //arrange
-            _eventId = Guid.NewGuid();
-            var creatorId = Guid.NewGuid();
-            var date = DateTimeOffset.Now;
-            const string title = "Title";
-            const double evaluation = 0.5;
 
             //act
-            var newEvent = EventBuilder.Event(_eventId, creatorId, date, title, evaluation).Build();
+            var newEvent = EventBuilder.Event(_eventId, _creatorId, _date, _title).Build();
 
             //assert
             Assert.AreEqual(_eventId, newEvent.Id);
-            Assert.AreEqual(creatorId, newEvent.CreatorId);
-            Assert.AreEqual(date, newEvent.HappensDate);
-            Assert.AreEqual(title, newEvent.Title);
-            Assert.AreEqual(evaluation, newEvent.Evaluation);
+            Assert.AreEqual(_creatorId, newEvent.CreatorId);
+            Assert.AreEqual(_date, newEvent.HappensDate);
+            Assert.AreEqual(_title, newEvent.Title);
 
             Assert.IsFalse(newEvent.Comment.HasValue);
             Assert.IsFalse(newEvent.Scale.HasValue);
@@ -39,46 +56,34 @@ namespace ItHappend.UnitTests
         public void CreationEventWithAllOptionalParameters()
         {
             //arrange
-            var eventId = Guid.NewGuid();
-            var creatorId = Guid.NewGuid();
-            var date = DateTimeOffset.Now;
-            const string title = "Title";
-            const double evaluation = 0.5;
-            const string textComment = "Comment For Event";
-            const double scale = 15;
-            byte[] photo = {0x1, 0x2, 0x3};
-            const double rating = 299;
-            var geoTag = new GeoTag(55.790514, 37.584822);
-
 
             //act
-            var newEvent = EventBuilder
-                .Event(eventId, creatorId, date, title, evaluation)
-                .WithComment(textComment)
-                .WithScale(scale)
-                .WithPhoto(photo)
-                .WithRating(rating)
-                .WithGeoTag(geoTag)
+            var @event = EventBuilder
+                .Event(_eventId, _creatorId, _date, _title)
+                .WithComment(_textComment)
+                .WithScale(_scale)
+                .WithPhoto(_photo)
+                .WithRating(_rating)
+                .WithGeoTag(_geoTag)
                 .Build();
 
             //assert
-            Assert.AreEqual(eventId, newEvent.Id);
-            Assert.AreEqual(creatorId, newEvent.CreatorId);
-            Assert.AreEqual(date, newEvent.HappensDate);
-            Assert.AreEqual(title, newEvent.Title);
-            Assert.AreEqual(evaluation, newEvent.Evaluation);
+            Assert.AreEqual(_eventId, @event.Id);
+            Assert.AreEqual(_creatorId, @event.CreatorId);
+            Assert.AreEqual(_date, @event.HappensDate);
+            Assert.AreEqual(_title, @event.Title);
 
-            Assert.IsTrue(newEvent.Comment.HasValue);
-            Assert.IsTrue(newEvent.Scale.HasValue);
-            Assert.IsTrue(newEvent.Photo.HasValue);
-            Assert.IsTrue(newEvent.Rating.HasValue);
-            Assert.IsTrue(newEvent.GeoTag.HasValue);
+            Assert.IsTrue(@event.Comment.HasValue);
+            Assert.IsTrue(@event.Scale.HasValue);
+            Assert.IsTrue(@event.Photo.HasValue);
+            Assert.IsTrue(@event.Rating.HasValue);
+            Assert.IsTrue(@event.GeoTag.HasValue);
 
-            newEvent.Comment.Do(val => Assert.AreEqual(textComment, val.Text));
-            newEvent.Scale.Do(val => Assert.AreEqual(scale, val.Value));
-            newEvent.Photo.Do(val => Assert.AreEqual(photo, val.PhotoBytes));
-            newEvent.Rating.Do(val => Assert.AreEqual(rating, val.Value));
-            newEvent.GeoTag.Do(val => Assert.AreEqual(geoTag, val));
+            Assert.IsTrue(@event.Comment.Contains(_textComment));
+            Assert.IsTrue(@event.Scale.Contains(_scale));
+            Assert.IsTrue(@event.Photo.Contains(_photo));
+            Assert.IsTrue(@event.Rating.Contains(_rating));
+            Assert.IsTrue(@event.GeoTag.Contains(_geoTag));
         }
 
 
@@ -90,13 +95,12 @@ namespace ItHappend.UnitTests
             var creatorId = Guid.NewGuid();
             var date = DateTimeOffset.Now;
             const string title = null;
-            const double evaluation = 0.5;
 
             //act
 
             //assert
             Assert.Throws<NullReferenceException>(() =>
-                EventBuilder.Event(eventId, creatorId, date, title, evaluation).Build()
+                EventBuilder.Event(eventId, creatorId, date, title).Build()
             );
         }
 
@@ -109,7 +113,6 @@ namespace ItHappend.UnitTests
             var creatorId = Guid.NewGuid();
             var date = DateTimeOffset.Now;
             const string title = "Title";
-            const double evaluation = 0.5;
             const string textComment = "Comment For Event";
             const double scale = 15;
             const double rating = 299;
@@ -117,8 +120,8 @@ namespace ItHappend.UnitTests
 
 
             //act
-            var newEvent = EventBuilder
-                .Event(eventId, creatorId, date, title, evaluation)
+            var @event = EventBuilder
+                .Event(eventId, creatorId, date, title)
                 .WithComment(textComment)
                 .WithScale(scale)
                 .WithRating(rating)
@@ -126,81 +129,22 @@ namespace ItHappend.UnitTests
                 .Build();
 
             //assert
-            Assert.AreEqual(eventId, newEvent.Id);
-            Assert.AreEqual(creatorId, newEvent.CreatorId);
-            Assert.AreEqual(date, newEvent.HappensDate);
-            Assert.AreEqual(title, newEvent.Title);
-            Assert.AreEqual(evaluation, newEvent.Evaluation);
+            Assert.AreEqual(eventId, @event.Id);
+            Assert.AreEqual(creatorId, @event.CreatorId);
+            Assert.AreEqual(date, @event.HappensDate);
+            Assert.AreEqual(title, @event.Title);
 
-            Assert.IsTrue(newEvent.Comment.HasValue);
-            Assert.IsTrue(newEvent.Scale.HasValue);
-            Assert.IsFalse(newEvent.Photo.HasValue);
-            Assert.IsTrue(newEvent.Rating.HasValue);
-            Assert.IsTrue(newEvent.GeoTag.HasValue);
+            Assert.IsTrue(@event.Comment.HasValue);
+            Assert.IsTrue(@event.Scale.HasValue);
+            Assert.IsFalse(@event.Photo.HasValue);
+            Assert.IsTrue(@event.Rating.HasValue);
+            Assert.IsTrue(@event.GeoTag.HasValue);
 
-            newEvent.Comment.Do(val => Assert.AreEqual(textComment, val.Text));
-            newEvent.Scale.Do(val => Assert.AreEqual(scale, val.Value));
-            newEvent.Photo.Do(val => Assert.Pass());
-            newEvent.Rating.Do(val => Assert.AreEqual(rating, val.Value));
-            newEvent.GeoTag.Do(val => Assert.AreEqual(geoTag, val));
-        }
-
-        [Test]
-        public void CreationEventEvaluationLessThenInRange()
-        {
-            //arrange
-            _eventId = Guid.NewGuid();
-            var creatorId = Guid.NewGuid();
-            var date = DateTimeOffset.Now;
-            const string title = "Title";
-            const double lessThenMinEvaluation = Event.MinEvaluationValue - 1.0;
-            const double expectedEvaluation = Event.MinEvaluationValue;
-
-            //act
-            var newEventLessThenMinEvaluation =
-                EventBuilder.Event(_eventId, creatorId, date, title, lessThenMinEvaluation).Build();
-
-            //assert
-            Assert.AreEqual(_eventId, newEventLessThenMinEvaluation.Id);
-            Assert.AreEqual(creatorId, newEventLessThenMinEvaluation.CreatorId);
-            Assert.AreEqual(date, newEventLessThenMinEvaluation.HappensDate);
-            Assert.AreEqual(title, newEventLessThenMinEvaluation.Title);
-            Assert.AreEqual(expectedEvaluation, newEventLessThenMinEvaluation.Evaluation);
-
-            Assert.IsFalse(newEventLessThenMinEvaluation.Comment.HasValue);
-            Assert.IsFalse(newEventLessThenMinEvaluation.Scale.HasValue);
-            Assert.IsFalse(newEventLessThenMinEvaluation.Photo.HasValue);
-            Assert.IsFalse(newEventLessThenMinEvaluation.Rating.HasValue);
-            Assert.IsFalse(newEventLessThenMinEvaluation.GeoTag.HasValue);
-        }
-
-        [Test]
-        public void CreationEventEvaluationMoreThenInRange()
-        {
-            //arrange
-            _eventId = Guid.NewGuid();
-            var creatorId = Guid.NewGuid();
-            var date = DateTimeOffset.Now;
-            const string title = "Title";
-            const double moreThenMaxEvaluation = Event.MaxEvaluationValue + 1.0;
-            const double expectedEvaluation = Event.MaxEvaluationValue;
-
-            //act
-            var newEventMoreThenMaxEvaluation =
-                EventBuilder.Event(_eventId, creatorId, date, title, moreThenMaxEvaluation).Build();
-
-            //assert
-            Assert.AreEqual(_eventId, newEventMoreThenMaxEvaluation.Id);
-            Assert.AreEqual(creatorId, newEventMoreThenMaxEvaluation.CreatorId);
-            Assert.AreEqual(date, newEventMoreThenMaxEvaluation.HappensDate);
-            Assert.AreEqual(title, newEventMoreThenMaxEvaluation.Title);
-            Assert.AreEqual(expectedEvaluation, newEventMoreThenMaxEvaluation.Evaluation);
-
-            Assert.IsFalse(newEventMoreThenMaxEvaluation.Comment.HasValue);
-            Assert.IsFalse(newEventMoreThenMaxEvaluation.Scale.HasValue);
-            Assert.IsFalse(newEventMoreThenMaxEvaluation.Photo.HasValue);
-            Assert.IsFalse(newEventMoreThenMaxEvaluation.Rating.HasValue);
-            Assert.IsFalse(newEventMoreThenMaxEvaluation.GeoTag.HasValue);
+            Assert.IsTrue(@event.Comment.Contains(_textComment));
+            Assert.IsTrue(@event.Scale.Contains(_scale));
+            Assert.IsFalse(@event.Photo.Contains(_photo));
+            Assert.IsTrue(@event.Rating.Contains(_rating));
+            Assert.IsTrue(@event.GeoTag.Contains(_geoTag));
         }
     }
 }

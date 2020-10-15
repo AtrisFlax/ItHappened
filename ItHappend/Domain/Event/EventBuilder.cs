@@ -1,30 +1,27 @@
 ﻿using System;
+using Optional;
 
 namespace ItHappend.Domain
 {
-    public class EventBuilder
+    public class EventBuilder : IEventBuilder
     {
         public Guid Id { get; private set; }
         public Guid CreatorId { get; private set; }
         public DateTimeOffset HappensDate { get; private set; }
         public string Title { get; private set; }
-
-        public double Evaluation { get; private set; }
-
-
-        internal Optional<Photo> Photo = Optional<Photo>.None();
-        internal Optional<Scale> Scale = Optional<Scale>.None();
-        internal Optional<Rating> Rating = Optional<Rating>.None();
-        internal Optional<GeoTag> GeoTag = Optional<GeoTag>.None();
-        internal Optional<Comment> Comment = Optional<Comment>.None();
+        
+        internal Option<Photo> Photo = Option.None<Photo>();
+        internal Option<double> Scale = Option.None<double>();
+        internal Option<double> Rating = Option.None<double>();
+        internal Option<GeoTag> GeoTag = Option.None<GeoTag>();
+        internal Option<string> Comment = Option.None<string>();
 
         public Event Build()
         {
             return new Event(this);
         }
 
-        public static EventBuilder Event(Guid id, Guid creatorId, DateTimeOffset happensDate, string title,
-            double evaluation)
+        public static EventBuilder Event(Guid id, Guid creatorId, DateTimeOffset happensDate, string title)
         {
             if (title == null) throw new NullReferenceException();
             return new EventBuilder
@@ -33,37 +30,36 @@ namespace ItHappend.Domain
                 CreatorId = creatorId,
                 HappensDate = happensDate,
                 Title = title,
-                Evaluation = evaluation
             };
         }
 
-        public EventBuilder WithPhoto(byte[] photoBytes)
+        public EventBuilder WithPhoto(Photo photo)
         {
-            Photo = Optional<Photo>.Some(new Photo(photoBytes));
+            Photo = Option.Some(photo);
             return this;
         }
 
         public EventBuilder WithScale(double scale)
         {
-            Scale = Optional<Scale>.Some(new Scale(scale));
+            Scale = Option.Some(scale);
             return this;
         }
 
         public EventBuilder WithRating(double rating)
         {
-            Rating = Optional<Rating>.Some(new Rating(rating));
+            Rating = Option.Some(rating);
             return this;
         }
-
+        
         public EventBuilder WithGeoTag(GeoTag geoTag)
         {
-            GeoTag = Optional<GeoTag>.Some(geoTag);
+            GeoTag = Option.Some(geoTag);
             return this;
         }
 
-        public EventBuilder WithComment(string text)
+        public EventBuilder WithComment(string comment)
         {
-            Comment = Optional<Comment>.Some(new Comment(text));
+            Comment = Option.Some(comment);
             return this;
         }
     }
