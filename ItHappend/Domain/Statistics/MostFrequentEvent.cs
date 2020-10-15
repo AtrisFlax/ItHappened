@@ -1,5 +1,4 @@
 ﻿using System;
-using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using Status = ItHappend.Domain.StatisticServiceStatusCodes;
 
@@ -7,7 +6,9 @@ namespace ItHappend.Domain
 {
     public class MostFrequentEvent
     {
+        public string Type { get; }
         public string Description { get; }
+
         public double Priority { get; }
         public string TrackingName { get; }
         public int EventsPeriod { get; }
@@ -23,7 +24,11 @@ namespace ItHappend.Domain
                 return (null, Status.ApplicabilityFunctionDoesNotCompute);
             if (!(eventTrackers.Count(e => e.Events.Count > 3) > 2))
                 return (null, Status.ApplicabilityFunctionDoesNotCompute);
+
+
             //TODO calculation Description, Priority, TrackingName, EventsPeriod
+
+            //TODO Type = nameof(MostFrequentEvent)
             return (new MostFrequentEvent( /*TODO  pass arguments for constructor */), Status.Ok);
         }
     }

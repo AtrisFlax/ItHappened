@@ -11,7 +11,7 @@ namespace ItHappend.UnitTests
         public void Setup()
         {
         }
-        
+
         [Test]
         public void TwoEventTrackers_CreateMostFrequentEvent_GetFourTrueResult()
         {
@@ -40,23 +40,22 @@ namespace ItHappend.UnitTests
                 HappensDate = DateTimeOffset.Now.AddDays(-3)
             };
 
-            var events1 = new List<Event> 
+            var events1 = new List<Event>
                 {headacheEvent1, headacheEvent3, headacheEvent4, smokingEvent1};
-            var events2 = new List<Event> 
+            var events2 = new List<Event>
                 {headacheEvent1, headacheEvent2, smokingEvent2, smokingEvent3, headacheEvent3};
-            
+
             var eventTracker1 = new EventTracker(Guid.NewGuid(), "name1", events1, userId);
             var eventTracker2 = new EventTracker(Guid.NewGuid(), "name2", events2, userId);
 
-            var mostFrequentEvent = (MostFrequentEvent)MostFrequentEvent
-                .CreateFactStatistics(new EventTracker[]{eventTracker1, eventTracker2});
+            var mostFrequentEvent = MostFrequentEvent
+                .CreateFactStatistics(new[] {eventTracker1, eventTracker2});
             
             Assert.AreEqual
-                ("Чаще всего у вас происходит событие name2 - раз в 0,8 дней", mostFrequentEvent.Description);
-            Assert.AreEqual(12.5, mostFrequentEvent.Priority);
-            Assert.AreEqual("name2", mostFrequentEvent.TrackingName);
-            Assert.AreEqual(0.8, mostFrequentEvent.EventsPeriod, 0.01);
+                ("Чаще всего у вас происходит событие name2 - раз в 0,8 дней", mostFrequentEvent.Item1.Description);
+            Assert.AreEqual(12.5, mostFrequentEvent.Item1.Priority);
+            Assert.AreEqual("name2", mostFrequentEvent.Item1.TrackingName);
+            Assert.AreEqual(0.8, mostFrequentEvent.Item1.EventsPeriod, 0.01);
         }
-        
     }
 }
