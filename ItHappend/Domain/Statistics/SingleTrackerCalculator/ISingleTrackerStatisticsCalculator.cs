@@ -4,6 +4,6 @@ namespace ItHappend.Domain.SingleTrackerCalculator
 {
     public interface ISingleTrackerStatisticsCalculator<TFact>
     {
-        TFact Calculate(EventTracker eventTrackers);
+        TFact Calculate(EventTracker eventTracker);
     }
 }
