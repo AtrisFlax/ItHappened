@@ -18,7 +18,7 @@ namespace ItHappend.Domain
             TrackingName = trackingName;
             Description = $"Чаще всего у вас происходит событие {TrackingName} - раз в {EventsPeriod} дней";
             Priority = 10 / eventsPeriod;
-            //Здесь же рисуем изображение
+            //Изображение сразу передаем в конструкторе
         }
 
         public string Description { get; }
@@ -32,7 +32,7 @@ namespace ItHappend.Domain
         {
             VerifyInputParameters(eventTrackers);
             
-            var trackingNameWithMinEventsPeriod = eventTrackers
+            var trackingNameWithEventsPeriod = eventTrackers
                 .Select(eventTracker =>
                     new
                     {
@@ -41,8 +41,11 @@ namespace ItHappend.Domain
                             .Events
                             .GroupBy(t => t.HappensDate.Date)
                             .Select(t => t.Key)
-                            .Count() / eventTrackers.Length
-                    })
+                            .Count() / eventTracker.Events.Count
+                    });
+                
+            //Create Image Like New Drawer().CreateBarChart(trackingNameWithEventsPeriod);    
+            var trackingNameWithMinEventsPeriod =  trackingNameWithEventsPeriod
                 .OrderBy(e => e.eventsPeriod)
                 .FirstOrDefault();
             
@@ -59,7 +62,7 @@ namespace ItHappend.Domain
                 throw new ArgumentNullException(nameof(Event));
             if (eventTrackers.Length < 2)
                 throw new ApplicationException("Количество отслеживаний должно быть больше 1");
-            if (!(eventTrackers.Count(e => e.Events.Count > 3) > 2))
+            if (!(eventTrackers.Count(e => e.Events.Count > 3) > 1))
                 throw new ApplicationException(@"Необходимо хотя бы два отслеживания, 
                                 в которых больше трех событий!");
         }
