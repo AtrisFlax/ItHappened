@@ -1,9 +1,10 @@
 ﻿using System.Collections.Generic;
+using LanguageExt;
 
 namespace ItHappend.Domain.Statistics.MultipleTrackersCalculators
 {
     public interface IMultipleTrackersStatisticsCalculator<TFact>
     {
-        TFact Calculate(IEnumerable<EventTracker> eventTrackers);
+        Option<TFact> Calculate(IEnumerable<EventTracker> eventTrackers);
     }
 }

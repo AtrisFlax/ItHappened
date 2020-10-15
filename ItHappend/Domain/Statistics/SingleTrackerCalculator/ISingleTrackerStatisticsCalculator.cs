@@ -5,6 +5,6 @@ namespace ItHappend.Domain.Statistics.SingleTrackerCalculator
 {
     public interface ISingleTrackerStatisticsCalculator<TFact>
     {
-        Option<LongestBreak> Calculate(EventTracker eventTracker);
+        Option<TFact> Calculate(EventTracker eventTracker);
     }
 }
