@@ -1,24 +1,24 @@
 ﻿using System;
 using System.Linq;
 using ItHappend.Domain.StatisticsFacts;
+using LanguageExt;
 
 namespace ItHappend.Domain.SingleTrackerCalculator
 {
     public class LongestBreakCalculator : ISingleTrackerStatisticsCalculator<LongestBreak>
     {
-        public LongestBreak Calculate(EventTracker eventTracker)
+        public Option<LongestBreak> Calculate(EventTracker eventTracker)
         {
-            if (CanCalculate(eventTracker))
-            {
-                var (lastEventBeforeBreak, firstEventAfterBreak) = GetFirstAndLastEventOfTheLongestBreak(eventTracker);
-                var maxDurationInDays = (firstEventAfterBreak.HappensDate - lastEventBeforeBreak.HappensDate).Days;
-                var priority = Math.Sqrt(maxDurationInDays);
-                var description =
-                    $"Самый большой перерыв в {eventTracker.Name} произошёл с {lastEventBeforeBreak} до {firstEventAfterBreak}, он занял {maxDurationInDays} дней";
-                return new LongestBreak(description, priority, maxDurationInDays, lastEventBeforeBreak, firstEventAfterBreak);
-            }
+            if (!CanCalculate(eventTracker)) return Option<LongestBreak>.None;
             
-            throw new Exception("Cant calculate");
+            var (lastEventBeforeBreak, firstEventAfterBreak) = GetFirstAndLastEventOfTheLongestBreak(eventTracker);
+            var maxDurationInDays = (firstEventAfterBreak.HappensDate - lastEventBeforeBreak.HappensDate).Days;
+            var priority = Math.Sqrt(maxDurationInDays);
+            var description =
+                $"Самый большой перерыв в {eventTracker.Name} произошёл с {lastEventBeforeBreak}" +
+                $" до {firstEventAfterBreak}, он занял {maxDurationInDays} дней";
+            
+            return Option<LongestBreak>.Some(new LongestBreak(description, priority, maxDurationInDays, lastEventBeforeBreak, firstEventAfterBreak));
         }
 
         private bool CanCalculate(EventTracker eventTracker)
