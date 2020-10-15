@@ -10,8 +10,8 @@ namespace ItHappend.Domain
         public string Name { get; }
         public IList<Event> Events { get; private set; }
 
-        public Guid CreatorId { get; } 
-        
+        public Guid CreatorId { get; }
+
         public EventTracker(Guid id, string name, IList<Event> events, Guid creatorId)
         {
             Id = id;
@@ -24,7 +24,7 @@ namespace ItHappend.Domain
         {
             Events.Add(newEvent);
         }
-        
+
         public bool RemoveEvent(Event eventToRemove)
         {
             return Events.Remove(eventToRemove);
@@ -33,10 +33,9 @@ namespace ItHappend.Domain
         public IReadOnlyCollection<Event> FilterEventsByTimeSpan(DateTimeOffset from, DateTimeOffset to)
         {
             var filteredEvents = Events.Where(eventItem =>
-                eventItem.HappensDate.UtcDateTime >= from.UtcDateTime && 
+                eventItem.HappensDate.UtcDateTime >= from.UtcDateTime &&
                 eventItem.HappensDate.UtcDateTime <= to.UtcDateTime).ToArray();
             return filteredEvents;
         }
-        
     }
 }
