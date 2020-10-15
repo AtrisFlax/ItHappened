@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using ItHappend.Domain;
 
 namespace ItHappend.StatisticService
@@ -12,7 +10,7 @@ namespace ItHappend.StatisticService
             return MostFrequentEvent.CreateFactStatistics(eventTrackers);
         }
 
-        public IFactStatistics GetFixedNEventsFact()
+        public (FixedNEventsFact, StatisticServiceStatusCodes) GetFixedNEventsFact()
         {
             throw new NotImplementedException();
         }

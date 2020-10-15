@@ -4,6 +4,6 @@ namespace ItHappend.StatisticService
 {
     public interface IFixedNEvents
     {
-        IFactStatistics GetFixedNEventsFact();
+        (FixedNEventsFact, StatisticServiceStatusCodes) GetFixedNEventsFact();
     }
 }
