@@ -1,4 +1,4 @@
-﻿namespace ItHappend
+﻿namespace ItHappend.Domain
 {
     public interface IPasswordHasher
     {

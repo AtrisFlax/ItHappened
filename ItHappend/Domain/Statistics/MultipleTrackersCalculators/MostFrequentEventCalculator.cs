@@ -1,7 +1,7 @@
-﻿﻿using System;
+﻿using System;
 using System.Collections.Generic;
 
-namespace ItHappend.Domain.Calculators
+namespace ItHappend.Domain.Statistics.MultipleTrackersCalculators
 {
     public class MostFrequentEventCalculator : IMultipleTrackersStatisticsCalculator<MostFrequentEvent>
     {

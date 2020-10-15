@@ -1,8 +1,7 @@
-﻿﻿using System.Collections.Generic;
- using ItHappend.Domain.StatisticsFacts;
- using LanguageExt;
+﻿using ItHappend.Domain.Statistics.StatisticsFacts;
+using LanguageExt;
 
- namespace ItHappend.Domain.SingleTrackerCalculator
+namespace ItHappend.Domain.Statistics.SingleTrackerCalculator
 {
     public interface ISingleTrackerStatisticsCalculator<TFact>
     {

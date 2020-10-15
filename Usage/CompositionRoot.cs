@@ -1,9 +1,10 @@
 ﻿using System;
 using ItHappend;
-using ItHappend.Application;
 using ItHappend.Domain;
 using ItHappend.EventService;
+using ItHappend.EventTrackerService;
 using ItHappend.Infrastructure;
+using ItHappend.UserService;
 
 namespace Usage
 {

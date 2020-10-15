@@ -1,4 +1,4 @@
-﻿namespace ItHappend.Domain
+﻿namespace ItHappend.Domain.Statistics
 {
     public class FixedNEventsFact
     {

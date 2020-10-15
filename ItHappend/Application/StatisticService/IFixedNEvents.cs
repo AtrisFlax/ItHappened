@@ -1,4 +1,5 @@
 ﻿using ItHappend.Domain;
+using ItHappend.Domain.Statistics;
 
 namespace ItHappend.StatisticService
 {

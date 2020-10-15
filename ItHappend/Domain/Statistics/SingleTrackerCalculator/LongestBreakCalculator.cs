@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Linq;
-using ItHappend.Domain.StatisticsFacts;
+using ItHappend.Domain.Statistics.StatisticsFacts;
 using LanguageExt;
 
-namespace ItHappend.Domain.SingleTrackerCalculator
+namespace ItHappend.Domain.Statistics.SingleTrackerCalculator
 {
     public class LongestBreakCalculator : ISingleTrackerStatisticsCalculator<LongestBreak>
     {

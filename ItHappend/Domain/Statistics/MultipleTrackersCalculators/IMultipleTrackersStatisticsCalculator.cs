@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace ItHappend.Domain.Calculators
+namespace ItHappend.Domain.Statistics.MultipleTrackersCalculators
 {
     public interface IMultipleTrackersStatisticsCalculator<TFact>
     {

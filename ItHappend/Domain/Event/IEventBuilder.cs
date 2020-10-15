@@ -1,4 +1,6 @@
-﻿namespace ItHappend.Domain
+﻿using ItHappend.Domain.EventCustomization;
+
+namespace ItHappend.Domain
 {
     public interface IEventBuilder
     {

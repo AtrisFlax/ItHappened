@@ -1,4 +1,4 @@
-﻿namespace ItHappend.Domain
+﻿namespace ItHappend.StatisticService
 {
     public enum StatisticServiceStatusCodes
     {

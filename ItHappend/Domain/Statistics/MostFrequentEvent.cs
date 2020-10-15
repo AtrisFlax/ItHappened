@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Linq;
-using Status = ItHappend.Domain.StatisticServiceStatusCodes;
+using Status = ItHappend.StatisticService.StatisticServiceStatusCodes;
 
-namespace ItHappend.Domain
+namespace ItHappend.Domain.Statistics
 {
     public class MostFrequentEvent
     {

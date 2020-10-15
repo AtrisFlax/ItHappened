@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using ItHappend.Domain;
+using ItHappend.Domain.Statistics;
 using NUnit.Framework;
 
 namespace ItHappend.UnitTests
