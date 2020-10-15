@@ -1,11 +1,12 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using ItHappend.Domain;
+using ItHappend.EventService;
 
 namespace ItHappend
 {
-    public class EventTrackerService
+    public class EventTrackerService : IEventTrackerService
     {
         private readonly IEventTrackerRepository _eventTrackerRepository;
         private readonly IUserRepository _userRepository;

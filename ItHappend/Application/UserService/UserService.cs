@@ -4,40 +4,45 @@ using Status = ItHappend.Application.UserServiceStatusCodes;
 
 namespace ItHappend.Application
 {
-    class UserService : IUserService
+    public class UserService : IUserService
     {
-        public (Guid id, Status status) RegisterUser(string login, string password,
-            IPasswordHasher securePasswordHasher,
-            IUserRepository userRepository)
+        private IUserRepository _userRepository;
+        private IPasswordHasher _securePasswordHasher;
+        private IEventTrackerRepository _eventTrackerRepository;
+        public UserService(IUserRepository userRepository, IPasswordHasher securePasswordHasher, IEventTrackerRepository eventTrackerRepository)
         {
-            var userInfo = userRepository.TryLoadUserAuthInfo(login);
+            _userRepository = userRepository;
+            _securePasswordHasher = securePasswordHasher;
+            _eventTrackerRepository = eventTrackerRepository;
+        }
+        public (Guid id, Status status) RegisterUser(string login, string password)
+        {
+            var userInfo = _userRepository.TryLoadUserAuthInfo(login);
             if (userInfo != null)
             {
                 return (Guid.Empty, Status.UserWithSuchLoginAlreadyExist);
             }
-            var user = CreateUser(login, password, securePasswordHasher);
-            userRepository.TrySaveUser(user);
+            var user = CreateUser(login, password);
+            _userRepository.SaveUser(user);
             return (user.Guid, Status.Ok);
         }
 
-        public (UserInfo userInfo, Status status) AuthenticateUser(string login, string password,
-            IUserRepository userRepository,
-            IEventTrackerRepository eventTrackerRepository, IPasswordHasher securePasswordHasher)
+        public (UserInfo userInfo, Status status) AuthenticateUser(string login, string password)
         {
-            var userAuthInfo = userRepository.TryLoadUserAuthInfo(login);
-            if (!securePasswordHasher.Verify(password, userAuthInfo.PasswordHash))
+            var userAuthInfo = _userRepository.TryLoadUserAuthInfo(login);
+            if (!_securePasswordHasher.Verify(password, userAuthInfo.PasswordHash))
             {
                 return (null, Status.WrongPassword);
             }
 
-            var userEventTrackers = eventTrackerRepository.LoadUserTrackers(userAuthInfo.userId);
+            var userEventTrackers = _eventTrackerRepository.LoadUserTrackers(userAuthInfo.userId);
             return (new UserInfo(userEventTrackers, userAuthInfo.SubscriptionType), Status.Ok);
         }
 
-        private static UserAuthInfo CreateUser(string login, string password, IPasswordHasher securePasswordHasher)
+        private UserAuthInfo CreateUser(string login, string password)
         {
             var userId = Guid.NewGuid();
-            var passwordHash = securePasswordHasher.Hash(password);
+            var passwordHash = _securePasswordHasher.Hash(password);
             return new UserAuthInfo(userId, login, passwordHash, DateTimeOffset.UtcNow);
         }
     }

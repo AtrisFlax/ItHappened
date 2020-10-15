@@ -4,7 +4,7 @@ using ItHappend.Domain;
 
 namespace ItHappend
 {
-    internal interface IEventService
+    public interface IEventService
     {
         (Event @event, EventServiceStatusCodes operationStatus) TryGetEvent(Guid eventId, Guid eventCreatorId);
         EventServiceStatusCodes CreateEvent(Event newEvent);
