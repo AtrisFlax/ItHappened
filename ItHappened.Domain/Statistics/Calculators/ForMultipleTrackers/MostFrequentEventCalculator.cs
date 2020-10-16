@@ -6,7 +6,7 @@ using LanguageExt;
 
 namespace ItHappened.Domain.Statistics.Calculators.ForMultipleTrackers
 {
-    public class MostFrequentEventCalculator : IMultipleTrackersStatisticsCalculator
+    public class MostFrequentEventCalculator : IMultipleTrackersStatisticsCalculator<MostFrequentEvent>
     {
         public Option<IMultipleTrackersStatisticsFact> Calculate(IEnumerable<EventTracker.EventTracker> eventTrackers)
         {
