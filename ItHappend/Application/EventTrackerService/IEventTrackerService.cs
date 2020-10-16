@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using ItHappend.Domain;
 
-namespace ItHappend.EventService
+namespace ItHappend.EventTrackerService
 {
     public interface IEventTrackerService
     {

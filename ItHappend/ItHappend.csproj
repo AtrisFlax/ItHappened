@@ -5,8 +5,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
-      <PackageReference Include="Optional" Version="5.0.0-alpha" />
+      <PackageReference Include="LanguageExt.Core" Version="3.5.20-beta" />
     </ItemGroup>
 
 </Project>

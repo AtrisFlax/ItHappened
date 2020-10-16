@@ -18,6 +18,11 @@ namespace ItHappend.Infrastructure
             return _users[userId];
         }
 
+        public UserInfo TryLoadUserInfo(Guid userId)
+        {
+            throw new NotImplementedException();
+        }
+
         public UserAuthInfo TryLoadUserAuthInfo(string login)
         {
             return _users

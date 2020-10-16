@@ -1,5 +1,6 @@
 using System;
 using ItHappend.Domain;
+using ItHappend.Domain.EventCustomization;
 using NUnit.Framework;
 
 namespace ItHappend.UnitTests

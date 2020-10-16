@@ -1,9 +1,8 @@
 ﻿using System;
-using ItHappend.Application;
 using ItHappend.Domain;
 using Optional;
 
-namespace ItHappend
+namespace ItHappend.EventService
 {
     public interface IEventService
     {

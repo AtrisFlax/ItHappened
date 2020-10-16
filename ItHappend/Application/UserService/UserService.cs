@@ -1,8 +1,8 @@
 ﻿using System;
 using ItHappend.Domain;
-using Status = ItHappend.Application.UserServiceStatusCodes;
+using Status = ItHappend.UserService.UserServiceStatusCodes;
 
-namespace ItHappend.Application
+namespace ItHappend.UserService
 {
     public class UserService : IUserService
     {
