@@ -8,11 +8,11 @@ namespace ItHappened.Domain.Statistics.Calculators.ForMultipleTrackers
 {
     public class MostFrequentEventCalculator : IMultipleTrackersStatisticsCalculator<MostFrequentEvent>
     {
-        public Option<IMultipleTrackersStatisticsFact> Calculate(IEnumerable<EventTracker> eventTrackers)
+        public Option<MostFrequentEvent> Calculate(IEnumerable<EventTracker> eventTrackers)
         {
             var enumerable = eventTrackers as EventTracker[] ?? eventTrackers.ToArray();
             if (!CanCalculate(enumerable))
-                return Option<IMultipleTrackersStatisticsFact>.None;
+                return Option<MostFrequentEvent>.None;
 
             var eventTrackersWithPeriods = enumerable
                 .Select(eventTracker => (eventTracker, eventsPeriod: GetEventsPeriod(eventTracker)))
@@ -27,7 +27,7 @@ namespace ItHappened.Domain.Statistics.Calculators.ForMultipleTrackers
             
             var priority = 10 / eventTrackerWithSmallestPeriod.eventsPeriod;
 
-            return Option<IMultipleTrackersStatisticsFact>
+            return Option<MostFrequentEvent>
                 .Some(new MostFrequentEvent(description,
                     priority,
                     eventTrackersWithPeriods,
