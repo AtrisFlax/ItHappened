@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using ItHappened.Domain;
-using ItHappened.Domain.EventTracker;
 using ItHappened.Domain.Repositories;
 
 namespace ItHappened.Application.Services.EventTrackerService

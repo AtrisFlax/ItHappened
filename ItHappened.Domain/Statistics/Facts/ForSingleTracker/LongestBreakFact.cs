@@ -2,7 +2,7 @@
 {
     public class LongestBreakFact : ISingleTrackerStatisticsFact
     {
-
+        public string FactName { get; }
         public string Description { get; }
         public double Priority { get; }
         public int DurationInDays { get; }

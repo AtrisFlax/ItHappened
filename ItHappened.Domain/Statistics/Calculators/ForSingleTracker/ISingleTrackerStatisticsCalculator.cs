@@ -3,8 +3,8 @@ using LanguageExt;
 
 namespace ItHappened.Domain.Statistics.Calculators.ForSingleTracker
 {
-    public interface ISingleTrackerStatisticsCalculator
+    public interface ISingleTrackerStatisticsCalculator<T> where T : ISingleTrackerStatisticsFact
     {
-        Option<ISingleTrackerStatisticsFact> Calculate(EventTracker.EventTracker eventTracker);
+        Option<T> Calculate(EventTracker eventTracker);
     }
 }

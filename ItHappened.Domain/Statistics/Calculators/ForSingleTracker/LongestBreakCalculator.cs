@@ -5,11 +5,11 @@ using LanguageExt;
 
 namespace ItHappened.Domain.Statistics.Calculators.ForSingleTracker
 {
-    public class LongestBreakCalculator : ISingleTrackerStatisticsCalculator
+    public class LongestBreakCalculator : ISingleTrackerStatisticsCalculator<LongestBreakFact>
     {
-        public Option<ISingleTrackerStatisticsFact> Calculate(EventTracker.EventTracker eventTracker)
+        public Option<LongestBreakFact> Calculate(EventTracker eventTracker)
         {
-            if (!CanCalculate(eventTracker)) return Option<ISingleTrackerStatisticsFact>.None;
+            if (!CanCalculate(eventTracker)) return Option<LongestBreakFact>.None;
             
             var (lastEventBeforeBreak, firstEventAfterBreak) = GetFirstAndLastEventOfTheLongestBreak(eventTracker);
             var maxDurationInDays = (firstEventAfterBreak.HappensDate - lastEventBeforeBreak.HappensDate).Days;
@@ -18,14 +18,14 @@ namespace ItHappened.Domain.Statistics.Calculators.ForSingleTracker
                 $"Самый большой перерыв в {eventTracker.Name} произошёл с {lastEventBeforeBreak}" +
                 $" до {firstEventAfterBreak}, он занял {maxDurationInDays} дней";
             
-            return Option<ISingleTrackerStatisticsFact>.Some(new LongestBreakFact(description,
+            return Option<LongestBreakFact>.Some(new LongestBreakFact(description,
                 priority,
                 maxDurationInDays,
                 lastEventBeforeBreak,
                 firstEventAfterBreak));
         }
 
-        private bool CanCalculate(EventTracker.EventTracker eventTracker)
+        private bool CanCalculate(EventTracker eventTracker)
         {
             if (eventTracker.Events.Count <= 10)
                 return false;
@@ -40,7 +40,7 @@ namespace ItHappened.Domain.Statistics.Calculators.ForSingleTracker
         }
 
         private (Event lastEventBeforeBreak, Event firstEventAfterBreak) GetFirstAndLastEventOfTheLongestBreak(
-            EventTracker.EventTracker eventTracker)
+            EventTracker eventTracker)
         {
             var events = eventTracker.Events;
             var lastEventBeforeBreak = events[0];
@@ -60,7 +60,7 @@ namespace ItHappened.Domain.Statistics.Calculators.ForSingleTracker
             return (lastEventBeforeBreak, firstEventAfterBreak);
         }
         
-        private double GetAverageDurationBetweenEvents(EventTracker.EventTracker eventTracker)
+        private double GetAverageDurationBetweenEvents(EventTracker eventTracker)
         {
             var events = eventTracker.Events;
             var numberOfBreaks = events.Count - 1;
