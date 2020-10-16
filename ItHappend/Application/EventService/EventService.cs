@@ -38,12 +38,12 @@ namespace ItHappend.Application
             return builtEvent.Id;
         }
 
-        public bool TryEditEvent(Guid eventId, Guid eventCreatorId, Event eventForReplace)
+        public bool TryEditEvent(Guid eventId, Guid eventCreatorId, Event eventToReplace)
         {
-            var forEditingEvent = _eventRepository.TryLoadEvent(eventId);
-            if (!CreatorIdValidation(eventCreatorId, forEditingEvent)) return false;
-            if (!EventForReplaceEventIdValidation(eventId, eventForReplace)) return false;
-            _eventRepository.SaveEvent(eventForReplace);
+            var eventToEdit = _eventRepository.TryLoadEvent(eventId);
+            if (!ValidateCreatorId(eventCreatorId, eventToEdit)) return false;
+            if (!EventForReplaceEventIdValidation(eventId, eventToReplace)) return false;
+            _eventRepository.SaveEvent(eventToReplace);
             return true;
         }
 
@@ -64,7 +64,7 @@ namespace ItHappend.Application
             return newEventForReplace.Id == eventId;
         }
 
-        private static bool CreatorIdValidation(Guid eventCreatorId, Event forEditingEvent)
+        private static bool ValidateCreatorId(Guid eventCreatorId, Event forEditingEvent)
         {
             return eventCreatorId == forEditingEvent.CreatorId;
         }

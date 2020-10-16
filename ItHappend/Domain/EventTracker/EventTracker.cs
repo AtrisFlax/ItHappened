@@ -38,7 +38,7 @@ namespace ItHappend.Domain
 
         public bool TryAddEvent(Event newEvent)
         {
-            if (EventCustomization_CorrespondsTo_EventTrackerCustomization(newEvent))
+            if (IsTrackerAndEventCustomizationsConform(newEvent))
             {
                 //TODO Log.Warning and return 
                 return false;
@@ -49,7 +49,7 @@ namespace ItHappend.Domain
             return true;
         }
 
-        private bool EventCustomization_CorrespondsTo_EventTrackerCustomization(Event newEvent)
+        private bool IsTrackerAndEventCustomizationsConform(Event newEvent)
         {
             if (HasPhoto != newEvent.Photo.HasValue)
             {

@@ -19,7 +19,7 @@ namespace ItHappend
             GeoTag geoTag = null,
             string comment = null);
 
-        bool TryEditEvent(Guid eventId, Guid eventCreatorId, Event eventForReplace);
+        bool TryEditEvent(Guid eventId, Guid eventCreatorId, Event eventToReplace);
         bool TryDeleteEvent(Guid eventId, Guid creatorId);
     }
 }
