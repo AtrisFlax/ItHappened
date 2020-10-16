@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using ItHappened.Domain.EventTracker;
+using ItHappened.Domain;
 using ItHappened.Domain.Repositories;
 
 namespace ItHappened.Infrastructure.Repositories

@@ -11,7 +11,7 @@ namespace ItHappened.Domain.Statistics
         void Add(IMultipleTrackersStatisticsCalculator<IMultipleTrackersStatisticsFact> calculator);
 
         IReadOnlyCollection<Option<IMultipleTrackersStatisticsFact>> GetFacts(
-            IEnumerable<EventTracker.EventTracker> eventTrackers);
+            IEnumerable<EventTracker> eventTrackers);
     }
 
     public class MultipleTrackersStatisticsCalculatorContainer : IMultipleTrackersStatisticsCalculatorContainer
@@ -25,7 +25,7 @@ namespace ItHappened.Domain.Statistics
             new List<IMultipleTrackersStatisticsCalculator<IMultipleTrackersStatisticsFact>>();
 
         public IReadOnlyCollection<Option<IMultipleTrackersStatisticsFact>> GetFacts(
-            IEnumerable<EventTracker.EventTracker> eventTrackers) =>
+            IEnumerable<EventTracker> eventTrackers) =>
             _calculators.Select(calculator => calculator.Calculate(eventTrackers)).ToList();
     }
 }

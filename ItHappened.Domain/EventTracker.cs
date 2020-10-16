@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace ItHappened.Domain.EventTracker
+namespace ItHappened.Domain
 {
     public class EventTracker
     {
