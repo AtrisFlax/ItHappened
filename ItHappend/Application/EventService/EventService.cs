@@ -1,8 +1,8 @@
 ﻿using System;
 using ItHappend.Domain;
-using Status = ItHappend.Application.EventServiceStatusCodes;
+using Status = ItHappend.EventService.EventServiceStatusCodes;
 
-namespace ItHappend.Application
+namespace ItHappend.EventService
 {
     public class EventService : IEventService
     {

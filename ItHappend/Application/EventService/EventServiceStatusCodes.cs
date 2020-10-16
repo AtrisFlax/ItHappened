@@ -1,4 +1,4 @@
-﻿namespace ItHappend.Application
+﻿namespace ItHappend.EventService
 {
     public enum EventServiceStatusCodes
     {

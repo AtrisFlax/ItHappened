@@ -1,10 +1,8 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using ItHappend.Domain;
-using ItHappend.EventService;
 
-namespace ItHappend
+namespace ItHappend.EventTrackerService
 {
     public class EventTrackerService : IEventTrackerService
     {

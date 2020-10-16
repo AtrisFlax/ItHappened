@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace ItHappend
+namespace ItHappend.Domain
 {
     public class UserAuthInfo
     {
