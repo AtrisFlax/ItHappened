@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>netcoreapp3.1</TargetFramework>
+        <RootNamespace>ItHappened.Domain</RootNamespace>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <PackageReference Include="LanguageExt.Core" Version="3.5.20-beta" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Statistics\Calculators" />
+    </ItemGroup>
+
+</Project>
