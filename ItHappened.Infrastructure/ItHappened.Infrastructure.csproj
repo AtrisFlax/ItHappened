@@ -2,12 +2,11 @@
 
     <PropertyGroup>
         <TargetFramework>netcoreapp3.1</TargetFramework>
+        <RootNamespace>ItHappened.Infrastructure</RootNamespace>
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\ItHappened.Application\ItHappened.Application.csproj" />
       <ProjectReference Include="..\ItHappened.Bll.Domain\ItHappened.Bll.Domain.csproj" />
-      <ProjectReference Include="..\ItHappened.Infrastructure\ItHappened.Infrastructure.csproj" />
     </ItemGroup>
 
 </Project>

@@ -1,10 +1,10 @@
 ﻿using System;
-using ItHappend;
-using ItHappend.Domain;
-using ItHappend.EventService;
-using ItHappend.EventTrackerService;
-using ItHappend.Infrastructure;
-using ItHappend.UserService;
+using ItHappened.Bll.Domain;
+using ItHappened.Application.Services.EventService;
+using ItHappened.Application.Services.EventTrackerService;
+using ItHappened.Application.Services.UserService;
+using ItHappened.Infrastructure;
+using ItHappened.Infrastructure.Repositories;
 
 namespace Usage
 {

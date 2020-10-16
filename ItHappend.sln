@@ -1,10 +1,14 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ItHappend", "ItHappend\ItHappend.csproj", "{FEE7DF56-36BF-4341-AC97-321A69A8F23B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ItHappened.Bll.Domain", "ItHappened.Bll.Domain\ItHappened.Bll.Domain.csproj", "{FEE7DF56-36BF-4341-AC97-321A69A8F23B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ItHappend.UnitTests", "ItHappend.UnitTests\ItHappend.UnitTests.csproj", "{9E3F4893-C80F-48B3-8D03-0F40C38E344F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ItHappened.UnitTests", "ItHappened.UnitTests\ItHappened.UnitTests.csproj", "{9E3F4893-C80F-48B3-8D03-0F40C38E344F}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Usage", "Usage\Usage.csproj", "{AE80A66B-199A-4CC3-A192-3E545098807C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ItHappened.Application", "ItHappened.Application\ItHappened.Application.csproj", "{F83D0787-489E-48BF-8790-17DF7C5B6AFC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ItHappened.Infrastructure", "ItHappened.Infrastructure\ItHappened.Infrastructure.csproj", "{93B2DA6A-DF51-4470-93FA-A9868E6907C0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -24,5 +28,13 @@ Global
 		{AE80A66B-199A-4CC3-A192-3E545098807C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AE80A66B-199A-4CC3-A192-3E545098807C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AE80A66B-199A-4CC3-A192-3E545098807C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F83D0787-489E-48BF-8790-17DF7C5B6AFC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F83D0787-489E-48BF-8790-17DF7C5B6AFC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F83D0787-489E-48BF-8790-17DF7C5B6AFC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F83D0787-489E-48BF-8790-17DF7C5B6AFC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{93B2DA6A-DF51-4470-93FA-A9868E6907C0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{93B2DA6A-DF51-4470-93FA-A9868E6907C0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{93B2DA6A-DF51-4470-93FA-A9868E6907C0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{93B2DA6A-DF51-4470-93FA-A9868E6907C0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
