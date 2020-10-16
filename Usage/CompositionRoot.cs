@@ -1,8 +1,8 @@
-﻿using ItHappend.Application;
-using ItHappend.EventService;
-using ItHappend.EventTrackerService;
-using ItHappend.Infrastructure;
-using ItHappend.UserService;
+﻿using ItHappened.Application.Services.EventService;
+using ItHappened.Application.Services.EventTrackerService;
+using ItHappened.Application.Services.UserService;
+using ItHappened.Infrastructure;
+using ItHappened.Infrastructure.Repositories;
 
 namespace Usage
 {

@@ -5,9 +5,11 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\ItHappened.Application\ItHappened.Application.csproj" />
+      <Folder Include="Services" />
+    </ItemGroup>
+
+    <ItemGroup>
       <ProjectReference Include="..\ItHappened.Domain\ItHappened.Domain.csproj" />
-      <ProjectReference Include="..\ItHappened.Infrastructure\ItHappened.Infrastructure.csproj" />
     </ItemGroup>
 
 </Project>
