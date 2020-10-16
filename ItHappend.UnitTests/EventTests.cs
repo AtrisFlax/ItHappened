@@ -133,7 +133,6 @@ namespace ItHappend.UnitTests
             Assert.AreEqual(creatorId, @event.CreatorId);
             Assert.AreEqual(date, @event.HappensDate);
             Assert.AreEqual(title, @event.Title);
-            Assert.AreEqual(title, @event.Title);
 
             Assert.IsTrue(@event.Comment.IsSome);
             Assert.IsTrue(@event.Scale.IsSome);
