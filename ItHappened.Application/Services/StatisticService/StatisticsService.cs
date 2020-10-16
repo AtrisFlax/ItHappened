@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using ItHappened.Domain.Repositories;
 using ItHappened.Domain.Statistics;
-using ItHappened.Domain.Statistics.MultipleTrackersStatisticsFacts;
-using ItHappened.Domain.Statistics.SingleTrackerStatisticsFacts;
+using ItHappened.Domain.Statistics.Facts.ForMultipleTrackers;
+using ItHappened.Domain.Statistics.Facts.ForSingleTracker;
 using LanguageExt;
 
 namespace ItHappened.Application.Services.StatisticService

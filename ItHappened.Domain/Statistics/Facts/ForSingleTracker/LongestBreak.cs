@@ -1,4 +1,4 @@
-﻿namespace ItHappened.Domain.Statistics.SingleTrackerStatisticsFacts
+﻿namespace ItHappened.Domain.Statistics.Facts.ForSingleTracker
 {
     public class LongestBreak : ISingleTrackerStatisticsFact
     {
