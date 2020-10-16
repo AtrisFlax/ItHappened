@@ -8,110 +8,89 @@ using NUnit.Framework;
 
 namespace ItHappend.UnitTests.StatisticsCalculatorsTests
 {
-    public class AverageRatingCalculatorTest
+    public class SumScaleFactCalculatorTest
     {
         [Test]
         public void EventTrackerHasTwoRatingAndEvents_CalculateSuccess()
         {
             //arrange 
-            var ratings = new List<double> {2.0, 5.0};
-            var eventList =
-                new List<Event>
-                {
-                    EventBuilder
-                        .Event(Guid.NewGuid(), Guid.NewGuid(), DateTimeOffset.UtcNow, "Event1").WithRating(ratings[0])
-                        .Build(),
-                    EventBuilder
-                        .Event(Guid.NewGuid(), Guid.NewGuid(), DateTimeOffset.UtcNow, "Event1").WithRating(ratings[1])
-                        .Build()
-                };
-            var eventTracker = EventTrackerBuilder
-                .TrackerEmpty(Guid.NewGuid(), Guid.NewGuid(), "TrackerName")
-                .WithRating()
-                .Build();
-            foreach (var @event in eventList)
-            {
-                eventTracker.TryAddEvent(@event);
-            }
-            
-            //act 
-            var fact = new AverageRatingCalculator().Calculate(eventTracker);
-
-            //assert 
-            Assert.True(fact.IsSome);
-            fact.Do(f =>
-            {
-                Assert.AreEqual(Math.Sqrt(ratings.Average()), f.Priority);
-                Assert.AreEqual(ratings.Average(), f.AverageRating);
-            });
-        }
-        
-        [Test]
-        public void EventTrackerHasNoRationCustomization_CalculateFailed()
-        {
-            //arrange 
-            var ratings = new List<double> {2.0, 5.0};
-            var eventList =
-                new List<Event>
-                {
-                    EventBuilder
-                        .Event(Guid.NewGuid(), Guid.NewGuid(), DateTimeOffset.UtcNow, "Event1").WithRating(ratings[0])
-                        .Build(),
-                    EventBuilder
-                        .Event(Guid.NewGuid(), Guid.NewGuid(), DateTimeOffset.UtcNow, "Event1").WithRating(ratings[1])
-                        .Build()
-                };
-            var eventTracker = EventTrackerBuilder
-                .TrackerEmpty(Guid.NewGuid(), Guid.NewGuid(), "TrackerName")
-                .Build();
-            foreach (var @event in eventList)
-            {
-                eventTracker.TryAddEvent(@event);
-            }
-            
-            //act 
-            var fact = new AverageRatingCalculator().Calculate(eventTracker);
-
-            //assert 
-            Assert.True(fact.IsNone);
-        }
-        
-        [Test]
-        public void EventTrackerHasOneEvent_CalculateFailed()
-        {
-            //arrange 
-            var ratings = new List<double> {2.0};
-            var @event = EventBuilder
-                .Event(Guid.NewGuid(), Guid.NewGuid(), DateTimeOffset.UtcNow, "Event1").WithRating(ratings[0])
-                .Build();
-            var eventTracker = EventTrackerBuilder
-                .TrackerEmpty(Guid.NewGuid(), Guid.NewGuid(), "TrackerName")
-                .WithRating()
-                .Build();
-            eventTracker.TryAddEvent(@event);
-            
-            //act 
-            var fact = new AverageRatingCalculator().Calculate(eventTracker);
-
-            //assert 
-            Assert.True(fact.IsNone);
-        }
-        
-        
-        [Test]
-        public void SomeEventHasNoCustomizationRating_CalculateFailed()
-        {
-            //arrange 
-            var ratings = new List<double> {2.0};
+            var scaleValues = new List<double> {2.0, 5.0};
+            const string measurementUnit = "Kg";
             var eventList =
                 new List<Event>
                 {
                     EventBuilder
                         .Event(Guid.NewGuid(), Guid.NewGuid(), DateTimeOffset.UtcNow, "Event1")
+                        .WithScale(scaleValues[0])
                         .Build(),
                     EventBuilder
                         .Event(Guid.NewGuid(), Guid.NewGuid(), DateTimeOffset.UtcNow, "Event2")
-                        .WithRating(ratings[0])
+                        .WithScale(scaleValues[1])
+                        .Build()
+                };
+            var eventTracker = EventTrackerBuilder
+                .TrackerEmpty(Guid.NewGuid(), Guid.NewGuid(), "TrackerName")
+                .WithScale(measurementUnit)
+                .Build();
+            foreach (var @event in eventList)
+            {
+                eventTracker.TryAddEvent(@event);
+            }
+
+            //act 
+            var fact = new SumScaleCalculator().Calculate(eventTracker);
+
+            //assert 
+            Assert.True(fact.IsSome);
+            fact.Do(f =>
+            {
+                Assert.AreEqual(2, f.Priority);
+                Assert.AreEqual(scaleValues.Sum(), f.SumValue);
+                Assert.AreEqual(measurementUnit, f.MeasurementUnit);
+            });
+        }
+
+        [Test]
+        public void EventTrackerHasOneEvent_CalculateFailure()
+        {
+            //arrange 
+            var scaleValues = new List<double> {2.0};
+            const string measurementUnit = "Kg";
+            var eventList =
+                new List<Event>
+                {
+                    EventBuilder
+                        .Event(Guid.NewGuid(), Guid.NewGuid(), DateTimeOffset.UtcNow, "Event1")
+                        .WithScale(scaleValues[0])
+                        .Build(),
+                };
+            var eventTracker = EventTrackerBuilder
+                .TrackerEmpty(Guid.NewGuid(), Guid.NewGuid(), "TrackerName")
+                .WithScale(measurementUnit)
+                .Build();
+            foreach (var @event in eventList)
+            {
+                eventTracker.TryAddEvent(@event);
+            }
+
+            //act 
+            var fact = new SumScaleCalculator().Calculate(eventTracker);
+
+            //assert 
+            Assert.True(fact.IsNone);
+        }
+
+        [Test]
+        public void EventTrackerHasNoScaleCustomization_CalculateFailure()
+        {
+            //arrange 
+            var scaleValues = new List<double> {2.0};
+            var eventList =
+                new List<Event>
+                {
+                    EventBuilder
+                        .Event(Guid.NewGuid(), Guid.NewGuid(), DateTimeOffset.UtcNow, "Event1")
+                        .WithScale(scaleValues[0])
                         .Build(),
                 };
             var eventTracker = EventTrackerBuilder
@@ -121,9 +100,42 @@ namespace ItHappend.UnitTests.StatisticsCalculatorsTests
             {
                 eventTracker.TryAddEvent(@event);
             }
-            
+
             //act 
-            var fact = new AverageRatingCalculator().Calculate(eventTracker);
+            var fact = new SumScaleCalculator().Calculate(eventTracker);
+
+            //assert 
+            Assert.True(fact.IsNone);
+        }
+        
+        [Test]
+        public void SomeEventHasNoCustomizationScale_CalculateFailed()
+        {
+            //arrange 
+            var scaleValues = new List<double> {2.0};
+            const string measurementUnit = "Kg";
+            var eventList =
+                new List<Event>
+                {
+                    EventBuilder
+                        .Event(Guid.NewGuid(), Guid.NewGuid(), DateTimeOffset.UtcNow, "Event1")
+                        .WithScale(scaleValues[0])
+                        .Build(),
+                    EventBuilder
+                        .Event(Guid.NewGuid(), Guid.NewGuid(), DateTimeOffset.UtcNow, "Event2")
+                        .Build()
+                };
+            var eventTracker = EventTrackerBuilder
+                .TrackerEmpty(Guid.NewGuid(), Guid.NewGuid(), "TrackerName")
+                .WithScale(measurementUnit)
+                .Build();
+            foreach (var @event in eventList)
+            {
+                eventTracker.TryAddEvent(@event);
+            }
+
+            //act 
+            var fact = new SumScaleCalculator().Calculate(eventTracker);
 
             //assert 
             Assert.True(fact.IsNone);

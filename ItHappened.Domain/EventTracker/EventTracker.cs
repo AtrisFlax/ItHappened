@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using ItHappened.Domain.EventCustomization;
+using LanguageExt;
 
 namespace ItHappened.Domain.EventTracker
 {
@@ -14,11 +16,16 @@ namespace ItHappened.Domain.EventTracker
 
         public bool HasPhoto { get; }
         public bool HasScale { get; }
+        public Option<String> ScaleMeasurementUnit;
         public bool HasRating { get; }
         public bool HashGeoTag { get; }
         public bool HasComment { get; }
 
-        public EventTracker(Guid id, string name, IList<Event> events, Guid creatorId,
+
+        public EventTracker(Guid id,
+            string name,
+            IList<Event> events,
+            Guid creatorId,
             bool hasPhoto = false,
             bool hasScale = false,
             bool hasRating = false,
@@ -34,6 +41,20 @@ namespace ItHappened.Domain.EventTracker
             HasRating = hasRating;
             HashGeoTag = hashGeoTag;
             HasComment = hasComment;
+        }
+
+        public EventTracker(EventTrackerBuilder eventTrackerBuilder)
+        {
+            Id = eventTrackerBuilder.Id;
+            Name = eventTrackerBuilder.Name;
+            Events = eventTrackerBuilder.Events;
+            CreatorId = eventTrackerBuilder.CreatorId;
+            HasPhoto = eventTrackerBuilder.HasPhoto;
+            HasScale = eventTrackerBuilder.HasScale;
+            ScaleMeasurementUnit = eventTrackerBuilder.ScaleMeasurementUnit;
+            HasRating = eventTrackerBuilder.HasRating;
+            HashGeoTag = eventTrackerBuilder.HashGeoTag;
+            HasComment = eventTrackerBuilder.HasComment;
         }
 
         public bool TryAddEvent(Event newEvent)
