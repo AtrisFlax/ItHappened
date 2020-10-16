@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Security.Cryptography;
-using ItHappened.Bll.Domain;
+using ItHappened.Domain;
 
 namespace ItHappened.Infrastructure
 {

@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using ItHappened.Bll.Domain;
-using ItHappened.Bll.Domain.Repositories;
+using ItHappened.Domain;
+using ItHappened.Domain.Repositories;
 
 namespace ItHappened.Infrastructure.Repositories
 {

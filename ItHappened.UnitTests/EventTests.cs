@@ -1,6 +1,6 @@
 using System;
-using ItHappened.Bll.Domain;
-using ItHappened.Bll.Domain.Customizations;
+using ItHappened.Domain;
+using ItHappened.Domain.Customizations;
 using NUnit.Framework;
 
 namespace ItHappened.UnitTests

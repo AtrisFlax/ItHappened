@@ -1,7 +1,7 @@
 ﻿using System;
-using ItHappened.Bll.Domain;
-using ItHappened.Bll.Domain.Repositories;
-using ItHappened.Bll.Domain.User;
+using ItHappened.Domain;
+using ItHappened.Domain.Repositories;
+using ItHappened.Domain.User;
 
 namespace ItHappened.Application.Services.UserService
 {

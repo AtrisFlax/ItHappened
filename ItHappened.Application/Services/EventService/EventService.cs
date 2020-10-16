@@ -1,6 +1,6 @@
 ﻿using System;
-using ItHappened.Bll.Domain;
-using ItHappened.Bll.Domain.Repositories;
+using ItHappened.Domain;
+using ItHappened.Domain.Repositories;
 
 namespace ItHappened.Application.Services.EventService
 {

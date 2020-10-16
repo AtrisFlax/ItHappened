@@ -1,5 +1,5 @@
 ﻿using System;
-using ItHappened.Bll.Domain;
+using ItHappened.Domain;
 
 namespace ItHappened.Application.Services.EventService
 {

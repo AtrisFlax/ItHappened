@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using ItHappened.Bll.Domain.Statistics.MultipleTrackersStatisticsFacts;
-using ItHappened.Bll.Domain.Statistics.SingleTrackerStatisticsFacts;
+using ItHappened.Domain.Statistics.MultipleTrackersStatisticsFacts;
+using ItHappened.Domain.Statistics.SingleTrackerStatisticsFacts;
 using LanguageExt;
 
 namespace ItHappened.Application.Services.StatisticService

@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using ItHappened.Bll.Domain;
+using ItHappened.Domain;
 using NUnit.Framework;
 
 namespace ItHappened.UnitTests

@@ -1,5 +1,5 @@
 ﻿using System;
-using ItHappened.Bll.Domain.User;
+using ItHappened.Domain.User;
 
 namespace ItHappened.Application.Services.UserService
 {

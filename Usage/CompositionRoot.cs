@@ -1,5 +1,4 @@
 ﻿using System;
-using ItHappened.Bll.Domain;
 using ItHappened.Application.Services.EventService;
 using ItHappened.Application.Services.EventTrackerService;
 using ItHappened.Application.Services.UserService;

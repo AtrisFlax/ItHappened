@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ItHappened.Bll.Domain", "ItHappened.Bll.Domain\ItHappened.Bll.Domain.csproj", "{FEE7DF56-36BF-4341-AC97-321A69A8F23B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ItHappened.Domain", "ItHappened.Domain\ItHappened.Domain.csproj", "{FEE7DF56-36BF-4341-AC97-321A69A8F23B}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ItHappened.UnitTests", "ItHappened.UnitTests\ItHappened.UnitTests.csproj", "{9E3F4893-C80F-48B3-8D03-0F40C38E344F}"
 EndProject

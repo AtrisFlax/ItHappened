@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
-using ItHappened.Bll.Domain;
-using ItHappened.Bll.Domain.Repositories;
+using ItHappened.Domain;
+using ItHappened.Domain.Repositories;
 
 namespace ItHappened.Application.Services.EventTrackerService
 {

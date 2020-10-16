@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using ItHappened.Bll.Domain;
+using ItHappened.Domain;
 
 namespace ItHappened.Application.Services.EventTrackerService
 {

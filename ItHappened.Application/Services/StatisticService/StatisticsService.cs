@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using ItHappened.Bll.Domain.Repositories;
-using ItHappened.Bll.Domain.Statistics;
-using ItHappened.Bll.Domain.Statistics.MultipleTrackersStatisticsFacts;
-using ItHappened.Bll.Domain.Statistics.SingleTrackerStatisticsFacts;
+using ItHappened.Domain.Repositories;
+using ItHappened.Domain.Statistics;
+using ItHappened.Domain.Statistics.MultipleTrackersStatisticsFacts;
+using ItHappened.Domain.Statistics.SingleTrackerStatisticsFacts;
 using LanguageExt;
 
 namespace ItHappened.Application.Services.StatisticService
