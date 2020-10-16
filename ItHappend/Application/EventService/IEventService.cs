@@ -1,12 +1,13 @@
 ﻿using System;
 using ItHappend.Domain;
-using Optional;
+using ItHappend.Domain.EventCustomization;
+using LanguageExt;
 
 namespace ItHappend.EventService
 {
     public interface IEventService
     {
-        Option<Event, EventServiceStatusCodes> TryGetEvent(Guid eventId, Guid eventCreatorId);
+        Option<Event> TryGetEvent(Guid eventId, Guid eventCreatorId);
 
         Guid CreateEvent(Guid id,
             Guid creatorId,

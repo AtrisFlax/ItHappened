@@ -1,4 +1,5 @@
 ﻿using System;
+using ItHappend.Domain.EventCustomization;
 
 namespace ItHappend.Domain
 {

@@ -46,11 +46,11 @@ namespace ItHappend.UnitTests
             Assert.AreEqual(_date, newEvent.HappensDate);
             Assert.AreEqual(_title, newEvent.Title);
 
-            Assert.IsFalse(newEvent.Comment.HasValue);
-            Assert.IsFalse(newEvent.Scale.HasValue);
-            Assert.IsFalse(newEvent.Photo.HasValue);
-            Assert.IsFalse(newEvent.Rating.HasValue);
-            Assert.IsFalse(newEvent.GeoTag.HasValue);
+            Assert.IsFalse(newEvent.Comment.IsSome);
+            Assert.IsFalse(newEvent.Scale.IsSome);
+            Assert.IsFalse(newEvent.Photo.IsSome);
+            Assert.IsFalse(newEvent.Rating.IsSome);
+            Assert.IsFalse(newEvent.GeoTag.IsSome);
         }
 
         [Test]
@@ -74,17 +74,16 @@ namespace ItHappend.UnitTests
             Assert.AreEqual(_date, @event.HappensDate);
             Assert.AreEqual(_title, @event.Title);
 
-            Assert.IsTrue(@event.Comment.HasValue);
-            Assert.IsTrue(@event.Scale.HasValue);
-            Assert.IsTrue(@event.Photo.HasValue);
-            Assert.IsTrue(@event.Rating.HasValue);
-            Assert.IsTrue(@event.GeoTag.HasValue);
-
-            Assert.IsTrue(@event.Comment.Contains(_textComment));
-            Assert.IsTrue(@event.Scale.Contains(_scale));
-            Assert.IsTrue(@event.Photo.Contains(_photo));
-            Assert.IsTrue(@event.Rating.Contains(_rating));
-            Assert.IsTrue(@event.GeoTag.Contains(_geoTag));
+            Assert.IsTrue(@event.Comment.IsSome);
+            Assert.IsTrue(@event.Scale.IsSome);
+            Assert.IsTrue(@event.Photo.IsSome);
+            Assert.IsTrue(@event.Rating.IsSome);
+            Assert.IsTrue(@event.GeoTag.IsSome);
+            @event.Comment.Do(value => Assert.IsTrue(value.Text == _textComment));
+            @event.Scale.Do(value => Assert.IsTrue(value == _scale));
+            @event.Photo.Do(value => Assert.IsTrue(value == _photo));
+            @event.Rating.Do(value => Assert.IsTrue(value == _rating));
+            @event.GeoTag.Do(value => Assert.IsTrue(value == _geoTag));
         }
 
 
@@ -134,18 +133,19 @@ namespace ItHappend.UnitTests
             Assert.AreEqual(creatorId, @event.CreatorId);
             Assert.AreEqual(date, @event.HappensDate);
             Assert.AreEqual(title, @event.Title);
+            Assert.AreEqual(title, @event.Title);
 
-            Assert.IsTrue(@event.Comment.HasValue);
-            Assert.IsTrue(@event.Scale.HasValue);
-            Assert.IsFalse(@event.Photo.HasValue);
-            Assert.IsTrue(@event.Rating.HasValue);
-            Assert.IsTrue(@event.GeoTag.HasValue);
+            Assert.IsTrue(@event.Comment.IsSome);
+            Assert.IsTrue(@event.Scale.IsSome);
+            Assert.IsFalse(@event.Photo.IsSome);
+            Assert.IsTrue(@event.Rating.IsSome);
+            Assert.IsTrue(@event.GeoTag.IsSome);
 
-            Assert.IsTrue(@event.Comment.Contains(_textComment));
-            Assert.IsTrue(@event.Scale.Contains(_scale));
-            Assert.IsFalse(@event.Photo.Contains(_photo));
-            Assert.IsTrue(@event.Rating.Contains(_rating));
-            Assert.IsTrue(@event.GeoTag.Contains(_geoTag));
+            @event.Comment.Do(value => Assert.IsTrue(value.Text == _textComment));
+            @event.Scale.Do(value => Assert.IsTrue(value == _scale));
+            @event.Photo.Do(value => Assert.IsTrue(value == _photo));
+            @event.Rating.Do(value => Assert.IsTrue(value == _rating));
+            @event.GeoTag.Do(value => Assert.IsTrue(value == _geoTag));
         }
     }
 }

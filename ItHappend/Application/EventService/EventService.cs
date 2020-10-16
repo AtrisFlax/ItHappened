@@ -1,7 +1,8 @@
 ﻿using System;
 using ItHappend.Domain;
-using Optional;
-using Status = ItHappend.Application.EventServiceStatusCodes;
+using ItHappend.Domain.EventCustomization;
+using ItHappend.EventService;
+using LanguageExt;
 
 namespace ItHappend.Application
 {
@@ -14,12 +15,12 @@ namespace ItHappend.Application
             _eventRepository = eventRepository;
         }
 
-        public Option<Event, Status> TryGetEvent(Guid eventId, Guid eventCreatorId)
+        public Option<Event> TryGetEvent(Guid eventId, Guid eventCreatorId)
         {
             var loadedEvent = _eventRepository.TryLoadEvent(eventId);
             return loadedEvent.CreatorId != eventCreatorId
-                ? Option.None<Event, Status>(Status.WrongCreatorId)
-                : Option.Some<Event, Status>(loadedEvent);
+                ? Option<Event>.None
+                : Option<Event>.Some(loadedEvent);
         }
 
         public Guid CreateEvent(Guid id,

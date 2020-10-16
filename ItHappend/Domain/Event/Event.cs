@@ -1,5 +1,6 @@
 ﻿using System;
 using ItHappend.Domain.EventCustomization;
+using LanguageExt;
 
 namespace ItHappend.Domain
 {
@@ -35,11 +36,11 @@ namespace ItHappend.Domain
             }
         }
 
-        public Optional<Photo> Photo { get; set; }
-        public Optional<Scale> Scale { get; set; }
-        public Optional<Rating> Rating { get; set; }
-        public Optional<GeoTag> GeoTag { get; set; }
-        public Optional<Comment> Comment { get; set; }
+        public Option<Photo> Photo { get; set; }
+        public Option<double> Scale { get; set; }
+        public Option<double> Rating { get; set; }
+        public Option<GeoTag> GeoTag { get; set; }
+        public Option<Comment> Comment { get; set; }
 
         public Event(EventBuilder eventBuilder)
         {
@@ -47,7 +48,6 @@ namespace ItHappend.Domain
             Id = eventBuilder.Id;
             Title = eventBuilder.Title;
             HappensDate = eventBuilder.HappensDate;
-            Evaluation = eventBuilder.Evaluation;
             Photo = eventBuilder.Photo;
             Scale = eventBuilder.Scale;
             Rating = eventBuilder.Rating;

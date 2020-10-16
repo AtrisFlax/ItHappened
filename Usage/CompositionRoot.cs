@@ -21,7 +21,8 @@ namespace Usage
             var passwordHasher = new PasswordHasher();
             return new CompositionRoot()
             {
-                EventService = new EventService(eventRepository),
+                //TODO event service init 
+                //EventService = new EventService(eventRepository),
                 UserService =  new UserService(userRepository, passwordHasher, eventTrackerRepository),
                 EventTrackerService = new EventTrackerService(eventTrackerRepository, userRepository, eventRepository)
             };

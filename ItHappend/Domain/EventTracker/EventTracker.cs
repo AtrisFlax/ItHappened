@@ -38,7 +38,7 @@ namespace ItHappend.Domain
 
         public bool TryAddEvent(Event newEvent)
         {
-            if (IsTrackerAndEventCustomizationsConform(newEvent))
+            if (IsTrackerAndEventCustomizationsConfirm(newEvent))
             {
                 //TODO Log.Warning and return 
                 return false;
@@ -49,29 +49,29 @@ namespace ItHappend.Domain
             return true;
         }
 
-        private bool IsTrackerAndEventCustomizationsConform(Event newEvent)
+        private bool IsTrackerAndEventCustomizationsConfirm(Event newEvent)
         {
-            if (HasPhoto != newEvent.Photo.HasValue)
+            if (HasPhoto != newEvent.Photo.IsSome)
             {
                 return true;
             }
 
-            if (HasScale != newEvent.Scale.HasValue)
+            if (HasScale != newEvent.Scale.IsSome)
             {
                 return true;
             }
 
-            if (HasRating != newEvent.Rating.HasValue)
+            if (HasRating != newEvent.Rating.IsSome)
             {
                 return true;
             }
 
-            if (HashGeoTag != newEvent.GeoTag.HasValue)
+            if (HashGeoTag != newEvent.GeoTag.IsSome)
             {
                 return true;
             }
 
-            return HasComment != newEvent.Comment.HasValue;
+            return HasComment != newEvent.Comment.IsSome;
         }
 
         public void RemoveEvent(Event eventToRemove)
