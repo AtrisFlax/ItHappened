@@ -6,6 +6,7 @@ namespace ItHappend.Domain
     {
         void SaveUser(UserAuthInfo userAuthInfo);
         UserAuthInfo TryLoadUserAuthInfo(Guid userId);
+        UserInfo TryLoadUserInfo(Guid userId);
         UserAuthInfo TryLoadUserAuthInfo(string login);
     }
 }

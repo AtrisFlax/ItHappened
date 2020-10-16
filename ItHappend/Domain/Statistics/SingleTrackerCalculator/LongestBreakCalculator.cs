@@ -5,11 +5,11 @@ using LanguageExt;
 
 namespace ItHappend.Domain.Statistics.SingleTrackerCalculator
 {
-    public class LongestBreakCalculator : ISingleTrackerStatisticsCalculator<LongestBreak>
+    public class LongestBreakCalculator : ISingleTrackerStatisticsCalculator
     {
-        public Option<LongestBreak> Calculate(EventTracker eventTracker)
+        public Option<ISingleTrackerStatisticsFact> Calculate(EventTracker eventTracker)
         {
-            if (!CanCalculate(eventTracker)) return Option<LongestBreak>.None;
+            if (!CanCalculate(eventTracker)) return Option<ISingleTrackerStatisticsFact>.None;
             
             var (lastEventBeforeBreak, firstEventAfterBreak) = GetFirstAndLastEventOfTheLongestBreak(eventTracker);
             var maxDurationInDays = (firstEventAfterBreak.HappensDate - lastEventBeforeBreak.HappensDate).Days;
@@ -18,7 +18,11 @@ namespace ItHappend.Domain.Statistics.SingleTrackerCalculator
                 $"Самый большой перерыв в {eventTracker.Name} произошёл с {lastEventBeforeBreak}" +
                 $" до {firstEventAfterBreak}, он занял {maxDurationInDays} дней";
             
-            return Option<LongestBreak>.Some(new LongestBreak(description, priority, maxDurationInDays, lastEventBeforeBreak, firstEventAfterBreak));
+            return Option<ISingleTrackerStatisticsFact>.Some(new LongestBreak(description,
+                priority,
+                maxDurationInDays,
+                lastEventBeforeBreak,
+                firstEventAfterBreak));
         }
 
         private bool CanCalculate(EventTracker eventTracker)

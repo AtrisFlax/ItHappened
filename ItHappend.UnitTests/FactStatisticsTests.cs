@@ -13,7 +13,7 @@ namespace ItHappend.UnitTests
         {
         }
 
-        [Test]
+        /*[Test]
         public void TwoEventTrackers_CreateMostFrequentEvent_GetFourTrueResult()
         {
             var userId = Guid.NewGuid();
@@ -57,6 +57,6 @@ namespace ItHappend.UnitTests
             Assert.AreEqual(12.5, mostFrequentEvent.Item1.Priority);
             Assert.AreEqual("name2", mostFrequentEvent.Item1.TrackingName);
             Assert.AreEqual(0.8, mostFrequentEvent.Item1.EventsPeriod, 0.01);
-        }
+        }*/
     }
 }
