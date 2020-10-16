@@ -37,14 +37,16 @@ namespace ItHappend.Domain
                     new
                     {
                         trackingName = eventTracker.Name,
-                        eventsPeriod = 1.0 * eventTracker
-                            .Events
-                            .GroupBy(t => t.HappensDate.Date)
-                            .Select(t => t.Key)
-                            .Count() / eventTracker.Events.Count
+                        eventsPeriod = 1.0 *
+                            (DateTime.Now - eventTracker
+                                .Events
+                                .OrderBy(e => e.HappensDate)
+                                .First()
+                                .HappensDate)
+                            .TotalDays / eventTracker.Events.Count
                     });
                 
-            //Create Image Like New Drawer().CreateBarChart(trackingNameWithEventsPeriod);    
+            //этот участок нужен для получения стобчатой диаграммы 
             var trackingNameWithMinEventsPeriod =  trackingNameWithEventsPeriod
                 .OrderBy(e => e.eventsPeriod)
                 .FirstOrDefault();
