@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using ItHappend.Domain;
 using ItHappend.Domain.Statistics.MultipleTrackersStatisticsFacts;
 using ItHappend.Domain.Statistics.StatisticsFacts;
@@ -30,14 +31,19 @@ namespace ItHappend.StatisticService
         public IReadOnlyCollection<Option<IMultipleTrackersStatisticsFact>> GetMultipleTrackersFacts(Guid userId)
         {
             var user = _userRepository.TryLoadUserInfo(userId);
-            return _multipleContainer.GetFacts(user.EventTrackers);
+            return _multipleContainer
+                .GetFacts(user.EventTrackers)
+                .OrderBy(fact => fact.Select(x => x.Priority))
+                .ToList();
         }
 
         public IReadOnlyCollection<Option<ISingleTrackerStatisticsFact>> GetSingleTrackerFacts(Guid userId,
             Guid eventTrackerId)
         {
             var eventTracker = _eventTrackerRepository.LoadEventTracker(eventTrackerId);
-            return _singleContainer.GetFacts(eventTracker);
+            return _singleContainer.GetFacts(eventTracker)
+                .OrderBy(fact => fact.Select(x => x.Priority))
+                .ToList();
         }
         
         private readonly IUserRepository _userRepository;
