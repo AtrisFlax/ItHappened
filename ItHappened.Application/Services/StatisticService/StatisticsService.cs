@@ -35,12 +35,13 @@ namespace ItHappened.Application.Services.StatisticService
         public IReadOnlyCollection<Option<ISingleTrackerStatisticsFact>> GetSingleTrackerFacts(Guid userId,
             Guid eventTrackerId)
         {
-            var eventTracker = _eventTrackerRepository.LoadEventTracker(eventTrackerId);
-            return _singleContainer
-                .GetFacts(eventTracker)
-                .Where(fact => !fact.IsNone)
-                .OrderBy(fact => fact.Select(x => x.Priority))
-                .ToList();
+            // var eventTracker = _eventTrackerRepository.LoadEventTracker(eventTrackerId);
+            // return _singleContainer
+            //     .GetFacts(eventTracker)
+            //     .Where(fact => !fact.IsNone)
+            //     .OrderBy(fact => fact.Select(x => x.Priority))
+            //     .ToList();
+            return null;
         }
         
         private readonly IUserRepository _userRepository;
