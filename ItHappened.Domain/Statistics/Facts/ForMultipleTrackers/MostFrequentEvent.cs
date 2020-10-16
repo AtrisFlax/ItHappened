@@ -1,17 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace ItHappened.Domain.Statistics.Facts.ForMultipleTrackers
 {
     public class MostFrequentEvent : IMultipleTrackersStatisticsFact
     {
-        public MostFrequentEvent(string description,
-            double priority,
+        public MostFrequentEvent(double priority,
             IReadOnlyCollection<(EventTracker, double)> eventTrackersWithPeriods,
             EventTracker eventTrackerWithSmallestEventPeriod,
             double smallestEventsPeriod)
         {
-            Description = description;
             Priority = priority;
             EventTrackerWithSmallestEventPeriod = eventTrackerWithSmallestEventPeriod;
             EventTrackersWithPeriods = eventTrackersWithPeriods;
@@ -19,7 +16,9 @@ namespace ItHappened.Domain.Statistics.Facts.ForMultipleTrackers
         }
 
         public string FactName { get; }
-        public string Description { get; }
+        public string Description => $"Чаще всего у вас происходит событие " +
+                                     $"{EventTrackerWithSmallestEventPeriod.Name}" +
+                                     $" - раз в {SmallestEventsPeriod} дней";
         public double Priority { get; }
         public EventTracker EventTrackerWithSmallestEventPeriod  { get; }
         public IReadOnlyCollection<(EventTracker, double)> EventTrackersWithPeriods { get; }
