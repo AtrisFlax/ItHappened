@@ -32,7 +32,13 @@ namespace ItHappend.Domain.Statistics.SingleTrackerCalculator
             {
                 return false;
             }
+
+            if (eventTracker.Events.Any(@event => @event.Rating == Option<double>.None))
+            {
+                return false;
+            }
             return eventTracker.Events.Count > 1;
+            
         }
     }
 }
