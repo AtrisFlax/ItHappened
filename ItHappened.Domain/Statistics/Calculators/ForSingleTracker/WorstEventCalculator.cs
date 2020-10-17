@@ -29,6 +29,7 @@ namespace ItHappend.Domain.Statistics.SingleTrackerCalculator
                 factName,
                 description,
                 priority,
+                worstEvent.Rating.Value(),
                 worstEvent.HappensDate,
                 worstEventComment,
                 worstEvent));
