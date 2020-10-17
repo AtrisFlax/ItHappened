@@ -10,9 +10,9 @@ namespace ItHappend.Domain.Statistics.SingleTrackerCalculator
 {
     public class WorstEventCalculator
     {
-        public Option<WorstEvent> Calculate(EventTracker eventTracker)
+        public Option<WorstEventFact> Calculate(EventTracker eventTracker)
         {
-            if (!CanCalculate(eventTracker)) return Option<WorstEvent>.None;
+            if (!CanCalculate(eventTracker)) return Option<WorstEventFact>.None;
             const string factName = "Худшее событие";
             var worstEvent = eventTracker.Events.OrderBy(eventItem => eventItem.Rating).First();
             var priority = 10 - worstEvent.Rating.Value();
@@ -25,7 +25,7 @@ namespace ItHappend.Domain.Statistics.SingleTrackerCalculator
                 $" с комментарием {worstEventComment.ValueUnsafe().Text}" :
                 " (комментарий отсутсвует)";
 
-            return Option<WorstEvent>.Some(new WorstEvent(
+            return Option<WorstEventFact>.Some(new WorstEventFact(
                 factName,
                 description,
                 priority,

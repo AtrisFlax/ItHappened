@@ -10,7 +10,7 @@ using NUnit.Framework;
 
 namespace ItHappend.UnitTests.StatisticsCalculatorsTests
 {
-    public class WorstEventTests
+    public class WorstEventCalculatorTests
     {
         private const int InitialEventsNumber = 9; 
         private Guid _creatorId;

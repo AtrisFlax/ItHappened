@@ -6,7 +6,7 @@ using LanguageExt;
 
 namespace ItHappend.Domain.Statistics.StatisticsFacts
 {
-    public class WorstEvent : IStatisticsFact
+    public class WorstEventFact : IStatisticsFact
     {
         public string FactName { get; }
         public string Description { get; }
@@ -15,7 +15,7 @@ namespace ItHappend.Domain.Statistics.StatisticsFacts
         public Option<Comment> Comment { get; }
         public Event EventReference { get; }
         
-        public WorstEvent(string factName, string description, double priority, DateTimeOffset date, Option<Comment> comment, Event eventReference)
+        public WorstEventFact(string factName, string description, double priority, DateTimeOffset date, Option<Comment> comment, Event eventReference)
         {
             FactName = factName;
             Description = description;
