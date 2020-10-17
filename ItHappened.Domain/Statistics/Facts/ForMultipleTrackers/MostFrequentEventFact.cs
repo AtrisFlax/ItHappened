@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace ItHappened.Domain.Statistics.Facts.ForMultipleTrackers
@@ -9,8 +10,8 @@ namespace ItHappened.Domain.Statistics.Facts.ForMultipleTrackers
             string trackingName, double eventsPeriod, IEnumerable<(string, double)> eventTrackersWithPeriods)
         {
             TrackingName = trackingName;
-            EventsPeriod = eventsPeriod;
-            Description = $"Чаще всего у вас происходит событие {TrackingName} - раз в {EventsPeriod} дней";
+            EventsPeriod = Math.Round(eventsPeriod, 2);
+            Description = $"Чаще всего у вас происходит событие \"{TrackingName}\" - раз в {EventsPeriod} дней";
             Priority = 10 / EventsPeriod;
             EventTrackersWithPeriods = eventTrackersWithPeriods.ToList();
         }
