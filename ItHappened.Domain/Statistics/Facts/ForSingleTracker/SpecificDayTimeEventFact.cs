@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace ItHappened.Domain.Statistics.Facts.ForSingleTracker
@@ -9,9 +10,9 @@ namespace ItHappened.Domain.Statistics.Facts.ForSingleTracker
             (double percentage, string eventName, string timeOfTheDay, 
             IEnumerable<(string title, string timeOfTheDay, double percentage)> visualizationData)
         {
-            Percentage = percentage;
+            Percentage = Math.Round(percentage);
             TimeOfTheDay = timeOfTheDay;
-            Description = $"В {percentage}% случаев событие \"{eventName}\" происходит {timeOfTheDay}";
+            Description = $"В {Percentage}% случаев событие \"{eventName}\" происходит {timeOfTheDay}";
             Priority = 0.14 * percentage;
             VisualizationData = visualizationData.ToList();
         }

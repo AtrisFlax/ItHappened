@@ -20,8 +20,8 @@ namespace ItHappened.Domain.Statistics.Calculators.ForSingleTracker
                     (
                         e.Key.Title, 
                         e.Key.TimeOfTheDay, 
-                        Percentage : 1.0 * e.Count()/eventTracker.Events.Count
-                        )
+                        Percentage : 100.0 * e.Count() / eventTracker.Events.Count(p => p.Title == e.Key.Title)
+                    )
                 );
 
             var (title, timeOfTheDay, percentage) = eventsByTimeOfTheDayWithPercent
