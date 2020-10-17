@@ -21,7 +21,7 @@ namespace ItHappened.Domain.Statistics.Facts.ForMultipleTrackers
         public string Description { get; }
         public double Priority { get; }
         public EventTracker EventTrackerWithSmallestEventPeriod  { get; }
-        public IReadOnlyCollection<(EventTracker, double)> EventTrackersWithPeriods { get; }
+        public IReadOnlyCollection<(string EventTitle, double EventPeriod)> EventTrackersWithPeriods { get; }
         public double SmallestEventsPeriod { get; }
     }
 }

@@ -14,21 +14,20 @@ namespace ItHappened.Domain.Statistics.Calculators.ForMultipleTrackers
             if (!CanCalculate(enumerable))
                 return Option<MostFrequentEventFact>.None;
 
-            var eventTrackersWithPeriods = enumerable
-                .Select(eventTracker => (eventTracker, eventsPeriod: GetEventsPeriod(eventTracker)))
-                .ToList();
-
-            var eventTrackerWithSmallestPeriod = eventTrackersWithPeriods
-                .OrderBy(x => x.eventsPeriod)
-                .First();
-
-            const string factName = "Самое частое событие";
+            var trackingNameWithEventsPeriod = eventTrackers
+                .Select(eventTracker =>
+                    (trackingName : eventTracker.Name,
+                    eventsPeriod : 1.0 * eventTracker
+                                              .Events
+                                              .GroupBy(t => t.HappensDate.Date)
+                                              .Select(t => t.Key)
+                                              .Count() / eventTracker.Events.Count)
+                );
+                 
+            var trackingNameWithMinEventsPeriod =  trackingNameWithEventsPeriod
+                .OrderBy(e => e.eventsPeriod)
+                .FirstOrDefault();
             
-            var description =
-                $"Чаще всего у вас происходит событие {eventTrackerWithSmallestPeriod.eventTracker.Name}" +
-                $" - раз в {eventTrackerWithSmallestPeriod.eventsPeriod} дней";
-            
-            var priority = 10 / eventTrackerWithSmallestPeriod.eventsPeriod;
             return Option<MostFrequentEventFact>
                 .Some(new MostFrequentEventFact(factName,
                     description,
@@ -38,11 +37,8 @@ namespace ItHappened.Domain.Statistics.Calculators.ForMultipleTrackers
                     eventTrackerWithSmallestPeriod.eventsPeriod));
         }
 
-        private bool CanCalculate(IEnumerable<EventTracker> eventTrackers)
-        {
-            return eventTrackers.Count() > 1 &&
-                   eventTrackers.Count(et => et.Events.Count > 3) > 1;
-        }
+        private bool CanCalculate(IEnumerable<EventTracker> eventTrackers) =>
+            eventTrackers.Count() > 1 && eventTrackers.Count(et => et.Events.Count > 3) > 1;
 
         private double GetEventsPeriod(EventTracker eventTracker)
         {

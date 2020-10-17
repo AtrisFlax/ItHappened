@@ -22,7 +22,7 @@ namespace ItHappened.Domain.Statistics.Facts.ForSingleTracker
         public double Priority { get; }
         public double Percentage { get; }
         public string TimeOfTheDay { get; }
-        public List<(string Title, string TimeOfTheDay, double Percentage)> VisualizationData { get; }
+        public IReadOnlyCollection<(string Title, string TimeOfTheDay, double Percentage)> VisualizationData { get; }
     }
     
 }
