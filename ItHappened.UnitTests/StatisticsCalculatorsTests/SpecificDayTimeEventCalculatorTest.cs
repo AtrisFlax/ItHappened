@@ -9,69 +9,31 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
 {
     public class SpecificDayTimeEventCalculatorTest
     {
-        private List<Event> _events;
-        
-        [SetUp] 
-        public void Setup()
-        {
-        }
-
-        private Event Create(string title, Guid userId, string dateTime)
-        {
-            return new Event(Guid.NewGuid(), userId, title, new Random().Next(1, 9))
-            {
-                HappensDate = DateTime.Parse("2020.10.8 01:05:00")
-            };
-        }
-
         [Test]
-        public void TwoEventTrackers_CreateMostFrequentEvent_GetFourTrueResult()
+        public void CreateEventTrackerWithHeadacheAndSmokingEvents_CalculateSpecificDayTimeEventFact_CheckAProperties()
         {
             var userId = Guid.NewGuid();
 
-            var headacheEvent1 = new Event(Guid.NewGuid(), userId, "headache", 3)
-            {
-                HappensDate = DateTime.Parse("2020.10.8 01:05:00")
-            };
-            var headacheEvent2 = new Event(Guid.NewGuid(), userId, "headache", 10)
-            {
-                HappensDate = DateTime.Parse("2020.11.9 02:05:00")
-            };
-            var headacheEvent3 = new Event(Guid.NewGuid(), userId, "headache", 7)
-            {
-                HappensDate = DateTime.Parse("2020.12.9 03:07:00")
-            };
-            var headacheEvent4 = new Event(Guid.NewGuid(), userId, "headache", 2.9)
-            {
-                HappensDate = DateTime.Parse("2020.10.3 10:05:00")
-            };
-            var headacheEvent5 = new Event(Guid.NewGuid(), userId, "headache", 3)
-            {
-                HappensDate = DateTime.Parse("2021.10.9 05:05:00")
-            };
-            var headacheEvent6 = new Event(Guid.NewGuid(), userId, "headache", 1)
-            {
-                HappensDate = DateTime.Parse("2020.10.9 04:05:00")
-            };
-            var smokingEvent3 = new Event(Guid.NewGuid(), userId, "smoking", 4.6)
-            {
-                HappensDate = DateTime.Parse("2020.10.9 04:05:00")
-            };
-            var smokingEvent4 = new Event(Guid.NewGuid(), userId, "smoking", 4.6)
-            {
-                HappensDate = DateTime.Parse("2020.10.9 09:05:00")
-            };
+            var headacheEventMorning1 = CreateEventWithNameAndDateTime(userId, "headache", "2020.10.8 01:05:00");
+            var headacheEventMorning2 = CreateEventWithNameAndDateTime(userId, "headache", "2020.11.9 02:05:00");
+            var headacheEventMorning3 = CreateEventWithNameAndDateTime(userId, "headache", "2020.12.9 03:07:00");
+            var headacheEventMorning4 = CreateEventWithNameAndDateTime(userId, "headache", "2020.10.3 4:05:00");
+            var headacheEventMorning5 = CreateEventWithNameAndDateTime(userId, "headache", "2021.10.9 05:05:00");
+            var headacheEventMorning6 = CreateEventWithNameAndDateTime(userId, "headache", "2020.10.9 10:05:00");
 
+            var smokingEventMorning1 = CreateEventWithNameAndDateTime(userId, "smoking", "2020.10.9 04:05:00");
+            var smokingEventMorning2 = CreateEventWithNameAndDateTime(userId, "smoking", "2020.10.9 09:05:00");
+            
             var events = new List<Event> 
-                {headacheEvent1, headacheEvent2, headacheEvent3, headacheEvent6, headacheEvent4, headacheEvent5, 
-                    smokingEvent3, smokingEvent4};
-            var eventTracker = new EventTracker(Guid.NewGuid(), "name1", events, userId);
+                {headacheEventMorning1, headacheEventMorning2, headacheEventMorning3, headacheEventMorning6, 
+                    headacheEventMorning4, headacheEventMorning5, smokingEventMorning1, smokingEventMorning2};
+            var eventTracker = new EventTracker(Guid.NewGuid(), "nameEmpty", events, userId);
 
-            var mostFrequentEvent = new SpecificDayTimeEventCalculator()
+            var specificDayTimeEventFact = new SpecificDayTimeEventCalculator()
                 .Calculate(eventTracker);
 
-            Assert.AreEqual(true, mostFrequentEvent.IsSome);
-            mostFrequentEvent.Do(e =>
+            Assert.AreEqual(true, specificDayTimeEventFact.IsSome);
+            specificDayTimeEventFact.Do(e =>
                 {
                     Assert.AreEqual("В 83% случаев событие \"headache\" происходит night", e.Description);
                     Assert.AreEqual(11.66, e.Priority, 0.01);
@@ -85,6 +47,14 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
                         .Percentage, 0.01);
                 }
             );
+        }
+        
+        private Event CreateEventWithNameAndDateTime(Guid userId, string title, string dateTime)
+        {
+            return new Event(Guid.NewGuid(), userId, title, new Random().Next(1, 9))
+            {
+                HappensDate = DateTime.Parse(dateTime)
+            };
         }
     }
 }
