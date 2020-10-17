@@ -2,7 +2,7 @@
 {
     public interface IStatisticsFact
     {
-        string Type { get; }
+        string FactName { get; }
         string Description { get; }
         double Priority { get; }
     }

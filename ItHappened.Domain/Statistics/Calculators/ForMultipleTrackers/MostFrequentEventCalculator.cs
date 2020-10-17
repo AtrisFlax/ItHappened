@@ -6,40 +6,51 @@ using LanguageExt;
 
 namespace ItHappened.Domain.Statistics.Calculators.ForMultipleTrackers
 {
-    public class MostFrequentEventCalculator : IMultipleTrackersStatisticsCalculator<MostFrequentEvent>
+    public class MostFrequentEventCalculator : IMultipleTrackersStatisticsCalculator<MostFrequentEventFact>
     {
-        public Option<IMultipleTrackersStatisticsFact> Calculate(IEnumerable<EventTracker.EventTracker> eventTrackers)
+        public Option<MostFrequentEventFact> Calculate(IEnumerable<EventTracker> eventTrackers)
         {
-            var enumerable = eventTrackers as EventTracker.EventTracker[] ?? eventTrackers.ToArray();
+            var enumerable = eventTrackers as EventTracker[] ?? eventTrackers.ToArray();
             if (!CanCalculate(enumerable))
-                return Option<IMultipleTrackersStatisticsFact>.None;
+                return Option<MostFrequentEventFact>.None;
 
-            var (eventTrackerName, eventsPeriod) = enumerable
-                .Select(et => (et.Name, GetEventsPeriod(et)))
-                .OrderBy(x => x.Item2)
+            var eventTrackersWithPeriods = enumerable
+                .Select(eventTracker => (eventTracker, eventsPeriod: GetEventsPeriod(eventTracker)))
+                .ToList();
+
+            var eventTrackerWithSmallestPeriod = eventTrackersWithPeriods
+                .OrderBy(x => x.eventsPeriod)
                 .First();
 
-            var description = $"Чаще всего у вас происходит событие {eventTrackerName} - раз в {eventsPeriod} дней";
-            var priority = 10 / eventsPeriod;
+            const string factName = "Самое частое событие";
             
-            return Option<IMultipleTrackersStatisticsFact>.Some(new MostFrequentEvent(description,
-                priority,
-                eventTrackerName,
-                eventsPeriod));
+            var description =
+                $"Чаще всего у вас происходит событие {eventTrackerWithSmallestPeriod.eventTracker.Name}" +
+                $" - раз в {eventTrackerWithSmallestPeriod.eventsPeriod} дней";
+            
+            var priority = 10 / eventTrackerWithSmallestPeriod.eventsPeriod;
+            return Option<MostFrequentEventFact>
+                .Some(new MostFrequentEventFact(factName,
+                    description,
+                    priority,
+                    eventTrackersWithPeriods,
+                    eventTrackerWithSmallestPeriod.eventTracker,
+                    eventTrackerWithSmallestPeriod.eventsPeriod));
         }
 
-        private bool CanCalculate(IEnumerable<EventTracker.EventTracker> eventTrackers)
+        private bool CanCalculate(IEnumerable<EventTracker> eventTrackers)
         {
             return eventTrackers.Count() > 1 &&
                    eventTrackers.Count(et => et.Events.Count > 3) > 1;
         }
 
-        private double GetEventsPeriod(EventTracker.EventTracker eventTracker)
+        private double GetEventsPeriod(EventTracker eventTracker)
         {
             var events = eventTracker.Events;
+            // ReSharper disable once PossibleLossOfFraction
             return (DateTime.Now - events
                 .OrderBy(e => e.HappensDate)
-                .First().HappensDate).Days / events.Count();
+                .First().HappensDate).Days / events.Count;
         }
     }
 }

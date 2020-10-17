@@ -144,7 +144,7 @@ namespace ItHappened.UnitTests
             @event.Scale.Do(value => Assert.IsTrue(value == _scale));
             @event.Photo.Do(value => Assert.IsTrue(value == _photo));
             @event.Rating.Do(value => Assert.IsTrue(value == _rating));
-            @event.GeoTag.Do(value => Assert.IsTrue(value == _geoTag));
+            @event.GeoTag.Do(value => Assert.IsTrue(Equals(value, _geoTag)));
         }
     }
 }

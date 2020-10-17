@@ -4,7 +4,7 @@ using System.Linq;
 using ItHappened.Domain.EventCustomization;
 using LanguageExt;
 
-namespace ItHappened.Domain.EventTracker
+namespace ItHappened.Domain
 {
     public class EventTracker
     {

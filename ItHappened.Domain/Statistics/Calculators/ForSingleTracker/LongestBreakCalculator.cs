@@ -7,7 +7,7 @@ namespace ItHappened.Domain.Statistics.Calculators.ForSingleTracker
 {
     public class LongestBreakCalculator : ISingleTrackerStatisticsCalculator<LongestBreakFact>
     {
-        public Option<LongestBreakFact> Calculate(EventTracker.EventTracker eventTracker)
+        public Option<LongestBreakFact> Calculate(EventTracker eventTracker)
         {
             if (!CanCalculate(eventTracker)) return Option<LongestBreakFact>.None;
             
@@ -17,15 +17,17 @@ namespace ItHappened.Domain.Statistics.Calculators.ForSingleTracker
             var description =
                 $"Самый большой перерыв в {eventTracker.Name} произошёл с {lastEventBeforeBreak}" +
                 $" до {firstEventAfterBreak}, он занял {maxDurationInDays} дней";
+            var factName = "Самый долгий перерыв";
             
-            return Option<LongestBreakFact>.Some(new LongestBreakFact(description,
+            return Option<LongestBreakFact>.Some(new LongestBreakFact(factName,
+                description,
                 priority,
                 maxDurationInDays,
                 lastEventBeforeBreak,
                 firstEventAfterBreak));
         }
 
-        private bool CanCalculate(EventTracker.EventTracker eventTracker)
+        private bool CanCalculate(EventTracker eventTracker)
         {
             if (eventTracker.Events.Count <= 10)
                 return false;
@@ -40,7 +42,7 @@ namespace ItHappened.Domain.Statistics.Calculators.ForSingleTracker
         }
 
         private (Event lastEventBeforeBreak, Event firstEventAfterBreak) GetFirstAndLastEventOfTheLongestBreak(
-            EventTracker.EventTracker eventTracker)
+            EventTracker eventTracker)
         {
             var events = eventTracker.Events;
             var lastEventBeforeBreak = events[0];
@@ -60,7 +62,7 @@ namespace ItHappened.Domain.Statistics.Calculators.ForSingleTracker
             return (lastEventBeforeBreak, firstEventAfterBreak);
         }
         
-        private double GetAverageDurationBetweenEvents(EventTracker.EventTracker eventTracker)
+        private double GetAverageDurationBetweenEvents(EventTracker eventTracker)
         {
             var events = eventTracker.Events;
             var numberOfBreaks = events.Count - 1;

@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using ItHappend.Domain.Statistics.SingleTrackerCalculator;
 using ItHappened.Domain;
-using ItHappened.Domain.EventTracker;
+using ItHappened.Domain.Statistics.Calculators.ForSingleTracker;
 using NUnit.Framework;
 
-namespace ItHappend.UnitTests.StatisticsCalculatorsTests
+namespace ItHappened.UnitTests.StatisticsCalculatorsTests
 {
     public class AverageRatingCalculatorTest
     {

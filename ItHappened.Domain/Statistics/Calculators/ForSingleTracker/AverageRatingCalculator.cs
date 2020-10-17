@@ -1,13 +1,10 @@
 ﻿using System;
 using System.Linq;
-using ItHappend.Domain.Statistics.StatisticsFacts;
-using ItHappened.Domain.EventTracker;
-using ItHappened.Domain.Statistics.Calculators.ForSingleTracker;
 using ItHappened.Domain.Statistics.Facts.ForSingleTracker;
 using LanguageExt;
 using LanguageExt.UnsafeValueAccess;
 
-namespace ItHappend.Domain.Statistics.SingleTrackerCalculator
+namespace ItHappened.Domain.Statistics.Calculators.ForSingleTracker
 {
     public class AverageRatingCalculator : ISingleTrackerStatisticsCalculator<AverageRatingFact>
     {

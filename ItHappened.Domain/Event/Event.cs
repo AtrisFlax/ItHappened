@@ -6,36 +6,10 @@ namespace ItHappened.Domain
 {
     public class Event
     {
-        public const double MaxEvaluationValue = 5.0;
-        public const double MinEvaluationValue = 0.0;
-
         public Guid Id { get; }
         public Guid CreatorId { get; }
         public DateTimeOffset HappensDate { get; set; }
         public string Title { get; set; }
-
-        private double _evaluation;
-
-        public double Evaluation
-        {
-            get => _evaluation;
-            set
-            {
-                if (value < MinEvaluationValue)
-                {
-                    _evaluation = MinEvaluationValue;
-                    return;
-                }
-
-                if (value > MaxEvaluationValue)
-                {
-                    _evaluation = MaxEvaluationValue;
-                    return;
-                }
-                _evaluation = value;
-            }
-        }
-
         public Option<Photo> Photo { get; set; }
         public Option<double> Scale { get; set; }
         public Option<double> Rating { get; set; }
@@ -55,13 +29,12 @@ namespace ItHappened.Domain
             Comment = eventBuilder.Comment;
         }
 
-        public Event(Guid eventId, Guid creatorId, string title, double evaluation)
+        public Event(Guid eventId, Guid creatorId, string title)
         {
             CreatorId = creatorId;
             Id = eventId;
             Title = title;
             HappensDate = DateTimeOffset.Now;
-            Evaluation = evaluation;
         }
     }
 }
