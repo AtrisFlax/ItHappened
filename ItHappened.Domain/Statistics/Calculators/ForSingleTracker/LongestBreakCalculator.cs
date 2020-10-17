@@ -18,7 +18,7 @@ namespace ItHappened.Domain.Statistics.Calculators.ForSingleTracker
                 $"Самый большой перерыв в {eventTracker.Name} произошёл с {lastEventBeforeBreak}" +
                 $" до {firstEventAfterBreak}, он занял {maxDurationInDays} дней";
             
-            return Option<LongestBreakFact>.Some(new LongestBreakFact(description,
+            return Option<LongestBreakFact>.Some(new LongestBreakFact(eventTracker,
                 priority,
                 maxDurationInDays,
                 lastEventBeforeBreak,

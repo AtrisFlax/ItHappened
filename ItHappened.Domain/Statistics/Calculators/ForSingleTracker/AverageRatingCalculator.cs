@@ -12,11 +12,11 @@ namespace ItHappened.Domain.Statistics.Calculators.ForSingleTracker
         {
             if (!CanCalculate(eventTracker)) return Option<AverageRatingFact>.None;
             var averageRating = eventTracker.Events.Average(x => x.Rating.ValueUnsafe());
-            var type = "Среднее значение оценки";
             var description = $"Средний рейтинг для события {eventTracker.Name} равен {averageRating}";
             var priority = Math.Sqrt(averageRating);
+            
             return Option<AverageRatingFact>.Some(new AverageRatingFact(
-                type,
+                eventTracker,
                 description,
                 priority,
                 averageRating
