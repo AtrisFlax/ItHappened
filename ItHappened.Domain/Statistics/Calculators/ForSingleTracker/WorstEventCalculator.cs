@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Linq;
-using ItHappend.Domain.Statistics.StatisticsFacts;
 using ItHappened.Domain;
-using ItHappened.Domain.EventCustomization;
 using LanguageExt;
 using LanguageExt.UnsafeValueAccess;
 
-namespace ItHappend.Domain.Statistics.SingleTrackerCalculator
+namespace ItHappend.Domain.Statistics
 {
     public class WorstEventCalculator
     {

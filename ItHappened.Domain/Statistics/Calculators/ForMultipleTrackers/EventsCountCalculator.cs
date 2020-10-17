@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using ItHappened.Domain.Statistics.Facts.ForSingleTracker;
 using LanguageExt;
 
-namespace ItHappened.Domain.Statistics.Calculators.ForMultipleTrackers
+namespace ItHappened.Domain.Statistics
 {
     public class EventsCountCalculator : IMultipleTrackersStatisticsCalculator<EventsCountFact>
     {

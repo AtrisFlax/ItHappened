@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using ItHappend.Domain.Statistics.SingleTrackerCalculator;
+using ItHappend.Domain.Statistics;
 using ItHappened.Domain;
-using ItHappened.Domain.EventTracker;
 using NUnit.Framework;
 
 namespace ItHappend.UnitTests.StatisticsCalculatorsTests

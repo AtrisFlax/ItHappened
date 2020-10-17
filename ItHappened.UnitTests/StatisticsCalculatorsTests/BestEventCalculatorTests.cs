@@ -1,10 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using ItHappend.Domain.Statistics.SingleTrackerCalculator;
 using ItHappened.Domain;
-using ItHappened.Domain.EventCustomization;
-using ItHappened.Domain.Statistics.Calculators.ForSingleTracker;
-using ItHappened.Domain.Statistics.Facts.ForSingleTracker;
+using ItHappened.Domain.Statistics;
 using LanguageExt;
 using LanguageExt.UnsafeValueAccess;
 using NUnit.Framework;

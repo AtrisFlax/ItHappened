@@ -1,5 +1,4 @@
 ﻿using System;
-using ItHappened.Domain.EventCustomization;
 using LanguageExt;
 
 namespace ItHappened.Domain

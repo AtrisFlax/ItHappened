@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace ItHappened.Domain.Statistics.Facts.ForMultipleTrackers
+namespace ItHappened.Domain.Statistics
 {
     public class MostFrequentEventFact : IMultipleTrackersStatisticsFact
     {

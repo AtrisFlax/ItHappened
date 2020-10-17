@@ -1,4 +1,5 @@
-﻿namespace ItHappened.Domain.Statistics.Facts.ForMultipleTrackers
+﻿
+namespace ItHappened.Domain.Statistics
 {
     public interface IMultipleTrackersStatisticsFact : IStatisticsFact
     {

@@ -1,6 +1,6 @@
-﻿using ItHappened.Domain.Statistics.Facts.ForSingleTracker;
+﻿using ItHappened.Domain.Statistics;
 
-namespace ItHappend.Domain.Statistics.StatisticsFacts
+namespace ItHappend.Domain.Statistics
 {
     public class SumScaleFact : ISingleTrackerStatisticsFact
     {

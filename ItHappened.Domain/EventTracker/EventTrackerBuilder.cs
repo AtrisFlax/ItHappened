@@ -1,11 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.InteropServices;
-using ItHappened.Domain.EventCustomization;
 using LanguageExt;
 
-namespace ItHappened.Domain.EventTracker
+namespace ItHappened.Domain
 {
     public class EventTrackerBuilder : IEventTrackerBuilder
     {

@@ -1,7 +1,4 @@
-﻿using ItHappened.Domain.Statistics.Calculators.ForMultipleTrackers;
-using ItHappened.Domain.Statistics.Facts.ForMultipleTrackers;
-
-namespace ItHappened.Domain.Statistics.Facts.ForSingleTracker
+﻿namespace ItHappened.Domain.Statistics
 {
     public class EventsCountFact : IMultipleTrackersStatisticsFact
     {
@@ -13,7 +10,7 @@ namespace ItHappened.Domain.Statistics.Facts.ForSingleTracker
             EventsCount = eventsCount;
         }
 
-        public string FactName { get; } 
+        public string FactName { get; }
         public string Description { get; }
         public double Priority { get; }
         public int EventsCount { get; }

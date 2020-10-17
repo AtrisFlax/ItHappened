@@ -1,4 +1,4 @@
-﻿namespace ItHappened.Domain.Statistics.Facts
+﻿namespace ItHappened.Domain.Statistics
 {
     public interface IStatisticsFact
     {

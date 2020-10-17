@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using ItHappened.Domain;
-using ItHappened.Domain.Statistics.Calculators.ForSingleTracker;
+using ItHappened.Domain.Statistics;
 using NUnit.Framework;
 
 namespace ItHappened.UnitTests.StatisticsCalculatorsTests

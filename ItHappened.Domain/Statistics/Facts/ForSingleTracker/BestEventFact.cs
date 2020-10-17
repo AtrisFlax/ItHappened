@@ -1,8 +1,7 @@
 ﻿using System;
-using ItHappened.Domain.EventCustomization;
 using LanguageExt;
 
-namespace ItHappened.Domain.Statistics.Facts.ForSingleTracker
+namespace ItHappened.Domain.Statistics
 {
     public class BestEventFact : IStatisticsFact
     {

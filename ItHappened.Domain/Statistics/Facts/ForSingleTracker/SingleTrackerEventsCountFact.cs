@@ -1,4 +1,4 @@
-﻿namespace ItHappened.Domain.Statistics.Facts.ForSingleTracker
+﻿namespace ItHappened.Domain.Statistics
 {
     public class SingleTrackerEventsCountFact : ISingleTrackerStatisticsFact
     {

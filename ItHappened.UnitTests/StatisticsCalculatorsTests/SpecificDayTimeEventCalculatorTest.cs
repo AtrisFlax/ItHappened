@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using ItHappened.Domain;
-using ItHappened.Domain.Statistics.Calculators.ForSingleTracker;
+using ItHappened.Domain.Statistics;
 using NUnit.Framework;
 
 namespace ItHappened.UnitTests.StatisticsCalculatorsTests
@@ -23,10 +23,12 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
 
             var smokingEventMorning1 = CreateEventWithNameAndDateTime(userId, "smoking", "2020.10.9 04:05:00");
             var smokingEventMorning2 = CreateEventWithNameAndDateTime(userId, "smoking", "2020.10.9 09:05:00");
-            
-            var events = new List<Event> 
-                {headacheEventMorning1, headacheEventMorning2, headacheEventMorning3, headacheEventMorning6, 
-                    headacheEventMorning4, headacheEventMorning5, smokingEventMorning1, smokingEventMorning2};
+
+            var events = new List<Event>
+            {
+                headacheEventMorning1, headacheEventMorning2, headacheEventMorning3, headacheEventMorning6,
+                headacheEventMorning4, headacheEventMorning5, smokingEventMorning1, smokingEventMorning2
+            };
             var eventTracker = new EventTracker(Guid.NewGuid(), "nameEmpty", events, userId);
 
             var specificDayTimeEventFact = new SpecificDayTimeEventCalculator()
@@ -48,7 +50,7 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
                 }
             );
         }
-        
+
         private Event CreateEventWithNameAndDateTime(Guid userId, string title, string dateTime)
         {
             return new Event(Guid.NewGuid(), userId, title)

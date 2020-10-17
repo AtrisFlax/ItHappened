@@ -1,7 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using ItHappened.Domain.Statistics.Calculators.ForSingleTracker;
-using ItHappened.Domain.Statistics.Facts.ForSingleTracker;
 using LanguageExt;
 
 namespace ItHappened.Domain.Statistics

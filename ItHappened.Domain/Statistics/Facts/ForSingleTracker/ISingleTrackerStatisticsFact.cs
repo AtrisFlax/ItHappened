@@ -1,4 +1,5 @@
-﻿namespace ItHappened.Domain.Statistics.Facts.ForSingleTracker
+﻿
+namespace ItHappened.Domain.Statistics
 {
     public interface ISingleTrackerStatisticsFact : IStatisticsFact
     {

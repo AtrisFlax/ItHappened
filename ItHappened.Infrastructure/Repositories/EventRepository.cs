@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using ItHappened.Domain;
-using ItHappened.Domain.Repositories;
 
 namespace ItHappened.Infrastructure.Repositories
 {
