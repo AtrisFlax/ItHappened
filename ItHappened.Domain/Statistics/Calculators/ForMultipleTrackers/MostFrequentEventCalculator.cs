@@ -6,13 +6,13 @@ using LanguageExt;
 
 namespace ItHappened.Domain.Statistics.Calculators.ForMultipleTrackers
 {
-    public class MostFrequentEventCalculator : IMultipleTrackersStatisticsCalculator<MostFrequentEvent>
+    public class MostFrequentEventCalculator : IMultipleTrackersStatisticsCalculator<MostFrequentEventFact>
     {
-        public Option<MostFrequentEvent> Calculate(IEnumerable<EventTracker> eventTrackers)
+        public Option<MostFrequentEventFact> Calculate(IEnumerable<EventTracker> eventTrackers)
         {
             var enumerable = eventTrackers as EventTracker[] ?? eventTrackers.ToArray();
             if (!CanCalculate(enumerable))
-                return Option<MostFrequentEvent>.None;
+                return Option<MostFrequentEventFact>.None;
 
             var eventTrackersWithPeriods = enumerable
                 .Select(eventTracker => (eventTracker, eventsPeriod: GetEventsPeriod(eventTracker)))
@@ -29,8 +29,8 @@ namespace ItHappened.Domain.Statistics.Calculators.ForMultipleTrackers
                 $" - раз в {eventTrackerWithSmallestPeriod.eventsPeriod} дней";
             
             var priority = 10 / eventTrackerWithSmallestPeriod.eventsPeriod;
-            return Option<MostFrequentEvent>
-                .Some(new MostFrequentEvent(factName,
+            return Option<MostFrequentEventFact>
+                .Some(new MostFrequentEventFact(factName,
                     description,
                     priority,
                     eventTrackersWithPeriods,

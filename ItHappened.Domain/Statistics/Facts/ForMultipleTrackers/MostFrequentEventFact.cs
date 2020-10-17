@@ -2,9 +2,9 @@
 
 namespace ItHappened.Domain.Statistics.Facts.ForMultipleTrackers
 {
-    public class MostFrequentEvent : IMultipleTrackersStatisticsFact
+    public class MostFrequentEventFact : IMultipleTrackersStatisticsFact
     {
-        public MostFrequentEvent(string factName,
+        protected internal  MostFrequentEventFact(string factName,
             string description,
             double priority,
             IReadOnlyCollection<(EventTracker, double)> eventTrackersWithPeriods, EventTracker eventTrackerWithSmallestEventPeriod, double smallestEventsPeriod)
