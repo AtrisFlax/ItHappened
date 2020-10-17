@@ -25,7 +25,8 @@ namespace ItHappened.Domain.Statistics.Calculators.ForMultipleTrackers
             var priority = 10 / eventTrackerWithSmallestPeriod.eventsPeriod;
 
             return Option<MostFrequentEvent>
-                .Some(new MostFrequentEvent(eventTrackersWithPeriods,
+                .Some(new MostFrequentEvent(priority,
+                    eventTrackersWithPeriods,
                     eventTrackerWithSmallestPeriod.eventTracker,
                     eventTrackerWithSmallestPeriod.eventsPeriod));
         }

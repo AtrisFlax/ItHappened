@@ -2,6 +2,5 @@
 {
     public interface ISingleTrackerStatisticsFact : IStatisticsFact
     {
-        EventTracker TargetEventTracker { get; }
     }
 }
