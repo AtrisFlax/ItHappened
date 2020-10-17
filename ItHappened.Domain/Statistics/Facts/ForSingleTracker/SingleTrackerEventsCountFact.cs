@@ -1,5 +1,4 @@
 ﻿using System;
-using ItHappened.Domain.Statistics.Facts.ForMultipleTrackers;
 
 namespace ItHappened.Domain.Statistics.Facts.ForSingleTracker
 {
