@@ -15,7 +15,7 @@ namespace ItHappend.Domain.Statistics
         public Option<Comment> Comment { get; }
         public Event EventReference { get; }
         
-        public WorstEventFact(string factName, 
+        internal WorstEventFact(string factName, 
             string description, 
             double priority, 
             double rating,

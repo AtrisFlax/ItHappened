@@ -24,7 +24,7 @@ namespace ItHappend.UnitTests.StatisticsCalculatorsTests
 
             fact.Do(f =>
             {
-                Assert.AreEqual("Происходит в определённые дни недели", f.Type);
+                Assert.AreEqual("Происходит в определённые дни недели", f.FactName);
                 Assert.AreEqual("В 90% случаев событие TrackerName происходит в понедельник, в среду", f.Description);
                 Assert.AreEqual(12.6, f.Priority, 1e-5);
                 Assert.AreEqual(new[] {DayOfWeek.Monday, DayOfWeek.Wednesday}, f.DaysOfTheWeek);
@@ -47,7 +47,7 @@ namespace ItHappend.UnitTests.StatisticsCalculatorsTests
 
             fact.Do(f =>
             {
-                Assert.AreEqual("Происходит в определённые дни недели", f.Type);
+                Assert.AreEqual("Происходит в определённые дни недели", f.FactName);
                 Assert.AreEqual("В 90% случаев событие TrackerName происходит в понедельник, в среду", f.Description);
                 Assert.AreEqual(12.6, f.Priority, 1e-5);
                 Assert.AreEqual(new[] {DayOfWeek.Monday, DayOfWeek.Wednesday}, f.DaysOfTheWeek);

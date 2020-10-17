@@ -13,7 +13,7 @@ namespace ItHappened.Domain.Statistics
         public Option<Comment> Comment { get; }
         public Event EventReference { get; }
         
-        public BestEventFact(string factName, string description, double priority, double rating, DateTimeOffset happensDate, Option<Comment> comment, Event eventReference)
+        internal BestEventFact(string factName, string description, double priority, double rating, DateTimeOffset happensDate, Option<Comment> comment, Event eventReference)
         {
             FactName = factName;
             Description = description;
