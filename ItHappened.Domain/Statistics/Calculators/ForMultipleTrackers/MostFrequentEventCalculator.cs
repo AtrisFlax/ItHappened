@@ -21,11 +21,18 @@ namespace ItHappened.Domain.Statistics.Calculators.ForMultipleTrackers
             var eventTrackerWithSmallestPeriod = eventTrackersWithPeriods
                 .OrderBy(x => x.eventsPeriod)
                 .First();
+
+            const string factName = "Самое частое событие";
+            
+            var description =
+                $"Чаще всего у вас происходит событие {eventTrackerWithSmallestPeriod.eventTracker.Name}" +
+                $" - раз в {eventTrackerWithSmallestPeriod.eventsPeriod} дней";
             
             var priority = 10 / eventTrackerWithSmallestPeriod.eventsPeriod;
-
             return Option<MostFrequentEvent>
-                .Some(new MostFrequentEvent(priority,
+                .Some(new MostFrequentEvent(factName,
+                    description,
+                    priority,
                     eventTrackersWithPeriods,
                     eventTrackerWithSmallestPeriod.eventTracker,
                     eventTrackerWithSmallestPeriod.eventsPeriod));

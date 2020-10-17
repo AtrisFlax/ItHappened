@@ -13,10 +13,12 @@ namespace ItHappened.Domain.Statistics.Calculators.ForMultipleTrackers
             if (!CanCalculate(eventTrackers))
                 return Option<EventsCountFact>.None;
 
+            var factName = "Зафиксировано уже N событий";
             var eventsCount = eventTrackers.SelectMany(et => et.Events).Count();
+            var description = $"У вас произошло уже {eventsCount} событий!";
             var priority = Math.Log(eventsCount);
-            
-            return Option<EventsCountFact>.Some(new EventsCountFact(priority, eventsCount));
+
+            return Option<EventsCountFact>.Some(new EventsCountFact(factName, description, priority, eventsCount));
         }
         
         private bool CanCalculate(IEnumerable<EventTracker> eventTrackers)

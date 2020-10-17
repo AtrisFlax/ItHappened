@@ -9,11 +9,12 @@
         public Event LastEventBeforeBreakDate { get; }
         public Event FirstEventAfterBreakDate { get; }
 
-        public LongestBreakFact(string description,
+        public LongestBreakFact(string factName,
+            string description,
             double priority,
-            int durationInDays,
-            Event lastEventBeforeBreakDate, Event firstEventAfterBreakDate)
+            int durationInDays, Event lastEventBeforeBreakDate, Event firstEventAfterBreakDate)
         {
+            FactName = factName;
             Description = description;
             Priority = priority;
             DurationInDays = durationInDays;
