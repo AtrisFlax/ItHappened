@@ -51,7 +51,7 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
         
         private Event CreateEventWithNameAndDateTime(Guid userId, string title, string dateTime)
         {
-            return new Event(Guid.NewGuid(), userId, title, new Random().Next(1, 9))
+            return new Event(Guid.NewGuid(), userId, title)
             {
                 HappensDate = DateTime.Parse(dateTime)
             };
