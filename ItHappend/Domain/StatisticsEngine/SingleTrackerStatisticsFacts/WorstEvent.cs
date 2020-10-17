@@ -1,9 +1,10 @@
 ﻿using System;
 using ItHappend.Domain.EventCustomization;
+using LanguageExt;
 
 namespace ItHappend.Domain.Statistics.StatisticsFacts
 {
-    public class WorstEvent : ISingleTrackerStatisticsFact
+    public class WorstEvent : IStatisticsFact
     {
         public string Description { get; }
         public double Priority { get; }
