@@ -2,21 +2,17 @@
 {
     public class AverageRatingFact : ISingleTrackerStatisticsFact
     {
-        public AverageRatingFact(EventTracker targetEventTracker,
-            string description,
-            double priority,
-            double averageRating)
+        public string FactName { get; }
+        public string Description { get; }
+        public double Priority { get; }
+        public double AverageRating { get; }
+
+        public AverageRatingFact(string type, string description, double priority, double averageRating)
         {
-            TargetEventTracker = targetEventTracker;
+            FactName = type;
             Description = description;
             Priority = priority;
             AverageRating = averageRating;
         }
-        
-        public string FactName { get; }
-        public EventTracker TargetEventTracker { get; }
-        public string Description { get; }
-        public double Priority { get; }
-        public double AverageRating { get; }
     }
 }
