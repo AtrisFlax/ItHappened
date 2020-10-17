@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using ItHappend.Domain;
 using ItHappend.Domain.EventCustomization;
 using ItHappend.Domain.Statistics.SingleTrackerCalculator;
@@ -42,7 +43,7 @@ namespace ItHappend.UnitTests.StatisticsCalculatorsTests
         [Test]
         public void CalculateWithoutOldEnoughEvent_ReturnNone()
         {
-            _events.Add(CreateEvent(_creatorId));
+            _events.Add(CreateEventWithoutComment(_creatorId));
             _events[1].Rating = 1;
             _events[1].HappensDate = DateTimeOffset.Now - TimeSpan.FromDays(8);
             var expected = Option<ISingleTrackerStatisticsFact>.None;
@@ -55,7 +56,7 @@ namespace ItHappend.UnitTests.StatisticsCalculatorsTests
         [Test]
         public void CalculateWhenWorstEventHappenedLessThanWeekAgo_ReturnNone()
         {
-            _events.Add(CreateEvent(_creatorId));
+            _events.Add(CreateEventWithoutComment(_creatorId));
             _events[0].HappensDate = DateTimeOffset.Now - TimeSpan.FromDays(91);
             _events[1].Rating = 1;
             _events[1].HappensDate = DateTimeOffset.Now - TimeSpan.FromDays(6);
@@ -67,29 +68,34 @@ namespace ItHappend.UnitTests.StatisticsCalculatorsTests
         }
         
         [Test]
-        public void CalculateWithoutComment_ReturnsFact()
+        public void CalculateWithoutComment_ReturnsFactWithoutComment()
         {
             _events[0].HappensDate = DateTimeOffset.Now - TimeSpan.FromDays(91);
-            _events[1].HappensDate = DateTimeOffset.Now - TimeSpan.FromDays(8);
-            _events.Add(CreateEvent(_creatorId));
+            _events.Add(CreateEventWithoutComment(_creatorId));
             _events[9].Rating = 1;
-            var expected = string.Empty;
-        
-            var res = _worstEventCalculator.Calculate(_eventTracker);
+            _events[9].HappensDate = DateTimeOffset.Now - TimeSpan.FromDays(8);
 
-            Assert.Throws<NullReferenceException>(() =>
-            {
-                var comment = res.ValueUnsafe().Comment;
-            });
+            var worstEvent = _worstEventCalculator.Calculate(_eventTracker);
+
+            Assert.True(worstEvent.ValueUnsafe().Comment.IsNone);
+        }
+
+        [Test]
+        public void CalculateWithAllConditionsGood_ReturnsFact()
+        {
+            _events[0].HappensDate = DateTimeOffset.Now - TimeSpan.FromDays(91);
+            _events.Add(CreateEventWithoutComment(_creatorId));
+            _events[9].Rating = 1;
+            _events[9].HappensDate = DateTimeOffset.Now - TimeSpan.FromDays(8);
+            Option<Comment> comment = new Comment("AddedComment");
+            _events[9].Comment = comment; 
+            
+            var worstEvent = _worstEventCalculator.Calculate(_eventTracker);
+            
+            Assert.True(worstEvent.ValueUnsafe().Comment.IsSome);
         }
         
-        // [Test]
-        // public void CalculateWithAllConditionsGood_ReturnsFact()
-        // {
-        //     
-        // }
-        
-        private static Event CreateEvent(Guid creatorId)
+        private static Event CreateEventWithoutComment(Guid creatorId)
         {
             return EventBuilder
                 .Event(Guid.NewGuid(), creatorId, DateTimeOffset.Now, "tittle")

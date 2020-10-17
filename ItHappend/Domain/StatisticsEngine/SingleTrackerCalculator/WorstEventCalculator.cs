@@ -15,16 +15,19 @@ namespace ItHappend.Domain.Statistics.SingleTrackerCalculator
 
             var worstEvent = eventTracker.Events.OrderBy(eventItem => eventItem.Rating).First();
             var priority = 10 - worstEvent.Rating.Value();
-            var description =
-                $"Событие в отслеживании {eventTracker.Name} с самым низким рейтингом {worstEvent.Rating} " +
-                $"произошло {worstEvent.HappensDate} с комментарием {worstEvent.Comment}";
-            var comment = worstEvent.Comment.IsSome
-                ? new Comment(worstEvent.Comment.ValueUnsafe().ToString())
-                : null;
+            var worstEventComment = worstEvent.Comment.Match(
+                Some: comment => comment,
+                None: () => Option<Comment>.None);
+            string description = $"Событие в отслеживании {eventTracker.Name} с самым низким " +
+                                 $"рейтингом {worstEvent.Rating} произошло {worstEvent.HappensDate}";
+            description += worstEventComment.IsSome ?
+                $" с комментарием {worstEventComment.ValueUnsafe().Text}" :
+                " (комментарий отсутсвует)";
+
             return Option<WorstEvent>.Some(new WorstEvent(description,
                 priority,
                 worstEvent.HappensDate,
-                comment,
+                worstEventComment,
                 worstEvent));
         }
 

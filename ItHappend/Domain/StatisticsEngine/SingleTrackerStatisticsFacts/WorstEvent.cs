@@ -9,10 +9,10 @@ namespace ItHappend.Domain.Statistics.StatisticsFacts
         public string Description { get; }
         public double Priority { get; }
         public DateTimeOffset Date { get; }
-        public Comment Comment { get; }
+        public Option<Comment> Comment { get; }
         public Event EventReference { get; }
         
-        public WorstEvent(string description, double priority, DateTimeOffset date, Comment comment, Event eventReference)
+        public WorstEvent(string description, double priority, DateTimeOffset date, Option<Comment> comment, Event eventReference)
         {
             Description = description;
             Priority = priority;
