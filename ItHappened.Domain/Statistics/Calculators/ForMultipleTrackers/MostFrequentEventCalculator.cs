@@ -10,43 +10,31 @@ namespace ItHappened.Domain.Statistics.Calculators.ForMultipleTrackers
     {
         public Option<MostFrequentEventFact> Calculate(IEnumerable<EventTracker> eventTrackers)
         {
-            var enumerable = eventTrackers as EventTracker[] ?? eventTrackers.ToArray();
-            if (!CanCalculate(enumerable))
+            if (!CanCalculate(eventTrackers))
                 return Option<MostFrequentEventFact>.None;
 
             var trackingNameWithEventsPeriod = eventTrackers
                 .Select(eventTracker =>
-                    (trackingName : eventTracker.Name,
-                    eventsPeriod : 1.0 * eventTracker
-                                              .Events
-                                              .GroupBy(t => t.HappensDate.Date)
-                                              .Select(t => t.Key)
-                                              .Count() / eventTracker.Events.Count)
+                    (trackingName: eventTracker.Name,
+                        eventsPeriod: 1.0 *
+                        (DateTime.Now - eventTracker
+                            .Events
+                            .OrderBy(e => e.HappensDate)
+                            .First()
+                            .HappensDate)
+                        .TotalDays / eventTracker.Events.Count)
                 );
-                 
-            var trackingNameWithMinEventsPeriod =  trackingNameWithEventsPeriod
+            
+            var (trackingName, eventsPeriod) = trackingNameWithEventsPeriod
                 .OrderBy(e => e.eventsPeriod)
                 .FirstOrDefault();
-            
+
             return Option<MostFrequentEventFact>
-                .Some(new MostFrequentEventFact(factName,
-                    description,
-                    priority,
-                    eventTrackersWithPeriods,
-                    eventTrackerWithSmallestPeriod.eventTracker,
-                    eventTrackerWithSmallestPeriod.eventsPeriod));
+                .Some(new MostFrequentEventFact(trackingName, eventsPeriod, trackingNameWithEventsPeriod));
         }
 
         private bool CanCalculate(IEnumerable<EventTracker> eventTrackers) =>
             eventTrackers.Count() > 1 && eventTrackers.Count(et => et.Events.Count > 3) > 1;
-
-        private double GetEventsPeriod(EventTracker eventTracker)
-        {
-            var events = eventTracker.Events;
-            // ReSharper disable once PossibleLossOfFraction
-            return (DateTime.Now - events
-                .OrderBy(e => e.HappensDate)
-                .First().HappensDate).Days / events.Count;
-        }
+        
     }
 }
