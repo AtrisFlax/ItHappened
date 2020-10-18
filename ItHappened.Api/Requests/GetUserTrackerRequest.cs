@@ -2,9 +2,9 @@
 
 namespace ItHappened.Api.Requests
 {
-    public class GetUserTrackingsRequest
+    public class GetUserTrackerRequest
     {
-        public GetUserTrackingsRequest(Guid id)
+        public GetUserTrackerRequest(Guid id)
         {
             Id = id;
         }
