@@ -14,21 +14,18 @@ namespace ItHappened.Domain.Statistics
             var bestEvent = eventTracker.Events.OrderBy(eventItem => eventItem.Rating).Last();
             var priority = bestEvent.Rating.Value();
             var bestEventComment = bestEvent.Comment.Match(
-                Some: comment => comment,
-                None: () => Option<Comment>.None);
-            var description = $"Событие {eventTracker.Name} с самым высоким рейтингом " +
-                                 $"{bestEvent.Rating} произошло {bestEvent.HappensDate}";
-            description += bestEventComment.IsSome ?
-                $" с комментарием {bestEventComment.ValueUnsafe().Text}" :
-                " (комментарий отсутсвует)";
-            
+                Some: comment => comment.Text,
+                None: () => string.Empty);
+            var description = $"Событие {eventTracker.Name} с самым высоким рейтингом {bestEvent.Rating} " +
+                              $"произошло {bestEvent.HappensDate} с комментарием {bestEventComment}";
+ 
             return Option<BestEventFact>.Some(new BestEventFact(
                 factName,
                 description,
                 priority,
                 bestEvent.Rating.Value(),
                 bestEvent.HappensDate,
-                bestEventComment,
+                new Comment(bestEventComment), 
                 bestEvent));
         }
 

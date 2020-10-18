@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using ItHappened.Domain;
 using ItHappened.Domain.Statistics;
-using LanguageExt;
 
 namespace ItHappened.Application.Services.StatisticService
 {
@@ -11,40 +9,31 @@ namespace ItHappened.Application.Services.StatisticService
     {
         public StatisticsService(IUserRepository userRepository,
             IEventTrackerRepository eventTrackerRepository,
-            IMultipleTrackersStatisticsCalculatorContainer multipleContainer,
-            ISingleTrackerStatisticsCalculatorContainer singleContainer)
+            IMultipleTrackersStatisticsProvider multipleTrackersStatisticsProvider,
+            ISingleTrackerStatisticsProvider singleTrackerStatisticsProvider)
         {
             _userRepository = userRepository;
             _eventTrackerRepository = eventTrackerRepository;
-            _multipleContainer = multipleContainer;
-            _singleContainer = singleContainer;
+            _multipleTrackersStatisticsProvider = multipleTrackersStatisticsProvider;
+            _singleTrackerStatisticsProvider = singleTrackerStatisticsProvider;
         }
         
-        public IReadOnlyCollection<Option<IMultipleTrackersStatisticsFact>> GetMultipleTrackersFacts(Guid userId)
+        public IReadOnlyCollection<IMultipleTrackersStatisticsFact> GetMultipleTrackersFacts(Guid userId)
         {
-            var user = _userRepository.LoadUser(userId);
-            return _multipleContainer
-                .GetFacts(user.EventTrackers)
-                .Where(fact => !fact.IsNone)
-                .OrderBy(fact => fact.Select(x => x.Priority))
-                .ToList();
+            var eventTrackers = _eventTrackerRepository.LoadUserTrackers(userId);
+            return _multipleTrackersStatisticsProvider.GetFacts(eventTrackers);
         }
 
-        public IReadOnlyCollection<Option<ISingleTrackerStatisticsFact>> GetSingleTrackerFacts(Guid userId,
+        public IReadOnlyCollection<ISingleTrackerStatisticsFact> GetSingleTrackerFacts(Guid userId,
             Guid eventTrackerId)
         {
-            // var eventTracker = _eventTrackerRepository.LoadEventTracker(eventTrackerId);
-            // return _singleContainer
-            //     .GetFacts(eventTracker)
-            //     .Where(fact => !fact.IsNone)
-            //     .OrderBy(fact => fact.Select(x => x.Priority))
-            //     .ToList();
-            return null;
+            var eventTracker = _eventTrackerRepository.LoadEventTracker(userId);
+            return _singleTrackerStatisticsProvider.GetFacts(eventTracker);
         }
         
         private readonly IUserRepository _userRepository;
         private readonly IEventTrackerRepository _eventTrackerRepository;
-        private readonly IMultipleTrackersStatisticsCalculatorContainer _multipleContainer;
-        private readonly ISingleTrackerStatisticsCalculatorContainer _singleContainer;
+        private readonly IMultipleTrackersStatisticsProvider _multipleTrackersStatisticsProvider;
+        private readonly ISingleTrackerStatisticsProvider _singleTrackerStatisticsProvider;
     }
 }
