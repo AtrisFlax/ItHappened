@@ -29,7 +29,7 @@ namespace ItHappened.Application.Services.EventTrackerService
             var eventTracker = new EventTracker(Guid.NewGuid(), trackerName, new List<Event>(), creatorId);
             return eventTracker.Id;
         }
-        
+
         public bool DeleteTracker(Guid trackerId, Guid trackerCreatorId)
         {
             var tracker = _eventTrackerRepository.LoadEventTracker(trackerId);
@@ -59,6 +59,7 @@ namespace ItHappened.Application.Services.EventTrackerService
                     $"Can't add event to tracker trackerId={trackerId} trackerCreatorId={trackerCreatorId}. TrackerCreatorId does not match");
                 return false;
             }
+
             _eventRepository.AddEvent(@event);
             Log.Information(
                 $"Event Added trackerId={trackerId} trackerCreatorId={trackerCreatorId} eventId={@event.Id}");
@@ -74,13 +75,14 @@ namespace ItHappened.Application.Services.EventTrackerService
                     $"Can't remove tracker with trackerId={trackerId} eventId={eventId} trackerCreatorId={trackerCreatorId}. TrackerCreatorId does not match");
                 return false;
             }
+
             var eventToRemove = _eventRepository.TryLoadEvent(eventId);
             tracker.RemoveEvent(eventToRemove);
             Log.Information(
                 $"Event from tracker has deleted.  trackerId={trackerId}  eventId={eventId} trackerCreatorId={trackerCreatorId}");
             return true;
         }
-        
+
         public bool EditEventTracker(Guid trackerId, Guid trackerCreatorId, Event @event)
         {
             var tracker = _eventTrackerRepository.LoadEventTracker(trackerId);
@@ -90,10 +92,16 @@ namespace ItHappened.Application.Services.EventTrackerService
                     $"Can't add event to tracker trackerId={trackerId} trackerCreatorId={trackerCreatorId}. TrackerCreatorId does not match");
                 return false;
             }
+
             _eventRepository.AddEvent(@event);
             Log.Information(
                 $"Event Added trackerId={trackerId} trackerCreatorId={trackerCreatorId} eventId={@event.Id}");
             return true;
+        }
+
+        public IEnumerable<EventTracker> GetAllEventsFromTracker(Guid tracker, Guid trackerCreatorId)
+        {
+            return Array.Empty<EventTracker>();
         }
 
         public Option<IReadOnlyCollection<Event>> FilterByTime(Guid trackerId, Guid trackerCreatorId,
