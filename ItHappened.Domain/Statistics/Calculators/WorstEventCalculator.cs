@@ -1,16 +1,17 @@
 ﻿using System;
 using System.Linq;
 using ItHappened.Domain;
+using ItHappened.Domain.Statistics;
 using LanguageExt;
 using LanguageExt.UnsafeValueAccess;
 
 namespace ItHappend.Domain.Statistics
 {
-    public class WorstEventCalculator
+    public class WorstEventCalculator : ISingleTrackerStatisticsCalculator
     {
-        public Option<WorstEventFact> Calculate(EventTracker eventTracker)
+        public Option<ISingleTrackerStatisticsFact> Calculate(EventTracker eventTracker)
         {
-            if (!CanCalculate(eventTracker)) return Option<WorstEventFact>.None;
+            if (!CanCalculate(eventTracker)) return Option<ISingleTrackerStatisticsFact>.None;
             const string factName = "Худшее событие";
             var worstEvent = eventTracker.Events.OrderBy(eventItem => eventItem.Rating).First();
             var priority = 10 - worstEvent.Rating.Value();
@@ -23,7 +24,7 @@ namespace ItHappend.Domain.Statistics
                 $" с комментарием {worstEventComment.ValueUnsafe().Text}" :
                 " (комментарий отсутсвует)";
 
-            return Option<WorstEventFact>.Some(new WorstEventFact(
+            return Option<ISingleTrackerStatisticsFact>.Some(new WorstEventFact(
                 factName,
                 description,
                 priority,

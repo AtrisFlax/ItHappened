@@ -63,7 +63,8 @@ namespace ItHappened.Domain
                 //TODO Log.Warning and return 
                 return false;
             }
-
+            
+            //TODO container.Calculate();
             Events.Add(newEvent);
             //TODO Log.Verbose and return 
             return true;

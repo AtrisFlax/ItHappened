@@ -7,14 +7,14 @@ using LanguageExt.UnsafeValueAccess;
 
 namespace ItHappend.Domain.Statistics
 {
-    public class SumScaleCalculator : ISingleTrackerStatisticsCalculator<SumScaleFact>
+    public class SumScaleCalculator : ISingleTrackerStatisticsCalculator
     {
-        public Option<SumScaleFact> Calculate(EventTracker eventTracker)
+        public Option<ISingleTrackerStatisticsFact> Calculate(EventTracker eventTracker)
         {
-            if (!CanCalculate(eventTracker)) return Option<SumScaleFact>.None;
+            if (!CanCalculate(eventTracker)) return Option<ISingleTrackerStatisticsFact>.None;
             var sumScale = eventTracker.Events.Sum(x => x.Scale.ValueUnsafe());
             var measurementUnit = eventTracker.ScaleMeasurementUnit.ValueUnsafe();
-            return Option<SumScaleFact>.Some(new SumScaleFact(
+            return Option<ISingleTrackerStatisticsFact>.Some(new SumScaleFact(
                 "Суммарное значение шкалы",
                 $"Сумма значений {measurementUnit} для события {eventTracker.Name} равна {sumScale}",
                 2.0,

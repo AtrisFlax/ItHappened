@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using ItHappened.Domain;
 using ItHappened.Domain.Statistics;
+using LanguageExt;
 using NUnit.Framework;
 
 namespace ItHappened.UnitTests.StatisticsCalculatorsTests
@@ -26,15 +27,16 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
 
             //act 
             var fact = new AverageRatingCalculator().Calculate(eventTracker);
-
+            var averageFact = fact.ConvertTo<AverageRatingFact>();
             //assert 
             Assert.True(fact.IsSome);
-            fact.Do(f =>
+            averageFact.Do(f =>
             {
                 Assert.AreEqual(Math.Sqrt(ratings.Average()), f.Priority);
                 Assert.AreEqual(ratings.Average(), f.AverageRating);
             });
         }
+
 
         [Test]
         public void EventTrackerHasNoRationCustomization_CalculateFailed()
@@ -126,7 +128,7 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
                     .Build()
             };
         }
-        
+
         private static List<Event> CreateTwoEvents(IList<double> ratings)
         {
             return new List<Event>

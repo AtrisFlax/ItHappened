@@ -5,12 +5,12 @@ using LanguageExt;
 
 namespace ItHappened.Domain.Statistics
 {
-    public class MostFrequentEventCalculator : IMultipleTrackersStatisticsCalculator<MostFrequentEventFact>
+    public class MostFrequentEventCalculator : IMultipleTrackersStatisticsCalculator
     {
-        public Option<MostFrequentEventFact> Calculate(IEnumerable<EventTracker> eventTrackers)
+        public Option<IMultipleTrackersStatisticsFact> Calculate(IEnumerable<EventTracker> eventTrackers)
         {
             if (!CanCalculate(eventTrackers))
-                return Option<MostFrequentEventFact>.None;
+                return Option<IMultipleTrackersStatisticsFact>.None;
 
             var trackingNameWithEventsPeriod = eventTrackers
                 .Select(eventTracker =>
@@ -28,7 +28,7 @@ namespace ItHappened.Domain.Statistics
                 .OrderBy(e => e.eventsPeriod)
                 .FirstOrDefault();
 
-            return Option<MostFrequentEventFact>
+            return Option<IMultipleTrackersStatisticsFact>
                 .Some(new MostFrequentEventFact(trackingName, eventsPeriod, trackingNameWithEventsPeriod));
         }
 

@@ -5,7 +5,7 @@ using LanguageExt;
 
 namespace ItHappend.Domain.Statistics
 {
-    public class WorstEventFact : IStatisticsFact
+    public class WorstEventFact : ISingleTrackerStatisticsFact
     {
         public string FactName { get; }
         public string Description { get; }

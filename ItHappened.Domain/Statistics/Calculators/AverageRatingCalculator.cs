@@ -5,13 +5,13 @@ using LanguageExt.UnsafeValueAccess;
 
 namespace ItHappened.Domain.Statistics
 {
-    public class AverageRatingCalculator : ISingleTrackerStatisticsCalculator<AverageRatingFact>
+    public class AverageRatingCalculator : ISingleTrackerStatisticsCalculator
     {
-        public Option<AverageRatingFact> Calculate(EventTracker eventTracker)
+        public Option<ISingleTrackerStatisticsFact> Calculate(EventTracker eventTracker)
         {
-            if (!CanCalculate(eventTracker)) return Option<AverageRatingFact>.None;
+            if (!CanCalculate(eventTracker)) return Option<ISingleTrackerStatisticsFact>.None;
             var averageRating = eventTracker.Events.Average(x => x.Rating.ValueUnsafe());
-            return Option<AverageRatingFact>.Some(new AverageRatingFact(
+            return Option<ISingleTrackerStatisticsFact>.Some(new AverageRatingFact(
                 "Среднее значение оценки",
                 $"Средний рейтинг для события {eventTracker.Name} равен {averageRating}",
                 Math.Sqrt(averageRating),

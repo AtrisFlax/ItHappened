@@ -3,12 +3,12 @@ using LanguageExt;
 
 namespace ItHappened.Domain.Statistics
 {
-    public class SpecificDayTimeEventCalculator : ISingleTrackerStatisticsCalculator<SpecificTimeOfDayEventFact>
+    public class SpecificDayTimeEventCalculator : ISingleTrackerStatisticsCalculator
     {
-        public Option<SpecificTimeOfDayEventFact> Calculate(EventTracker eventTracker)
+        public Option<ISingleTrackerStatisticsFact> Calculate(EventTracker eventTracker)
         {
             if (!CanCalculate(eventTracker))
-                return Option<SpecificTimeOfDayEventFact>.None;
+                return Option<ISingleTrackerStatisticsFact>.None;
             
             var eventsByTimeOfTheDayWithPercent = eventTracker
                 .Events
@@ -25,7 +25,7 @@ namespace ItHappened.Domain.Statistics
                 .OrderByDescending(e => e.Percentage)
                 .First();
             
-            return Option<SpecificTimeOfDayEventFact>.Some(new SpecificTimeOfDayEventFact
+            return Option<ISingleTrackerStatisticsFact>.Some(new SpecificTimeOfDayEventFact
                 (percentage, 
                 title, 
                 timeOfTheDay, eventsByTimeOfTheDayWithPercent));

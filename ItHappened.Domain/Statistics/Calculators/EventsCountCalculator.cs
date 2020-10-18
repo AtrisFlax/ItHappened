@@ -5,19 +5,19 @@ using LanguageExt;
 
 namespace ItHappened.Domain.Statistics
 {
-    public class EventsCountCalculator : IMultipleTrackersStatisticsCalculator<EventsCountFact>
+    public class EventsCountCalculator : IMultipleTrackersStatisticsCalculator
     {
-        public Option<EventsCountFact> Calculate(IEnumerable<EventTracker> eventTrackers)
+        public Option<IMultipleTrackersStatisticsFact> Calculate(IEnumerable<EventTracker> eventTrackers)
         {
             if (!CanCalculate(eventTrackers))
-                return Option<EventsCountFact>.None;
+                return Option<IMultipleTrackersStatisticsFact>.None;
 
             var factName = "Зафиксировано уже N событий";
             var eventsCount = eventTrackers.SelectMany(et => et.Events).Count();
             var description = $"У вас произошло уже {eventsCount} событий!";
             var priority = Math.Log(eventsCount);
 
-            return Option<EventsCountFact>.Some(new EventsCountFact(factName, description, priority, eventsCount));
+            return Option<IMultipleTrackersStatisticsFact>.Some(new EventsCountFact(factName, description, priority, eventsCount));
         }
         
         private bool CanCalculate(IEnumerable<EventTracker> eventTrackers)
