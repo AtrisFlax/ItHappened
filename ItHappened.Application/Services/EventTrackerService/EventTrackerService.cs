@@ -45,6 +45,11 @@ namespace ItHappened.Application.Services.EventTrackerService
             return true;
         }
 
+        public IEnumerable<EventTracker> GetAllTrackers(Guid userId)
+        {
+            return _eventTrackerRepository.LoadUserTrackers(userId);
+        }
+
         public bool AddEventToTracker(Guid trackerId, Guid trackerCreatorId, Event @event)
         {
             var tracker = _eventTrackerRepository.LoadEventTracker(trackerId);

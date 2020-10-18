@@ -17,6 +17,7 @@ namespace ItHappened.Application.Services.EventTrackerService
             bool hasComment = false);
 
         bool DeleteTracker(Guid trackerId, Guid trackerCreatorId);
+        IEnumerable<EventTracker> GetAllTrackers(Guid userId);
         bool AddEventToTracker(Guid trackerId, Guid trackerCreatorId, Event @event);
         bool RemoveEventFromTracker(Guid trackerId, Guid eventId, Guid trackerCreatorId);
         bool EditEventTracker(Guid trackerId, Guid trackerCreatorId, Event @event);
