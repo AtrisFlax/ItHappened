@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-
-namespace ItHappened.Domain.Repositories
+namespace ItHappened.Domain
 {
     public interface IEventTrackerRepository
     {

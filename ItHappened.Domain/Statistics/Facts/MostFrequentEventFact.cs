@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace ItHappened.Domain.Statistics.Facts.ForMultipleTrackers
+namespace ItHappened.Domain.Statistics
 {
     public class MostFrequentEventFact : IMultipleTrackersStatisticsFact
     {

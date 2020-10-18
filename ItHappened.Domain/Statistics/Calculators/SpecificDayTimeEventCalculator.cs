@@ -1,10 +1,7 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using ItHappened.Domain.Statistics.Calculators.ForSingleTracker;
-using ItHappened.Domain.Statistics.Facts.ForSingleTracker;
+﻿using System.Linq;
 using LanguageExt;
 
-namespace ItHappened.Domain.Statistics.Calculators.ForSingleTracker
+namespace ItHappened.Domain.Statistics
 {
     public class SpecificDayTimeEventCalculator : ISingleTrackerStatisticsCalculator<SpecificTimeOfDayEventFact>
     {

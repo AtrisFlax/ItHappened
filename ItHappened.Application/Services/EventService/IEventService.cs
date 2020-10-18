@@ -1,6 +1,5 @@
 ﻿using System;
 using ItHappened.Domain;
-using ItHappened.Domain.EventCustomization;
 using LanguageExt;
 
 namespace ItHappened.Application.Services.EventService

@@ -1,7 +1,7 @@
 ﻿using System;
 using ItHappened.Domain.User;
 
-namespace ItHappened.Domain.Repositories
+namespace ItHappened.Domain
 {
     public interface IUserRepository
     {

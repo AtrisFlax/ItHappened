@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Linq;
-using ItHappend.Domain.Statistics.StatisticsFacts;
-using ItHappened.Domain.EventTracker;
-using ItHappened.Domain.Statistics.Calculators.ForSingleTracker;
+using ItHappened.Domain;
+using ItHappened.Domain.Statistics;
 using LanguageExt;
 using LanguageExt.UnsafeValueAccess;
 
-namespace ItHappend.Domain.Statistics.SingleTrackerCalculator
+namespace ItHappend.Domain.Statistics
 {
     public class SumScaleCalculator : ISingleTrackerStatisticsCalculator<SumScaleFact>
     {

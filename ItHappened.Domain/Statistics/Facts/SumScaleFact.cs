@@ -1,10 +1,10 @@
-﻿using ItHappened.Domain.Statistics.Facts.ForSingleTracker;
+﻿using ItHappened.Domain.Statistics;
 
-namespace ItHappend.Domain.Statistics.StatisticsFacts
+namespace ItHappend.Domain.Statistics
 {
     public class SumScaleFact : ISingleTrackerStatisticsFact
     {
-        public string Type { get; }
+        public string FactName { get; }
         public string Description { get; }
         public double Priority { get; }
 
@@ -12,9 +12,9 @@ namespace ItHappend.Domain.Statistics.StatisticsFacts
 
         public string MeasurementUnit { get; }
 
-        public SumScaleFact(string type, string description, double priority, double sumValue, string measurementUnit)
+        internal SumScaleFact(string factName, string description, double priority, double sumValue, string measurementUnit)
         {
-            Type = type;
+            FactName = factName;
             Description = description;
             Priority = priority;
             SumValue = sumValue;

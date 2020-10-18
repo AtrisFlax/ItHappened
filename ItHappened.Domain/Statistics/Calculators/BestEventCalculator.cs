@@ -1,12 +1,9 @@
 ﻿using System;
 using System.Linq;
-using ItHappend.Domain.Statistics.StatisticsFacts;
-using ItHappened.Domain.EventCustomization;
-using ItHappened.Domain.Statistics.Facts.ForSingleTracker;
 using LanguageExt;
 using LanguageExt.UnsafeValueAccess;
 
-namespace ItHappened.Domain.Statistics.Calculators.ForSingleTracker
+namespace ItHappened.Domain.Statistics
 {
     public class BestEventCalculator
     {

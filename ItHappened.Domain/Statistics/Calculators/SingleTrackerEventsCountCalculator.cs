@@ -1,8 +1,7 @@
 ﻿using System;
-using ItHappened.Domain.Statistics.Facts.ForSingleTracker;
 using LanguageExt;
 
-namespace ItHappened.Domain.Statistics.Calculators.ForSingleTracker
+namespace ItHappened.Domain.Statistics
 {
     public class SingleTrackerEventsCountCalculator : ISingleTrackerStatisticsCalculator<SingleTrackerEventsCountFact>
     {

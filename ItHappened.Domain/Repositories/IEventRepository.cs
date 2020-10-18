@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace ItHappened.Domain.Repositories
+namespace ItHappened.Domain
 {
     public interface IEventRepository
     {

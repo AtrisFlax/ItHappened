@@ -1,7 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using ItHappened.Domain.Statistics.Calculators.ForMultipleTrackers;
-using ItHappened.Domain.Statistics.Facts.ForMultipleTrackers;
 using LanguageExt;
 
 namespace ItHappened.Domain.Statistics

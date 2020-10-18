@@ -1,4 +1,4 @@
-﻿namespace ItHappened.Domain.EventCustomization
+﻿namespace ItHappened.Domain
 {
     public class Scale
     {

@@ -1,6 +1,5 @@
 ﻿using System;
 using ItHappened.Domain;
-using ItHappened.Domain.Repositories;
 using ItHappened.Domain.User;
 using Status = ItHappened.Application.Services.UserService.UserServiceStatusCodes;
 

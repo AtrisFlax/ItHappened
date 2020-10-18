@@ -1,8 +1,7 @@
 ﻿using System;
-using ItHappened.Domain.EventCustomization;
 using LanguageExt;
 
-namespace ItHappened.Domain.Statistics.Facts.ForSingleTracker
+namespace ItHappened.Domain.Statistics
 {
     public class BestEventFact : IStatisticsFact
     {
@@ -14,7 +13,7 @@ namespace ItHappened.Domain.Statistics.Facts.ForSingleTracker
         public Option<Comment> Comment { get; }
         public Event EventReference { get; }
         
-        public BestEventFact(string factName, string description, double priority, double rating, DateTimeOffset happensDate, Option<Comment> comment, Event eventReference)
+        internal BestEventFact(string factName, string description, double priority, double rating, DateTimeOffset happensDate, Option<Comment> comment, Event eventReference)
         {
             FactName = factName;
             Description = description;

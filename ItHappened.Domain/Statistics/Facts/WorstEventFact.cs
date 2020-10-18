@@ -1,10 +1,9 @@
 ﻿using System;
 using ItHappened.Domain;
-using ItHappened.Domain.EventCustomization;
-using ItHappened.Domain.Statistics.Facts;
+using ItHappened.Domain.Statistics;
 using LanguageExt;
 
-namespace ItHappend.Domain.Statistics.StatisticsFacts
+namespace ItHappend.Domain.Statistics
 {
     public class WorstEventFact : IStatisticsFact
     {
@@ -16,7 +15,7 @@ namespace ItHappend.Domain.Statistics.StatisticsFacts
         public Option<Comment> Comment { get; }
         public Event EventReference { get; }
         
-        public WorstEventFact(string factName, 
+        internal WorstEventFact(string factName, 
             string description, 
             double priority, 
             double rating,

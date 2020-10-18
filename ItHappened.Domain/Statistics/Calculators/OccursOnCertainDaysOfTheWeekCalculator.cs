@@ -1,16 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 using System.Text;
-using ItHappend.Domain.Statistics.StatisticsFacts;
 using ItHappened.Domain;
-using ItHappened.Domain.EventTracker;
-using ItHappened.Domain.Statistics.Calculators.ForSingleTracker;
+using ItHappened.Domain.Statistics;
 using LanguageExt;
-using LanguageExt.UnsafeValueAccess;
 
-namespace ItHappend.Domain.Statistics.SingleTrackerCalculator
+namespace ItHappend.Domain.Statistics
 {
     public class
         OccursOnCertainDaysOfTheWeekCalculator : ISingleTrackerStatisticsCalculator<OccursOnCertainDaysOfTheWeekFact>

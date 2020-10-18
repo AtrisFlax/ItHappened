@@ -1,7 +1,5 @@
 ﻿using System;
 using ItHappened.Domain;
-using ItHappened.Domain.EventCustomization;
-using ItHappened.Domain.Repositories;
 using LanguageExt;
 
 namespace ItHappened.Application.Services.EventService

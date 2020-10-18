@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace ItHappened.Domain.EventCustomization
+namespace ItHappened.Domain
 {
     public class GeoTag
     {

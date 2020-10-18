@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using ItHappened.Domain.Statistics.Facts.ForMultipleTrackers;
 using LanguageExt;
 
-namespace ItHappened.Domain.Statistics.Calculators.ForMultipleTrackers
+namespace ItHappened.Domain.Statistics
 {
     public class MostFrequentEventCalculator : IMultipleTrackersStatisticsCalculator<MostFrequentEventFact>
     {

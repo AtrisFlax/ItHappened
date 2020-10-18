@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace ItHappened.Domain.Statistics.Facts.ForSingleTracker
+namespace ItHappened.Domain.Statistics
 {
     public class SpecificTimeOfDayEventFact : ISingleTrackerStatisticsFact
     {
-        protected internal SpecificTimeOfDayEventFact
-            (double percentage, string eventName, string timeOfTheDay, 
+        internal SpecificTimeOfDayEventFact
+        (double percentage, string eventName, string timeOfTheDay, 
             IEnumerable<(string title, string timeOfTheDay, double percentage)> visualizationData)
         {
             Percentage = Math.Round(percentage);
