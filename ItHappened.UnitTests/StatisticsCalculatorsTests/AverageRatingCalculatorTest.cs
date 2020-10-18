@@ -22,7 +22,7 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
                 .Build();
             foreach (var @event in eventList)
             {
-                eventTracker.TryAddEvent(@event);
+                eventTracker.AddEvent(@event);
             }
 
             //act 
@@ -48,7 +48,7 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
                 .Build();
             foreach (var @event in eventList)
             {
-                eventTracker.TryAddEvent(@event);
+                eventTracker.AddEvent(@event);
             }
 
             //act 
@@ -70,7 +70,7 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
                 .TrackerEmpty(Guid.NewGuid(), Guid.NewGuid(), "TrackerName")
                 .WithRating()
                 .Build();
-            eventTracker.TryAddEvent(@event);
+            eventTracker.AddEvent(@event);
 
             //act 
             var fact = new AverageRatingCalculator().Calculate(eventTracker);
@@ -90,7 +90,7 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
                 .Build();
             foreach (var @event in eventList)
             {
-                eventTracker.TryAddEvent(@event);
+                eventTracker.AddEvent(@event);
             }
 
             //act 

@@ -17,7 +17,7 @@ namespace ItHappened.UnitTests
 
             //act
             var eventTracker = CreateEventTracker(eventList);
-            eventTracker.TryAddEvent(eventForAdding);
+            eventTracker.AddEvent(eventForAdding);
 
             //assert
             Assert.That(eventTracker.Events, Is.EquivalentTo(new List<Event> {initEvent, eventForAdding}));

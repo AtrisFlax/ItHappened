@@ -2,12 +2,10 @@
 {
     public class Scale
     {
-        public string MeasurementUnitName { get; }
         public string Value { get; }
 
-        public Scale(string measurementUnitName, string value)
+        public Scale(string value)
         {
-            MeasurementUnitName = measurementUnitName;
             Value = value;
         }
     }
