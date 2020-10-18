@@ -10,10 +10,10 @@ namespace ItHappened.Domain.Statistics
         public double Priority { get; }
         public double Rating { get; }
         public DateTimeOffset HappensDate { get; }
-        public Option<Comment> Comment { get; }
+        public Comment Comment { get; }
         public Event EventReference { get; }
         
-        internal BestEventFact(string factName, string description, double priority, double rating, DateTimeOffset happensDate, Option<Comment> comment, Event eventReference)
+        internal BestEventFact(string factName, string description, double priority, double rating, DateTimeOffset happensDate, Comment comment, Event eventReference)
         {
             FactName = factName;
             Description = description;

@@ -51,6 +51,7 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
             Assert.AreEqual(expected, actual);
         }
         
+        [Test]
         public void CalculateWhenBestEventHappenedLessThanWeekAgo_ReturnNone()
         {
             _events.Add(CreateEventWithoutComment(_creatorId));
@@ -65,33 +66,18 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
         }
         
         [Test]
-        public void CalculateWithoutComment_ReturnsFactWithoutComment()
+        public void CalculateGoodCase_ReturnsFact()
         {
             _events[0].HappensDate = DateTimeOffset.Now - TimeSpan.FromDays(91);
             _events.Add(CreateEventWithoutComment(_creatorId));
             _events[9].Rating = 9;
             _events[9].HappensDate = DateTimeOffset.Now - TimeSpan.FromDays(8);
-
-            var bestEvent = _bestEventCalculator.Calculate(_eventTracker);
-
-            Assert.True(bestEvent.ValueUnsafe().Comment.IsNone);
-        }
         
-        [Test]
-        public void CalculateWithComment_ReturnsFactWithComment()
-        {
-            _events[0].HappensDate = DateTimeOffset.Now - TimeSpan.FromDays(91);
-            _events.Add(CreateEventWithoutComment(_creatorId));
-            _events[9].Rating = 1;
-            _events[9].HappensDate = DateTimeOffset.Now - TimeSpan.FromDays(8);
-            Option<Comment> comment = new Comment("AddedComment");
-            _events[9].Comment = comment; 
-            
             var bestEvent = _bestEventCalculator.Calculate(_eventTracker);
-            
-            Assert.True(bestEvent.ValueUnsafe().Comment.IsSome);
-        }
         
+            Assert.True(bestEvent.IsSome);
+        }
+
         private Event CreateEventWithoutComment(Guid creatorId)
         {
             return EventBuilder

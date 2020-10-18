@@ -12,7 +12,7 @@ namespace ItHappend.Domain.Statistics
         public double Priority { get; }
         public double Rating { get; }
         public DateTimeOffset HappensDate { get; }
-        public Option<Comment> Comment { get; }
+        public Comment Comment { get; }
         public Event EventReference { get; }
         
         internal WorstEventFact(string factName, 
@@ -20,7 +20,7 @@ namespace ItHappend.Domain.Statistics
             double priority, 
             double rating,
             DateTimeOffset happensDate, 
-            Option<Comment> comment, 
+            Comment comment, 
             Event eventReference)
         {
             FactName = factName;
