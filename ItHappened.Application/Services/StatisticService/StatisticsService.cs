@@ -22,7 +22,7 @@ namespace ItHappened.Application.Services.StatisticService
         
         public IReadOnlyCollection<Option<IMultipleTrackersStatisticsFact>> GetMultipleTrackersFacts(Guid userId)
         {
-            var user = _userRepository.TryLoadUserInfo(userId);
+            var user = _userRepository.LoadUser(userId);
             return _multipleContainer
                 .GetFacts(user.EventTrackers)
                 .Where(fact => !fact.IsNone)
