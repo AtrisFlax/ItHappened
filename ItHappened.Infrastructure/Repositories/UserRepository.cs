@@ -20,7 +20,7 @@ namespace ItHappened.Infrastructure.Repositories
 
         public User LoadUser(Guid userId)
         {
-            throw new NotImplementedException();
+            return _users[userId];
         }
 
         public User TryLoadUserAuthInfo(string login)

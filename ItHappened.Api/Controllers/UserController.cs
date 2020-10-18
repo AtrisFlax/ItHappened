@@ -4,7 +4,6 @@ using ItHappened.Api.Responses;
 using ItHappened.Application.Services.EventTrackerService;
 using ItHappened.Application.Services.UserService;
 using ItHappened.Domain;
-using ItHappened.Domain.User;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ItHappened.Api.Controllers
@@ -23,7 +22,6 @@ namespace ItHappened.Api.Controllers
         }
 
         [HttpPost]
-        [Route("{userId}")]
         [ProducesResponseType(404)]
         public IActionResult CreateUser([FromBody]CreateUserRequest createUserRequest)
         {
@@ -36,16 +34,15 @@ namespace ItHappened.Api.Controllers
         [Route("{userId}")]
         [ProducesResponseType(200, Type = typeof(User))]
         [ProducesResponseType(404)]
-        public IActionResult GetUser([FromBody]GetUserRequest userRequest)
+        public IActionResult GetUser(string userId)
         {
-            var user = _userService.GetUser(userRequest.Id);
+            var user = _userService.GetUser(Guid.Parse(userId));
             if (user == null)
             {
                 return NotFound();
             }
 
-            //var response = new GetUserResponse(user.Guid);
-
+            var response = new GetUserResponse(user.Name);
             return Ok(user);
         }
 
@@ -63,7 +60,7 @@ namespace ItHappened.Api.Controllers
         [ProducesResponseType(200, Type = typeof(int))]
         public IActionResult AddTracker([FromRoute]AddTrackingRequest request)
         {
-            var postId = _trackerService.();
+            var postId = _trackerService.CreateTracker(request.UserId, request.TrackingName);
             return Ok(postId);
         }
     }

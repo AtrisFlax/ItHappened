@@ -1,5 +1,7 @@
-﻿using ItHappened.Domain.Statistics;
+﻿using ItHappened.Application.Services.StatisticService;
+using ItHappened.Domain.Statistics;
 using ItHappened.Infrastructure;
+using ItHappened.Infrastructure.Repositories;
 using NUnit.Framework;
 
 namespace ItHappened.UnitTests
@@ -9,7 +11,7 @@ namespace ItHappened.UnitTests
         [Test]
         public void Usage()
         {
-            
+
         }
     }
 }

@@ -2,6 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using ItHappened.Application.Services.EventTrackerService;
+using ItHappened.Application.Services.UserService;
+using ItHappened.Domain;
+using ItHappened.Infrastructure.Repositories;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -26,6 +30,11 @@ namespace ItHappened.Api
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
+            services.AddSingleton<IUserService, UserService>();
+            services.AddSingleton<IEventTrackerService, EventTrackerService>();
+            services.AddSingleton<IUserRepository, UserRepository>();
+            services.AddSingleton<IEventTrackerRepository, EventTrackerRepository>();
+            services.AddSingleton<IEventRepository, EventRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

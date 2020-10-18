@@ -4,11 +4,11 @@ namespace ItHappened.Api.Responses
 {
     public class GetUserResponse
     {
-        public GetUserResponse(Guid id)
+        public GetUserResponse(string name)
         {
-            Id = id;
+            Name = name;
         }
 
-        public Guid Id { get; }
+        public string Name { get; }
     }
 }
