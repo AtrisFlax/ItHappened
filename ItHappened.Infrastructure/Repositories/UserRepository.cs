@@ -8,13 +8,13 @@ namespace ItHappened.Infrastructure.Repositories
 {
     public class UserRepository : IUserRepository
     {
-        private readonly Dictionary<Guid, UserAuthInfo> _users = new Dictionary<Guid, UserAuthInfo>();
-        public void SaveUser(UserAuthInfo newUser)
+        private readonly Dictionary<Guid, User> _users = new Dictionary<Guid, User>();
+        public void SaveUser(User newUser)
         {
             _users.Add(newUser.Guid, newUser);
         }
 
-        public UserAuthInfo TryLoadUserAuthInfo(Guid userId)
+        public User TryLoadUserAuthInfo(Guid userId)
         {
             return _users[userId];
         }
@@ -24,10 +24,10 @@ namespace ItHappened.Infrastructure.Repositories
             throw new NotImplementedException();
         }
 
-        public UserAuthInfo TryLoadUserAuthInfo(string login)
+        public User TryLoadUserAuthInfo(string login)
         {
             return _users
-                .First(dictionaryItem => dictionaryItem.Value.Login == login)
+                .First(dictionaryItem => dictionaryItem.Value.Name == login)
                 .Value;
         }
     }
