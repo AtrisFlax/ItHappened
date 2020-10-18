@@ -6,7 +6,7 @@ namespace ItHappened.Domain
     {
         void SaveEventTracker(EventTracker newEventTracker);
         EventTracker LoadEventTracker(Guid eventTrackerId);
-        IList<EventTracker> LoadUserTrackers(Guid userId);
+        IEnumerable<EventTracker> LoadUserTrackers(Guid userId);
         void DeleteEventTracker(Guid eventId);
     }
 }

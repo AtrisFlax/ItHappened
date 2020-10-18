@@ -18,7 +18,7 @@ namespace ItHappened.Infrastructure.Repositories
             return _eventTrackers[eventTrackerId];
         }
 
-        public IList<EventTracker> LoadUserTrackers(Guid userId)
+        public IEnumerable<EventTracker> LoadUserTrackers(Guid userId)
         {
             return _eventTrackers
                 .Values.Where(tracker => tracker.CreatorId == userId).ToList();
