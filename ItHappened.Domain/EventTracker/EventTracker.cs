@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using LanguageExt;
+using Serilog;
 
 namespace ItHappened.Domain
 {
@@ -56,48 +57,19 @@ namespace ItHappened.Domain
             HasComment = eventTrackerBuilder.HasComment;
         }
 
-        public bool TryAddEvent(Event newEvent)
+        public bool AddEvent(Event newEvent)
         {
             if (IsTrackerAndEventCustomizationsConfirm(newEvent))
             {
-                //TODO Log.Warning and return 
+                Log.Information("Cant add event, wrong customization");
                 return false;
             }
-            
-            //TODO container.Calculate();
             Events.Add(newEvent);
-            //TODO Log.Verbose and return 
             return true;
         }
-
-        private bool IsTrackerAndEventCustomizationsConfirm(Event newEvent)
-        {
-            if (HasPhoto != newEvent.Photo.IsSome)
-            {
-                return true;
-            }
-
-            if (HasScale != newEvent.Scale.IsSome)
-            {
-                return true;
-            }
-
-            if (HasRating != newEvent.Rating.IsSome)
-            {
-                return true;
-            }
-
-            if (HashGeoTag != newEvent.GeoTag.IsSome)
-            {
-                return true;
-            }
-
-            return HasComment != newEvent.Comment.IsSome;
-        }
-
+        
         public void RemoveEvent(Event eventToRemove)
         {
-            //TODO Log.Verbose and return 
             Events.Remove(eventToRemove);
         }
 
@@ -108,5 +80,27 @@ namespace ItHappened.Domain
                 eventItem.HappensDate.UtcDateTime <= to.UtcDateTime).ToArray();
             return filteredEvents;
         }
+        
+        private bool IsTrackerAndEventCustomizationsConfirm(Event newEvent)
+        {
+            if (HasPhoto != newEvent.Photo.IsSome)
+            {
+                return true;
+            }
+            if (HasScale != newEvent.Scale.IsSome)
+            {
+                return true;
+            }
+            if (HasRating != newEvent.Rating.IsSome)
+            {
+                return true;
+            }
+            if (HashGeoTag != newEvent.GeoTag.IsSome)
+            {
+                return true;
+            }
+            return HasComment != newEvent.Comment.IsSome;
+        }
+
     }
 }

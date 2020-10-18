@@ -12,7 +12,7 @@ namespace ItHappened.Infrastructure.Repositories
             _events.Add(newEvent.Id, newEvent);
         }
 
-        public Event TryLoadEvent(Guid eventId)
+        public Event LoadEvent(Guid eventId)
         {
             return _events[eventId];
         }
