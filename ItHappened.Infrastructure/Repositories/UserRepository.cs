@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using ItHappened.Domain;
-using ItHappened.Domain.User;
 
 namespace ItHappened.Infrastructure.Repositories
 {
@@ -19,7 +18,7 @@ namespace ItHappened.Infrastructure.Repositories
             return _users[userId];
         }
 
-        public UserInfo TryLoadUserInfo(Guid userId)
+        public User LoadUser(Guid userId)
         {
             throw new NotImplementedException();
         }

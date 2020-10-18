@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace ItHappened.Domain.User
+namespace ItHappened.Domain
 {
     public class User
     {

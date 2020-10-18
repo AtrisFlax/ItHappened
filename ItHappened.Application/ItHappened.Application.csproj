@@ -12,4 +12,8 @@
       <ProjectReference Include="..\ItHappened.Domain\ItHappened.Domain.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <PackageReference Include="Serilog" Version="2.10.1-dev-01249" />
+    </ItemGroup>
+
 </Project>

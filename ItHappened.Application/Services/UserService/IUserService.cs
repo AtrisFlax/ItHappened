@@ -1,12 +1,11 @@
 ﻿using System;
-using ItHappened.Domain.User;
-using LanguageExt;
+using ItHappened.Domain;
 
 namespace ItHappened.Application.Services.UserService
 {
     public interface IUserService
     {
         Guid CreateUser(string name);
-        User GetUser(Guid userId);
+        User GetUser(Guid id);
     }
 }
