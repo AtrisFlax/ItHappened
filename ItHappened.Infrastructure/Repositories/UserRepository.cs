@@ -12,22 +12,10 @@ namespace ItHappened.Infrastructure.Repositories
         {
             _users.Add(newUser.Guid, newUser);
         }
-
-        public User TryLoadUserAuthInfo(Guid userId)
-        {
-            return _users[userId];
-        }
-
+        
         public User LoadUser(Guid userId)
         {
-            throw new NotImplementedException();
-        }
-
-        public User TryLoadUserAuthInfo(string login)
-        {
-            return _users
-                .First(dictionaryItem => dictionaryItem.Value.Name == login)
-                .Value;
+            return _users[userId];
         }
     }
 }
