@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using LanguageExt.UnsafeValueAccess;
 
 namespace ItHappened.Domain.Statistics
 {
@@ -18,8 +17,7 @@ namespace ItHappened.Domain.Statistics
             IEnumerable<EventTracker> eventTrackers) =>
             _calculators
                 .Select(calculator => calculator.Calculate(eventTrackers))
-                .Where(fact => !fact.IsNone)
-                .Select(fact => fact.ValueUnsafe())
+                .Somes()
                 .OrderBy(fact => fact.Priority)
                 .ToList();
     }
