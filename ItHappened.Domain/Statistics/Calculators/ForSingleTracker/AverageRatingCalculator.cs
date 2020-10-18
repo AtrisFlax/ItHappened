@@ -12,13 +12,10 @@ namespace ItHappened.Domain.Statistics.Calculators.ForSingleTracker
         {
             if (!CanCalculate(eventTracker)) return Option<AverageRatingFact>.None;
             var averageRating = eventTracker.Events.Average(x => x.Rating.ValueUnsafe());
-            var type = "Среднее значение оценки";
-            var description = $"Средний рейтинг для события {eventTracker.Name} равен {averageRating}";
-            var priority = Math.Sqrt(averageRating);
             return Option<AverageRatingFact>.Some(new AverageRatingFact(
-                type,
-                description,
-                priority,
+                "Среднее значение оценки",
+                $"Средний рейтинг для события {eventTracker.Name} равен {averageRating}",
+                Math.Sqrt(averageRating),
                 averageRating
             ));
         }
@@ -29,6 +26,12 @@ namespace ItHappened.Domain.Statistics.Calculators.ForSingleTracker
             {
                 return false;
             }
+
+            if (eventTracker.Events.Any(@event => @event.Rating == Option<double>.None))
+            {
+                return false;
+            }
+
             return eventTracker.Events.Count > 1;
         }
     }
