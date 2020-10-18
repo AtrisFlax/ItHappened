@@ -3,18 +3,16 @@ using System.Linq;
 
 namespace ItHappened.Domain.Statistics
 {
-    public class MultipleTrackersStatisticsProvider : IMultipleTrackersStatisticsProvider
+    public class GeneralFactProvider : IGeneralFactProvider
     {
-        private readonly List<IGeneralCalculator> _calculators =
-            new List<IGeneralCalculator>();
+        private readonly List<IGeneralCalculator> _calculators = new List<IGeneralCalculator>();
 
         public void Add(IGeneralCalculator calculator)
         {
             _calculators.Add(calculator);
         }
 
-        public IReadOnlyCollection<IFact> GetFacts(
-            IEnumerable<EventTracker> eventTrackers)
+        public IReadOnlyCollection<IGeneralFact> GetFacts(IEnumerable<EventTracker> eventTrackers)
         {
             return _calculators
                 .Select(calculator => calculator.Calculate(eventTrackers))

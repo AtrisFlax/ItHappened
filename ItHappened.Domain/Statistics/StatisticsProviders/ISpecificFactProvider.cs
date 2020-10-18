@@ -2,9 +2,9 @@
 
 namespace ItHappened.Domain.Statistics
 {
-    public interface ISingleTrackerStatisticsProvider
+    public interface ISpecificFactProvider
     {
         void Add(ISpecificCalculator calculator);
-        IReadOnlyCollection<IFact> GetFacts(EventTracker eventTracker);
+        IReadOnlyCollection<ISpecificFact> GetFacts(EventTracker eventTracker);
     }
 }
