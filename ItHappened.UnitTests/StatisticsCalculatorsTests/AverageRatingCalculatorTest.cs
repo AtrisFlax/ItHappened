@@ -37,7 +37,6 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
             });
         }
 
-
         [Test]
         public void EventTrackerHasNoRationCustomization_CalculateFailed()
         {
