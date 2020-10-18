@@ -21,7 +21,7 @@ namespace Usage
             return new CompositionRoot()
             {
                 EventService = new EventService(eventRepository),
-                UserService = new UserService(userRepository, passwordHasher, eventTrackerRepository),
+                //UserService = new UserService(userRepository, passwordHasher, eventTrackerRepository),
                 EventTrackerService = new EventTrackerService(eventTrackerRepository, userRepository, eventRepository)
             };
         }

@@ -1,5 +1,6 @@
 ﻿using System;
 using ItHappened.Api.Requests;
+using ItHappened.Api.Responses;
 using ItHappened.Application.Services.EventTrackerService;
 using ItHappened.Application.Services.UserService;
 using ItHappened.Domain;
@@ -21,62 +22,46 @@ namespace ItHappened.Api.Controllers
             _trackerService = trackerService;
         }
 
-        [HttpGet]
+        [HttpPost]
         [Route("{userId}")]
         [ProducesResponseType(404)]
-        public IActionResult AuthenticateUser([FromBody]LoginRequest loginRequest)
+        public IActionResult CreateUser([FromBody]CreateUserRequest createUserRequest)
         {
-            var userInfo = _userService.AuthenticateUser(loginRequest.Login, loginRequest.Password);
-            if (userInfo.status == UserServiceStatusCodes)
-            {
-                return NotFound();
-            }
-
-            var response = GetUserResponse(userInfo);
-
+            var userId = _userService.CreateUser(createUserRequest.Name);
+            var response = new CreateUserResponse(userId);
             return Ok(response);
         }
         
         [HttpGet]
-        [ProducesResponseType(200, Type = typeof(UserInfo[]))]
-        public IActionResult GetAllUsers([FromQuery] int? take, [FromQuery] int? skip)
-        {
-            var users = _us.GetAll(take, skip).Select(GetUserResponse).ToArray();
-            return Ok(users);
-        }
-
-        [HttpGet]
         [Route("{userId}")]
         [ProducesResponseType(200, Type = typeof(User))]
         [ProducesResponseType(404)]
-        public IActionResult GetUser(int userId)
+        public IActionResult GetUser([FromBody]GetUserRequest userRequest)
         {
-            var user = _userRepository.TryGetUserById(userId);
+            var user = _userService.GetUser(userRequest.Id);
             if (user == null)
             {
                 return NotFound();
             }
 
-            var response = GetUserResponse(user);
+            //var response = new GetUserResponse(user.Guid);
 
-            return Ok(response);
+            return Ok(user);
         }
 
         [HttpGet]
-        [Route("{userId}/posts")]
-        [ProducesResponseType(200, Type = typeof(Post[]))]
-        public IActionResult GetPostsByUser([FromRoute]int userId)
+        [Route("{userId}/trackers")]
+        [ProducesResponseType(200, Type = typeof(EventTracker[]))]
+        public IActionResult GetPostsByUser([FromRoute]GetUserTrackingsRequest trackingsRequest)
         {
-            var posts = _postRepository.GetPostsByUser(userId);
-            return Ok(posts);
+            var trackers = _trackerService.GetAllTrackers(trackingsRequest.Id);
+            return Ok(trackers);
         }
         
         [HttpPost]
-        [Route("{userId}/posts")]
-        [ServiceFilter(typeof(AuthenticationFilter))]
+        [Route("{userId}/trackers")]
         [ProducesResponseType(200, Type = typeof(int))]
-        [RandomErrorFilter(ErrorProbability = 0.3)]
-        public IActionResult AddPost([FromRoute]int userId, AddPostRequest request)
+        public IActionResult AddPost([FromRoute]AddTrackingRequest request)
         {
             var postId = _postRepository.AddPost(userId, request.Title, request.Content);
             return Ok(postId);

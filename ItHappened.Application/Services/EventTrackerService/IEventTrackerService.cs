@@ -10,7 +10,10 @@ namespace ItHappened.Application.Services.EventTrackerService
         bool TryAddEventToTracker(Guid trackerId, Guid eventId, Guid initiatorId);
         void RemoveEventFromTracker(Guid trackerId, Guid eventId, Guid initiatorId);
         void DeleteTracker(Guid trackerId, Guid initiatorId);
-
+        
+        IReadOnlyCollection<EventTracker> GetAllTrackers(Guid userId);
+        
+        
         IReadOnlyCollection<Event> FilterTrackerEventsByTimeSpan(Guid trackerId, Guid initiatorId, 
             DateTimeOffset from, DateTimeOffset to);
     }

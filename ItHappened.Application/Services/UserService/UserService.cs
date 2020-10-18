@@ -1,8 +1,6 @@
 ﻿using System;
 using ItHappened.Domain;
 using ItHappened.Domain.User;
-using LanguageExt;
-using Serilog;
 
 namespace ItHappened.Application.Services.UserService
 {
@@ -19,8 +17,13 @@ namespace ItHappened.Application.Services.UserService
         {
             var user = new User(Guid.NewGuid(), name, DateTimeOffset.UtcNow);
             _userRepository.SaveUser(user);
-            Log.Verbose($"User with login {name} added with id={user.Guid}");
+            //Log.Verbose($"User with login {name} added with id={user.Guid}");
             return user.Guid;
+        }
+
+        public User GetUser(Guid userId)
+        {
+            throw new NotImplementedException();
         }
     }
 }
