@@ -52,16 +52,16 @@ namespace ItHappened.Api.Controllers
         [HttpGet]
         [Route("{userId}/trackers")]
         [ProducesResponseType(200, Type = typeof(EventTracker[]))]
-        public IActionResult GetPostsByUser([FromRoute]GetUserTrackingsRequest trackingsRequest)
+        public IActionResult GetUserTrackers([FromRoute]GetUserTrackingsRequest trackerRequest)
         {
-            var trackers = _trackerService.GetAllTrackers(trackingsRequest.Id);
+            var trackers = _trackerService.GetAllTrackers(trackerRequest.Id);
             return Ok(trackers);
         }
         
         [HttpPost]
         [Route("{userId}/trackers")]
         [ProducesResponseType(200, Type = typeof(int))]
-        public IActionResult AddPost([FromRoute]AddTrackingRequest request)
+        public IActionResult AddTracker([FromRoute]AddTrackingRequest request)
         {
             var postId = _postRepository.AddPost(userId, request.Title, request.Content);
             return Ok(postId);
