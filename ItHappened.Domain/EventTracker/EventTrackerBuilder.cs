@@ -9,11 +9,9 @@ namespace ItHappened.Domain
         public Guid Id { get; private set; }
         public Guid CreatorId { get; private set; }
         public string Name { get; private set; }
-        public IList<Event> Events { get; private set; }
-
+        public Option<string> ScaleMeasurementUnit { get; private set; }
         public bool HasPhoto { get; private set; }
         public bool HasScale { get; private set; }
-        public Option<string> ScaleMeasurementUnit { get; private set; }
         public bool HasRating { get; private set; }
         public bool HashGeoTag { get; private set; }
         public bool HasComment { get; private set; }
@@ -25,7 +23,6 @@ namespace ItHappened.Domain
                 CreatorId = creatorId,
                 Id = trackerId,
                 Name = name,
-                Events = new List<Event>()
             };
         }
         
