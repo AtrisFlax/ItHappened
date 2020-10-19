@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using ItHappend.Domain.Statistics;
 using ItHappened.Domain;
 using ItHappened.Domain.Statistics;
+using ItHappened.Infrastructure.Repositories;
 using LanguageExt;
 using NUnit.Framework;
 
@@ -15,14 +16,16 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
         private List<Event> _events;
         private EventTracker _eventTracker;
         private WorstEventCalculator _worstEventCalculator;
-
+        private IEventRepository _eventRepository;
+        
         [SetUp]
         public void Init()
         {
+            _eventRepository = new EventRepository();
             _creatorId = Guid.NewGuid();
             _events = CreateEvents(_creatorId, InitialEventsNumber);
             _eventTracker = CreateEventTracker(_events);
-            _worstEventCalculator = new WorstEventCalculator();
+            _worstEventCalculator = new WorstEventCalculator(_eventRepository);
         }
 
         [Test]
@@ -104,10 +107,7 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
             var tracker = EventTrackerBuilder
                 .Tracker(Guid.NewGuid(), _eventTracker.Id, "tracker")
                 .Build();
-            foreach (var @event in eventList)
-            {
-                tracker.AddEvent(@event);
-            }
+
             return tracker;
         }
     }

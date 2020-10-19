@@ -3,12 +3,21 @@ using System.Collections.Generic;
 using System.Linq;
 using ItHappened.Domain;
 using ItHappened.Domain.Statistics;
+using ItHappened.Infrastructure.Repositories;
 using NUnit.Framework;
 
 namespace ItHappened.UnitTests.StatisticsCalculatorsTests
 {
     public class AverageRatingCalculatorTest
     {
+        private IEventRepository _eventRepository;
+        
+        [SetUp]
+        public void Init()
+        {
+            _eventRepository = new EventRepository();
+        }
+        
         [Test]
         public void EventTrackerHasTwoRatingAndEvents_CalculateSuccess()
         {
@@ -18,11 +27,10 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
                 .Tracker(Guid.NewGuid(), Guid.NewGuid(), "TrackerName")
                 .WithRating()
                 .Build();
-            var eventList = CreateTwoEvents(eventTracker.Id,ratings);
-            foreach (var @event in eventList) eventTracker.AddEvent(@event);
-
-            //act 
-            var fact = new AverageRatingCalculator().Calculate(eventTracker).ConvertTo<AverageRatingFact>();
+            var events = CreateTwoEvents(eventTracker.Id,ratings);
+            _eventRepository.AddRangeOfEvents(events);
+                //act 
+            var fact = new AverageRatingCalculator(_eventRepository).Calculate(eventTracker).ConvertTo<AverageRatingFact>();
             //assert 
             Assert.True(fact.IsSome);
             fact.Do(f =>
@@ -40,11 +48,10 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
             var eventTracker = EventTrackerBuilder
                 .Tracker(Guid.NewGuid(), Guid.NewGuid(), "TrackerName")
                 .Build();
-            var eventList = CreateTwoEvents(eventTracker.Id);
-            foreach (var @event in eventList) eventTracker.AddEvent(@event);
-
+            var events = CreateTwoEvents(eventTracker.Id);
+            _eventRepository.AddRangeOfEvents(events);
             //act 
-            var fact = new AverageRatingCalculator().Calculate(eventTracker).ConvertTo<AverageRatingFact>();
+            var fact = new AverageRatingCalculator(_eventRepository).Calculate(eventTracker).ConvertTo<AverageRatingFact>();
 
             //assert 
             Assert.True(fact.IsNone);
@@ -62,10 +69,9 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
             var @event = EventBuilder
                 .Event(Guid.NewGuid(), Guid.NewGuid(), eventTracker.Id, DateTimeOffset.UtcNow, "Event1").WithRating(ratings[0])
                 .Build();
-            eventTracker.AddEvent(@event);
-
+            _eventRepository.AddEvent(@event);
             //act 
-            var fact = new AverageRatingCalculator().Calculate(eventTracker).ConvertTo<AverageRatingFact>();
+            var fact = new AverageRatingCalculator(_eventRepository).Calculate(eventTracker).ConvertTo<AverageRatingFact>();
 
             //assert 
             Assert.True(fact.IsNone);
@@ -79,11 +85,10 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
             var eventTracker = EventTrackerBuilder
                 .Tracker(Guid.NewGuid(), Guid.NewGuid(), "TrackerName")
                 .Build();
-            var eventList = CreateTwoEventOneOfThemWithoutRating(eventTracker.Id);
-            foreach (var @event in eventList) eventTracker.AddEvent(@event);
-
+            var events = CreateTwoEventOneOfThemWithoutRating(eventTracker.Id);
+            _eventRepository.AddRangeOfEvents(events);
             //act 
-            var fact = new AverageRatingCalculator().Calculate(eventTracker).ConvertTo<AverageRatingFact>();
+            var fact = new AverageRatingCalculator(_eventRepository).Calculate(eventTracker).ConvertTo<AverageRatingFact>();
 
             //assert 
             Assert.True(fact.IsNone);

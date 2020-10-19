@@ -4,12 +4,20 @@ using System.Linq;
 using ItHappend.Domain.Statistics;
 using ItHappened.Domain;
 using ItHappened.Domain.Statistics;
+using ItHappened.Infrastructure.Repositories;
 using NUnit.Framework;
 
 namespace ItHappened.UnitTests.StatisticsCalculatorsTests
 {
     public class SumScaleFactCalculatorTest
     {
+        private IEventRepository _eventRepository;
+        
+        [SetUp]
+        public void Init()
+        {
+            _eventRepository = new EventRepository();
+        }
         [Test]
         public void EventTrackerHasTwoRatingAndEvents_CalculateSuccess()
         {
@@ -32,14 +40,9 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
                         .WithScale(scaleValues[1])
                         .Build()
                 };
-            
-            foreach (var @event in eventList)
-            {
-                eventTracker.AddEvent(@event);
-            }
 
             //act 
-            var fact = new SumScaleCalculator().Calculate(eventTracker).ConvertTo<SumScaleFact>();
+            var fact = new SumScaleCalculator(_eventRepository).Calculate(eventTracker).ConvertTo<SumScaleFact>();
             
             //assert 
             Assert.True(fact.IsSome);
@@ -69,13 +72,9 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
                         .WithScale(scaleValues[0])
                         .Build(),
                 };
-            foreach (var @event in eventList)
-            {
-                eventTracker.AddEvent(@event);
-            }
 
             //act 
-            var fact = new SumScaleCalculator().Calculate(eventTracker).ConvertTo<SumScaleFact>();
+            var fact = new SumScaleCalculator(_eventRepository).Calculate(eventTracker).ConvertTo<SumScaleFact>();
 
             //assert 
             Assert.True(fact.IsNone);
@@ -97,13 +96,9 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
                         .WithScale(scaleValues[0])
                         .Build(),
                 };
-            foreach (var @event in eventList)
-            {
-                eventTracker.AddEvent(@event);
-            }
 
             //act 
-            var fact = new SumScaleCalculator().Calculate(eventTracker).ConvertTo<SumScaleFact>();
+            var fact = new SumScaleCalculator(_eventRepository).Calculate(eventTracker).ConvertTo<SumScaleFact>();
 
             //assert 
             Assert.True(fact.IsNone);
@@ -130,13 +125,9 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
                         .Event(Guid.NewGuid(), Guid.NewGuid(), eventTracker.Id, DateTimeOffset.UtcNow, "Event2")
                         .Build()
                 };
-            foreach (var @event in eventList)
-            {
-                eventTracker.AddEvent(@event);
-            }
 
             //act 
-            var fact = new SumScaleCalculator().Calculate(eventTracker).ConvertTo<SumScaleFact>();
+            var fact = new SumScaleCalculator(_eventRepository).Calculate(eventTracker).ConvertTo<SumScaleFact>();
 
             //assert 
             Assert.True(fact.IsNone);

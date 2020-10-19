@@ -4,22 +4,31 @@ using System.Linq;
 using ItHappend.Domain.Statistics;
 using ItHappened.Domain;
 using ItHappened.Domain.Statistics;
+using ItHappened.Infrastructure.Repositories;
 using NUnit.Framework;
 
 namespace ItHappened.UnitTests.StatisticsCalculatorsTests
 {
     public class OccursOnCertainDaysOfTheWeekCalculatorTest
     {
+        private IEventRepository _eventRepository;
+        
+        [SetUp]
+        public void Init()
+        {
+            _eventRepository = new EventRepository();
+        }
         [Test]
         public void EventTrackerHasTwoRatingAndEvents_CalculateSuccess()
         {
             //arrange 
             var eventTracker = CreateTracker();
             var eventList = CreateEvents_10Events_7OnMonday_3OnWednesday_1Tuesday(eventTracker.Id);
-            AddEvents(eventList, eventTracker);
+            _eventRepository.AddRangeOfEvents(eventList);
 
             //act 
-            var fact = new OccursOnCertainDaysOfTheWeekCalculator().Calculate(eventTracker).ConvertTo<OccursOnCertainDaysOfTheWeekFact>();
+            var fact = new OccursOnCertainDaysOfTheWeekCalculator(_eventRepository)
+                .Calculate(eventTracker).ConvertTo<OccursOnCertainDaysOfTheWeekFact>();
            
             //assert 
             Assert.True(fact.IsSome);
@@ -40,10 +49,11 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
             //arrange 
             var eventTracker = CreateTracker();
             var eventList = CreateEvents_10Events_7OnMonday_3OnWednesday_1Tuesday(eventTracker.Id);
-            AddEvents(eventList, eventTracker);
+            _eventRepository.AddRangeOfEvents(eventList);
 
             //act 
-            var fact = new OccursOnCertainDaysOfTheWeekCalculator().Calculate(eventTracker).ConvertTo<OccursOnCertainDaysOfTheWeekFact>();
+            var fact = new OccursOnCertainDaysOfTheWeekCalculator(_eventRepository)
+                .Calculate(eventTracker).ConvertTo<OccursOnCertainDaysOfTheWeekFact>();
 
             //assert 
             Assert.True(fact.IsSome);
@@ -65,10 +75,11 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
             //arrange 
             var eventTracker = CreateTracker();
             var eventList = CreateOneEventOnEveryDay(eventTracker.Id);
-            AddEvents(eventList, eventTracker);
+            _eventRepository.AddRangeOfEvents(eventList);
 
             //act 
-            var fact = new OccursOnCertainDaysOfTheWeekCalculator().Calculate(eventTracker).ConvertTo<OccursOnCertainDaysOfTheWeekFact>();
+            var fact = new OccursOnCertainDaysOfTheWeekCalculator(_eventRepository)
+                .Calculate(eventTracker).ConvertTo<OccursOnCertainDaysOfTheWeekFact>();
 
             //assert 
             Assert.True(fact.IsNone);
@@ -80,14 +91,6 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
                 .Tracker(Guid.NewGuid(), Guid.NewGuid(), "TrackerName")
                 .Build();
             return eventTracker;
-        }
-
-        private static void AddEvents(List<Event> eventList, EventTracker eventTracker)
-        {
-            foreach (var @event in eventList)
-            {
-                eventTracker.AddEvent(@event);
-            }
         }
 
         private static List<Event> CreateEvents_10Events_7OnMonday_3OnWednesday_1Tuesday(Guid trackerId)

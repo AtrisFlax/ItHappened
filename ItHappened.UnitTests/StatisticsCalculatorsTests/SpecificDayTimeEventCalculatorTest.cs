@@ -1,14 +1,22 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using ItHappened.Domain;
 using ItHappened.Domain.Statistics;
+using ItHappened.Infrastructure.Repositories;
 using NUnit.Framework;
 
 namespace ItHappened.UnitTests.StatisticsCalculatorsTests
 {
     public class SpecificDayTimeEventCalculatorTest
     {
+        private IEventRepository _eventRepository;
+        
+        [SetUp]
+        public void Init()
+        {
+            _eventRepository = new EventRepository();
+        }
+        
         [Test]
         public void CreateEventTrackerWithHeadacheAndSmokingEvents_CalculateSpecificDayTimeEventFact_CheckAProperties()
         {
@@ -26,7 +34,15 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
             var smokingEventMorning1 = CreateEventWithNameAndDateTime(userId, eventTracker.Id,"smoking", "2020.10.9 04:05:00");
             var smokingEventMorning2 = CreateEventWithNameAndDateTime(userId, eventTracker.Id,"smoking", "2020.10.9 09:05:00");
 
-            var specificDayTimeEventFact = new SpecificDayTimeEventCalculator().Calculate(eventTracker)
+            _eventRepository.AddRangeOfEvents(new []
+            {
+                headacheEventMorning1, headacheEventMorning2, headacheEventMorning3,
+                headacheEventMorning4, headacheEventMorning5, headacheEventMorning6, 
+                smokingEventMorning1, smokingEventMorning2 
+            });
+            
+            var specificDayTimeEventFact = new SpecificDayTimeEventCalculator(_eventRepository)
+                .Calculate(eventTracker)
                 .ConvertTo<SpecificTimeOfDayEventFact>();
 
             Assert.AreEqual(true, specificDayTimeEventFact.IsSome);

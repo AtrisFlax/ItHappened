@@ -10,8 +10,6 @@ namespace ItHappened.Domain
     {
         public Guid Id { get; }
         public string Name { get; }
-        public IList<Event> Events { get; }
-
         public Guid CreatorId { get; }
 
         public bool HasPhoto { get; }
@@ -34,7 +32,6 @@ namespace ItHappened.Domain
         {
             Id = id;
             Name = name;
-            Events = events;
             CreatorId = creatorId;
             HasPhoto = hasPhoto;
             HasScale = hasScale;
@@ -47,7 +44,6 @@ namespace ItHappened.Domain
         {
             Id = eventTrackerBuilder.Id;
             Name = eventTrackerBuilder.Name;
-            Events = eventTrackerBuilder.Events;
             CreatorId = eventTrackerBuilder.CreatorId;
             HasPhoto = eventTrackerBuilder.HasPhoto;
             HasScale = eventTrackerBuilder.HasScale;
@@ -56,31 +52,31 @@ namespace ItHappened.Domain
             HashGeoTag = eventTrackerBuilder.HashGeoTag;
             HasComment = eventTrackerBuilder.HasComment;
         }
-
-        public bool AddEvent(Event newEvent)
-        {
-            if (IsTrackerAndEventCustomizationsConfirm(newEvent))
-            {
-                Log.Information("Cant add event, wrong customization");
-                return false;
-            }
-
-            Events.Add(newEvent);
-            return true;
-        }
-
-        public void RemoveEvent(Event eventToRemove)
-        {
-            Events.Remove(eventToRemove);
-        }
-
-        public IReadOnlyCollection<Event> FilterEventsByTimeSpan(DateTimeOffset from, DateTimeOffset to)
-        {
-            var filteredEvents = Events.Where(eventItem =>
-                eventItem.HappensDate.UtcDateTime >= from.UtcDateTime &&
-                eventItem.HappensDate.UtcDateTime <= to.UtcDateTime).ToArray();
-            return filteredEvents;
-        }
+        
+        //TODO убрать как сделаю замену этим функциям
+        // public bool AddEvent(Event newEvent)
+        // {
+        //     if (IsTrackerAndEventCustomizationsConfirm(newEvent))
+        //     {
+        //         Log.Information("Cant add event, wrong customization");
+        //         return false;
+        //     }
+        //
+        //     return true;
+        // }
+        //
+        // public void RemoveEvent(Event eventToRemove)
+        // {
+        //     Events.Remove(eventToRemove);
+        // }
+        //
+        // public IReadOnlyCollection<Event> FilterEventsByTimeSpan(DateTimeOffset from, DateTimeOffset to)
+        // {
+        //     var filteredEvents = Events.Where(eventItem =>
+        //         eventItem.HappensDate.UtcDateTime >= from.UtcDateTime &&
+        //         eventItem.HappensDate.UtcDateTime <= to.UtcDateTime).ToArray();
+        //     return filteredEvents;
+        // }
 
         private bool IsTrackerAndEventCustomizationsConfirm(Event newEvent)
         {

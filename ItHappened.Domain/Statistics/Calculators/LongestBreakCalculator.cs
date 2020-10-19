@@ -6,6 +6,11 @@ namespace ItHappened.Domain.Statistics
 {
     public class LongestBreakCalculator : ISingleTrackerStatisticsCalculator
     {
+        private readonly IEventRepository _eventRepository;
+        public LongestBreakCalculator(IEventRepository eventRepository)
+        {
+            _eventRepository = eventRepository;
+        }
         public Option<IStatisticsFact> Calculate(EventTracker eventTracker)
         {
             if (!CanCalculate(eventTracker)) return Option<IStatisticsFact>.None;
@@ -28,7 +33,7 @@ namespace ItHappened.Domain.Statistics
 
         private bool CanCalculate(EventTracker eventTracker)
         {
-            if (eventTracker.Events.Count <= 10)
+            if (_eventRepository.LoadAllTrackerEvents(eventTracker.Id).Count <= 10)
                 return false;
 
             var (lastEventBeforeBreak, firstEventAfterBreak) = GetFirstAndLastEventOfTheLongestBreak(eventTracker);
@@ -43,7 +48,7 @@ namespace ItHappened.Domain.Statistics
         private (Event lastEventBeforeBreak, Event firstEventAfterBreak) GetFirstAndLastEventOfTheLongestBreak(
             EventTracker eventTracker)
         {
-            var events = eventTracker.Events;
+            var events = _eventRepository.LoadAllTrackerEvents(eventTracker.Id);
             var lastEventBeforeBreak = events[0];
             var firstEventAfterBreak = events[1];
             var maxDuration = TimeSpan.Zero;
@@ -63,7 +68,7 @@ namespace ItHappened.Domain.Statistics
 
         private double GetAverageDurationBetweenEvents(EventTracker eventTracker)
         {
-            var events = eventTracker.Events;
+            var events = _eventRepository.LoadAllTrackerEvents(eventTracker.Id);
             var numberOfBreaks = events.Count - 1;
             return (double)(events.First().HappensDate - events.Last().HappensDate).Days / numberOfBreaks;
         }

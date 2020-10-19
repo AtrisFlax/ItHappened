@@ -7,10 +7,15 @@ namespace ItHappened.Domain.Statistics
 {
     public class SumScaleCalculator : ISingleTrackerStatisticsCalculator
     {
+        private readonly IEventRepository _eventRepository;
+        public SumScaleCalculator(IEventRepository eventRepository)
+        {
+            _eventRepository = eventRepository;
+        }
         public Option<IStatisticsFact> Calculate(EventTracker eventTracker)
         {
             if (!CanCalculate(eventTracker)) return Option<IStatisticsFact>.None;
-            var sumScale = eventTracker.Events.Sum(x => x.Scale.ValueUnsafe());
+            var sumScale = _eventRepository.LoadAllTrackerEvents(eventTracker.Id).Sum(x => x.Scale.ValueUnsafe());
             var measurementUnit = eventTracker.ScaleMeasurementUnit.ValueUnsafe();
             return Option<IStatisticsFact>.Some(new SumScaleFact(
                 "Суммарное значение шкалы",
@@ -28,12 +33,12 @@ namespace ItHappened.Domain.Statistics
                 return false;
             }
 
-            if (eventTracker.Events.Any(@event => @event.Scale == Option<double>.None))
+            if (_eventRepository.LoadAllTrackerEvents(eventTracker.Id).Any(@event => @event.Scale == Option<double>.None))
             {
                 return false;
             }
 
-            return eventTracker.Events.Count > 1;
+            return _eventRepository.LoadAllTrackerEvents(eventTracker.Id).Count > 1;
         }
     }
 }

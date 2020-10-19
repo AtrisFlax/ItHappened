@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using ItHappened.Domain;
 using ItHappened.Domain.Statistics;
+using ItHappened.Infrastructure.Repositories;
 using NUnit.Framework;
 
 namespace ItHappened.UnitTests.StatisticsCalculatorsTests
@@ -13,14 +14,16 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
         private Guid _creatorId;
         private List<Event> _events;
         private EventTracker _eventTracker;
-
+        private IEventRepository _eventRepository;
+        
         [SetUp]
         public void Init()
         {
+            _eventRepository = new EventRepository();
             _creatorId = Guid.NewGuid();
             _events = CreateEvents(_creatorId, InitialEventsNumber);
             _eventTracker = CreateEventTracker(_events);
-            _bestEventCalculator = new BestEventCalculator();
+            _bestEventCalculator = new BestEventCalculator(_eventRepository);
         }
 
         [Test]
@@ -80,7 +83,7 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
             var events = new List<Event>();
             for (var i = 0; i < quantity; i++)
                 events.Add(EventBuilder
-                    .Event(Guid.NewGuid(), creatorId, _eventTracker.Id,DateTimeOffset.Now, "tittle")
+                    .Event(Guid.NewGuid(), creatorId, _eventTracker.Id, DateTimeOffset.Now, "tittle")
                     .WithComment("comment")
                     .WithRating(5)
                     .Build());
@@ -93,10 +96,6 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
             var tracker = EventTrackerBuilder
                 .Tracker(Guid.NewGuid(), _eventTracker.Id,  "tracker")
                 .Build();
-            foreach (var @event in eventList)
-            {
-                tracker.AddEvent(@event);
-            }
             return tracker;
         }
     }

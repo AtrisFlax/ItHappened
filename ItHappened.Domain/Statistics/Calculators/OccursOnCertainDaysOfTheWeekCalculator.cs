@@ -13,12 +13,17 @@ namespace ItHappened.Domain.Statistics
         private const double PriorityCoefficient = 0.14;
         private const double LessNotPassPercent = 0.25;
 
+        private readonly IEventRepository _eventRepository;
+        public OccursOnCertainDaysOfTheWeekCalculator(IEventRepository eventRepository)
+        {
+            _eventRepository = eventRepository;
+        }
         public Option<IStatisticsFact> Calculate(EventTracker eventTracker)
         {
-            if (!CanCalculate(eventTracker.Events)) return Option<IStatisticsFact>.None;
+            if (!CanCalculate(_eventRepository.LoadAllTrackerEvents(eventTracker.Id).ToList())) return Option<IStatisticsFact>.None;
 
 
-            var events = eventTracker.Events;
+            var events = _eventRepository.LoadAllTrackerEvents(eventTracker.Id);
             var totalEvents = events.Count;
             var daysOfTheWeek = events.GroupBy(@event => @event.HappensDate.DayOfWeek,
                     (key, g) => new

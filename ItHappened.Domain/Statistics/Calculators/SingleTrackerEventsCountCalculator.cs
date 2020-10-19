@@ -5,13 +5,18 @@ namespace ItHappened.Domain.Statistics
 {
     public class SingleTrackerEventsCountCalculator : ISingleTrackerStatisticsCalculator
     {
+        private readonly IEventRepository _eventRepository;
+        public SingleTrackerEventsCountCalculator(IEventRepository eventRepository)
+        {
+            _eventRepository = eventRepository;
+        }
         public Option<IStatisticsFact> Calculate(EventTracker eventTracker)
         {
             if (!CanCalculate(eventTracker))
                 return Option<IStatisticsFact>.None;
 
             const string factName = "Количество событий";
-            var eventsCount = eventTracker.Events.Count;
+            var eventsCount = _eventRepository.LoadAllTrackerEvents(eventTracker.Id).Count;
             var description = $"Событие {eventTracker.Name} произошло {eventsCount} раз";
             var priority = Math.Log(eventsCount);
 
@@ -19,9 +24,9 @@ namespace ItHappened.Domain.Statistics
                 .Some(new SingleTrackerEventsCountFact(factName, description, priority, eventsCount));
         }
 
-        private static bool CanCalculate(EventTracker eventTracker)
+        private bool CanCalculate(EventTracker eventTracker)
         {
-            return eventTracker.Events.Count > 0;
+            return _eventRepository.LoadAllTrackerEvents(eventTracker.Id).Count > 0;
         }
     }
 }
