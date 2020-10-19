@@ -67,11 +67,14 @@ namespace Demo
 
             //edit event from allEvents list 
             const int targetEventNum = 15;
-            var eventIdForEdit = allEvents.ValueUnsafe()[targetEventNum].Id;
-            var eventForReplace = CreateEvent(userId, eventIdForEdit, "Tittle of Replaced Event", RandomDay());
-            eventTrackerService.EditEventInTracker(userId, trackerId, eventIdForEdit, eventForReplace);
-            var eventsWithReplacedValue = eventTrackerService.GetAllEventsFromTracker(trackerId, userId);
-
+            allEvents.Do(x =>
+            {
+                var eventIdForEdit = x[targetEventNum].Id; 
+                var eventForReplace = CreateEvent(userId, eventIdForEdit, "Tittle of Replaced Event", RandomDay());
+                eventTrackerService.EditEventInTracker(userId, trackerId, eventIdForEdit, eventForReplace); 
+            });
+            
+            
             //filtration
             var userIdFiltering = userService.CreateUser("Login_User_Filter");
             var trackerId1 = eventTrackerService.CreateTracker(

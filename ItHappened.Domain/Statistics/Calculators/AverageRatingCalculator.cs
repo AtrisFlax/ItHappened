@@ -2,6 +2,7 @@
 using System.Linq;
 using LanguageExt;
 using LanguageExt.UnsafeValueAccess;
+using Serilog;
 
 namespace ItHappened.Domain.Statistics
 {
@@ -10,7 +11,17 @@ namespace ItHappened.Domain.Statistics
         public Option<IStatisticsFact> Calculate(EventTracker eventTracker)
         {
             if (!CanCalculate(eventTracker)) return Option<IStatisticsFact>.None;
-            var averageRating = eventTracker.Events.Average(x => x.Rating.ValueUnsafe());
+
+            var averageRating = eventTracker.Events.Average(x =>
+            {
+                return x.Rating.Match(
+                    r => r,
+                    () =>
+                    {
+                        Log.Warning("Calculate Empty Rating While Calculate AverageRatingCalculator");
+                        return 0;
+                    });
+            });
             return Option<IStatisticsFact>.Some(new AverageRatingFact(
                 "Среднее значение оценки",
                 $"Средний рейтинг для события {eventTracker.Name} равен {averageRating}",
