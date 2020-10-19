@@ -71,10 +71,11 @@ namespace Demo
             var eventForReplace = CreateEvent(userId, eventIdForEdit, "Tittle of Replaced Event", RandomDay());
             eventTrackerService.EditEventInTracker(userId, trackerId, eventIdForEdit, eventForReplace);
             var eventsWithReplacedValue = eventTrackerService.GetAllEventsFromTracker(trackerId, userId);
-
-            //events filtering 
+            
+            //filtration
+            var userIdFiltering = userService.CreateUser("Login_User_Filter");
             var trackerId1 = eventTrackerService.CreateTracker(
-                userId,
+                userIdFiltering,
                 "Tracker Name",
                 true,
                 true,
@@ -82,22 +83,20 @@ namespace Demo
                 true,
                 true,
                 true);
-            var userIdFiltering = userService.CreateUser("Login_User_Filter");
             var eventsForFiltering = CreateEventsForFiltering(userIdFiltering).ToList();
             foreach (var @event in eventsForFiltering)
             {
-                eventTrackerService.AddEventToTracker(userId, trackerId1, @event);
+                eventTrackerService.AddEventToTracker(userIdFiltering, trackerId1, @event);
             }
-            
-            //filtration
-            var fromTwoMonthAgo = DateTimeOffset.Now.AddDays(-7 * 4 * 4);
-            var toOneMonthAgo = DateTimeOffset.Now.AddDays(-7 * 4 * 1);
+            var fromTwoMonthAgo = DateTimeOffset.Now.AddDays(-31 * 4);
+            var toOneMonthAgo = DateTimeOffset.Now.AddDays(-31 * 2);
             var filtratedEvents =
-                eventTrackerService.GetEventsFiltratedByTime(userIdFiltering, trackerId, fromTwoMonthAgo, toOneMonthAgo);
+                eventTrackerService.GetEventsFiltratedByTime(userIdFiltering, trackerId1, fromTwoMonthAgo, toOneMonthAgo);
 
             //customization
-            var trackerId2 = eventTrackerService.CreateTracker(
-                userId,
+            var customUserId = userService.CreateUser("CustomUser");
+            var customTrackerId = eventTrackerService.CreateTracker(
+                customUserId,
                 "Tracker Name",
                 false,
                 false,
@@ -105,9 +104,12 @@ namespace Demo
                 true,
                 false,
                 false);
-            var eventsWithRating = CreateEventsWithRating(userId, numEvents);
+            var eventsWithRating = CreateEventsWithRating(customUserId, 50);
             foreach (var @event in eventsWithRating)
-                eventTrackerService.AddEventToTracker(userId, trackerId1, @event);
+            {
+                eventTrackerService.AddEventToTracker(customUserId, customTrackerId, @event);
+            }
+            var allEventsFromCustomTracker = eventTrackerService.GetAllEventsFromTracker(customTrackerId, customUserId);
 
             //statistic
             var userIdStatistic = userService.CreateUser("Login_User_Stats");
@@ -144,11 +146,17 @@ namespace Demo
             var eventsStat2 = CreateEvents(userId, Gen.Next() % 100 + numEventsStats);
             var eventsStat3 = CreateEvents(userId, Gen.Next() % 100 + numEventsStats);
             foreach (var @event in eventsStat1)
+            {
                 eventTrackerService.AddEventToTracker(userIdStatistic, trackerIdStat1, @event);
+            }
             foreach (var @event in eventsStat2)
+            {
                 eventTrackerService.AddEventToTracker(userIdStatistic, trackerIdStat2, @event);
+            }
             foreach (var @event in eventsStat3)
+            {
                 eventTrackerService.AddEventToTracker(userIdStatistic, trackerIdStat3, @event);
+            }
             
             //calculate 
             var facts = statisticService.GetStatisticFacts(userIdStatistic);
@@ -166,14 +174,14 @@ namespace Demo
         {
             return new List<Event>
             {
-                CreateEvent(userId, "Filter Event", DateTimeOffset.Now.AddDays(-7 * 4 * 7)),
-                CreateEvent(userId, "Filter Event", DateTimeOffset.Now.AddDays(-7 * 4 * 6)),
-                CreateEvent(userId, "Filter Event", DateTimeOffset.Now.AddDays(-7 * 4 * 5)),
-                CreateEvent(userId, "Filter Event", DateTimeOffset.Now.AddDays(-7 * 4 * 4)), //filter 
-                CreateEvent(userId, "Filter Event", DateTimeOffset.Now.AddDays(-7 * 4 * 3)), //filter
-                CreateEvent(userId, "Filter Event", DateTimeOffset.Now.AddDays(-7 * 4 * 2)), //filter
-                CreateEvent(userId, "Filter Event", DateTimeOffset.Now.AddDays(-7 * 4 * 1)),
-                CreateEvent(userId, "Filter Event", DateTimeOffset.Now.AddDays(-7 * 4 * 0))
+                CreateEvent(userId, "Filter Event1", DateTimeOffset.Now.AddDays(-31 * 7)),
+                CreateEvent(userId, "Filter Event2", DateTimeOffset.Now.AddDays(-31 * 6)),
+                CreateEvent(userId, "Filter Event3", DateTimeOffset.Now.AddDays(-31 * 5)),
+                CreateEvent(userId, "Filter Event4", DateTimeOffset.Now.AddDays(-31 * 4)),
+                CreateEvent(userId, "Filter Event5", DateTimeOffset.Now.AddDays(-31 * 3)), //filter
+                CreateEvent(userId, "Filter Event6", DateTimeOffset.Now.AddDays(-31 * 2)), //filter
+                CreateEvent(userId, "Filter Event7", DateTimeOffset.Now.AddDays(-31 * 1)),
+                CreateEvent(userId, "Filter Event8", DateTimeOffset.Now.AddDays(-31 * 0))
             };
         }
 
