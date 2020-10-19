@@ -7,12 +7,13 @@ namespace ItHappened.Infrastructure.Repositories
     public class EventRepository : IEventRepository
     {
         private readonly Dictionary<Guid, Event> _events = new Dictionary<Guid, Event>();
+
         public void AddEvent(Event newEvent)
         {
             _events.Add(newEvent.Id, newEvent);
         }
 
-        public Event TryLoadEvent(Guid eventId)
+        public Event LoadEvent(Guid eventId)
         {
             return _events[eventId];
         }

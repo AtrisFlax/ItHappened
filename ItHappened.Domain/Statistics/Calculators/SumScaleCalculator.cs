@@ -1,27 +1,44 @@
 ﻿using System;
 using System.Linq;
-using ItHappened.Domain;
-using ItHappened.Domain.Statistics;
+using ItHappend.Domain.Statistics;
 using LanguageExt;
 using LanguageExt.UnsafeValueAccess;
+using Serilog;
 
-namespace ItHappend.Domain.Statistics
+namespace ItHappened.Domain.Statistics
 {
     public class SumScaleCalculator : ISingleTrackerStatisticsCalculator
     {
-        public Option<ISingleTrackerStatisticsFact> Calculate(EventTracker eventTracker)
+        public Option<IStatisticsFact> Calculate(EventTracker eventTracker)
         {
-            if (!CanCalculate(eventTracker)) return Option<ISingleTrackerStatisticsFact>.None;
-            var sumScale = eventTracker.Events.Sum(x => x.Scale.ValueUnsafe());
-            var measurementUnit = eventTracker.ScaleMeasurementUnit.ValueUnsafe();
-            return Option<ISingleTrackerStatisticsFact>.Some(new SumScaleFact(
+            if (!CanCalculate(eventTracker)) return Option<IStatisticsFact>.None;
+            var sumScale = eventTracker.Events.Sum(x =>
+            {
+                return x.Scale.Match(
+                    r => r,
+                    () =>
+                    {
+                        Log.Error("Empty Scale while calculating SumScaleCalculator ");
+                        return 0;
+                    });
+            });
+            var measurementUnit = eventTracker.ScaleMeasurementUnit.Match(
+                x => x,
+                () =>
+                {
+                    Log.Error("Empty Scale while calculating SumScaleCalculator ");
+                    return string.Empty;
+                }
+            );
+            return Option<IStatisticsFact>.Some(new SumScaleFact(
                 "Суммарное значение шкалы",
                 $"Сумма значений {measurementUnit} для события {eventTracker.Name} равна {sumScale}",
                 2.0,
-                sumScale, 
+                sumScale,
                 measurementUnit
             ));
         }
+
 
         private bool CanCalculate(EventTracker eventTracker)
         {
@@ -29,10 +46,12 @@ namespace ItHappend.Domain.Statistics
             {
                 return false;
             }
+
             if (eventTracker.Events.Any(@event => @event.Scale == Option<double>.None))
             {
                 return false;
             }
+
             return eventTracker.Events.Count > 1;
         }
     }

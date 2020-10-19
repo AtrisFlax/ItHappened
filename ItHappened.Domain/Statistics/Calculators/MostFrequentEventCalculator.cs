@@ -7,12 +7,13 @@ namespace ItHappened.Domain.Statistics
 {
     public class MostFrequentEventCalculator : IMultipleTrackersStatisticsCalculator
     {
-        public Option<IMultipleTrackersStatisticsFact> Calculate(IEnumerable<EventTracker> eventTrackers)
+        public Option<IStatisticsFact> Calculate(IEnumerable<EventTracker> eventTrackers)
         {
-            if (!CanCalculate(eventTrackers))
-                return Option<IMultipleTrackersStatisticsFact>.None;
+            var eventsTracks = eventTrackers.ToList();
+            if (!CanCalculate(eventsTracks.ToList()))
+                return Option<IStatisticsFact>.None;
 
-            var trackingNameWithEventsPeriod = eventTrackers
+            var trackingNameWithEventsPeriod = eventsTracks
                 .Select(eventTracker =>
                     (trackingName: eventTracker.Name,
                         eventsPeriod: 1.0 *
@@ -23,17 +24,19 @@ namespace ItHappened.Domain.Statistics
                             .HappensDate)
                         .TotalDays / eventTracker.Events.Count)
                 );
-            
-            var (trackingName, eventsPeriod) = trackingNameWithEventsPeriod
+
+            var eventTrackersWithPeriods = trackingNameWithEventsPeriod.ToList();
+            var (trackingName, eventsPeriod) = eventTrackersWithPeriods
                 .OrderBy(e => e.eventsPeriod)
                 .FirstOrDefault();
 
-            return Option<IMultipleTrackersStatisticsFact>
-                .Some(new MostFrequentEventFact(trackingName, eventsPeriod, trackingNameWithEventsPeriod));
+            return Option<IStatisticsFact>
+                .Some(new MostFrequentEventFact(trackingName, eventsPeriod, eventTrackersWithPeriods));
         }
 
-        private bool CanCalculate(IEnumerable<EventTracker> eventTrackers) =>
-            eventTrackers.Count() > 1 && eventTrackers.Count(et => et.Events.Count > 3) > 1;
-        
+        private static bool CanCalculate(IList<EventTracker> eventTrackers)
+        {
+            return eventTrackers.Count() > 1 && eventTrackers.Count(et => et.Events.Count > 3) > 1;
+        }
     }
 }

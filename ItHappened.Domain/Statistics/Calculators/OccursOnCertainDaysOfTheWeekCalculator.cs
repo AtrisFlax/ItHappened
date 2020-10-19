@@ -2,22 +2,20 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using ItHappened.Domain;
-using ItHappened.Domain.Statistics;
+using ItHappend.Domain.Statistics;
 using LanguageExt;
 
-namespace ItHappend.Domain.Statistics
+namespace ItHappened.Domain.Statistics
 {
-    public class
-        OccursOnCertainDaysOfTheWeekCalculator : ISingleTrackerStatisticsCalculator
+    public class OccursOnCertainDaysOfTheWeekCalculator : ISingleTrackerStatisticsCalculator
     {
         private const int MinEvents = 7;
         private const double PriorityCoefficient = 0.14;
         private const double LessNotPassPercent = 0.25;
 
-        public Option<ISingleTrackerStatisticsFact> Calculate(EventTracker eventTracker)
+        public Option<IStatisticsFact> Calculate(EventTracker eventTracker)
         {
-            if (!CanCalculate(eventTracker.Events)) return Option<ISingleTrackerStatisticsFact>.None;
+            if (!CanCalculate(eventTracker.Events)) return Option<IStatisticsFact>.None;
 
 
             var events = eventTracker.Events;
@@ -34,7 +32,7 @@ namespace ItHappend.Domain.Statistics
             var ruDaysOfWeek = GetRuDaysOfWeek(daysOfTheWeek.Select(x => x.DayTime));
             var percentage = 100.0d * amountEventsMoreThenPassPercent / totalEvents;
 
-            return Option<ISingleTrackerStatisticsFact>.Some(new OccursOnCertainDaysOfTheWeekFact(
+            return Option<IStatisticsFact>.Some(new OccursOnCertainDaysOfTheWeekFact(
                 "Происходит в определённые дни недели",
                 $"В {percentage}% случаев событие {eventTracker.Name} происходит {ruDaysOfWeek}",
                 percentage * PriorityCoefficient,
@@ -45,10 +43,7 @@ namespace ItHappend.Domain.Statistics
 
         private static bool CanCalculate(IList<Event> events)
         {
-            if (events.Count <= MinEvents)
-            {
-                return false;
-            }
+            if (events.Count <= MinEvents) return false;
 
             var totalEvents = events.Count;
             return events.GroupBy(@event => @event.HappensDate.DayOfWeek,

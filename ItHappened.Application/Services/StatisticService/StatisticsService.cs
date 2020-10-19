@@ -1,37 +1,34 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using ItHappend.Domain.Statistics;
 using ItHappened.Domain;
 using ItHappened.Domain.Statistics;
 
 namespace ItHappened.Application.Services.StatisticService
 {
-    public class StatisticsService : IStatisticsService
+    public class StatisticsService : StatisticsServiceCreator
     {
-        private readonly IEventTrackerRepository _eventTrackerRepository;
-        private readonly IMultipleTrackersStatisticsProvider _multipleTrackersStatisticsProvider;
-        private readonly ISingleTrackerStatisticsProvider _singleTrackerStatisticsProvider;
-
-        public StatisticsService(IUserRepository userRepository,
-            IEventTrackerRepository eventTrackerRepository,
-            IMultipleTrackersStatisticsProvider multipleTrackersStatisticsProvider,
-            ISingleTrackerStatisticsProvider singleTrackerStatisticsProvider)
+        public StatisticsService(IEventTrackerRepository eventTrackerRepository) : base(eventTrackerRepository)
         {
-            _eventTrackerRepository = eventTrackerRepository;
-            _multipleTrackersStatisticsProvider = multipleTrackersStatisticsProvider;
-            _singleTrackerStatisticsProvider = singleTrackerStatisticsProvider;
         }
 
-        public IReadOnlyCollection<IMultipleTrackersStatisticsFact> GetMultipleTrackersFacts(Guid userId)
+        protected override SingleTrackerStatisticsProvider SingleTrackersStatisticsProvider()
         {
-            var eventTrackers = _eventTrackerRepository.LoadUserTrackers(userId);
-            return _multipleTrackersStatisticsProvider.GetFacts(eventTrackers);
+            var singleTrackersStatisticsProvider = new SingleTrackerStatisticsProvider();
+            singleTrackersStatisticsProvider.Add(new BestEventCalculator());
+            singleTrackersStatisticsProvider.Add(new AverageRatingCalculator());
+            singleTrackersStatisticsProvider.Add(new LongestBreakCalculator());
+            singleTrackersStatisticsProvider.Add(new OccursOnCertainDaysOfTheWeekCalculator());
+            singleTrackersStatisticsProvider.Add(new SingleTrackerEventsCountCalculator());
+            singleTrackersStatisticsProvider.Add(new SpecificDayTimeEventCalculator());
+            singleTrackersStatisticsProvider.Add(new WorstEventCalculator());
+            return singleTrackersStatisticsProvider;
         }
 
-        public IReadOnlyCollection<ISingleTrackerStatisticsFact> GetSingleTrackerFacts(Guid userId,
-            Guid eventTrackerId)
+        protected override MultipleTrackersStatisticsProvider MultipleTrackersStatisticsProvider()
         {
-            var eventTracker = _eventTrackerRepository.LoadEventTracker(userId);
-            return _singleTrackerStatisticsProvider.GetFacts(eventTracker);
+            var multipleTrackersStatisticsProvider = new MultipleTrackersStatisticsProvider();
+            multipleTrackersStatisticsProvider.Add(new EventsCountCalculator());
+            multipleTrackersStatisticsProvider.Add(new MostFrequentEventCalculator());
+            return multipleTrackersStatisticsProvider;
         }
     }
 }

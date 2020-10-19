@@ -5,19 +5,21 @@ namespace ItHappened.Domain.Statistics
 {
     public class SingleTrackerStatisticsProvider : ISingleTrackerStatisticsProvider
     {
+        private readonly List<ISingleTrackerStatisticsCalculator> _calculators =
+            new List<ISingleTrackerStatisticsCalculator>();
+
         public void Add(ISingleTrackerStatisticsCalculator calculator)
         {
             _calculators.Add(calculator);
         }
-        
-        private List<ISingleTrackerStatisticsCalculator> _calculators =
-            new List<ISingleTrackerStatisticsCalculator>();
 
-        public IReadOnlyCollection<ISingleTrackerStatisticsFact> GetFacts(EventTracker eventTracker) =>
-            _calculators
+        public IReadOnlyCollection<IStatisticsFact> GetFacts(EventTracker eventTracker)
+        {
+            return _calculators
                 .Select(calculator => calculator.Calculate(eventTracker))
                 .Somes()
-                .OrderBy(fact => fact.Priority)
+                .OrderByDescending(fact => fact.Priority)
                 .ToList();
+        }
     }
 }

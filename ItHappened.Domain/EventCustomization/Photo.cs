@@ -2,11 +2,13 @@
 {
     public class Photo
     {
-        public byte[] PhotoBytes { get; }
-
         public Photo(byte[] photoBytes)
         {
             PhotoBytes = photoBytes;
         }
+
+        // ReSharper disable once UnusedAutoPropertyAccessor.Global
+        // ReSharper disable once MemberCanBePrivate.Global
+        public byte[] PhotoBytes { get; }
     }
 }

@@ -12,18 +12,21 @@ namespace ItHappened.Application.Services.EventTrackerService
             string trackerName,
             bool hasPhoto = false,
             bool hasScale = false,
+            string scaleMeasurementUnit = "",
             bool hasRating = false,
             bool hashGeoTag = false,
             bool hasComment = false);
+        
+        bool DeleteTracker(Guid trackerCreatorId, Guid trackerId);
 
-        bool DeleteTracker(Guid trackerId, Guid trackerCreatorId);
-        IEnumerable<EventTracker> GetAllTrackers(Guid userId);
-        IEnumerable<EventTracker> GetAllEventsFromTracker(Guid tracker, Guid trackerCreatorId);
-        bool AddEventToTracker(Guid trackerId, Guid trackerCreatorId, Event @event);
-        bool RemoveEventFromTracker(Guid trackerId, Guid eventId, Guid trackerCreatorId);
-        bool EditEventTracker(Guid trackerId, Guid trackerCreatorId, Event @event);
+        IEnumerable<EventTracker> GetAllTrackers(Guid trackerCreatorId);
+        Option<EventTracker> GetTracker(Guid trackerCreatorId, Guid trackerId);
+        bool AddEventToTracker(Guid trackerCreatorId, Guid trackerId, Event @event);
+        bool RemoveEventFromTracker(Guid trackerCreatorId, Guid trackerId, Guid eventId);
+        bool EditEventInTracker(Guid trackerCreatorId, Guid trackerId, Guid eventId, Event newEvent);
+        Option<IList<Event>> GetAllEventsFromTracker(Guid trackerId, Guid trackerCreatorId);
 
-        Option<IReadOnlyCollection<Event>> FilterByTime(Guid trackerId, Guid trackerCreatorId,
+        Option<IReadOnlyCollection<Event>> GetEventsFiltratedByTime(Guid trackerCreatorId, Guid trackerId, 
             DateTimeOffset from, DateTimeOffset to);
     }
 }

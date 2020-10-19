@@ -27,13 +27,5 @@ namespace ItHappened.Domain
             GeoTag = eventBuilder.GeoTag;
             Comment = eventBuilder.Comment;
         }
-
-        public Event(Guid eventId, Guid creatorId, string title)
-        {
-            CreatorId = creatorId;
-            Id = eventId;
-            Title = title;
-            HappensDate = DateTimeOffset.Now;
-        }
     }
 }

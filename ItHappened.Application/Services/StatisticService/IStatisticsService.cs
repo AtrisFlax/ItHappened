@@ -6,8 +6,8 @@ namespace ItHappened.Application.Services.StatisticService
 {
     public interface IStatisticsService
     {
-        public IReadOnlyCollection<IMultipleTrackersStatisticsFact> GetMultipleTrackersFacts(Guid userId);
-        public IReadOnlyCollection<ISingleTrackerStatisticsFact> GetSingleTrackerFacts(Guid userId,
-            Guid eventTrackerId);
+        IReadOnlyCollection<IStatisticsFact> GetFacts(Guid userId);
+        IReadOnlyCollection<IStatisticsFact> GetGeneralFacts(Guid userId);
+        IReadOnlyCollection<IStatisticsFact> GetSpecificFacts(Guid userId);
     }
 }

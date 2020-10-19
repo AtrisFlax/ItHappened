@@ -1,11 +1,11 @@
 ﻿namespace ItHappened.Domain.Statistics
 {
-    public class SingleTrackerEventsCountFact : ISingleTrackerStatisticsFact
+    public class SingleTrackerEventsCountFact : IStatisticsFact
     {
+        public int EventsCount { get; }
         public string FactName { get; }
         public string Description { get; }
         public double Priority { get; }
-        public int EventsCount { get; }
         internal SingleTrackerEventsCountFact(string factName, string description, double priority, int eventsCount)
         {
             FactName = factName;

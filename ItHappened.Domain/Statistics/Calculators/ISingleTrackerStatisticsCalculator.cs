@@ -4,6 +4,6 @@ namespace ItHappened.Domain.Statistics
 {
     public interface ISingleTrackerStatisticsCalculator
     {
-        Option<ISingleTrackerStatisticsFact> Calculate(EventTracker eventTracker);
+        Option<IStatisticsFact> Calculate(EventTracker eventTracker);
     }
 }
