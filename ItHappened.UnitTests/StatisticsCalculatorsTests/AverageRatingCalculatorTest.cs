@@ -89,7 +89,7 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
             Assert.True(fact.IsNone);
         }
 
-        private static List<Event> CreateTwoEventOneOfThemWithoutRating()
+        private static IEnumerable<Event> CreateTwoEventOneOfThemWithoutRating()
         {
             var ratings = new List<double> {2.0};
             return new List<Event>
@@ -104,7 +104,7 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
             };
         }
 
-        private static List<Event> CreateTwoEvents()
+        private static IEnumerable<Event> CreateTwoEvents()
         {
             var ratings = new List<double> {2.0, 5.0};
             return new List<Event>
@@ -118,7 +118,7 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
             };
         }
 
-        private static List<Event> CreateTwoEvents(IList<double> ratings)
+        private static IEnumerable<Event> CreateTwoEvents(IList<double> ratings)
         {
             return new List<Event>
             {

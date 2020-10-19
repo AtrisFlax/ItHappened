@@ -48,7 +48,7 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
             mostFrequentEvent.Do(e =>
             {
                 Assert.AreEqual("Чаще всего у вас происходит событие \"Pains after eating sugar\"" +
-                                " - раз в 0,4 дней", e.Description);
+                                " - раз в 0.4 дней", e.Description);
                 Assert.AreEqual(25, e.Priority);
                 Assert.AreEqual("Pains after eating sugar", e.TrackingName);
                 Assert.AreEqual(0.4, e.EventsPeriod, 0.01);
@@ -58,7 +58,7 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
             });
         }
 
-        private Event CreateEventWithNameAndDateTime(Guid userId, string title, DateTimeOffset dateTime)
+        private static Event CreateEventWithNameAndDateTime(Guid userId, string title, DateTimeOffset dateTime)
         {
             return EventBuilder.Event(Guid.NewGuid(), userId, dateTime, title).Build();
         }
