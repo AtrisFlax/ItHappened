@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace ItHappened.Domain.Statistics
 {
-    public class SpecificTimeOfDayEventFact : ISingleTrackerStatisticsFact
+    public class SpecificTimeOfDayEventFact : IStatisticsFact
     {
         internal SpecificTimeOfDayEventFact
         (double percentage, string eventName, string timeOfTheDay, 

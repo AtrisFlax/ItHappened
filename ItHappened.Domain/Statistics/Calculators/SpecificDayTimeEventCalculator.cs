@@ -5,10 +5,10 @@ namespace ItHappened.Domain.Statistics
 {
     public class SpecificDayTimeEventCalculator : ISingleTrackerStatisticsCalculator
     {
-        public Option<ISingleTrackerStatisticsFact> Calculate(EventTracker eventTracker)
+        public Option<IStatisticsFact> Calculate(EventTracker eventTracker)
         {
             if (!CanCalculate(eventTracker))
-                return Option<ISingleTrackerStatisticsFact>.None;
+                return Option<IStatisticsFact>.None;
             
             var eventsByTimeOfTheDayWithPercent = eventTracker
                 .Events
@@ -25,7 +25,7 @@ namespace ItHappened.Domain.Statistics
                 .OrderByDescending(e => e.Percentage)
                 .First();
             
-            return Option<ISingleTrackerStatisticsFact>.Some(new SpecificTimeOfDayEventFact
+            return Option<IStatisticsFact>.Some(new SpecificTimeOfDayEventFact
                 (percentage, 
                 title, 
                 timeOfTheDay, eventsByTimeOfTheDayWithPercent));

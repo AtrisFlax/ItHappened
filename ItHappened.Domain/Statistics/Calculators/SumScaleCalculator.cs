@@ -9,12 +9,12 @@ namespace ItHappend.Domain.Statistics
 {
     public class SumScaleCalculator : ISingleTrackerStatisticsCalculator
     {
-        public Option<ISingleTrackerStatisticsFact> Calculate(EventTracker eventTracker)
+        public Option<IStatisticsFact> Calculate(EventTracker eventTracker)
         {
-            if (!CanCalculate(eventTracker)) return Option<ISingleTrackerStatisticsFact>.None;
+            if (!CanCalculate(eventTracker)) return Option<IStatisticsFact>.None;
             var sumScale = eventTracker.Events.Sum(x => x.Scale.ValueUnsafe());
             var measurementUnit = eventTracker.ScaleMeasurementUnit.ValueUnsafe();
-            return Option<ISingleTrackerStatisticsFact>.Some(new SumScaleFact(
+            return Option<IStatisticsFact>.Some(new SumScaleFact(
                 "Суммарное значение шкалы",
                 $"Сумма значений {measurementUnit} для события {eventTracker.Name} равна {sumScale}",
                 2.0,

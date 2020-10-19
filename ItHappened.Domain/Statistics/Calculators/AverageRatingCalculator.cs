@@ -8,7 +8,7 @@ namespace ItHappened.Domain.Statistics
 {
     public class AverageRatingCalculator : ISingleTrackerStatisticsCalculator
     {
-        public Option<ISingleTrackerStatisticsFact> Calculate(EventTracker eventTracker)
+        public Option<IStatisticsFact> Calculate(EventTracker eventTracker)
         {
             
             var a = new List<Option<int>>();
@@ -22,16 +22,15 @@ namespace ItHappened.Domain.Statistics
             var c1 = a.Somes().ToList();
             
             
-            if (!CanCalculate(eventTracker)) return Option<ISingleTrackerStatisticsFact>.None;
+            if (!CanCalculate(eventTracker)) return Option<IStatisticsFact>.None;
             var averageRating = eventTracker.Events.Average(x => x.Rating.ValueUnsafe());
-            return Option<ISingleTrackerStatisticsFact>.Some(new AverageRatingFact(
+            return Option<IStatisticsFact>.Some(new AverageRatingFact(
                 "Среднее значение оценки",
                 $"Средний рейтинг для события {eventTracker.Name} равен {averageRating}",
                 Math.Sqrt(averageRating),
                 averageRating
             ));
         }
-
         
         private bool CanCalculate(EventTracker eventTracker)
         {

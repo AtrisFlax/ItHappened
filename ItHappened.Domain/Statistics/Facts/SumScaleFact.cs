@@ -2,7 +2,7 @@
 
 namespace ItHappend.Domain.Statistics
 {
-    public class SumScaleFact : ISingleTrackerStatisticsFact
+    public class SumScaleFact : IStatisticsFact
     {
         public string FactName { get; }
         public string Description { get; }

@@ -13,7 +13,7 @@ namespace ItHappened.Domain.Statistics
         private readonly List<IMultipleTrackersStatisticsCalculator> _calculators =
             new List<IMultipleTrackersStatisticsCalculator>();
 
-        public IReadOnlyCollection<IMultipleTrackersStatisticsFact> GetFacts(
+        public IReadOnlyCollection<IStatisticsFact> GetFacts(
             IEnumerable<EventTracker> eventTrackers) =>
             _calculators
                 .Select(calculator => calculator.Calculate(eventTrackers))

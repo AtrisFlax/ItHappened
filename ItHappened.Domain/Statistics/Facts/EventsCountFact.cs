@@ -1,6 +1,6 @@
 ﻿namespace ItHappened.Domain.Statistics
 {
-    public class EventsCountFact : IMultipleTrackersStatisticsFact
+    public class EventsCountFact : IStatisticsFact
     {
         public EventsCountFact(string factName, string description, double priority, int eventsCount)
         {

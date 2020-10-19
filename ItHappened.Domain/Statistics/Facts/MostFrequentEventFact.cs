@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace ItHappened.Domain.Statistics
 {
-    public class MostFrequentEventFact : IMultipleTrackersStatisticsFact
+    public class MostFrequentEventFact : IStatisticsFact
     {
         protected internal  MostFrequentEventFact(
             string trackingName, double eventsPeriod, IEnumerable<(string, double)> eventTrackersWithPeriods)

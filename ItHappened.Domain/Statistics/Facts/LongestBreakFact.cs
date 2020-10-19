@@ -1,6 +1,6 @@
 ﻿namespace ItHappened.Domain.Statistics
 {
-    public class LongestBreakFact : ISingleTrackerStatisticsFact
+    public class LongestBreakFact : IStatisticsFact
     {
         public string FactName { get; }
         public string Description { get; }

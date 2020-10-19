@@ -1,6 +1,6 @@
 ﻿namespace ItHappened.Domain.Statistics
 {
-    public class AverageRatingFact : ISingleTrackerStatisticsFact
+    public class AverageRatingFact : IStatisticsFact
     {
         public string FactName { get; }
         public string Description { get; }

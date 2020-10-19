@@ -4,7 +4,7 @@ using ItHappened.Domain.Statistics;
 
 namespace ItHappend.Domain.Statistics
 {
-    public class OccursOnCertainDaysOfTheWeekFact : ISingleTrackerStatisticsFact
+    public class OccursOnCertainDaysOfTheWeekFact : IStatisticsFact
     {
         public string FactName { get; }
         public string Description { get; }

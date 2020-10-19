@@ -31,7 +31,7 @@ namespace ItHappend.UnitTests.StatisticsCalculatorsTests
             _events[0].HappensDate = DateTimeOffset.Now - TimeSpan.FromDays(91);
             _events[1].Rating = 1;
             _events[1].HappensDate = DateTimeOffset.Now - TimeSpan.FromDays(8);
-            var expected = Option<ISingleTrackerStatisticsFact>.None;
+            var expected = Option<IStatisticsFact>.None;
             
             var actual = _worstEventCalculator.Calculate(_eventTracker);
             
@@ -44,7 +44,7 @@ namespace ItHappend.UnitTests.StatisticsCalculatorsTests
             _events.Add(CreateEventWithoutComment(_creatorId));
             _events[1].Rating = 1;
             _events[1].HappensDate = DateTimeOffset.Now - TimeSpan.FromDays(8);
-            var expected = Option<ISingleTrackerStatisticsFact>.None;
+            var expected = Option<IStatisticsFact>.None;
             
             var actual = _worstEventCalculator.Calculate(_eventTracker);
             
@@ -58,7 +58,7 @@ namespace ItHappend.UnitTests.StatisticsCalculatorsTests
             _events[0].HappensDate = DateTimeOffset.Now - TimeSpan.FromDays(91);
             _events[1].Rating = 1;
             _events[1].HappensDate = DateTimeOffset.Now - TimeSpan.FromDays(6);
-            var expected = Option<ISingleTrackerStatisticsFact>.None;
+            var expected = Option<IStatisticsFact>.None;
             
             var actual = _worstEventCalculator.Calculate(_eventTracker);
             
