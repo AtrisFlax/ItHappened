@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using ItHappened.Domain;
 using ItHappened.Domain.Statistics;
 using ItHappened.Infrastructure.Repositories;
+using LanguageExt;
 using NUnit.Framework;
 
 namespace ItHappened.UnitTests.StatisticsCalculatorsTests
@@ -21,8 +22,9 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
         {
             _eventRepository = new EventRepository();
             _creatorId = Guid.NewGuid();
+            _eventTracker = CreateEventTracker();
             _events = CreateEvents(_creatorId, InitialEventsNumber);
-            _eventTracker = CreateEventTracker(_events);
+            _eventRepository.AddRangeOfEvents(_events);
             _bestEventCalculator = new BestEventCalculator(_eventRepository);
         }
 
@@ -39,7 +41,7 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
         [Test]
         public void CalculateWithoutOldEnoughEvent_ReturnNone()
         {
-            _events.Add(CreateEventWithoutComment(_creatorId));
+            _eventRepository.AddEvent(CreateEventWithoutComment(_creatorId));
             _events[1].Rating = 1;
             _events[1].HappensDate = DateTimeOffset.Now - TimeSpan.FromDays(8);
             var actual = _bestEventCalculator.Calculate(_eventTracker).ConvertTo<BestEventFact>();
@@ -49,7 +51,7 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
         [Test]
         public void CalculateWhenBestEventHappenedLessThanWeekAgo_ReturnNone()
         {
-            _events.Add(CreateEventWithoutComment(_creatorId));
+            _eventRepository.AddEvent(CreateEventWithoutComment(_creatorId));
             _events[0].HappensDate = DateTimeOffset.Now - TimeSpan.FromDays(91);
             _events[1].Rating = 1;
             _events[1].HappensDate = DateTimeOffset.Now - TimeSpan.FromDays(6);
@@ -61,13 +63,15 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
         public void CalculateGoodCase_ReturnsFact()
         {
             _events[0].HappensDate = DateTimeOffset.Now - TimeSpan.FromDays(91);
-            _events.Add(CreateEventWithoutComment(_creatorId));
-            _events[9].Rating = 9;
-            _events[9].HappensDate = DateTimeOffset.Now - TimeSpan.FromDays(8);
+            var event10 = CreateEventWithoutComment(_creatorId);
+            event10.Rating = 9;
+            event10.HappensDate = DateTimeOffset.Now - TimeSpan.FromDays(8);
+            _eventRepository.AddEvent(CreateEventWithoutComment(_creatorId));
             
-            var actual = _bestEventCalculator.Calculate(_eventTracker).ConvertTo<BestEventFact>();
-            Assert.IsTrue(actual.IsSome);
-            //TODO check expected fields
+            var optionalBestEventFact = _bestEventCalculator.Calculate(_eventTracker).ConvertTo<BestEventFact>();
+            
+            Assert.IsTrue(optionalBestEventFact.IsSome);
+            //TODO: проверить факт подбробнее
         }
 
         private Event CreateEventWithoutComment(Guid creatorId)
@@ -82,19 +86,20 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
         {
             var events = new List<Event>();
             for (var i = 0; i < quantity; i++)
+            {
                 events.Add(EventBuilder
                     .Event(Guid.NewGuid(), creatorId, _eventTracker.Id, DateTimeOffset.Now, "tittle")
                     .WithComment("comment")
                     .WithRating(5)
                     .Build());
-
+            }
             return events;
         }
 
-        private EventTracker CreateEventTracker(IEnumerable<Event> eventList)
+        private EventTracker CreateEventTracker()
         {
             var tracker = EventTrackerBuilder
-                .Tracker(Guid.NewGuid(), _eventTracker.Id,  "tracker")
+                .Tracker(Guid.NewGuid(), Guid.NewGuid(),  "tracker")
                 .Build();
             return tracker;
         }
