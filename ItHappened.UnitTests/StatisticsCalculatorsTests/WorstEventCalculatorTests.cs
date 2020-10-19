@@ -6,7 +6,7 @@ using ItHappened.Domain.Statistics;
 using LanguageExt;
 using NUnit.Framework;
 
-namespace ItHappend.UnitTests.StatisticsCalculatorsTests
+namespace ItHappened.UnitTests.StatisticsCalculatorsTests
 {
     public class WorstEventCalculatorTests
     {

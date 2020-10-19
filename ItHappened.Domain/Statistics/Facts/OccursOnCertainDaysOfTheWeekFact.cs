@@ -6,6 +6,11 @@ namespace ItHappend.Domain.Statistics
 {
     public class OccursOnCertainDaysOfTheWeekFact : IStatisticsFact
     {
+        public IEnumerable<DayOfWeek> DaysOfTheWeek { get; }
+        public double Percentage { get; }
+        public string FactName { get; }
+        public string Description { get; }
+        public double Priority { get; }
         internal OccursOnCertainDaysOfTheWeekFact(string factName, string description, double priority,
             IEnumerable<DayOfWeek> daysOfTheWeek, double percentage)
         {
@@ -15,11 +20,5 @@ namespace ItHappend.Domain.Statistics
             DaysOfTheWeek = daysOfTheWeek;
             Percentage = percentage;
         }
-
-        public IEnumerable<DayOfWeek> DaysOfTheWeek { get; }
-        public double Percentage { get; }
-        public string FactName { get; }
-        public string Description { get; }
-        public double Priority { get; }
     }
 }

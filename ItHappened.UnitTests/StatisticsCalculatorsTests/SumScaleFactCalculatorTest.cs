@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using ItHappend.Domain.Statistics;
 using ItHappened.Domain;
-using ItHappened.UnitTests.StatisticsCalculatorsTests;
+using ItHappened.Domain.Statistics;
 using NUnit.Framework;
 
-namespace ItHappend.UnitTests.StatisticsCalculatorsTests
+namespace ItHappened.UnitTests.StatisticsCalculatorsTests
 {
     public class SumScaleFactCalculatorTest
     {

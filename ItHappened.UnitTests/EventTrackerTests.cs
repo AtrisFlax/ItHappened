@@ -11,7 +11,7 @@ namespace ItHappened.UnitTests
         public void AddEventToTracker()
         {
             //arrange
-            var title = "Title";
+            const string title = "Title";
             var initEvent = CreateEvent(title);
             var eventForAdding = CreateEvent("Added Title");
             var eventList = new List<Event> {initEvent};

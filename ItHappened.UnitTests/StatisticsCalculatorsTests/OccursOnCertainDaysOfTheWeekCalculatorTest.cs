@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using ItHappend.Domain.Statistics;
 using ItHappened.Domain;
+using ItHappened.Domain.Statistics;
 using NUnit.Framework;
 
 namespace ItHappened.UnitTests.StatisticsCalculatorsTests
@@ -18,6 +19,7 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
 
             //act 
             var fact = new OccursOnCertainDaysOfTheWeekCalculator().Calculate(eventTracker).ConvertTo<OccursOnCertainDaysOfTheWeekFact>();
+           
             //assert 
             Assert.True(fact.IsSome);
 

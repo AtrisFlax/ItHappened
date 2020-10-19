@@ -6,8 +6,13 @@ namespace ItHappened.Domain.Statistics
 {
     public class SpecificTimeOfDayEventFact : IStatisticsFact
     {
-        internal SpecificTimeOfDayEventFact
-        (double percentage, string eventName, string timeOfTheDay,
+        public double Percentage { get; }
+        public string TimeOfTheDay { get; }
+        public IReadOnlyCollection<(string Title, string TimeOfTheDay, double Percentage)> VisualizationData { get; }
+        public string FactName { get; } = nameof(SpecificTimeOfDayEventFact);
+        public string Description { get; }
+        public double Priority { get; }
+        internal SpecificTimeOfDayEventFact(double percentage, string eventName, string timeOfTheDay,
             IEnumerable<(string title, string timeOfTheDay, double percentage)> visualizationData)
         {
             Percentage = Math.Round(percentage);
@@ -16,13 +21,5 @@ namespace ItHappened.Domain.Statistics
             Priority = 0.14 * percentage;
             VisualizationData = visualizationData.ToList();
         }
-
-        public double Percentage { get; }
-        public string TimeOfTheDay { get; }
-        public IReadOnlyCollection<(string Title, string TimeOfTheDay, double Percentage)> VisualizationData { get; }
-
-        public string FactName { get; } = nameof(SpecificTimeOfDayEventFact);
-        public string Description { get; }
-        public double Priority { get; }
     }
 }

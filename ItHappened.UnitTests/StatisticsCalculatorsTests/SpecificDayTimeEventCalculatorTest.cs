@@ -51,7 +51,7 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
             );
         }
 
-        private Event CreateEventWithNameAndDateTime(Guid userId, string title, string dateTime)
+        private static Event CreateEventWithNameAndDateTime(Guid userId, string title, string dateTime)
         {
             return EventBuilder.Event(Guid.NewGuid(), userId, DateTime.Parse(dateTime), title).Build();
         }

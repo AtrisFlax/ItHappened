@@ -6,6 +6,14 @@ namespace ItHappend.Domain.Statistics
 {
     public class WorstEventFact : IStatisticsFact
     {
+        public double Rating { get; }
+        public DateTimeOffset HappensDate { get; }
+        public Comment Comment { get; }
+        public Event EventReference { get; }
+        public string FactName { get; }
+        public string Description { get; }
+        public double Priority { get; }
+        
         internal WorstEventFact(string factName,
             string description,
             double priority,
@@ -22,13 +30,5 @@ namespace ItHappend.Domain.Statistics
             Comment = comment;
             EventReference = eventReference;
         }
-
-        public double Rating { get; }
-        public DateTimeOffset HappensDate { get; }
-        public Comment Comment { get; }
-        public Event EventReference { get; }
-        public string FactName { get; }
-        public string Description { get; }
-        public double Priority { get; }
     }
 }
