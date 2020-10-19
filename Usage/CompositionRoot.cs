@@ -3,7 +3,6 @@ using ItHappened.Application.Services.StatisticService;
 using ItHappened.Application.Services.UserService;
 using ItHappened.Infrastructure.Repositories;
 
-// using Statistics = ItHappened.Application.Services.StatisticService;
 namespace Usage
 {
     public class CompositionRoot
@@ -18,8 +17,6 @@ namespace Usage
             var userRepository = new UserRepository();
             var eventRepository = new EventRepository();
             var eventTrackerRepository = new EventTrackerRepository();
-
-
             return new CompositionRoot
             {
                 UserService = new UserService(userRepository),

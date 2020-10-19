@@ -8,7 +8,7 @@ using Usage;
 
 namespace Demo
 {
-     internal class Demo
+    internal class Demo
     {
         private static readonly Random Gen = new Random();
 
@@ -64,14 +64,14 @@ namespace Demo
                 }
             });
             allEvents = eventTrackerService.GetAllEventsFromTracker(trackerId, userId);
-            
+
             //edit event from allEvents list 
             const int targetEventNum = 15;
             var eventIdForEdit = allEvents.ValueUnsafe()[targetEventNum].Id;
             var eventForReplace = CreateEvent(userId, eventIdForEdit, "Tittle of Replaced Event", RandomDay());
             eventTrackerService.EditEventInTracker(userId, trackerId, eventIdForEdit, eventForReplace);
             var eventsWithReplacedValue = eventTrackerService.GetAllEventsFromTracker(trackerId, userId);
-            
+
             //filtration
             var userIdFiltering = userService.CreateUser("Login_User_Filter");
             var trackerId1 = eventTrackerService.CreateTracker(
@@ -88,10 +88,12 @@ namespace Demo
             {
                 eventTrackerService.AddEventToTracker(userIdFiltering, trackerId1, @event);
             }
+
             var fromTwoMonthAgo = DateTimeOffset.Now.AddDays(-31 * 4);
             var toOneMonthAgo = DateTimeOffset.Now.AddDays(-31 * 2);
             var filtratedEvents =
-                eventTrackerService.GetEventsFiltratedByTime(userIdFiltering, trackerId1, fromTwoMonthAgo, toOneMonthAgo);
+                eventTrackerService.GetEventsFiltratedByTime(userIdFiltering, trackerId1, fromTwoMonthAgo,
+                    toOneMonthAgo);
 
             //customization
             var customUserId = userService.CreateUser("CustomUser");
@@ -109,6 +111,7 @@ namespace Demo
             {
                 eventTrackerService.AddEventToTracker(customUserId, customTrackerId, @event);
             }
+
             var allEventsFromCustomTracker = eventTrackerService.GetAllEventsFromTracker(customTrackerId, customUserId);
 
             //statistic
@@ -141,7 +144,7 @@ namespace Demo
                 true,
                 true,
                 true);
-            const int numEventsStats = 500; 
+            const int numEventsStats = 500;
             var eventsStat1 = CreateEvents(userId, Gen.Next() % 100 + numEventsStats);
             var eventsStat2 = CreateEvents(userId, Gen.Next() % 100 + numEventsStats);
             var eventsStat3 = CreateEvents(userId, Gen.Next() % 100 + numEventsStats);
@@ -149,17 +152,21 @@ namespace Demo
             {
                 eventTrackerService.AddEventToTracker(userIdStatistic, trackerIdStat1, @event);
             }
+
             foreach (var @event in eventsStat2)
             {
                 eventTrackerService.AddEventToTracker(userIdStatistic, trackerIdStat2, @event);
             }
+
             foreach (var @event in eventsStat3)
             {
                 eventTrackerService.AddEventToTracker(userIdStatistic, trackerIdStat3, @event);
             }
-            
+
             //calculate 
-            var facts = statisticService.GetStatisticFacts(userIdStatistic);
+            var allFacts = statisticService.GetFacts(userIdStatistic);
+            var generalFacts= statisticService.GetGeneralFacts(userIdStatistic);
+            var specificFacts = statisticService.GetSpecificFacts(userIdStatistic);
         }
 
         private static IEnumerable<Event> CreateEventsWithRating(Guid userId, in int numEvents)
@@ -203,7 +210,7 @@ namespace Demo
                 .WithComment($"Comment of {title}")
                 .Build();
         }
-        
+
         private static Event CreateEvent(Guid userId, Guid eventId, string title, DateTimeOffset happensDate)
         {
             return EventBuilder
