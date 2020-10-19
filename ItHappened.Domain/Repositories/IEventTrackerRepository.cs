@@ -5,9 +5,10 @@ namespace ItHappened.Domain
 {
     public interface IEventTrackerRepository
     {
-        void SaveEventInTracker(EventTracker newEventTracker);
-        EventTracker LoadEventFromTracker(Guid eventTrackerId);
-        IEnumerable<EventTracker> LoadUserTrackers(Guid userId);
-        void DeleteEventTracker(Guid eventId);
+        bool IsTrackerIn(Guid trackerId);
+        void SaveTracker(EventTracker newTracker);
+        EventTracker LoadTracker(Guid eventTrackerId);
+        IEnumerable<EventTracker> LoadAllUserTrackers(Guid userId);
+        bool DeleteTracker(Guid eventId);
     }
 }

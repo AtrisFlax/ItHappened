@@ -21,7 +21,7 @@ namespace Usage
             {
                 UserService = new UserService(userRepository),
                 EventTrackerService = new EventTrackerService(eventTrackerRepository, eventRepository),
-                StatisticsService = new StatisticsService(eventTrackerRepository)
+                //StatisticsService = new StatisticsService(eventTrackerRepository)
             };
         }
     }

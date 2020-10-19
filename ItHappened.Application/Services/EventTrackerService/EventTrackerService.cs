@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using ItHappened.Domain;
 using LanguageExt;
 using Serilog;
+using Status = ItHappened.Application.Services.EventTrackerService.EventTrackerServiceStatusCodes;
 
 namespace ItHappened.Application.Services.EventTrackerService
 {
@@ -17,19 +18,24 @@ namespace ItHappened.Application.Services.EventTrackerService
             _eventRepository = eventRepository;
         }
 
-        public bool DeleteTracker(Guid trackerCreatorId, Guid trackerId)
+        public Status DeleteTracker(Guid trackerId, Guid trackerCreatorId)
         {
-            var tracker = _eventTrackerRepository.LoadEventFromTracker(trackerId);
+            if (!_eventTrackerRepository.IsTrackerIn(trackerId))
+            {
+                Log.Information(
+                    $"Tracker with id: {trackerId} doesn't exist in repository");
+                return Status.TrackerDontExist;
+            }
+            var tracker = _eventTrackerRepository.LoadTracker(trackerId);
             if (trackerCreatorId != tracker.CreatorId)
             {
                 Log.Information(
                     $"Can't remove tracker with trackerId={trackerId} trackerCreatorId={trackerCreatorId}. TrackerCreatorId does not match");
-                return false;
+                return Status.WrongCreatorId;
             }
 
-            _eventTrackerRepository.DeleteEventTracker(trackerId);
             Log.Information($"Tracker deleted with trackerId={trackerId} trackerCreatorId={trackerCreatorId}");
-            return true;
+            return Status.Ok;;
         }
 
         public Guid CreateTracker(
@@ -70,18 +76,18 @@ namespace ItHappened.Application.Services.EventTrackerService
             }
 
             var tracker = trackerBuilder.Build();
-            _eventTrackerRepository.SaveEventInTracker(tracker);
+            _eventTrackerRepository.SaveTracker(tracker);
             return tracker.Id;
         }
 
-        public IEnumerable<EventTracker> GetAllTrackers(Guid trackerCreatorId)
+        public IEnumerable<EventTracker> GetAllUserTrackers(Guid trackerCreatorId)
         {
-            return _eventTrackerRepository.LoadUserTrackers(trackerCreatorId);
+            return _eventTrackerRepository.LoadAllUserTrackers(trackerCreatorId);
         }
 
         public Option<EventTracker> GetTracker(Guid trackerCreatorId, Guid trackerId)
         {
-            var tracker = _eventTrackerRepository.LoadEventFromTracker(trackerId);
+            var tracker = _eventTrackerRepository.LoadTracker(trackerId);
             if (trackerCreatorId == tracker.CreatorId)
             {
                 Log.Information(
@@ -95,15 +101,15 @@ namespace ItHappened.Application.Services.EventTrackerService
 
         public bool AddEventToTracker(Guid trackerCreatorId, Guid trackerId, Event @event)
         {
-            var tracker = _eventTrackerRepository.LoadEventFromTracker(trackerId);
-            tracker.AddEvent(@event);
+            var tracker = _eventTrackerRepository.LoadTracker(trackerId);
+            //tracker.AddEvent(@event);
             if (trackerCreatorId != tracker.CreatorId)
             {
                 Log.Information(
                     $"Can't add event to tracker trackerId={trackerId} trackerCreatorId={trackerCreatorId}. TrackerCreatorId does not match");
                 return false;
             }
-            _eventTrackerRepository.SaveEventInTracker(tracker);
+            _eventTrackerRepository.SaveTracker(tracker);
             _eventRepository.AddEvent(@event);
             Log.Information(
                 $"Event Added trackerId={trackerId} trackerCreatorId={trackerCreatorId} eventId={@event.Id}");
@@ -112,7 +118,7 @@ namespace ItHappened.Application.Services.EventTrackerService
 
         public bool RemoveEventFromTracker(Guid trackerCreatorId, Guid trackerId, Guid eventId)
         {
-            var tracker = _eventTrackerRepository.LoadEventFromTracker(trackerId);
+            var tracker = _eventTrackerRepository.LoadTracker(trackerId);
             if (trackerCreatorId != tracker.CreatorId)
             {
                 Log.Information(
@@ -121,9 +127,9 @@ namespace ItHappened.Application.Services.EventTrackerService
             }
 
             var eventToRemove = _eventRepository.LoadEvent(eventId);
-            tracker.RemoveEvent(eventToRemove);
+           //tracker.RemoveEvent(eventToRemove);
             _eventRepository.DeleteEvent(eventId);
-            _eventTrackerRepository.SaveEventInTracker(tracker);
+            _eventTrackerRepository.SaveTracker(tracker);
             Log.Information(
                 $"Event from tracker has deleted.  trackerId={trackerId}  eventId={eventId} trackerCreatorId={trackerCreatorId}");
             return true;
@@ -131,7 +137,7 @@ namespace ItHappened.Application.Services.EventTrackerService
 
         public bool EditEventInTracker(Guid trackerCreatorId, Guid trackerId, Guid eventId, Event newEvent)
         {
-            var tracker = _eventTrackerRepository.LoadEventFromTracker(trackerId);
+            var tracker = _eventTrackerRepository.LoadTracker(trackerId);
             if (trackerCreatorId != tracker.CreatorId)
             {
                 Log.Information(
@@ -153,7 +159,7 @@ namespace ItHappened.Application.Services.EventTrackerService
             }
             _eventRepository.DeleteEvent(eventId);
             _eventRepository.AddEvent(newEvent);
-            _eventTrackerRepository.SaveEventInTracker(tracker);
+            _eventTrackerRepository.SaveTracker(tracker);
             Log.Information(
                 $"Event Added trackerId={trackerId} trackerCreatorId={trackerCreatorId} eventId={newEvent.Id}");
             return true;
@@ -161,32 +167,34 @@ namespace ItHappened.Application.Services.EventTrackerService
 
         public Option<IList<Event>> GetAllEventsFromTracker(Guid trackerId, Guid trackerCreatorId)
         {
-            var tracker = _eventTrackerRepository.LoadEventFromTracker(trackerId);
-            if (trackerCreatorId != tracker.CreatorId)
-            {
-                Log.Information(
-                    $"Can't get events from tracker trackerId={trackerId} trackerCreatorId={trackerCreatorId}. TrackerCreatorId does not match");
-                return Option<IList<Event>>.None;
-            }
-
-            Log.Information($"Returned events from trackerId={trackerId}");
-            return Option<IList<Event>>.Some(tracker.Events);
+            // var tracker = _eventTrackerRepository.LoadTracker(trackerId);
+            // if (trackerCreatorId != tracker.CreatorId)
+            // {
+            //     Log.Information(
+            //         $"Can't get events from tracker trackerId={trackerId} trackerCreatorId={trackerCreatorId}. TrackerCreatorId does not match");
+            //     return Option<IList<Event>>.None;
+            // }
+            //
+            // Log.Information($"Returned events from trackerId={trackerId}");
+            // return Option<IList<Event>>.Some(tracker);
+            throw new NotImplementedException();
         }
 
-        public Option<IReadOnlyCollection<Event>> GetEventsFiltratedByTime(Guid trackerCreatorId,
-            Guid trackerId,
-            DateTimeOffset from, DateTimeOffset to)
-        {
-            var tracker = _eventTrackerRepository.LoadEventFromTracker(trackerId);
-            if (trackerCreatorId != tracker.CreatorId)
-            {
-                Log.Information(
-                    $"Can't filter events from tracker trackerId={trackerId} trackerCreatorId={trackerCreatorId}. TrackerCreatorId does not match");
-                return Option<IReadOnlyCollection<Event>>.None;
-            }
-            var requiredTracker = _eventTrackerRepository.LoadEventFromTracker(trackerId);
-            Log.Information($"Get Filtered from {from} to {to} events from trackerId={trackerId}");
-            return Option<IReadOnlyCollection<Event>>.Some(requiredTracker.FilterEventsByTimeSpan(from, to));
-        }
+        // public Option<IReadOnlyCollection<Event>> GetEventsFiltratedByTime(Guid trackerCreatorId,
+        //     Guid trackerId,
+        //     DateTimeOffset from, DateTimeOffset to)
+        // {
+        //     var tracker = _eventTrackerRepository.LoadTracker(trackerId);
+        //     if (trackerCreatorId != tracker.CreatorId)
+        //     {
+        //         Log.Information(
+        //             $"Can't filter events from tracker trackerId={trackerId} trackerCreatorId={trackerCreatorId}. TrackerCreatorId does not match");
+        //         return Option<IReadOnlyCollection<Event>>.None;
+        //     }
+        //     var requiredTracker = _eventTrackerRepository.LoadTracker(trackerId);
+        //     Log.Information($"Get Filtered from {from} to {to} events from trackerId={trackerId}");
+        //     return Option<IReadOnlyCollection<Event>>.Some(requiredTracker.FilterEventsByTimeSpan(from, to));
+        // }
     }
 }
+

@@ -17,16 +17,16 @@ namespace ItHappened.Application.Services.EventTrackerService
             bool hashGeoTag = false,
             bool hasComment = false);
         
-        bool DeleteTracker(Guid trackerCreatorId, Guid trackerId);
+        EventTrackerServiceStatusCodes DeleteTracker(Guid trackerId, Guid trackerCreatorId);
 
-        IEnumerable<EventTracker> GetAllTrackers(Guid trackerCreatorId);
+        IEnumerable<EventTracker> GetAllUserTrackers(Guid trackerCreatorId);
         Option<EventTracker> GetTracker(Guid trackerCreatorId, Guid trackerId);
         bool AddEventToTracker(Guid trackerCreatorId, Guid trackerId, Event @event);
         bool RemoveEventFromTracker(Guid trackerCreatorId, Guid trackerId, Guid eventId);
         bool EditEventInTracker(Guid trackerCreatorId, Guid trackerId, Guid eventId, Event newEvent);
         Option<IList<Event>> GetAllEventsFromTracker(Guid trackerId, Guid trackerCreatorId);
 
-        Option<IReadOnlyCollection<Event>> GetEventsFiltratedByTime(Guid trackerCreatorId, Guid trackerId, 
-            DateTimeOffset from, DateTimeOffset to);
+        // Option<IReadOnlyCollection<Event>> GetEventsFiltratedByTime(Guid trackerCreatorId, Guid trackerId, 
+        //     DateTimeOffset from, DateTimeOffset to);
     }
 }

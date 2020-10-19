@@ -24,7 +24,7 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
             _eventRepository = new EventRepository();
             _creatorId = Guid.NewGuid();
             _events = CreateEvents(_creatorId, InitialEventsNumber);
-            _eventTracker = CreateEventTracker(_events);
+            _eventTracker = CreateEventTracker();
             _worstEventCalculator = new WorstEventCalculator(_eventRepository);
         }
 
@@ -102,7 +102,7 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
             return events;
         }
 
-        private EventTracker CreateEventTracker(List<Event> eventList)
+        private EventTracker CreateEventTracker()
         {
             var tracker = EventTrackerBuilder
                 .Tracker(Guid.NewGuid(), _eventTracker.Id, "tracker")
