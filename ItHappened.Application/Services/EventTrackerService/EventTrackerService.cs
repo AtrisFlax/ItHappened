@@ -184,7 +184,6 @@ namespace ItHappened.Application.Services.EventTrackerService
                     $"Can't filter events from tracker trackerId={trackerId} trackerCreatorId={trackerCreatorId}. TrackerCreatorId does not match");
                 return Option<IReadOnlyCollection<Event>>.None;
             }
-
             var requiredTracker = _eventTrackerRepository.LoadEventFromTracker(trackerId);
             Log.Information($"Get Filtered from {from} to {to} events from trackerId={trackerId}");
             return Option<IReadOnlyCollection<Event>>.Some(requiredTracker.FilterEventsByTimeSpan(from, to));

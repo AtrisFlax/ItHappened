@@ -26,8 +26,7 @@ namespace ItHappened.Application.Services.EventTrackerService
         bool EditEventInTracker(Guid trackerCreatorId, Guid trackerId, Guid eventId, Event newEvent);
         Option<IList<Event>> GetAllEventsFromTracker(Guid trackerId, Guid trackerCreatorId);
 
-        Option<IReadOnlyCollection<Event>> GetEventsFiltratedByTime(Guid trackerCreatorId,
-            Guid trackerId,
+        Option<IReadOnlyCollection<Event>> GetEventsFiltratedByTime(Guid trackerCreatorId, Guid trackerId, 
             DateTimeOffset from, DateTimeOffset to);
     }
 }
