@@ -84,26 +84,7 @@ namespace ItHappened.UnitTests
             @event.Rating.Do(value => Assert.IsTrue(value == _rating));
             @event.GeoTag.Do(value => Assert.IsTrue(value == _geoTag));
         }
-
-
-        [Test]
-        public void CreationEventWithNullTitle()
-        {
-            //arrange
-            var eventId = Guid.NewGuid();
-            var creatorId = Guid.NewGuid();
-            var date = DateTimeOffset.Now;
-            const string title = null;
-
-            //act
-
-            //assert
-            Assert.Throws<NullReferenceException>(() =>
-                EventBuilder.Event(eventId, creatorId, date, title).Build()
-            );
-        }
-
-
+        
         [Test]
         public void CreationEventAllParametersButSkipPhotoParameter()
         {

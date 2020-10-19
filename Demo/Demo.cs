@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using ItHappened.Domain;
-using LanguageExt.UnsafeValueAccess;
 using Serilog;
 using Usage;
 
