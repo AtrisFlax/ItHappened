@@ -9,12 +9,12 @@ namespace ItHappened.Infrastructure.Repositories
     {
         private readonly Dictionary<Guid, EventTracker> _eventTrackers = new Dictionary<Guid, EventTracker>();
 
-        public void SaveEventTracker(EventTracker newEventTracker)
+        public void SaveEventInTracker(EventTracker newEventTracker)
         {
-            _eventTrackers.Add(newEventTracker.TrackerId, newEventTracker);
+            _eventTrackers[newEventTracker.TrackerId] = newEventTracker;
         }
 
-        public EventTracker LoadEventTracker(Guid eventTrackerId)
+        public EventTracker LoadEventFromTracker(Guid eventTrackerId)
         {
             return _eventTrackers[eventTrackerId];
         }

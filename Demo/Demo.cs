@@ -2,12 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using ItHappened.Domain;
+using LanguageExt.UnsafeValueAccess;
 using Serilog;
 using Usage;
 
-namespace ConsoleApp1
+namespace Demo
 {
-    internal class Demo
+     internal class Demo
     {
         private static readonly Random Gen = new Random();
 
@@ -45,32 +46,31 @@ namespace ConsoleApp1
             //add events to tracker
             const int numEvents = 110;
             var events = CreateEvents(userId, numEvents);
-            foreach (var @event in events) eventTrackerService.AddEventToTracker(userId, trackerId, @event);
+            foreach (var @event in events)
+            {
+                eventTrackerService.AddEventToTracker(userId, trackerId, @event);
+            }
 
             //get all events from tracker 
             var allEvents = eventTrackerService.GetAllEventsFromTracker(trackerId, userId);
 
-            //delete first 10
+            //delete first 30
             allEvents.Do(x =>
             {
-                for (var i = 0; i < 10; i++) eventTrackerService.RemoveEventFromTracker(userId, trackerId, x[i].Id);
+                for (var i = 0; i < 30; i++)
+                {
+                    var randomIndex = Gen.Next(0, x.Count);
+                    eventTrackerService.RemoveEventFromTracker(userId, trackerId, x[randomIndex].Id);
+                }
             });
-
-            //delete last 20
-            allEvents.Do(x =>
-            {
-                for (var i = 0; i < 20; i++) eventTrackerService.RemoveEventFromTracker(userId, trackerId, x[^1].Id);
-            });
-
+            allEvents = eventTrackerService.GetAllEventsFromTracker(trackerId, userId);
+            
             //edit event from allEvents list 
             const int targetEventNum = 15;
-            var eventForReplace = CreateEvent(userId, "New Tittle", RandomDay());
-            allEvents.Do(x =>
-            {
-                var guidEventForEdit = x[targetEventNum].Id;
-                eventTrackerService.EditEventInTracker(userId, trackerId, guidEventForEdit, eventForReplace);
-            });
-            var updateEventsList = eventTrackerService.GetAllEventsFromTracker(trackerId, userId);
+            var eventIdForEdit = allEvents.ValueUnsafe()[targetEventNum].Id;
+            var eventForReplace = CreateEvent(userId, eventIdForEdit, "Tittle of Replaced Event", RandomDay());
+            eventTrackerService.EditEventInTracker(userId, trackerId, eventIdForEdit, eventForReplace);
+            var eventsWithReplacedValue = eventTrackerService.GetAllEventsFromTracker(trackerId, userId);
 
             //events filtering 
             var trackerId1 = eventTrackerService.CreateTracker(
@@ -85,8 +85,10 @@ namespace ConsoleApp1
             var userIdFiltering = userService.CreateUser("Login_User_Filter");
             var eventsForFiltering = CreateEventsForFiltering(userIdFiltering).ToList();
             foreach (var @event in eventsForFiltering)
+            {
                 eventTrackerService.AddEventToTracker(userId, trackerId1, @event);
-
+            }
+            
             //filtration
             var fromTwoMonthAgo = DateTimeOffset.Now.AddDays(-7 * 4 * 4);
             var toOneMonthAgo = DateTimeOffset.Now.AddDays(-7 * 4 * 1);
@@ -186,6 +188,18 @@ namespace ConsoleApp1
         {
             return EventBuilder
                 .Event(Guid.NewGuid(), userId, happensDate, $"Event {title}")
+                .WithPhoto(new Photo(GetByteArray(Gen.Next() % 10 + 10)))
+                .WithScale(Gen.NextDouble())
+                .WithRating(Gen.NextDouble())
+                .WithGeoTag(new GeoTag(Gen.NextDouble(), Gen.NextDouble()))
+                .WithComment($"Comment of {title}")
+                .Build();
+        }
+        
+        private static Event CreateEvent(Guid userId, Guid eventId, string title, DateTimeOffset happensDate)
+        {
+            return EventBuilder
+                .Event(eventId, userId, happensDate, $"Event {title}")
                 .WithPhoto(new Photo(GetByteArray(Gen.Next() % 10 + 10)))
                 .WithScale(Gen.NextDouble())
                 .WithRating(Gen.NextDouble())
