@@ -4,14 +4,14 @@ namespace ItHappened.Domain
 {
     public class User
     {
-        public User(Guid guid, string name, DateTimeOffset dateTimeOffset)
+        public User(Guid id, string name, DateTimeOffset dateTimeOffset)
         {
-            Guid = guid;
+            Id = id;
             Name = name;
             DateTimeOffset = dateTimeOffset;
         }
 
-        public Guid Guid { get; }
+        public Guid Id { get; }
         public string Name { get; }
         public DateTimeOffset DateTimeOffset { get; }
     }

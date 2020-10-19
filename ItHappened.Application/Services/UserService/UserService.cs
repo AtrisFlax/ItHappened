@@ -17,8 +17,8 @@ namespace ItHappened.Application.Services.UserService
         {
             var user = new User(Guid.NewGuid(), name, DateTimeOffset.UtcNow);
             _userRepository.SaveUser(user);
-            Log.Verbose($"User with login {name} added with id={user.Guid}");
-            return user.Guid;
+            Log.Verbose($"User with login {name} added with id={user.Id}");
+            return user.Id;
         }
     }
 }

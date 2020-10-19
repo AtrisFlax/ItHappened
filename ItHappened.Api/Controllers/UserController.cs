@@ -8,6 +8,16 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace ItHappened.Api.Controllers
 {
+
+    public class TestController : Controller
+    {
+        [HttpGet("api/user")]
+        public IActionResult Get()
+        {
+            return Ok(new {name = "STEPA"});
+        }
+    }
+    
     [ApiController]
     [Route("users")]
     public class UserController : ControllerBase
@@ -36,13 +46,12 @@ namespace ItHappened.Api.Controllers
         [ProducesResponseType(404)]
         public IActionResult GetUser(string userId)
         {
-            var user = _userService.GetUser(Guid.Parse(userId));
+            string user = null;
             if (user == null)
             {
                 return NotFound();
             }
 
-            var response = new GetUserResponse(user.Name);
             return Ok(user);
         }
 

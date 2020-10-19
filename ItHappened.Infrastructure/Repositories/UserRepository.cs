@@ -10,7 +10,7 @@ namespace ItHappened.Infrastructure.Repositories
 
         public void SaveUser(User newUser)
         {
-            _users.Add(newUser.Guid, newUser);
+            _users.Add(newUser.Id, newUser);
         }
 
         public User LoadUser(Guid userId)
