@@ -4,9 +4,9 @@ using System.Linq;
 
 namespace ItHappened.Domain.Statistics
 {
-    public class MostFrequentEventFact : IMultipleTrackersStatisticsFact
+    public class MostFrequentEventFact : IStatisticsFact
     {
-        protected internal  MostFrequentEventFact(
+        protected internal MostFrequentEventFact(
             string trackingName, double eventsPeriod, IEnumerable<(string, double)> eventTrackersWithPeriods)
         {
             TrackingName = trackingName;
@@ -16,11 +16,12 @@ namespace ItHappened.Domain.Statistics
             EventTrackersWithPeriods = eventTrackersWithPeriods.ToList();
         }
 
-        public string FactName { get; } = nameof(MostFrequentEventFact);
-        public string Description { get; }
-        public double Priority { get; }
         public string TrackingName { get; }
         public double EventsPeriod { get; }
         public IReadOnlyCollection<(string TrackingName, double EventPeriod)> EventTrackersWithPeriods { get; }
+
+        public string FactName { get; } = nameof(MostFrequentEventFact);
+        public string Description { get; }
+        public double Priority { get; }
     }
 }

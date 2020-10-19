@@ -4,24 +4,24 @@ using ItHappend.Domain.Statistics;
 using ItHappened.Domain;
 using ItHappened.Domain.Statistics;
 using LanguageExt;
-using LanguageExt.UnsafeValueAccess;
 using NUnit.Framework;
 
 namespace ItHappend.UnitTests.StatisticsCalculatorsTests
 {
     public class WorstEventCalculatorTests
     {
-        private const int InitialEventsNumber = 9; 
+        private const int InitialEventsNumber = 9;
         private Guid _creatorId;
         private List<Event> _events;
         private EventTracker _eventTracker;
         private WorstEventCalculator _worstEventCalculator;
+
         [SetUp]
         public void Init()
         {
             _creatorId = Guid.NewGuid();
-            _events = CreateEvents(_creatorId,InitialEventsNumber);
-            _eventTracker = CreateEventTracker(_creatorId,_events);
+            _events = CreateEvents(_creatorId, InitialEventsNumber);
+            _eventTracker = CreateEventTracker(_creatorId, _events);
             _worstEventCalculator = new WorstEventCalculator();
         }
 
@@ -31,26 +31,26 @@ namespace ItHappend.UnitTests.StatisticsCalculatorsTests
             _events[0].HappensDate = DateTimeOffset.Now - TimeSpan.FromDays(91);
             _events[1].Rating = 1;
             _events[1].HappensDate = DateTimeOffset.Now - TimeSpan.FromDays(8);
-            var expected = Option<ISingleTrackerStatisticsFact>.None;
-            
+            var expected = Option<IStatisticsFact>.None;
+
             var actual = _worstEventCalculator.Calculate(_eventTracker);
-            
+
             Assert.AreEqual(expected, actual);
         }
-        
+
         [Test]
         public void CalculateWithoutOldEnoughEvent_ReturnNone()
         {
             _events.Add(CreateEventWithoutComment(_creatorId));
             _events[1].Rating = 1;
             _events[1].HappensDate = DateTimeOffset.Now - TimeSpan.FromDays(8);
-            var expected = Option<ISingleTrackerStatisticsFact>.None;
-            
+            var expected = Option<IStatisticsFact>.None;
+
             var actual = _worstEventCalculator.Calculate(_eventTracker);
-            
+
             Assert.AreEqual(expected, actual);
         }
-        
+
         [Test]
         public void CalculateWhenWorstEventHappenedLessThanWeekAgo_ReturnNone()
         {
@@ -58,13 +58,13 @@ namespace ItHappend.UnitTests.StatisticsCalculatorsTests
             _events[0].HappensDate = DateTimeOffset.Now - TimeSpan.FromDays(91);
             _events[1].Rating = 1;
             _events[1].HappensDate = DateTimeOffset.Now - TimeSpan.FromDays(6);
-            var expected = Option<ISingleTrackerStatisticsFact>.None;
-            
+            var expected = Option<IStatisticsFact>.None;
+
             var actual = _worstEventCalculator.Calculate(_eventTracker);
-            
+
             Assert.AreEqual(expected, actual);
         }
-        
+
         [Test]
         public void CalculateGoodCase_ReturnsFact()
         {
@@ -85,29 +85,30 @@ namespace ItHappend.UnitTests.StatisticsCalculatorsTests
                 .WithRating(5)
                 .Build();
         }
-        
+
         private List<Event> CreateEvents(Guid creatorId, int quantity)
         {
             var events = new List<Event>();
             for (var i = 0; i < quantity; i++)
-            {
                 events.Add(EventBuilder
                     .Event(Guid.NewGuid(), creatorId, DateTimeOffset.Now, "tittle")
                     .WithComment("comment")
                     .WithRating(5)
                     .Build());
-            }
 
             return events;
         }
 
-        private EventTracker CreateEventTracker(Guid creatorId, List<Event> eventList)
+        private static EventTracker CreateEventTracker(Guid creatorId, List<Event> eventList)
         {
-            return new EventTracker(Guid.NewGuid(),
-                "tracker",
-                eventList,
-                creatorId
-            );
+            var tracker = EventTrackerBuilder
+                .Tracker(Guid.NewGuid(), creatorId, "tracker")
+                .Build();
+            foreach (var @event in eventList)
+            {
+                tracker.AddEvent(@event);
+            }
+            return tracker;
         }
     }
 }

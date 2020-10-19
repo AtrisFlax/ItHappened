@@ -11,28 +11,35 @@ namespace ItHappened.UnitTests
         public void AddEventToTracker()
         {
             //arrange
-            var initEvent = CreateEvent("Title");
+            var title = "Title";
+            var initEvent = CreateEvent(title);
             var eventForAdding = CreateEvent("Added Title");
             var eventList = new List<Event> {initEvent};
+            var eventTrackerId = Guid.NewGuid();
+            var creatorId = Guid.NewGuid();
 
             //act
-            var eventTracker = CreateEventTracker(eventList);
+            var eventTracker = CreateEventTracker(creatorId, eventTrackerId, eventList);
             eventTracker.AddEvent(eventForAdding);
 
             //assert
             Assert.That(eventTracker.Events, Is.EquivalentTo(new List<Event> {initEvent, eventForAdding}));
+            Assert.AreEqual(title, eventTracker.Name);
+            Assert.AreEqual(eventTrackerId, eventTracker.TrackerId);
         }
-        
+
         [Test]
         public void RemoveEventFromTracker()
         {
             //arrange
             var firstEvent = CreateEvent("Should left");
             var secondEvent = CreateEvent("For remove");
-            var eventList = new List<Event>{firstEvent, secondEvent};
-            
+            var eventList = new List<Event> {firstEvent, secondEvent};
+            var eventTrackerId = Guid.NewGuid();
+            var creatorId = Guid.NewGuid();
+
             //act
-            var eventTracker = CreateEventTracker(eventList);
+            var eventTracker = CreateEventTracker(creatorId, eventTrackerId, eventList);
             eventTracker.RemoveEvent(secondEvent);
 
             //assert
@@ -46,41 +53,44 @@ namespace ItHappened.UnitTests
             var eventList = new List<Event>();
             var from = new DateTimeOffset(DateTime.Now);
             var to = new DateTimeOffset(DateTime.Now + TimeSpan.FromDays(1));
-            var expected = 0;
-            
+            var eventTrackerId = Guid.NewGuid();
+            var creatorId = Guid.NewGuid();
+
             //act
-            var eventTracker = CreateEventTracker(eventList);
+            var eventTracker = CreateEventTracker(creatorId, eventTrackerId, eventList);
             var filteredEvents = eventTracker.FilterEventsByTimeSpan(from, to);
             var actual = filteredEvents.Count;
-            
+
             //assert
-            Assert.AreEqual(expected, actual);
+            Assert.AreEqual(0, actual);
         }
-        
+
         [Test]
         public void FilterEventsByTimeSpan_ShouldFilterEvents()
         {
             //arrange
             var firstEvent = CreateEvent("First");
-            firstEvent.HappensDate = new DateTimeOffset(2020, 10, 14, 18, 00, 00, TimeSpan.Zero).ToLocalTime();
             var secondEvent = CreateEvent("Second");
-            secondEvent.HappensDate = new DateTimeOffset(2020, 10, 14, 18, 00, 59, TimeSpan.Zero).ToLocalTime();
             var thirdEvent = CreateEvent("Third");
+            firstEvent.HappensDate = new DateTimeOffset(2020, 10, 14, 18, 00, 00, TimeSpan.Zero).ToLocalTime();
+            secondEvent.HappensDate = new DateTimeOffset(2020, 10, 14, 18, 00, 59, TimeSpan.Zero).ToLocalTime();
             thirdEvent.HappensDate = new DateTimeOffset(2020, 10, 14, 17, 59, 59, TimeSpan.Zero).ToLocalTime();
             var eventList = new List<Event> {firstEvent, secondEvent, thirdEvent};
             var from = new DateTimeOffset(2020, 10, 14, 18, 00, 00, TimeSpan.Zero);
             var to = new DateTimeOffset(2020, 10, 14, 18, 01, 00, TimeSpan.Zero);
-            var expected = 2;
-            
+            const int expected = 2;
+            var creatorId = Guid.NewGuid();
+            var trackerId = Guid.NewGuid();
+
             //act
-            var eventTracker = CreateEventTracker(eventList);
+            var eventTracker = CreateEventTracker(creatorId, trackerId, eventList);
             var filteredEvents = eventTracker.FilterEventsByTimeSpan(from, to);
             var actual = filteredEvents.Count;
-            
+
             //assert
             Assert.AreEqual(expected, actual);
         }
-        
+
         private static Event CreateEvent(string tittle)
         {
             return EventBuilder
@@ -88,13 +98,17 @@ namespace ItHappened.UnitTests
                 .Build();
         }
 
-        private static EventTracker CreateEventTracker(List<Event> eventList)
+        private static EventTracker CreateEventTracker(Guid creatorId, Guid trackerId, List<Event> eventList)
         {
-            return new EventTracker(Guid.NewGuid(),
-                "name1",
-                eventList,
-                Guid.NewGuid()
-            );
+            var tracker = EventTrackerBuilder
+                .Tracker(creatorId, creatorId, "tracker")
+                .Build();
+            foreach (var @event in eventList)
+            {
+                tracker.AddEvent(@event);
+            }
+
+            return tracker;
         }
     }
 }

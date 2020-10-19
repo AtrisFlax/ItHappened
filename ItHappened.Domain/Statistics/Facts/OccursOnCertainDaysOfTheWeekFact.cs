@@ -4,15 +4,10 @@ using ItHappened.Domain.Statistics;
 
 namespace ItHappend.Domain.Statistics
 {
-    public class OccursOnCertainDaysOfTheWeekFact : ISingleTrackerStatisticsFact
+    public class OccursOnCertainDaysOfTheWeekFact : IStatisticsFact
     {
-        public string FactName { get; }
-        public string Description { get; }
-        public double Priority { get; }
-        public IEnumerable<DayOfWeek> DaysOfTheWeek { get; }
-        public double Percentage { get; }
-        
-        internal OccursOnCertainDaysOfTheWeekFact(string factName, string description, double priority, IEnumerable<DayOfWeek> daysOfTheWeek, double percentage)
+        internal OccursOnCertainDaysOfTheWeekFact(string factName, string description, double priority,
+            IEnumerable<DayOfWeek> daysOfTheWeek, double percentage)
         {
             FactName = factName;
             Description = description;
@@ -20,5 +15,11 @@ namespace ItHappend.Domain.Statistics
             DaysOfTheWeek = daysOfTheWeek;
             Percentage = percentage;
         }
+
+        public IEnumerable<DayOfWeek> DaysOfTheWeek { get; }
+        public double Percentage { get; }
+        public string FactName { get; }
+        public string Description { get; }
+        public double Priority { get; }
     }
 }

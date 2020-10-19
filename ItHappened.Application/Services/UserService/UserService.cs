@@ -20,7 +20,7 @@ namespace ItHappened.Application.Services.UserService
             Log.Verbose($"User with login {name} added with id={user.Guid}");
             return user.Guid;
         }
-        
+
         public User GetUser(Guid id)
         {
             return _userRepository.LoadUser(id);

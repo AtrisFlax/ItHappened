@@ -6,10 +6,10 @@ namespace ItHappened.Domain.Statistics
 {
     public class LongestBreakCalculator : ISingleTrackerStatisticsCalculator
     {
-        public Option<ISingleTrackerStatisticsFact> Calculate(EventTracker eventTracker)
+        public Option<IStatisticsFact> Calculate(EventTracker eventTracker)
         {
-            if (!CanCalculate(eventTracker)) return Option<ISingleTrackerStatisticsFact>.None;
-            
+            if (!CanCalculate(eventTracker)) return Option<IStatisticsFact>.None;
+
             var (lastEventBeforeBreak, firstEventAfterBreak) = GetFirstAndLastEventOfTheLongestBreak(eventTracker);
             var maxDurationInDays = (firstEventAfterBreak.HappensDate - lastEventBeforeBreak.HappensDate).Days;
             var priority = Math.Sqrt(maxDurationInDays);
@@ -17,8 +17,8 @@ namespace ItHappened.Domain.Statistics
                 $"Самый большой перерыв в {eventTracker.Name} произошёл с {lastEventBeforeBreak}" +
                 $" до {firstEventAfterBreak}, он занял {maxDurationInDays} дней";
             var factName = "Самый долгий перерыв";
-            
-            return Option<ISingleTrackerStatisticsFact>.Some(new LongestBreakFact(factName,
+
+            return Option<IStatisticsFact>.Some(new LongestBreakFact(factName,
                 description,
                 priority,
                 maxDurationInDays,
@@ -35,7 +35,7 @@ namespace ItHappened.Domain.Statistics
             var maxDuration = (firstEventAfterBreak.HappensDate - lastEventBeforeBreak.HappensDate).Days;
             if ((firstEventAfterBreak.HappensDate - DateTimeOffset.Now).Days > 7)
                 return false;
-                
+
             var averageTimeBetweenEvents = GetAverageDurationBetweenEvents(eventTracker);
             return !(maxDuration < averageTimeBetweenEvents * 3);
         }
@@ -47,20 +47,20 @@ namespace ItHappened.Domain.Statistics
             var lastEventBeforeBreak = events[0];
             var firstEventAfterBreak = events[1];
             var maxDuration = TimeSpan.Zero;
-            for (var i = 1; i < events.Count-1; i++)
+            for (var i = 1; i < events.Count - 1; i++)
             {
                 var duration = events[i].HappensDate - events[i + 1].HappensDate;
                 if (duration > maxDuration)
                 {
                     maxDuration = duration;
                     lastEventBeforeBreak = events[i];
-                    firstEventAfterBreak = events[i+1];
+                    firstEventAfterBreak = events[i + 1];
                 }
             }
 
             return (lastEventBeforeBreak, firstEventAfterBreak);
         }
-        
+
         private double GetAverageDurationBetweenEvents(EventTracker eventTracker)
         {
             var events = eventTracker.Events;

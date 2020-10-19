@@ -6,47 +6,29 @@ namespace ItHappened.Domain
 {
     public class EventTrackerBuilder : IEventTrackerBuilder
     {
-        public Guid Id { get; private set; }
+        public Guid CreatorId { get; private set; }
+        public Guid TrackerId { get; private set; }
         public string Name { get; private set; }
         public IList<Event> Events { get; private set; }
-        public Guid CreatorId { get; private set; }
 
         public bool HasPhoto { get; private set; }
         public bool HasScale { get; private set; }
-        public Option<String> ScaleMeasurementUnit { get; private set; }
+        public Option<string> ScaleMeasurementUnit { get; private set; }
         public bool HasRating { get; private set; }
         public bool HashGeoTag { get; private set; }
         public bool HasComment { get; private set; }
 
-        public EventTracker Build()
+        public static EventTrackerBuilder Tracker(Guid creatorId, Guid trackerId, string name)
         {
-            return new EventTracker(this);
+            return new EventTrackerBuilder
+            {
+                CreatorId = creatorId,
+                TrackerId = trackerId,
+                Name = name,
+                Events = new List<Event>()
+            };
         }
         
-        public static EventTrackerBuilder TrackerEmpty(Guid id, Guid creatorId, string name)
-        {
-            if (name == null) throw new NullReferenceException();
-            return new EventTrackerBuilder
-            {
-                Id = id,
-                Name = name,
-                Events = new List<Event>(),
-                CreatorId = creatorId
-            };
-        }
-
-        public static EventTrackerBuilder TrackerWithEvents(Guid id, Guid creatorId, string name, IList<Event> events)
-        {
-            if (name == null) throw new NullReferenceException();
-            return new EventTrackerBuilder
-            {
-                Id = id,
-                Name = name,
-                Events = events,
-                CreatorId = creatorId
-            };
-        }
-
         public EventTrackerBuilder WithPhoto()
         {
             HasPhoto = true;
@@ -76,6 +58,11 @@ namespace ItHappened.Domain
         {
             HasComment = true;
             return this;
+        }
+
+        public EventTracker Build()
+        {
+            return new EventTracker(this);
         }
     }
 }

@@ -2,11 +2,11 @@
 {
     public class Scale
     {
-        public string Value { get; }
-
         public Scale(string value)
         {
             Value = value;
         }
+
+        public string Value { get; }
     }
 }

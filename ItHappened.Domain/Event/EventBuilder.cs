@@ -5,16 +5,15 @@ namespace ItHappened.Domain
 {
     public class EventBuilder
     {
-        public Guid Id { get; private set; }
-        public Guid CreatorId { get; private set; }
-        public DateTimeOffset HappensDate { get; private set; }
-        public string Title { get; private set; }
-
-        internal Option<Photo> Photo = Option<Photo>.None;
-        internal Option<double> Scale = Option<double>.None;
-        internal Option<double> Rating = Option<double>.None;
-        internal Option<GeoTag> GeoTag = Option<GeoTag>.None;
         internal Option<Comment> Comment = Option<Comment>.None;
+        internal Option<GeoTag> GeoTag = Option<GeoTag>.None;
+        internal Option<Photo> Photo = Option<Photo>.None;
+        internal Option<double> Rating = Option<double>.None;
+        internal Option<double> Scale = Option<double>.None;
+        internal Guid Id { get; private set; }
+        internal Guid CreatorId { get; private set; }
+        internal DateTimeOffset HappensDate { get; private set; }
+        internal string Title { get; private set; }
 
         public Event Build()
         {
@@ -23,13 +22,12 @@ namespace ItHappened.Domain
 
         public static EventBuilder Event(Guid id, Guid creatorId, DateTimeOffset happensDate, string title)
         {
-            if (title == null) throw new NullReferenceException();
             return new EventBuilder
             {
                 Id = id,
                 CreatorId = creatorId,
                 HappensDate = happensDate,
-                Title = title,
+                Title = title
             };
         }
 
@@ -38,7 +36,7 @@ namespace ItHappened.Domain
             Photo = Option<Photo>.Some(photo);
             return this;
         }
-        
+
         public EventBuilder WithScale(double scale)
         {
             Scale = Option<double>.Some(scale);

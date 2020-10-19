@@ -7,10 +7,10 @@ namespace ItHappened.Domain.Statistics
 {
     public class MostFrequentEventCalculator : IMultipleTrackersStatisticsCalculator
     {
-        public Option<IMultipleTrackersStatisticsFact> Calculate(IEnumerable<EventTracker> eventTrackers)
+        public Option<IStatisticsFact> Calculate(IEnumerable<EventTracker> eventTrackers)
         {
             if (!CanCalculate(eventTrackers))
-                return Option<IMultipleTrackersStatisticsFact>.None;
+                return Option<IStatisticsFact>.None;
 
             var trackingNameWithEventsPeriod = eventTrackers
                 .Select(eventTracker =>
@@ -23,17 +23,18 @@ namespace ItHappened.Domain.Statistics
                             .HappensDate)
                         .TotalDays / eventTracker.Events.Count)
                 );
-            
+
             var (trackingName, eventsPeriod) = trackingNameWithEventsPeriod
                 .OrderBy(e => e.eventsPeriod)
                 .FirstOrDefault();
 
-            return Option<IMultipleTrackersStatisticsFact>
+            return Option<IStatisticsFact>
                 .Some(new MostFrequentEventFact(trackingName, eventsPeriod, trackingNameWithEventsPeriod));
         }
 
-        private bool CanCalculate(IEnumerable<EventTracker> eventTrackers) =>
-            eventTrackers.Count() > 1 && eventTrackers.Count(et => et.Events.Count > 3) > 1;
-        
+        private bool CanCalculate(IEnumerable<EventTracker> eventTrackers)
+        {
+            return eventTrackers.Count() > 1 && eventTrackers.Count(et => et.Events.Count > 3) > 1;
+        }
     }
 }

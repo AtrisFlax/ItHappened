@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using LanguageExt;
-
-namespace ItHappened.Domain
+﻿namespace ItHappened.Domain
 {
     public interface IEventTrackerBuilder
     {

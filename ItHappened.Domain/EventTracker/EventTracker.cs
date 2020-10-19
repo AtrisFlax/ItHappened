@@ -8,7 +8,7 @@ namespace ItHappened.Domain
 {
     public class EventTracker
     {
-        public Guid Id { get; }
+        public Guid TrackerId { get; }
         public string Name { get; }
         public IList<Event> Events { get; }
 
@@ -16,23 +16,23 @@ namespace ItHappened.Domain
 
         public bool HasPhoto { get; }
         public bool HasScale { get; }
-        public Option<String> ScaleMeasurementUnit;
         public bool HasRating { get; }
         public bool HashGeoTag { get; }
         public bool HasComment { get; }
 
+        public Option<string> ScaleMeasurementUnit;
 
-        public EventTracker(Guid id,
+        public EventTracker(Guid creatorId,
+            Guid trackerId,
             string name,
             IList<Event> events,
-            Guid creatorId,
             bool hasPhoto = false,
             bool hasScale = false,
             bool hasRating = false,
             bool hashGeoTag = false,
             bool hasComment = false)
         {
-            Id = id;
+            TrackerId = trackerId;
             Name = name;
             Events = events;
             CreatorId = creatorId;
@@ -45,7 +45,7 @@ namespace ItHappened.Domain
 
         public EventTracker(EventTrackerBuilder eventTrackerBuilder)
         {
-            Id = eventTrackerBuilder.Id;
+            TrackerId = eventTrackerBuilder.TrackerId;
             Name = eventTrackerBuilder.Name;
             Events = eventTrackerBuilder.Events;
             CreatorId = eventTrackerBuilder.CreatorId;
@@ -64,10 +64,11 @@ namespace ItHappened.Domain
                 Log.Information("Cant add event, wrong customization");
                 return false;
             }
+
             Events.Add(newEvent);
             return true;
         }
-        
+
         public void RemoveEvent(Event eventToRemove)
         {
             Events.Remove(eventToRemove);
@@ -80,27 +81,14 @@ namespace ItHappened.Domain
                 eventItem.HappensDate.UtcDateTime <= to.UtcDateTime).ToArray();
             return filteredEvents;
         }
-        
+
         private bool IsTrackerAndEventCustomizationsConfirm(Event newEvent)
         {
-            if (HasPhoto != newEvent.Photo.IsSome)
-            {
-                return true;
-            }
-            if (HasScale != newEvent.Scale.IsSome)
-            {
-                return true;
-            }
-            if (HasRating != newEvent.Rating.IsSome)
-            {
-                return true;
-            }
-            if (HashGeoTag != newEvent.GeoTag.IsSome)
-            {
-                return true;
-            }
+            if (HasPhoto != newEvent.Photo.IsSome) return true;
+            if (HasScale != newEvent.Scale.IsSome) return true;
+            if (HasRating != newEvent.Rating.IsSome) return true;
+            if (HashGeoTag != newEvent.GeoTag.IsSome) return true;
             return HasComment != newEvent.Comment.IsSome;
         }
-
     }
 }

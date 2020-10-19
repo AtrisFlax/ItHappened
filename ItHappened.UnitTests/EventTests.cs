@@ -6,15 +6,15 @@ namespace ItHappened.UnitTests
 {
     public class EventTests
     {
-        private Guid _eventId;
         private Guid _creatorId;
         private DateTimeOffset _date;
-        private string _title;
-        private string _textComment;
-        private double _scale;
+        private Guid _eventId;
+        private GeoTag _geoTag;
         private Photo _photo;
         private double _rating;
-        private GeoTag _geoTag;
+        private double _scale;
+        private string _textComment;
+        private string _title;
 
 
         [SetUp]
@@ -26,7 +26,7 @@ namespace ItHappened.UnitTests
             _title = "Title";
             _textComment = "Comment For Event";
             _scale = 15;
-            _photo = new Photo( new byte[] {0x1, 0x2, 0x3});
+            _photo = new Photo(new byte[] {0x1, 0x2, 0x3});
             _rating = 299.0;
             _geoTag = new GeoTag(55.790514, 37.584822);
         }
