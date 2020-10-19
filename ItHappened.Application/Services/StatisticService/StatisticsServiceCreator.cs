@@ -17,13 +17,13 @@ namespace ItHappened.Application.Services.StatisticService
 
         public IReadOnlyCollection<IStatisticsFact> GetGeneralFacts(Guid userId)
         {
-            var eventTrackers = EventTrackerRepository.LoadUserTrackers(userId);
+            var eventTrackers = EventTrackerRepository.LoadAllUserTrackers(userId);
             return MultipleTrackersStatisticsProvider().GetFacts(eventTrackers);
         }
 
         public IReadOnlyCollection<IStatisticsFact> GetSpecificFacts(Guid userId)
         {
-            var eventTrackers = EventTrackerRepository.LoadUserTrackers(userId);
+            var eventTrackers = EventTrackerRepository.LoadAllUserTrackers(userId);
             var trackersFacts = new List<IStatisticsFact>();
             foreach (var tracker in eventTrackers)
             {

@@ -9,25 +9,30 @@ namespace ItHappened.Infrastructure.Repositories
     {
         private readonly Dictionary<Guid, EventTracker> _eventTrackers = new Dictionary<Guid, EventTracker>();
 
-        public void SaveTracker(EventTracker newEventTracker)
+        public void SaveTracker(EventTracker newTracker)
         {
-            _eventTrackers[newEventTracker.TrackerId] = newEventTracker;
+            _eventTrackers[newTracker.Id] = newTracker;
         }
 
-        public EventTracker LoadEventFromTracker(Guid eventTrackerId)
+        public EventTracker LoadTracker(Guid eventTrackerId)
         {
             return _eventTrackers[eventTrackerId];
         }
 
-        public IEnumerable<EventTracker> LoadUserTrackers(Guid userId)
+        public bool IsTrackerIn(Guid trackerId)
+        {
+            return _eventTrackers.ContainsKey(trackerId);
+        }
+        
+        public IEnumerable<EventTracker> LoadAllUserTrackers(Guid userId)
         {
             return _eventTrackers
                 .Values.Where(tracker => tracker.CreatorId == userId).ToList();
         }
 
-        public void DeleteEventTracker(Guid eventId)
+        public bool DeleteTracker(Guid eventId)
         {
-            _eventTrackers.Remove(eventId);
+            return _eventTrackers.Remove(eventId);
         }
     }
 }

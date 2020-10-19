@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using ItHappened.Domain;
 
 namespace ItHappened.Infrastructure.Repositories
@@ -12,10 +13,23 @@ namespace ItHappened.Infrastructure.Repositories
         {
             _events.Add(newEvent.Id, newEvent);
         }
+        
+        public void AddRangeOfEvents(IEnumerable<Event> events)
+        {
+            foreach (var @event in events)
+            {
+                _events.Add(@event.Id, @event);
+            }
+        }
 
         public Event LoadEvent(Guid eventId)
         {
             return _events[eventId];
+        }
+
+        public IReadOnlyList<Event> LoadAllTrackerEvents(Guid trackerId)
+        {
+            return _events.Values.Where(@event => @event.TrackerId == trackerId).ToList();
         }
 
         public void DeleteEvent(Guid eventId)

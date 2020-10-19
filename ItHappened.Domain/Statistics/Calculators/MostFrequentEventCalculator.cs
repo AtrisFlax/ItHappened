@@ -7,6 +7,11 @@ namespace ItHappened.Domain.Statistics
 {
     public class MostFrequentEventCalculator : IMultipleTrackersStatisticsCalculator
     {
+        private readonly IEventRepository _eventRepository;
+        public MostFrequentEventCalculator(IEventRepository eventRepository)
+        {
+            _eventRepository = eventRepository;
+        }
         public Option<IStatisticsFact> Calculate(IEnumerable<EventTracker> eventTrackers)
         {
             var eventsTracks = eventTrackers.ToList();
@@ -17,12 +22,11 @@ namespace ItHappened.Domain.Statistics
                 .Select(eventTracker =>
                     (trackingName: eventTracker.Name,
                         eventsPeriod: 1.0 *
-                        (DateTime.Now - eventTracker
-                            .Events
+                        (DateTime.Now - _eventRepository.LoadAllTrackerEvents(eventTracker.Id)
                             .OrderBy(e => e.HappensDate)
                             .First()
                             .HappensDate)
-                        .TotalDays / eventTracker.Events.Count)
+                        .TotalDays / _eventRepository.LoadAllTrackerEvents(eventTracker.Id).Count)
                 );
 
             var eventTrackersWithPeriods = trackingNameWithEventsPeriod.ToList();
@@ -34,9 +38,10 @@ namespace ItHappened.Domain.Statistics
                 .Some(new MostFrequentEventFact(trackingName, eventsPeriod, eventTrackersWithPeriods));
         }
 
-        private static bool CanCalculate(IList<EventTracker> eventTrackers)
+        private bool CanCalculate(IList<EventTracker> eventTrackers)
         {
-            return eventTrackers.Count() > 1 && eventTrackers.Count(et => et.Events.Count > 3) > 1;
+            return eventTrackers.Count() > 1 && eventTrackers
+                .Count(et => _eventRepository.LoadAllTrackerEvents(et.Id).Count > 3) > 1;
         }
     }
 }

@@ -3,26 +3,34 @@ using System.Collections.Generic;
 using System.Linq;
 using ItHappened.Domain;
 using ItHappened.Domain.Statistics;
+using ItHappened.Infrastructure.Repositories;
 using NUnit.Framework;
 
 namespace ItHappened.UnitTests.StatisticsCalculatorsTests
 {
     public class AverageRatingCalculatorTest
     {
+        private IEventRepository _eventRepository;
+        
+        [SetUp]
+        public void Init()
+        {
+            _eventRepository = new EventRepository();
+        }
+        
         [Test]
         public void EventTrackerHasTwoRatingAndEvents_CalculateSuccess()
         {
             //arrange 
             var ratings = new List<double> {2.0, 5.0};
-            var eventList = CreateTwoEvents(ratings);
             var eventTracker = EventTrackerBuilder
                 .Tracker(Guid.NewGuid(), Guid.NewGuid(), "TrackerName")
                 .WithRating()
                 .Build();
-            foreach (var @event in eventList) eventTracker.AddEvent(@event);
-
-            //act 
-            var fact = new AverageRatingCalculator().Calculate(eventTracker).ConvertTo<AverageRatingFact>();
+            var events = CreateTwoEvents(eventTracker.Id,ratings);
+            _eventRepository.AddRangeOfEvents(events);
+                //act 
+            var fact = new AverageRatingCalculator(_eventRepository).Calculate(eventTracker).ConvertTo<AverageRatingFact>();
             //assert 
             Assert.True(fact.IsSome);
             fact.Do(f =>
@@ -37,14 +45,13 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
         public void EventTrackerHasNoRationCustomization_CalculateFailed()
         {
             //arrange 
-            var eventList = CreateTwoEvents();
             var eventTracker = EventTrackerBuilder
                 .Tracker(Guid.NewGuid(), Guid.NewGuid(), "TrackerName")
                 .Build();
-            foreach (var @event in eventList) eventTracker.AddEvent(@event);
-
+            var events = CreateTwoEvents(eventTracker.Id);
+            _eventRepository.AddRangeOfEvents(events);
             //act 
-            var fact = new AverageRatingCalculator().Calculate(eventTracker).ConvertTo<AverageRatingFact>();
+            var fact = new AverageRatingCalculator(_eventRepository).Calculate(eventTracker).ConvertTo<AverageRatingFact>();
 
             //assert 
             Assert.True(fact.IsNone);
@@ -55,17 +62,16 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
         {
             //arrange 
             var ratings = new List<double> {2.0};
-            var @event = EventBuilder
-                .Event(Guid.NewGuid(), Guid.NewGuid(), DateTimeOffset.UtcNow, "Event1").WithRating(ratings[0])
-                .Build();
             var eventTracker = EventTrackerBuilder
                 .Tracker(Guid.NewGuid(), Guid.NewGuid(), "TrackerName")
                 .WithRating()
                 .Build();
-            eventTracker.AddEvent(@event);
-
+            var @event = EventBuilder
+                .Event(Guid.NewGuid(), Guid.NewGuid(), eventTracker.Id, DateTimeOffset.UtcNow, "Event1").WithRating(ratings[0])
+                .Build();
+            _eventRepository.AddEvent(@event);
             //act 
-            var fact = new AverageRatingCalculator().Calculate(eventTracker).ConvertTo<AverageRatingFact>();
+            var fact = new AverageRatingCalculator(_eventRepository).Calculate(eventTracker).ConvertTo<AverageRatingFact>();
 
             //assert 
             Assert.True(fact.IsNone);
@@ -76,57 +82,56 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
         public void SomeEventHasNoCustomizationRating_CalculateFailed()
         {
             //arrange 
-            var eventList = CreateTwoEventOneOfThemWithoutRating();
             var eventTracker = EventTrackerBuilder
                 .Tracker(Guid.NewGuid(), Guid.NewGuid(), "TrackerName")
                 .Build();
-            foreach (var @event in eventList) eventTracker.AddEvent(@event);
-
+            var events = CreateTwoEventOneOfThemWithoutRating(eventTracker.Id);
+            _eventRepository.AddRangeOfEvents(events);
             //act 
-            var fact = new AverageRatingCalculator().Calculate(eventTracker).ConvertTo<AverageRatingFact>();
+            var fact = new AverageRatingCalculator(_eventRepository).Calculate(eventTracker).ConvertTo<AverageRatingFact>();
 
             //assert 
             Assert.True(fact.IsNone);
         }
 
-        private static IEnumerable<Event> CreateTwoEventOneOfThemWithoutRating()
+        private static IEnumerable<Event> CreateTwoEventOneOfThemWithoutRating(Guid trackerId)
         {
             var ratings = new List<double> {2.0};
             return new List<Event>
             {
                 EventBuilder
-                    .Event(Guid.NewGuid(), Guid.NewGuid(), DateTimeOffset.UtcNow, "Event1")
+                    .Event(Guid.NewGuid(), Guid.NewGuid(), trackerId, DateTimeOffset.UtcNow, "Event1")
                     .Build(),
                 EventBuilder
-                    .Event(Guid.NewGuid(), Guid.NewGuid(), DateTimeOffset.UtcNow, "Event2")
+                    .Event(Guid.NewGuid(), Guid.NewGuid(), trackerId, DateTimeOffset.UtcNow, "Event2")
                     .WithRating(ratings[0])
                     .Build()
             };
         }
 
-        private static IEnumerable<Event> CreateTwoEvents()
+        private static IEnumerable<Event> CreateTwoEvents(Guid trackerId)
         {
             var ratings = new List<double> {2.0, 5.0};
             return new List<Event>
             {
                 EventBuilder
-                    .Event(Guid.NewGuid(), Guid.NewGuid(), DateTimeOffset.UtcNow, "Event1").WithRating(ratings[0])
+                    .Event(Guid.NewGuid(), Guid.NewGuid(), trackerId,DateTimeOffset.UtcNow, "Event1").WithRating(ratings[0])
                     .Build(),
                 EventBuilder
-                    .Event(Guid.NewGuid(), Guid.NewGuid(), DateTimeOffset.UtcNow, "Event1").WithRating(ratings[1])
+                    .Event(Guid.NewGuid(), Guid.NewGuid(), trackerId,DateTimeOffset.UtcNow, "Event1").WithRating(ratings[1])
                     .Build()
             };
         }
 
-        private static IEnumerable<Event> CreateTwoEvents(IList<double> ratings)
+        private static IEnumerable<Event> CreateTwoEvents(Guid trackerId, IList<double> ratings)
         {
             return new List<Event>
             {
                 EventBuilder
-                    .Event(Guid.NewGuid(), Guid.NewGuid(), DateTimeOffset.UtcNow, "Event1").WithRating(ratings[0])
+                    .Event(Guid.NewGuid(), Guid.NewGuid(), trackerId,DateTimeOffset.UtcNow, "Event1").WithRating(ratings[0])
                     .Build(),
                 EventBuilder
-                    .Event(Guid.NewGuid(), Guid.NewGuid(), DateTimeOffset.UtcNow, "Event1").WithRating(ratings[1])
+                    .Event(Guid.NewGuid(), Guid.NewGuid(), trackerId,DateTimeOffset.UtcNow, "Event1").WithRating(ratings[1])
                     .Build()
             };
         }

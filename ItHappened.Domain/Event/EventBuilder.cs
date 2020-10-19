@@ -12,6 +12,7 @@ namespace ItHappened.Domain
         internal Option<double> Scale = Option<double>.None;
         internal Guid Id { get; private set; }
         internal Guid CreatorId { get; private set; }
+        internal Guid TrackerId { get; private set; }
         internal DateTimeOffset HappensDate { get; private set; }
         internal string Title { get; private set; }
 
@@ -20,12 +21,13 @@ namespace ItHappened.Domain
             return new Event(this);
         }
 
-        public static EventBuilder Event(Guid id, Guid creatorId, DateTimeOffset happensDate, string title)
+        public static EventBuilder Event(Guid id, Guid creatorId, Guid trackerId, DateTimeOffset happensDate, string title)
         {
             return new EventBuilder
             {
                 Id = id,
                 CreatorId = creatorId,
+                TrackerId = trackerId,
                 HappensDate = happensDate,
                 Title = title
             };

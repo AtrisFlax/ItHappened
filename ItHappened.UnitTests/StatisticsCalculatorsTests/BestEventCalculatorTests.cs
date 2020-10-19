@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using ItHappened.Domain;
 using ItHappened.Domain.Statistics;
+using ItHappened.Infrastructure.Repositories;
 using NUnit.Framework;
 
 namespace ItHappened.UnitTests.StatisticsCalculatorsTests
@@ -13,14 +14,16 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
         private Guid _creatorId;
         private List<Event> _events;
         private EventTracker _eventTracker;
-
+        private IEventRepository _eventRepository;
+        
         [SetUp]
         public void Init()
         {
+            _eventRepository = new EventRepository();
             _creatorId = Guid.NewGuid();
             _events = CreateEvents(_creatorId, InitialEventsNumber);
-            _eventTracker = CreateEventTracker(_creatorId, _events);
-            _bestEventCalculator = new BestEventCalculator();
+            _eventTracker = CreateEventTracker(_events);
+            _bestEventCalculator = new BestEventCalculator(_eventRepository);
         }
 
         [Test]
@@ -67,20 +70,20 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
             //TODO check expected fields
         }
 
-        private static Event CreateEventWithoutComment(Guid creatorId)
+        private Event CreateEventWithoutComment(Guid creatorId)
         {
             return EventBuilder
-                .Event(Guid.NewGuid(), creatorId, DateTimeOffset.Now, "tittle")
+                .Event(Guid.NewGuid(), creatorId, _eventTracker.Id, DateTimeOffset.Now, "tittle")
                 .WithRating(5)
                 .Build();
         }
 
-        private static List<Event> CreateEvents(Guid creatorId, int quantity)
+        private List<Event> CreateEvents(Guid creatorId, int quantity)
         {
             var events = new List<Event>();
             for (var i = 0; i < quantity; i++)
                 events.Add(EventBuilder
-                    .Event(Guid.NewGuid(), creatorId, DateTimeOffset.Now, "tittle")
+                    .Event(Guid.NewGuid(), creatorId, _eventTracker.Id, DateTimeOffset.Now, "tittle")
                     .WithComment("comment")
                     .WithRating(5)
                     .Build());
@@ -88,15 +91,11 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
             return events;
         }
 
-        private static EventTracker CreateEventTracker(Guid creatorId, List<Event> eventList)
+        private EventTracker CreateEventTracker(IEnumerable<Event> eventList)
         {
             var tracker = EventTrackerBuilder
-                .Tracker(Guid.NewGuid(), creatorId, "tracker")
+                .Tracker(Guid.NewGuid(), _eventTracker.Id,  "tracker")
                 .Build();
-            foreach (var @event in eventList)
-            {
-                tracker.AddEvent(@event);
-            }
             return tracker;
         }
     }
