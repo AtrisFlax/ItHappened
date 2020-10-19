@@ -4,41 +4,45 @@ using System.Linq;
 using ItHappend.Domain.Statistics;
 using ItHappened.Domain;
 using ItHappened.Domain.Statistics;
+using ItHappened.Infrastructure.Repositories;
 using NUnit.Framework;
 
 namespace ItHappened.UnitTests.StatisticsCalculatorsTests
 {
     public class SumScaleFactCalculatorTest
     {
+        private IEventRepository _eventRepository;
+        
+        [SetUp]
+        public void Init()
+        {
+            _eventRepository = new EventRepository();
+        }
         [Test]
         public void EventTrackerHasTwoRatingAndEvents_CalculateSuccess()
         {
             //arrange 
             var scaleValues = new List<double> {2.0, 5.0};
             const string measurementUnit = "Kg";
-            var eventList =
-                new List<Event>
-                {
-                    EventBuilder
-                        .Event(Guid.NewGuid(), Guid.NewGuid(), DateTimeOffset.UtcNow, "Event1")
-                        .WithScale(scaleValues[0])
-                        .Build(),
-                    EventBuilder
-                        .Event(Guid.NewGuid(), Guid.NewGuid(), DateTimeOffset.UtcNow, "Event2")
-                        .WithScale(scaleValues[1])
-                        .Build()
-                };
             var eventTracker = EventTrackerBuilder
                 .Tracker(Guid.NewGuid(), Guid.NewGuid(), "TrackerName")
                 .WithScale(measurementUnit)
                 .Build();
-            foreach (var @event in eventList)
-            {
-                eventTracker.AddEvent(@event);
-            }
+            var eventList =
+                new List<Event>
+                {
+                    EventBuilder
+                        .Event(Guid.NewGuid(), Guid.NewGuid(), eventTracker.Id, DateTimeOffset.UtcNow, "Event1")
+                        .WithScale(scaleValues[0])
+                        .Build(),
+                    EventBuilder
+                        .Event(Guid.NewGuid(), Guid.NewGuid(), eventTracker.Id, DateTimeOffset.UtcNow, "Event2")
+                        .WithScale(scaleValues[1])
+                        .Build()
+                };
 
             //act 
-            var fact = new SumScaleCalculator().Calculate(eventTracker).ConvertTo<SumScaleFact>();
+            var fact = new SumScaleCalculator(_eventRepository).Calculate(eventTracker).ConvertTo<SumScaleFact>();
             
             //assert 
             Assert.True(fact.IsSome);
@@ -56,25 +60,21 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
             //arrange 
             var scaleValues = new List<double> {2.0};
             const string measurementUnit = "Kg";
-            var eventList =
-                new List<Event>
-                {
-                    EventBuilder
-                        .Event(Guid.NewGuid(), Guid.NewGuid(), DateTimeOffset.UtcNow, "Event1")
-                        .WithScale(scaleValues[0])
-                        .Build(),
-                };
             var eventTracker = EventTrackerBuilder
                 .Tracker(Guid.NewGuid(), Guid.NewGuid(), "TrackerName")
                 .WithScale(measurementUnit)
                 .Build();
-            foreach (var @event in eventList)
-            {
-                eventTracker.AddEvent(@event);
-            }
+            var eventList =
+                new List<Event>
+                {
+                    EventBuilder
+                        .Event(Guid.NewGuid(), Guid.NewGuid(), eventTracker.Id, DateTimeOffset.UtcNow, "Event1")
+                        .WithScale(scaleValues[0])
+                        .Build(),
+                };
 
             //act 
-            var fact = new SumScaleCalculator().Calculate(eventTracker).ConvertTo<SumScaleFact>();
+            var fact = new SumScaleCalculator(_eventRepository).Calculate(eventTracker).ConvertTo<SumScaleFact>();
 
             //assert 
             Assert.True(fact.IsNone);
@@ -85,24 +85,20 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
         {
             //arrange 
             var scaleValues = new List<double> {2.0};
+            var eventTracker = EventTrackerBuilder
+                .Tracker(Guid.NewGuid(), Guid.NewGuid(), "TrackerName")
+                .Build();
             var eventList =
                 new List<Event>
                 {
                     EventBuilder
-                        .Event(Guid.NewGuid(), Guid.NewGuid(), DateTimeOffset.UtcNow, "Event1")
+                        .Event(Guid.NewGuid(), Guid.NewGuid(), eventTracker.Id, DateTimeOffset.UtcNow, "Event1")
                         .WithScale(scaleValues[0])
                         .Build(),
                 };
-            var eventTracker = EventTrackerBuilder
-                .Tracker(Guid.NewGuid(), Guid.NewGuid(), "TrackerName")
-                .Build();
-            foreach (var @event in eventList)
-            {
-                eventTracker.AddEvent(@event);
-            }
 
             //act 
-            var fact = new SumScaleCalculator().Calculate(eventTracker).ConvertTo<SumScaleFact>();
+            var fact = new SumScaleCalculator(_eventRepository).Calculate(eventTracker).ConvertTo<SumScaleFact>();
 
             //assert 
             Assert.True(fact.IsNone);
@@ -114,28 +110,24 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
             //arrange 
             var scaleValues = new List<double> {2.0};
             const string measurementUnit = "Kg";
-            var eventList =
-                new List<Event>
-                {
-                    EventBuilder
-                        .Event(Guid.NewGuid(), Guid.NewGuid(), DateTimeOffset.UtcNow, "Event1")
-                        .WithScale(scaleValues[0])
-                        .Build(),
-                    EventBuilder
-                        .Event(Guid.NewGuid(), Guid.NewGuid(), DateTimeOffset.UtcNow, "Event2")
-                        .Build()
-                };
             var eventTracker = EventTrackerBuilder
                 .Tracker(Guid.NewGuid(), Guid.NewGuid(), "TrackerName")
                 .WithScale(measurementUnit)
                 .Build();
-            foreach (var @event in eventList)
-            {
-                eventTracker.AddEvent(@event);
-            }
+            var eventList =
+                new List<Event>
+                {
+                    EventBuilder
+                        .Event(Guid.NewGuid(), Guid.NewGuid(), eventTracker.Id, DateTimeOffset.UtcNow, "Event1")
+                        .WithScale(scaleValues[0])
+                        .Build(),
+                    EventBuilder
+                        .Event(Guid.NewGuid(), Guid.NewGuid(), eventTracker.Id, DateTimeOffset.UtcNow, "Event2")
+                        .Build()
+                };
 
             //act 
-            var fact = new SumScaleCalculator().Calculate(eventTracker).ConvertTo<SumScaleFact>();
+            var fact = new SumScaleCalculator(_eventRepository).Calculate(eventTracker).ConvertTo<SumScaleFact>();
 
             //assert 
             Assert.True(fact.IsNone);

@@ -5,18 +5,22 @@ namespace ItHappened.Domain.Statistics
 {
     public class SpecificDayTimeEventCalculator : ISingleTrackerStatisticsCalculator
     {
+        private readonly IEventRepository _eventRepository;
+        public SpecificDayTimeEventCalculator(IEventRepository eventRepository)
+        {
+            _eventRepository = eventRepository;
+        }
         public Option<IStatisticsFact> Calculate(EventTracker eventTracker)
         {
             if (!CanCalculate(eventTracker))
                 return Option<IStatisticsFact>.None;
-            var eventsByTimeOfTheDayWithPercent = eventTracker
-                .Events
+            var eventsByTimeOfTheDayWithPercent = _eventRepository.LoadAllTrackerEvents(eventTracker.Id)
                 .GroupBy(e => new {TimeOfTheDay = e.HappensDate.Hour.TimeOfTheDay(), e.Title})
                 .Select(e =>
                     (
                         e.Key.Title,
                         e.Key.TimeOfTheDay,
-                        Percentage: 100.0 * e.Count() / eventTracker.Events.Count(p => p.Title == e.Key.Title)
+                        Percentage: 100.0 * e.Count() / _eventRepository.LoadAllTrackerEvents(eventTracker.Id).Count(p => p.Title == e.Key.Title)
                     )
                 );
             var byTimeOfTheDayWithPercent = eventsByTimeOfTheDayWithPercent.ToList();
@@ -32,11 +36,11 @@ namespace ItHappened.Domain.Statistics
 
         private bool CanCalculate(EventTracker eventTracker)
         {
-            return eventTracker.Events.Count > 7
-                   && eventTracker
-                       .Events
+            var trackerEvents = _eventRepository.LoadAllTrackerEvents(eventTracker.Id);
+            return trackerEvents.Count > 7
+                   && trackerEvents
                        .GroupBy(e => e.HappensDate.Hour.TimeOfTheDay())
-                       .Any(e => e.Count() > 0.7 * eventTracker.Events.Count);
+                       .Any(e => e.Count() > 0.7 * trackerEvents.Count);
         }
     }
 

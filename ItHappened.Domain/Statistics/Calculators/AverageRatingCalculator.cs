@@ -8,11 +8,16 @@ namespace ItHappened.Domain.Statistics
 {
     public class AverageRatingCalculator : ISingleTrackerStatisticsCalculator
     {
+        private readonly IEventRepository _eventRepository;
+        public AverageRatingCalculator(IEventRepository eventRepository)
+        {
+            _eventRepository = eventRepository;
+        }
         public Option<IStatisticsFact> Calculate(EventTracker eventTracker)
         {
             if (!CanCalculate(eventTracker)) return Option<IStatisticsFact>.None;
 
-            var averageRating = eventTracker.Events.Average(x =>
+            var averageRating = _eventRepository.LoadAllTrackerEvents(eventTracker.Id).Average(x =>
             {
                 return x.Rating.Match(
                     r => r,
@@ -33,10 +38,10 @@ namespace ItHappened.Domain.Statistics
         private bool CanCalculate(EventTracker eventTracker)
         {
             if (!eventTracker.HasRating) return false;
+            var trackerEvents=_eventRepository.LoadAllTrackerEvents(eventTracker.Id);
+            if (trackerEvents.Any(@event => @event.Rating == Option<double>.None)) return false;
 
-            if (eventTracker.Events.Any(@event => @event.Rating == Option<double>.None)) return false;
-
-            return eventTracker.Events.Count > 1;
+            return trackerEvents.Count > 1;
         }
     }
 }

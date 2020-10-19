@@ -3,45 +3,53 @@ using System.Collections.Generic;
 using System.Linq;
 using ItHappened.Domain;
 using ItHappened.Domain.Statistics;
+using ItHappened.Infrastructure.Repositories;
 using NUnit.Framework;
 
 namespace ItHappened.UnitTests.StatisticsCalculatorsTests
 {
     public class MostFrequentEventCalculatorTest
     {
+        private IEventRepository _eventRepository;
+        
+        [SetUp]
+        public void Init()
+        {
+            _eventRepository = new EventRepository();
+        }
         [Test]
         public void CreateTwoEventTrackersWithHeadacheAndToothacheEvents_GetMostFrequentEventFact_CheckAllProperties()
         {
             var userId = Guid.NewGuid();
+            var eventTracker1 = EventTrackerBuilder
+                .Tracker(userId, Guid.NewGuid(), "Pains after drinking sugar water")
+                .Build();
+            var eventTracker2 = EventTrackerBuilder
+                .Tracker(userId, Guid.NewGuid(), "Pains after eating sugar")
+                .Build();
 
             var headacheEventYesterday =
-                CreateEventWithNameAndDateTime(userId, "headache", DateTimeOffset.Now.AddDays(-1));
+                CreateEventWithNameAndDateTime(userId, eventTracker1.Id,"headache", DateTimeOffset.Now.AddDays(-1));
             var headacheEventYesterdayAgain =
-                CreateEventWithNameAndDateTime(userId, "headache", DateTimeOffset.Now.AddDays(-1));
+                CreateEventWithNameAndDateTime(userId, eventTracker1.Id,"headache", DateTimeOffset.Now.AddDays(-1));
             var headacheEventTwoDaysAgo =
-                CreateEventWithNameAndDateTime(userId, "headache", DateTimeOffset.Now.AddDays(-2));
+                CreateEventWithNameAndDateTime(userId, eventTracker1.Id,"headache", DateTimeOffset.Now.AddDays(-2));
             var headacheEventThreeDaysAgo =
-                CreateEventWithNameAndDateTime(userId, "headache", DateTimeOffset.Now.AddDays(-3));
+                CreateEventWithNameAndDateTime(userId, eventTracker1.Id,"headache", DateTimeOffset.Now.AddDays(-3));
 
             var toothacheEventYesterday =
-                CreateEventWithNameAndDateTime(userId, "toothache", DateTimeOffset.Now.AddDays(-1));
+                CreateEventWithNameAndDateTime(userId, eventTracker2.Id,"toothache", DateTimeOffset.Now.AddDays(-1));
             var toothacheEventTwoDaysAgo =
-                CreateEventWithNameAndDateTime(userId, "toothache", DateTimeOffset.Now.AddDays(-2));
+                CreateEventWithNameAndDateTime(userId, eventTracker2.Id,"toothache", DateTimeOffset.Now.AddDays(-2));
             var toothacheEventTwoDaysAgoAgain =
-                CreateEventWithNameAndDateTime(userId, "toothache", DateTimeOffset.Now.AddDays(-2));
-
-            var events1 = new List<Event>
-                {headacheEventYesterday, headacheEventTwoDaysAgo, headacheEventThreeDaysAgo, toothacheEventYesterday};
-            var events2 = new List<Event>
+                CreateEventWithNameAndDateTime(userId, eventTracker2.Id,"toothache", DateTimeOffset.Now.AddDays(-2));
+            _eventRepository.AddRangeOfEvents(new []
             {
-                headacheEventYesterday, headacheEventYesterdayAgain, toothacheEventTwoDaysAgo,
-                toothacheEventTwoDaysAgoAgain, headacheEventTwoDaysAgo
-            };
-
-            var eventTracker1 = new EventTracker(userId, Guid.NewGuid(), "Pains after drinking sugar water", events1);
-            var eventTracker2 = new EventTracker(userId, Guid.NewGuid(), "Pains after eating sugar", events2);
-
-            var mostFrequentEvent = new MostFrequentEventCalculator().Calculate(new[] {eventTracker1, eventTracker2})
+                headacheEventYesterday, headacheEventYesterdayAgain, headacheEventTwoDaysAgo,
+                headacheEventThreeDaysAgo, toothacheEventYesterday, toothacheEventTwoDaysAgo, 
+                headacheEventYesterday, toothacheEventTwoDaysAgoAgain 
+            });
+           var mostFrequentEvent = new MostFrequentEventCalculator(_eventRepository).Calculate(new[] {eventTracker1, eventTracker2})
                 .ConvertTo<MostFrequentEventFact>();
 
             Assert.IsTrue(mostFrequentEvent.IsSome);
@@ -58,9 +66,9 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
             });
         }
 
-        private static Event CreateEventWithNameAndDateTime(Guid userId, string title, DateTimeOffset dateTime)
+        private static Event CreateEventWithNameAndDateTime(Guid userId, Guid trackerId, string title, DateTimeOffset dateTime)
         {
-            return EventBuilder.Event(Guid.NewGuid(), userId, dateTime, title).Build();
+            return EventBuilder.Event(Guid.NewGuid(), userId, trackerId, dateTime, title).Build();
         }
     }
 }

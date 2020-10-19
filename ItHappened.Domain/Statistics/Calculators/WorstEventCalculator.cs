@@ -8,11 +8,16 @@ namespace ItHappened.Domain.Statistics
 {
     public class WorstEventCalculator : ISingleTrackerStatisticsCalculator
     {
+        private readonly IEventRepository _eventRepository;
+        public WorstEventCalculator(IEventRepository eventRepository)
+        {
+            _eventRepository = eventRepository;
+        }
         public Option<IStatisticsFact> Calculate(EventTracker eventTracker)
         {
             if (!CanCalculate(eventTracker)) return Option<IStatisticsFact>.None;
             const string factName = "Худшее событие";
-            var worstEvent = eventTracker.Events.OrderBy(eventItem => eventItem.Rating).First();
+            var worstEvent = _eventRepository.LoadAllTrackerEvents(eventTracker.Id).OrderBy(eventItem => eventItem.Rating).First();
             var priority = 10 - worstEvent.Rating.Value();
             var worstEventComment = worstEvent.Comment.Match(
                 comment => comment.Text,
@@ -32,12 +37,13 @@ namespace ItHappened.Domain.Statistics
 
         private bool CanCalculate(EventTracker eventTracker)
         {
-            var isEventsNumberWithRatingMoreOrEqualToTen = eventTracker.Events
+            var trackerEvents=_eventRepository.LoadAllTrackerEvents(eventTracker.Id);
+            var isEventsNumberWithRatingMoreOrEqualToTen = trackerEvents
                 .Count(eventItem => eventItem.Rating.IsSome) >= 10;
-            var isOldestEventHappenedMoreThanThreeMonthsAgo = eventTracker.Events
+            var isOldestEventHappenedMoreThanThreeMonthsAgo = trackerEvents
                 .OrderBy(eventItem => eventItem.HappensDate)
                 .First().HappensDate <= DateTimeOffset.Now - TimeSpan.FromDays(90);
-            var isEventWithLowestRatingHappenedMoreThanWeekAgo = eventTracker.Events
+            var isEventWithLowestRatingHappenedMoreThanWeekAgo = trackerEvents
                 .OrderBy(eventItem => eventItem.Rating)
                 .First().HappensDate <= DateTimeOffset.Now - TimeSpan.FromDays(7);
             return isEventsNumberWithRatingMoreOrEqualToTen &&

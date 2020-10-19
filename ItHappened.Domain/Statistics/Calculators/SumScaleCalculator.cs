@@ -1,35 +1,22 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using ItHappend.Domain.Statistics;
 using LanguageExt;
 using LanguageExt.UnsafeValueAccess;
-using Serilog;
 
 namespace ItHappened.Domain.Statistics
 {
     public class SumScaleCalculator : ISingleTrackerStatisticsCalculator
     {
+        private readonly IEventRepository _eventRepository;
+        public SumScaleCalculator(IEventRepository eventRepository)
+        {
+            _eventRepository = eventRepository;
+        }
         public Option<IStatisticsFact> Calculate(EventTracker eventTracker)
         {
             if (!CanCalculate(eventTracker)) return Option<IStatisticsFact>.None;
-            var sumScale = eventTracker.Events.Sum(x =>
-            {
-                return x.Scale.Match(
-                    r => r,
-                    () =>
-                    {
-                        Log.Error("Empty Scale while calculating SumScaleCalculator ");
-                        return 0;
-                    });
-            });
-            var measurementUnit = eventTracker.ScaleMeasurementUnit.Match(
-                x => x,
-                () =>
-                {
-                    Log.Error("Empty Scale while calculating SumScaleCalculator ");
-                    return string.Empty;
-                }
-            );
+            var sumScale = _eventRepository.LoadAllTrackerEvents(eventTracker.Id).Sum(x => x.Scale.ValueUnsafe());
+            var measurementUnit = eventTracker.ScaleMeasurementUnit.ValueUnsafe();
             return Option<IStatisticsFact>.Some(new SumScaleFact(
                 "Суммарное значение шкалы",
                 $"Сумма значений {measurementUnit} для события {eventTracker.Name} равна {sumScale}",
@@ -39,7 +26,6 @@ namespace ItHappened.Domain.Statistics
             ));
         }
 
-
         private bool CanCalculate(EventTracker eventTracker)
         {
             if (eventTracker.ScaleMeasurementUnit.IsNone)
@@ -47,12 +33,12 @@ namespace ItHappened.Domain.Statistics
                 return false;
             }
 
-            if (eventTracker.Events.Any(@event => @event.Scale == Option<double>.None))
+            if (_eventRepository.LoadAllTrackerEvents(eventTracker.Id).Any(@event => @event.Scale == Option<double>.None))
             {
                 return false;
             }
 
-            return eventTracker.Events.Count > 1;
+            return _eventRepository.LoadAllTrackerEvents(eventTracker.Id).Count > 1;
         }
     }
 }

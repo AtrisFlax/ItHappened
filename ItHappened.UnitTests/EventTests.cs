@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using ItHappened.Domain;
 using NUnit.Framework;
 
@@ -15,6 +16,7 @@ namespace ItHappened.UnitTests
         private double _scale;
         private string _textComment;
         private string _title;
+        private EventTracker _eventTracker;
 
 
         [SetUp]
@@ -29,6 +31,7 @@ namespace ItHappened.UnitTests
             _photo = new Photo(new byte[] {0x1, 0x2, 0x3});
             _rating = 299.0;
             _geoTag = new GeoTag(55.790514, 37.584822);
+            _eventTracker = CreateEventTracker(Guid.NewGuid(), Guid.NewGuid());
         }
 
         [Test]
@@ -37,7 +40,7 @@ namespace ItHappened.UnitTests
             //arrange
 
             //act
-            var newEvent = EventBuilder.Event(_eventId, _creatorId, _date, _title).Build();
+            var newEvent = EventBuilder.Event(_eventId, _creatorId, _eventTracker.Id,_date, _title).Build();
 
             //assert
             Assert.AreEqual(_eventId, newEvent.Id);
@@ -59,7 +62,7 @@ namespace ItHappened.UnitTests
 
             //act
             var @event = EventBuilder
-                .Event(_eventId, _creatorId, _date, _title)
+                .Event(_eventId, _creatorId, _eventTracker.Id,_date, _title)
                 .WithComment(_textComment)
                 .WithScale(_scale)
                 .WithPhoto(_photo)
@@ -84,7 +87,26 @@ namespace ItHappened.UnitTests
             @event.Rating.Do(value => Assert.IsTrue(value == _rating));
             @event.GeoTag.Do(value => Assert.IsTrue(value == _geoTag));
         }
-        
+
+
+        [Test]
+        public void CreationEventWithNullTitle()
+        {
+            //arrange
+            var eventId = Guid.NewGuid();
+            var creatorId = Guid.NewGuid();
+            var date = DateTimeOffset.Now;
+            const string title = null;
+
+            //act
+
+            //assert
+            Assert.Throws<NullReferenceException>(() =>
+                EventBuilder.Event(eventId, creatorId, _eventTracker.Id,date, title).Build()
+            );
+        }
+
+
         [Test]
         public void CreationEventAllParametersButSkipPhotoParameter()
         {
@@ -101,7 +123,7 @@ namespace ItHappened.UnitTests
 
             //act
             var @event = EventBuilder
-                .Event(eventId, creatorId, date, title)
+                .Event(eventId, creatorId, _eventTracker.Id,date, title)
                 .WithComment(textComment)
                 .WithScale(scale)
                 .WithRating(rating)
@@ -125,6 +147,14 @@ namespace ItHappened.UnitTests
             @event.Photo.Do(value => Assert.IsTrue(value == _photo));
             @event.Rating.Do(value => Assert.IsTrue(value == _rating));
             @event.GeoTag.Do(value => Assert.IsTrue(Equals(value, _geoTag)));
+        }
+        
+        private static EventTracker CreateEventTracker(Guid creatorId, Guid trackerId)
+        {
+            var tracker = EventTrackerBuilder
+                .Tracker(creatorId, creatorId, "tracker")
+                .Build();
+            return tracker;
         }
     }
 }
