@@ -18,7 +18,7 @@ namespace ItHappened.Domain.Statistics
             return _calculators
                 .Select(calculator => calculator.Calculate(eventTracker))
                 .Somes()
-                .OrderBy(fact => fact.Priority)
+                .OrderByDescending(fact => fact.Priority)
                 .ToList();
         }
     }

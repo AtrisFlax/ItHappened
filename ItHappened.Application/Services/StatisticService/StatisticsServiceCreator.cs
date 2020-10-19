@@ -15,23 +15,32 @@ namespace ItHappened.Application.Services.StatisticService
             EventTrackerRepository = eventTrackerRepository;
         }
 
-        public IReadOnlyCollection<IStatisticsFact> GetMultipleTrackersFacts(Guid userId)
+        public IReadOnlyCollection<IStatisticsFact> GetGeneralFacts(Guid userId)
         {
             var eventTrackers = EventTrackerRepository.LoadUserTrackers(userId);
-            return  MultipleTrackersStatisticsProvider().GetFacts(eventTrackers);
+            return MultipleTrackersStatisticsProvider().GetFacts(eventTrackers);
         }
 
-        public IReadOnlyCollection<IStatisticsFact> GetSingleTrackerFacts(Guid userId)
+        public IReadOnlyCollection<IStatisticsFact> GetSpecificFacts(Guid userId)
         {
-            var eventTracker = EventTrackerRepository.LoadEventFromTracker(userId);
-            return  SingleTrackersStatisticsProvider().GetFacts(eventTracker);
+            var eventTrackers = EventTrackerRepository.LoadUserTrackers(userId);
+            var trackersFacts = new List<IStatisticsFact>();
+            foreach (var tracker in eventTrackers)
+            {
+                var factsFromTracker = SingleTrackersStatisticsProvider().GetFacts(tracker);
+                var factsList = new List<IStatisticsFact>(factsFromTracker);
+                trackersFacts = trackersFacts.Concat(factsList).ToList();
+            }
+
+            return trackersFacts.AsReadOnly();
         }
 
-        public IReadOnlyCollection<IStatisticsFact> GetStatisticFacts(Guid userId)
+        public IReadOnlyCollection<IStatisticsFact> GetFacts(Guid userId)
         {
-            var multiFacts = GetMultipleTrackersFacts(userId);
-            var singleFacts = GetSingleTrackerFacts(userId);
-            return multiFacts.Concat(singleFacts).ToList().AsReadOnly();
+            var multiFacts = GetGeneralFacts(userId);
+            var singleFacts = GetSpecificFacts(userId);
+            var allFacts = multiFacts.Concat(singleFacts).ToList();
+            return  allFacts.OrderByDescending(fact => fact.Priority).ToList().AsReadOnly();
         }
 
         protected abstract SingleTrackerStatisticsProvider SingleTrackersStatisticsProvider();
