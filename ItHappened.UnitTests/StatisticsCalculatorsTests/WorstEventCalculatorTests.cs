@@ -21,7 +21,7 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
         {
             _creatorId = Guid.NewGuid();
             _events = CreateEvents(_creatorId, InitialEventsNumber);
-            _eventTracker = CreateEventTracker(_creatorId, _events);
+            _eventTracker = CreateEventTracker(_events);
             _worstEventCalculator = new WorstEventCalculator();
         }
 
@@ -81,7 +81,7 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
         private Event CreateEventWithoutComment(Guid creatorId)
         {
             return EventBuilder
-                .Event(Guid.NewGuid(), creatorId, DateTimeOffset.Now, "tittle")
+                .Event(Guid.NewGuid(), creatorId, _eventTracker.Id, DateTimeOffset.Now, "tittle")
                 .WithRating(5)
                 .Build();
         }
@@ -91,7 +91,7 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
             var events = new List<Event>();
             for (var i = 0; i < quantity; i++)
                 events.Add(EventBuilder
-                    .Event(Guid.NewGuid(), creatorId, DateTimeOffset.Now, "tittle")
+                    .Event(Guid.NewGuid(), creatorId, _eventTracker.Id, DateTimeOffset.Now, "tittle")
                     .WithComment("comment")
                     .WithRating(5)
                     .Build());
@@ -99,10 +99,10 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
             return events;
         }
 
-        private static EventTracker CreateEventTracker(Guid creatorId, List<Event> eventList)
+        private EventTracker CreateEventTracker(List<Event> eventList)
         {
             var tracker = EventTrackerBuilder
-                .Tracker(Guid.NewGuid(), creatorId, "tracker")
+                .Tracker(Guid.NewGuid(), _eventTracker.Id, "tracker")
                 .Build();
             foreach (var @event in eventList)
             {

@@ -14,8 +14,9 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
         public void EventTrackerHasTwoRatingAndEvents_CalculateSuccess()
         {
             //arrange 
-            var eventList = CreateEvents_10Events_7OnMonday_3OnWednesday_1Tuesday();
-            var eventTracker = CreateTracker(eventList);
+            var eventTracker = CreateTracker();
+            var eventList = CreateEvents_10Events_7OnMonday_3OnWednesday_1Tuesday(eventTracker.Id);
+            AddEvents(eventList, eventTracker);
 
             //act 
             var fact = new OccursOnCertainDaysOfTheWeekCalculator().Calculate(eventTracker).ConvertTo<OccursOnCertainDaysOfTheWeekFact>();
@@ -37,8 +38,9 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
         public void AllEventNotPasses_25PercentHitToWeekOfDayThreshold_CalculateFailure()
         {
             //arrange 
-            var eventList = CreateEvents_10Events_7OnMonday_3OnWednesday_1Tuesday();
-            var eventTracker = CreateTracker(eventList);
+            var eventTracker = CreateTracker();
+            var eventList = CreateEvents_10Events_7OnMonday_3OnWednesday_1Tuesday(eventTracker.Id);
+            AddEvents(eventList, eventTracker);
 
             //act 
             var fact = new OccursOnCertainDaysOfTheWeekCalculator().Calculate(eventTracker).ConvertTo<OccursOnCertainDaysOfTheWeekFact>();
@@ -61,8 +63,9 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
         public void NotEnoughEvents_CalculateFailure()
         {
             //arrange 
-            var eventList = CreateOneEventOnEveryDay();
-            var eventTracker = CreateTracker(eventList);
+            var eventTracker = CreateTracker();
+            var eventList = CreateOneEventOnEveryDay(eventTracker.Id);
+            AddEvents(eventList, eventTracker);
 
             //act 
             var fact = new OccursOnCertainDaysOfTheWeekCalculator().Calculate(eventTracker).ConvertTo<OccursOnCertainDaysOfTheWeekFact>();
@@ -71,12 +74,11 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
             Assert.True(fact.IsNone);
         }
 
-        private static EventTracker CreateTracker(List<Event> eventList)
+        private static EventTracker CreateTracker()
         {
             var eventTracker = EventTrackerBuilder
                 .Tracker(Guid.NewGuid(), Guid.NewGuid(), "TrackerName")
                 .Build();
-            AddEvents(eventList, eventTracker);
             return eventTracker;
         }
 
@@ -88,7 +90,7 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
             }
         }
 
-        private static List<Event> CreateEvents_10Events_7OnMonday_3OnWednesday_1Tuesday()
+        private static List<Event> CreateEvents_10Events_7OnMonday_3OnWednesday_1Tuesday(Guid trackerId)
         {
             var monday = new DateTime(2020, 10, 5);
             var tuesday = new DateTime(2020, 10, 6);
@@ -108,11 +110,11 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
             };
             return dateList
                 .Select((t, i) =>
-                    EventBuilder.Event(Guid.NewGuid(), Guid.NewGuid(), t, $"Event_{i}").Build())
+                    EventBuilder.Event(Guid.NewGuid(), Guid.NewGuid(), trackerId, DateTimeOffset.Now , $"Event_{i}").Build())
                 .ToList();
         }
         
-        private static List<Event> CreateOneEventOnEveryDay()
+        private static List<Event> CreateOneEventOnEveryDay(Guid trackerId)
         {
             var monday = new DateTime(2020, 10, 5);
             var dateList = new List<DateTimeOffset>
@@ -127,7 +129,7 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
             };
             return dateList
                 .Select((t, i) =>
-                    EventBuilder.Event(Guid.NewGuid(), Guid.NewGuid(), t, $"Event_{i}").Build())
+                    EventBuilder.Event(Guid.NewGuid(), Guid.NewGuid(), trackerId, DateTimeOffset.Now,  $"Event_{i}").Build())
                 .ToList();
         }
     }

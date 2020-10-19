@@ -14,11 +14,11 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
         {
             //arrange 
             var ratings = new List<double> {2.0, 5.0};
-            var eventList = CreateTwoEvents(ratings);
             var eventTracker = EventTrackerBuilder
                 .Tracker(Guid.NewGuid(), Guid.NewGuid(), "TrackerName")
                 .WithRating()
                 .Build();
+            var eventList = CreateTwoEvents(eventTracker.Id,ratings);
             foreach (var @event in eventList) eventTracker.AddEvent(@event);
 
             //act 
@@ -37,10 +37,10 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
         public void EventTrackerHasNoRationCustomization_CalculateFailed()
         {
             //arrange 
-            var eventList = CreateTwoEvents();
             var eventTracker = EventTrackerBuilder
                 .Tracker(Guid.NewGuid(), Guid.NewGuid(), "TrackerName")
                 .Build();
+            var eventList = CreateTwoEvents(eventTracker.Id);
             foreach (var @event in eventList) eventTracker.AddEvent(@event);
 
             //act 
@@ -55,12 +55,12 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
         {
             //arrange 
             var ratings = new List<double> {2.0};
-            var @event = EventBuilder
-                .Event(Guid.NewGuid(), Guid.NewGuid(), DateTimeOffset.UtcNow, "Event1").WithRating(ratings[0])
-                .Build();
             var eventTracker = EventTrackerBuilder
                 .Tracker(Guid.NewGuid(), Guid.NewGuid(), "TrackerName")
                 .WithRating()
+                .Build();
+            var @event = EventBuilder
+                .Event(Guid.NewGuid(), Guid.NewGuid(), eventTracker.Id, DateTimeOffset.UtcNow, "Event1").WithRating(ratings[0])
                 .Build();
             eventTracker.AddEvent(@event);
 
@@ -76,10 +76,10 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
         public void SomeEventHasNoCustomizationRating_CalculateFailed()
         {
             //arrange 
-            var eventList = CreateTwoEventOneOfThemWithoutRating();
             var eventTracker = EventTrackerBuilder
                 .Tracker(Guid.NewGuid(), Guid.NewGuid(), "TrackerName")
                 .Build();
+            var eventList = CreateTwoEventOneOfThemWithoutRating(eventTracker.Id);
             foreach (var @event in eventList) eventTracker.AddEvent(@event);
 
             //act 
@@ -89,44 +89,44 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
             Assert.True(fact.IsNone);
         }
 
-        private static IEnumerable<Event> CreateTwoEventOneOfThemWithoutRating()
+        private static IEnumerable<Event> CreateTwoEventOneOfThemWithoutRating(Guid trackerId)
         {
             var ratings = new List<double> {2.0};
             return new List<Event>
             {
                 EventBuilder
-                    .Event(Guid.NewGuid(), Guid.NewGuid(), DateTimeOffset.UtcNow, "Event1")
+                    .Event(Guid.NewGuid(), Guid.NewGuid(), trackerId, DateTimeOffset.UtcNow, "Event1")
                     .Build(),
                 EventBuilder
-                    .Event(Guid.NewGuid(), Guid.NewGuid(), DateTimeOffset.UtcNow, "Event2")
+                    .Event(Guid.NewGuid(), Guid.NewGuid(), trackerId, DateTimeOffset.UtcNow, "Event2")
                     .WithRating(ratings[0])
                     .Build()
             };
         }
 
-        private static IEnumerable<Event> CreateTwoEvents()
+        private static IEnumerable<Event> CreateTwoEvents(Guid trackerId)
         {
             var ratings = new List<double> {2.0, 5.0};
             return new List<Event>
             {
                 EventBuilder
-                    .Event(Guid.NewGuid(), Guid.NewGuid(), DateTimeOffset.UtcNow, "Event1").WithRating(ratings[0])
+                    .Event(Guid.NewGuid(), Guid.NewGuid(), trackerId,DateTimeOffset.UtcNow, "Event1").WithRating(ratings[0])
                     .Build(),
                 EventBuilder
-                    .Event(Guid.NewGuid(), Guid.NewGuid(), DateTimeOffset.UtcNow, "Event1").WithRating(ratings[1])
+                    .Event(Guid.NewGuid(), Guid.NewGuid(), trackerId,DateTimeOffset.UtcNow, "Event1").WithRating(ratings[1])
                     .Build()
             };
         }
 
-        private static IEnumerable<Event> CreateTwoEvents(IList<double> ratings)
+        private static IEnumerable<Event> CreateTwoEvents(Guid trackerId, IList<double> ratings)
         {
             return new List<Event>
             {
                 EventBuilder
-                    .Event(Guid.NewGuid(), Guid.NewGuid(), DateTimeOffset.UtcNow, "Event1").WithRating(ratings[0])
+                    .Event(Guid.NewGuid(), Guid.NewGuid(), trackerId,DateTimeOffset.UtcNow, "Event1").WithRating(ratings[0])
                     .Build(),
                 EventBuilder
-                    .Event(Guid.NewGuid(), Guid.NewGuid(), DateTimeOffset.UtcNow, "Event1").WithRating(ratings[1])
+                    .Event(Guid.NewGuid(), Guid.NewGuid(), trackerId,DateTimeOffset.UtcNow, "Event1").WithRating(ratings[1])
                     .Build()
             };
         }

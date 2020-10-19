@@ -6,8 +6,8 @@ namespace ItHappened.Domain
 {
     public class EventTrackerBuilder : IEventTrackerBuilder
     {
+        public Guid Id { get; private set; }
         public Guid CreatorId { get; private set; }
-        public Guid TrackerId { get; private set; }
         public string Name { get; private set; }
         public IList<Event> Events { get; private set; }
 
@@ -23,7 +23,7 @@ namespace ItHappened.Domain
             return new EventTrackerBuilder
             {
                 CreatorId = creatorId,
-                TrackerId = trackerId,
+                Id = trackerId,
                 Name = name,
                 Events = new List<Event>()
             };

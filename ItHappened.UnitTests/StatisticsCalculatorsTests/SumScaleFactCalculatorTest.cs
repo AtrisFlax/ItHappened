@@ -16,22 +16,23 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
             //arrange 
             var scaleValues = new List<double> {2.0, 5.0};
             const string measurementUnit = "Kg";
-            var eventList =
-                new List<Event>
-                {
-                    EventBuilder
-                        .Event(Guid.NewGuid(), Guid.NewGuid(), DateTimeOffset.UtcNow, "Event1")
-                        .WithScale(scaleValues[0])
-                        .Build(),
-                    EventBuilder
-                        .Event(Guid.NewGuid(), Guid.NewGuid(), DateTimeOffset.UtcNow, "Event2")
-                        .WithScale(scaleValues[1])
-                        .Build()
-                };
             var eventTracker = EventTrackerBuilder
                 .Tracker(Guid.NewGuid(), Guid.NewGuid(), "TrackerName")
                 .WithScale(measurementUnit)
                 .Build();
+            var eventList =
+                new List<Event>
+                {
+                    EventBuilder
+                        .Event(Guid.NewGuid(), Guid.NewGuid(), eventTracker.Id, DateTimeOffset.UtcNow, "Event1")
+                        .WithScale(scaleValues[0])
+                        .Build(),
+                    EventBuilder
+                        .Event(Guid.NewGuid(), Guid.NewGuid(), eventTracker.Id, DateTimeOffset.UtcNow, "Event2")
+                        .WithScale(scaleValues[1])
+                        .Build()
+                };
+            
             foreach (var @event in eventList)
             {
                 eventTracker.AddEvent(@event);
@@ -56,18 +57,18 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
             //arrange 
             var scaleValues = new List<double> {2.0};
             const string measurementUnit = "Kg";
-            var eventList =
-                new List<Event>
-                {
-                    EventBuilder
-                        .Event(Guid.NewGuid(), Guid.NewGuid(), DateTimeOffset.UtcNow, "Event1")
-                        .WithScale(scaleValues[0])
-                        .Build(),
-                };
             var eventTracker = EventTrackerBuilder
                 .Tracker(Guid.NewGuid(), Guid.NewGuid(), "TrackerName")
                 .WithScale(measurementUnit)
                 .Build();
+            var eventList =
+                new List<Event>
+                {
+                    EventBuilder
+                        .Event(Guid.NewGuid(), Guid.NewGuid(), eventTracker.Id, DateTimeOffset.UtcNow, "Event1")
+                        .WithScale(scaleValues[0])
+                        .Build(),
+                };
             foreach (var @event in eventList)
             {
                 eventTracker.AddEvent(@event);
@@ -85,17 +86,17 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
         {
             //arrange 
             var scaleValues = new List<double> {2.0};
+            var eventTracker = EventTrackerBuilder
+                .Tracker(Guid.NewGuid(), Guid.NewGuid(), "TrackerName")
+                .Build();
             var eventList =
                 new List<Event>
                 {
                     EventBuilder
-                        .Event(Guid.NewGuid(), Guid.NewGuid(), DateTimeOffset.UtcNow, "Event1")
+                        .Event(Guid.NewGuid(), Guid.NewGuid(), eventTracker.Id, DateTimeOffset.UtcNow, "Event1")
                         .WithScale(scaleValues[0])
                         .Build(),
                 };
-            var eventTracker = EventTrackerBuilder
-                .Tracker(Guid.NewGuid(), Guid.NewGuid(), "TrackerName")
-                .Build();
             foreach (var @event in eventList)
             {
                 eventTracker.AddEvent(@event);
@@ -114,21 +115,21 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
             //arrange 
             var scaleValues = new List<double> {2.0};
             const string measurementUnit = "Kg";
-            var eventList =
-                new List<Event>
-                {
-                    EventBuilder
-                        .Event(Guid.NewGuid(), Guid.NewGuid(), DateTimeOffset.UtcNow, "Event1")
-                        .WithScale(scaleValues[0])
-                        .Build(),
-                    EventBuilder
-                        .Event(Guid.NewGuid(), Guid.NewGuid(), DateTimeOffset.UtcNow, "Event2")
-                        .Build()
-                };
             var eventTracker = EventTrackerBuilder
                 .Tracker(Guid.NewGuid(), Guid.NewGuid(), "TrackerName")
                 .WithScale(measurementUnit)
                 .Build();
+            var eventList =
+                new List<Event>
+                {
+                    EventBuilder
+                        .Event(Guid.NewGuid(), Guid.NewGuid(), eventTracker.Id, DateTimeOffset.UtcNow, "Event1")
+                        .WithScale(scaleValues[0])
+                        .Build(),
+                    EventBuilder
+                        .Event(Guid.NewGuid(), Guid.NewGuid(), eventTracker.Id, DateTimeOffset.UtcNow, "Event2")
+                        .Build()
+                };
             foreach (var @event in eventList)
             {
                 eventTracker.AddEvent(@event);

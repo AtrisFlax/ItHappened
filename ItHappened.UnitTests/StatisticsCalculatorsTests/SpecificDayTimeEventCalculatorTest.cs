@@ -13,23 +13,18 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
         public void CreateEventTrackerWithHeadacheAndSmokingEvents_CalculateSpecificDayTimeEventFact_CheckAProperties()
         {
             var userId = Guid.NewGuid();
+            var eventTracker = EventTrackerBuilder
+                .Tracker(userId, Guid.NewGuid(), "nameEmpty")
+                .Build();
+            var headacheEventMorning1 = CreateEventWithNameAndDateTime(userId, eventTracker.Id, "headache", "2020.10.8 01:05:00");
+            var headacheEventMorning2 = CreateEventWithNameAndDateTime(userId, eventTracker.Id,"headache", "2020.11.9 02:05:00");
+            var headacheEventMorning3 = CreateEventWithNameAndDateTime(userId, eventTracker.Id,"headache", "2020.12.9 03:07:00");
+            var headacheEventMorning4 = CreateEventWithNameAndDateTime(userId, eventTracker.Id,"headache", "2020.10.3 4:05:00");
+            var headacheEventMorning5 = CreateEventWithNameAndDateTime(userId, eventTracker.Id,"headache", "2021.10.9 05:05:00");
+            var headacheEventMorning6 = CreateEventWithNameAndDateTime(userId, eventTracker.Id,"headache", "2020.10.9 10:05:00");
 
-            var headacheEventMorning1 = CreateEventWithNameAndDateTime(userId, "headache", "2020.10.8 01:05:00");
-            var headacheEventMorning2 = CreateEventWithNameAndDateTime(userId, "headache", "2020.11.9 02:05:00");
-            var headacheEventMorning3 = CreateEventWithNameAndDateTime(userId, "headache", "2020.12.9 03:07:00");
-            var headacheEventMorning4 = CreateEventWithNameAndDateTime(userId, "headache", "2020.10.3 4:05:00");
-            var headacheEventMorning5 = CreateEventWithNameAndDateTime(userId, "headache", "2021.10.9 05:05:00");
-            var headacheEventMorning6 = CreateEventWithNameAndDateTime(userId, "headache", "2020.10.9 10:05:00");
-
-            var smokingEventMorning1 = CreateEventWithNameAndDateTime(userId, "smoking", "2020.10.9 04:05:00");
-            var smokingEventMorning2 = CreateEventWithNameAndDateTime(userId, "smoking", "2020.10.9 09:05:00");
-
-            var events = new List<Event>
-            {
-                headacheEventMorning1, headacheEventMorning2, headacheEventMorning3, headacheEventMorning6,
-                headacheEventMorning4, headacheEventMorning5, smokingEventMorning1, smokingEventMorning2
-            };
-            var eventTracker = new EventTracker(userId, Guid.NewGuid(), "nameEmpty", events);
+            var smokingEventMorning1 = CreateEventWithNameAndDateTime(userId, eventTracker.Id,"smoking", "2020.10.9 04:05:00");
+            var smokingEventMorning2 = CreateEventWithNameAndDateTime(userId, eventTracker.Id,"smoking", "2020.10.9 09:05:00");
 
             var specificDayTimeEventFact = new SpecificDayTimeEventCalculator().Calculate(eventTracker)
                 .ConvertTo<SpecificTimeOfDayEventFact>();
@@ -51,9 +46,9 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
             );
         }
 
-        private static Event CreateEventWithNameAndDateTime(Guid userId, string title, string dateTime)
+        private static Event CreateEventWithNameAndDateTime(Guid userId, Guid trackerId, string title, string dateTime)
         {
-            return EventBuilder.Event(Guid.NewGuid(), userId, DateTime.Parse(dateTime), title).Build();
+            return EventBuilder.Event(Guid.NewGuid(), userId, trackerId, DateTime.Parse(dateTime), title).Build();
         }
     }
 }

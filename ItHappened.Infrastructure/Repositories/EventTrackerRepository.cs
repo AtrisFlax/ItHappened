@@ -11,7 +11,7 @@ namespace ItHappened.Infrastructure.Repositories
 
         public void SaveEventInTracker(EventTracker newEventTracker)
         {
-            _eventTrackers[newEventTracker.TrackerId] = newEventTracker;
+            _eventTrackers[newEventTracker.Id] = newEventTracker;
         }
 
         public EventTracker LoadEventFromTracker(Guid eventTrackerId)

@@ -71,7 +71,7 @@ namespace ItHappened.Application.Services.EventTrackerService
 
             var tracker = trackerBuilder.Build();
             _eventTrackerRepository.SaveEventInTracker(tracker);
-            return tracker.TrackerId;
+            return tracker.Id;
         }
 
         public IEnumerable<EventTracker> GetAllTrackers(Guid trackerCreatorId)

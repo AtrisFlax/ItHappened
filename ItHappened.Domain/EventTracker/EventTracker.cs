@@ -8,7 +8,7 @@ namespace ItHappened.Domain
 {
     public class EventTracker
     {
-        public Guid TrackerId { get; }
+        public Guid Id { get; }
         public string Name { get; }
         public IList<Event> Events { get; }
 
@@ -23,7 +23,7 @@ namespace ItHappened.Domain
         public Option<string> ScaleMeasurementUnit;
 
         public EventTracker(Guid creatorId,
-            Guid trackerId,
+            Guid id,
             string name,
             IList<Event> events,
             bool hasPhoto = false,
@@ -32,7 +32,7 @@ namespace ItHappened.Domain
             bool hashGeoTag = false,
             bool hasComment = false)
         {
-            TrackerId = trackerId;
+            Id = id;
             Name = name;
             Events = events;
             CreatorId = creatorId;
@@ -45,7 +45,7 @@ namespace ItHappened.Domain
 
         public EventTracker(EventTrackerBuilder eventTrackerBuilder)
         {
-            TrackerId = eventTrackerBuilder.TrackerId;
+            Id = eventTrackerBuilder.Id;
             Name = eventTrackerBuilder.Name;
             Events = eventTrackerBuilder.Events;
             CreatorId = eventTrackerBuilder.CreatorId;

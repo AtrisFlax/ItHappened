@@ -7,6 +7,7 @@ namespace ItHappened.Domain
     {
         public Guid Id { get; }
         public Guid CreatorId { get; }
+        public Guid TrackerId { get; }
         public DateTimeOffset HappensDate { get; set; }
         public string Title { get; set; }
         public Option<Photo> Photo { get; set; }
@@ -19,6 +20,7 @@ namespace ItHappened.Domain
         {
             CreatorId = eventBuilder.CreatorId;
             Id = eventBuilder.Id;
+            TrackerId = eventBuilder.TrackerId;
             Title = eventBuilder.Title;
             HappensDate = eventBuilder.HappensDate;
             Photo = eventBuilder.Photo;
