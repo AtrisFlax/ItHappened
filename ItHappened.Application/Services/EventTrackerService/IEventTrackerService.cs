@@ -23,7 +23,7 @@ namespace ItHappened.Application.Services.EventTrackerService
         Option<EventTracker> GetTracker(Guid trackerCreatorId, Guid trackerId);
         bool AddEventToTracker(Guid trackerCreatorId, Guid trackerId, Event @event);
         bool RemoveEventFromTracker(Guid trackerCreatorId, Guid trackerId, Guid eventId);
-        bool EditEventInTracker(Guid trackerCreatorId, Guid trackerId, Guid eventId, Event @event);
+        bool EditEventInTracker(Guid trackerCreatorId, Guid trackerId, Guid eventId, Event newEvent);
         Option<IList<Event>> GetAllEventsFromTracker(Guid trackerId, Guid trackerCreatorId);
 
         Option<IReadOnlyCollection<Event>> GetEventsFiltratedByTime(Guid trackerCreatorId,

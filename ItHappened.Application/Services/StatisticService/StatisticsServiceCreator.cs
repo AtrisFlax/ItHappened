@@ -23,7 +23,7 @@ namespace ItHappened.Application.Services.StatisticService
 
         public IReadOnlyCollection<IStatisticsFact> GetSingleTrackerFacts(Guid userId)
         {
-            var eventTracker = EventTrackerRepository.LoadEventTracker(userId);
+            var eventTracker = EventTrackerRepository.LoadEventFromTracker(userId);
             return  SingleTrackersStatisticsProvider().GetFacts(eventTracker);
         }
 
