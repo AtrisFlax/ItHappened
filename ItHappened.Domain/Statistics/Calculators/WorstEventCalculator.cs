@@ -16,11 +16,11 @@ namespace ItHappend.Domain.Statistics
             var worstEvent = eventTracker.Events.OrderBy(eventItem => eventItem.Rating).First();
             var priority = 10 - worstEvent.Rating.Value();
             var worstEventComment = worstEvent.Comment.Match(
-                Some: comment => comment.Text,
-                None: () => string.Empty);
+                comment => comment.Text,
+                () => string.Empty);
             var description = $"Событие в отслеживании {eventTracker.Name} с самым низким рейтингом " +
                               $"{worstEvent.Rating} произошло {worstEvent.HappensDate} с комментарием {worstEventComment}";
- 
+
             return Option<IStatisticsFact>.Some(new WorstEventFact(
                 factName,
                 description,
@@ -36,12 +36,12 @@ namespace ItHappend.Domain.Statistics
             var isEventsNumberWithRatingMoreOrEqualToTen = eventTracker.Events
                 .Count(eventItem => eventItem.Rating.IsSome) >= 10;
             var isOldestEventHappenedMoreThanThreeMonthsAgo = eventTracker.Events
-                                                                  .OrderBy(eventItem => eventItem.HappensDate)
-                                                                  .First().HappensDate <= DateTimeOffset.Now - TimeSpan.FromDays(90);
+                .OrderBy(eventItem => eventItem.HappensDate)
+                .First().HappensDate <= DateTimeOffset.Now - TimeSpan.FromDays(90);
             var isEventWithLowestRatingHappenedMoreThanWeekAgo = eventTracker.Events
-                                                                     .OrderBy(eventItem => eventItem.Rating)
-                                                                     .First().HappensDate <= DateTimeOffset.Now - TimeSpan.FromDays(7);
-            return isEventsNumberWithRatingMoreOrEqualToTen && 
+                .OrderBy(eventItem => eventItem.Rating)
+                .First().HappensDate <= DateTimeOffset.Now - TimeSpan.FromDays(7);
+            return isEventsNumberWithRatingMoreOrEqualToTen &&
                    isOldestEventHappenedMoreThanThreeMonthsAgo &&
                    isEventWithLowestRatingHappenedMoreThanWeekAgo;
         }

@@ -19,7 +19,7 @@ namespace ItHappened.Domain.Statistics
 
             return Option<IStatisticsFact>.Some(new EventsCountFact(factName, description, priority, eventsCount));
         }
-        
+
         private static bool CanCalculate(IEnumerable<EventTracker> eventTrackers)
         {
             return eventTrackers.Any() &&

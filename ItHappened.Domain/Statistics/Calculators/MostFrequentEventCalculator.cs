@@ -23,7 +23,7 @@ namespace ItHappened.Domain.Statistics
                             .HappensDate)
                         .TotalDays / eventTracker.Events.Count)
                 );
-            
+
             var (trackingName, eventsPeriod) = trackingNameWithEventsPeriod
                 .OrderBy(e => e.eventsPeriod)
                 .FirstOrDefault();
@@ -32,8 +32,9 @@ namespace ItHappened.Domain.Statistics
                 .Some(new MostFrequentEventFact(trackingName, eventsPeriod, trackingNameWithEventsPeriod));
         }
 
-        private bool CanCalculate(IEnumerable<EventTracker> eventTrackers) =>
-            eventTrackers.Count() > 1 && eventTrackers.Count(et => et.Events.Count > 3) > 1;
-        
+        private bool CanCalculate(IEnumerable<EventTracker> eventTrackers)
+        {
+            return eventTrackers.Count() > 1 && eventTrackers.Count(et => et.Events.Count > 3) > 1;
+        }
     }
 }

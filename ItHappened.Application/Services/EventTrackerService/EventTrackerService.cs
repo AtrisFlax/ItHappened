@@ -8,26 +8,13 @@ namespace ItHappened.Application.Services.EventTrackerService
 {
     public class EventTrackerService : IEventTrackerService
     {
-        private readonly IEventTrackerRepository _eventTrackerRepository;
         private readonly IEventRepository _eventRepository;
+        private readonly IEventTrackerRepository _eventTrackerRepository;
 
         public EventTrackerService(IEventTrackerRepository eventTrackerRepository, IEventRepository eventRepository)
         {
             _eventTrackerRepository = eventTrackerRepository;
             _eventRepository = eventRepository;
-        }
-
-        public Guid CreateTracker(
-            Guid creatorId,
-            string trackerName,
-            bool hasPhoto = false,
-            bool hasScale = false,
-            bool hasRating = false,
-            bool hashGeoTag = false,
-            bool hasComment = false)
-        {
-            var eventTracker = new EventTracker(Guid.NewGuid(), trackerName, new List<Event>(), creatorId);
-            return eventTracker.Id;
         }
 
         public bool DeleteTracker(Guid trackerCreatorId, Guid trackerId)
@@ -39,9 +26,50 @@ namespace ItHappened.Application.Services.EventTrackerService
                     $"Can't remove tracker with trackerId={trackerId} trackerCreatorId={trackerCreatorId}. TrackerCreatorId does not match");
                 return false;
             }
+
             _eventTrackerRepository.DeleteEventTracker(trackerId);
             Log.Information($"Tracker deleted with trackerId={trackerId} trackerCreatorId={trackerCreatorId}");
             return true;
+        }
+
+        public Guid CreateTracker(
+            Guid creatorId,
+            string trackerName,
+            bool hasPhoto = false,
+            bool hasScale = false,
+            string scaleMeasurementUnit = "",
+            bool hasRating = false,
+            bool hashGeoTag = false,
+            bool hasComment = false)
+        {
+            var trackerBuilder = EventTrackerBuilder
+                .Tracker(creatorId, Guid.NewGuid(), trackerName);
+            if (hasPhoto)
+            {
+                trackerBuilder = trackerBuilder.WithPhoto();
+            }
+
+            if (hasScale)
+            {
+                trackerBuilder = trackerBuilder.WithScale(scaleMeasurementUnit);
+            }
+
+            if (hasRating)
+            {
+                trackerBuilder = trackerBuilder.WithRating();
+            }
+
+            if (hashGeoTag)
+            {
+                trackerBuilder = trackerBuilder.WithGeoTag();
+            }
+
+            if (hasComment)
+            {
+                trackerBuilder = trackerBuilder.WithComment();
+            }
+
+            return trackerBuilder.Build().TrackerId;
         }
 
         public IEnumerable<EventTracker> GetAllTrackers(Guid trackerCreatorId)
@@ -54,9 +82,11 @@ namespace ItHappened.Application.Services.EventTrackerService
             var tracker = _eventTrackerRepository.LoadEventTracker(trackerId);
             if (trackerCreatorId == tracker.CreatorId)
             {
-                Log.Information($"Can't return tracker with trackerId={trackerId} trackerCreatorId={trackerCreatorId}. TrackerCreatorId does not match");
+                Log.Information(
+                    $"Can't return tracker with trackerId={trackerId} trackerCreatorId={trackerCreatorId}. TrackerCreatorId does not match");
                 return Option<EventTracker>.Some(tracker);
             }
+
             Log.Information($"Getting tracker with trackerId={trackerId} trackerCreatorId={trackerCreatorId}");
             return Option<EventTracker>.None;
         }
@@ -70,6 +100,7 @@ namespace ItHappened.Application.Services.EventTrackerService
                     $"Can't add event to tracker trackerId={trackerId} trackerCreatorId={trackerCreatorId}. TrackerCreatorId does not match");
                 return false;
             }
+
             _eventRepository.AddEvent(@event);
             Log.Information(
                 $"Event Added trackerId={trackerId} trackerCreatorId={trackerCreatorId} eventId={@event.Id}");
@@ -85,6 +116,7 @@ namespace ItHappened.Application.Services.EventTrackerService
                     $"Can't remove tracker with trackerId={trackerId} eventId={eventId} trackerCreatorId={trackerCreatorId}. TrackerCreatorId does not match");
                 return false;
             }
+
             var eventToRemove = _eventRepository.LoadEvent(eventId);
             tracker.RemoveEvent(eventToRemove);
             Log.Information(
@@ -101,6 +133,7 @@ namespace ItHappened.Application.Services.EventTrackerService
                     $"Can't add event to tracker trackerId={trackerId} trackerCreatorId={trackerCreatorId}. TrackerCreatorId does not match");
                 return false;
             }
+
             _eventRepository.DeleteEvent(eventId);
             _eventRepository.AddEvent(@event);
             Log.Information(
@@ -117,11 +150,12 @@ namespace ItHappened.Application.Services.EventTrackerService
                     $"Can't get events from tracker trackerId={trackerId} trackerCreatorId={trackerCreatorId}. TrackerCreatorId does not match");
                 return Option<IList<Event>>.None;
             }
+
             Log.Information($"Returned events from trackerId={trackerId}");
             return Option<IList<Event>>.Some(tracker.Events);
         }
 
-        public Option<IReadOnlyCollection<Event>> FilterByTime(Guid trackerCreatorId,
+        public Option<IReadOnlyCollection<Event>> GetEventsFiltratedByTime(Guid trackerCreatorId,
             Guid trackerId,
             DateTimeOffset from, DateTimeOffset to)
         {

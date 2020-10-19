@@ -10,9 +10,10 @@
             EventsCount = eventsCount;
         }
 
+        public int EventsCount { get; }
+
         public string FactName { get; }
         public string Description { get; }
         public double Priority { get; }
-        public int EventsCount { get; }
     }
 }

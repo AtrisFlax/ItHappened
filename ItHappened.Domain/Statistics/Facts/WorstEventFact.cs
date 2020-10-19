@@ -1,26 +1,17 @@
 ﻿using System;
 using ItHappened.Domain;
 using ItHappened.Domain.Statistics;
-using LanguageExt;
 
 namespace ItHappend.Domain.Statistics
 {
     public class WorstEventFact : IStatisticsFact
     {
-        public string FactName { get; }
-        public string Description { get; }
-        public double Priority { get; }
-        public double Rating { get; }
-        public DateTimeOffset HappensDate { get; }
-        public Comment Comment { get; }
-        public Event EventReference { get; }
-        
-        internal WorstEventFact(string factName, 
-            string description, 
-            double priority, 
+        internal WorstEventFact(string factName,
+            string description,
+            double priority,
             double rating,
-            DateTimeOffset happensDate, 
-            Comment comment, 
+            DateTimeOffset happensDate,
+            Comment comment,
             Event eventReference)
         {
             FactName = factName;
@@ -31,5 +22,13 @@ namespace ItHappend.Domain.Statistics
             Comment = comment;
             EventReference = eventReference;
         }
+
+        public double Rating { get; }
+        public DateTimeOffset HappensDate { get; }
+        public Comment Comment { get; }
+        public Event EventReference { get; }
+        public string FactName { get; }
+        public string Description { get; }
+        public double Priority { get; }
     }
 }

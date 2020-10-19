@@ -12,11 +12,13 @@ namespace ItHappened.Application.Services.EventTrackerService
             string trackerName,
             bool hasPhoto = false,
             bool hasScale = false,
+            string scaleMeasurementUnit = "",
             bool hasRating = false,
             bool hashGeoTag = false,
             bool hasComment = false);
-
+        
         bool DeleteTracker(Guid trackerCreatorId, Guid trackerId);
+
         IEnumerable<EventTracker> GetAllTrackers(Guid trackerCreatorId);
         Option<EventTracker> GetTracker(Guid trackerCreatorId, Guid trackerId);
         bool AddEventToTracker(Guid trackerCreatorId, Guid trackerId, Event @event);
@@ -24,7 +26,8 @@ namespace ItHappened.Application.Services.EventTrackerService
         bool EditEventInTracker(Guid trackerCreatorId, Guid trackerId, Guid eventId, Event @event);
         Option<IList<Event>> GetAllEventsFromTracker(Guid trackerId, Guid trackerCreatorId);
 
-        Option<IReadOnlyCollection<Event>> FilterByTime(Guid trackerCreatorId, Guid trackerId, DateTimeOffset from,
-            DateTimeOffset to);
+        Option<IReadOnlyCollection<Event>> GetEventsFiltratedByTime(Guid trackerCreatorId,
+            Guid trackerId,
+            DateTimeOffset from, DateTimeOffset to);
     }
 }

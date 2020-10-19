@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using ItHappened.Domain;
 using ItHappened.Domain.Statistics;
 using LanguageExt;
@@ -18,7 +17,7 @@ namespace ItHappend.Domain.Statistics
                 "Суммарное значение шкалы",
                 $"Сумма значений {measurementUnit} для события {eventTracker.Name} равна {sumScale}",
                 2.0,
-                sumScale, 
+                sumScale,
                 measurementUnit
             ));
         }
@@ -29,10 +28,12 @@ namespace ItHappend.Domain.Statistics
             {
                 return false;
             }
+
             if (eventTracker.Events.Any(@event => @event.Scale == Option<double>.None))
             {
                 return false;
             }
+
             return eventTracker.Events.Count > 1;
         }
     }
