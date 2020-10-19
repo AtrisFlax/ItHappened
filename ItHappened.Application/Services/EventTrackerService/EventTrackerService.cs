@@ -70,7 +70,7 @@ namespace ItHappened.Application.Services.EventTrackerService
             }
 
             var tracker = trackerBuilder.Build();
-            _eventTrackerRepository.SaveEventInTracker(tracker);
+            _eventTrackerRepository.SaveTracker(tracker);
             return tracker.TrackerId;
         }
 
@@ -103,7 +103,7 @@ namespace ItHappened.Application.Services.EventTrackerService
                     $"Can't add event to tracker trackerId={trackerId} trackerCreatorId={trackerCreatorId}. TrackerCreatorId does not match");
                 return false;
             }
-            _eventTrackerRepository.SaveEventInTracker(tracker);
+            _eventTrackerRepository.SaveTracker(tracker);
             _eventRepository.AddEvent(@event);
             Log.Information(
                 $"Event Added trackerId={trackerId} trackerCreatorId={trackerCreatorId} eventId={@event.Id}");
@@ -123,7 +123,7 @@ namespace ItHappened.Application.Services.EventTrackerService
             var eventToRemove = _eventRepository.LoadEvent(eventId);
             tracker.RemoveEvent(eventToRemove);
             _eventRepository.DeleteEvent(eventId);
-            _eventTrackerRepository.SaveEventInTracker(tracker);
+            _eventTrackerRepository.SaveTracker(tracker);
             Log.Information(
                 $"Event from tracker has deleted.  trackerId={trackerId}  eventId={eventId} trackerCreatorId={trackerCreatorId}");
             return true;
@@ -153,7 +153,7 @@ namespace ItHappened.Application.Services.EventTrackerService
             }
             _eventRepository.DeleteEvent(eventId);
             _eventRepository.AddEvent(newEvent);
-            _eventTrackerRepository.SaveEventInTracker(tracker);
+            _eventTrackerRepository.SaveTracker(tracker);
             Log.Information(
                 $"Event Added trackerId={trackerId} trackerCreatorId={trackerCreatorId} eventId={newEvent.Id}");
             return true;

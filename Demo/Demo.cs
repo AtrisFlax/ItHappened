@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using ItHappened.Domain;
-using LanguageExt.UnsafeValueAccess;
 using Serilog;
 using Usage;
 
@@ -188,8 +187,8 @@ namespace Demo
                 CreateEvent(userId, "Filter Event2", DateTimeOffset.Now.AddDays(-31 * 6)),
                 CreateEvent(userId, "Filter Event3", DateTimeOffset.Now.AddDays(-31 * 5)),
                 CreateEvent(userId, "Filter Event4", DateTimeOffset.Now.AddDays(-31 * 4)),
-                CreateEvent(userId, "Filter Event5", DateTimeOffset.Now.AddDays(-31 * 3)), //filter
-                CreateEvent(userId, "Filter Event6", DateTimeOffset.Now.AddDays(-31 * 2)), //filter
+                CreateEvent(userId, "Not filtered Event5", DateTimeOffset.Now.AddDays(-31 * 3)), //filter
+                CreateEvent(userId, "Not filtered Event6", DateTimeOffset.Now.AddDays(-31 * 2)), //filter
                 CreateEvent(userId, "Filter Event7", DateTimeOffset.Now.AddDays(-31 * 1)),
                 CreateEvent(userId, "Filter Event8", DateTimeOffset.Now.AddDays(-31 * 0))
             };
@@ -198,7 +197,10 @@ namespace Demo
         private static IEnumerable<Event> CreateEvents(Guid userId, int numEvents)
         {
             var events = new List<Event>();
-            for (var i = 0; i < numEvents; i++) events.Add(CreateEvent(userId, i.ToString(), RandomDay()));
+            for (var i = 0; i < numEvents; i++)
+            {
+                events.Add(CreateEvent(userId, i.ToString(), RandomDay()));
+            }
             return events;
         }
 

@@ -1,7 +1,9 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using ItHappend.Domain.Statistics;
 using LanguageExt;
 using LanguageExt.UnsafeValueAccess;
+using Serilog;
 
 namespace ItHappened.Domain.Statistics
 {
@@ -10,8 +12,24 @@ namespace ItHappened.Domain.Statistics
         public Option<IStatisticsFact> Calculate(EventTracker eventTracker)
         {
             if (!CanCalculate(eventTracker)) return Option<IStatisticsFact>.None;
-            var sumScale = eventTracker.Events.Sum(x => x.Scale.ValueUnsafe());
-            var measurementUnit = eventTracker.ScaleMeasurementUnit.ValueUnsafe();
+            var sumScale = eventTracker.Events.Sum(x =>
+            {
+                return x.Scale.Match(
+                    r => r,
+                    () =>
+                    {
+                        Log.Error("Empty Scale while calculating SumScaleCalculator ");
+                        return 0;
+                    });
+            });
+            var measurementUnit = eventTracker.ScaleMeasurementUnit.Match(
+                x => x,
+                () =>
+                {
+                    Log.Error("Empty Scale while calculating SumScaleCalculator ");
+                    return string.Empty;
+                }
+            );
             return Option<IStatisticsFact>.Some(new SumScaleFact(
                 "Суммарное значение шкалы",
                 $"Сумма значений {measurementUnit} для события {eventTracker.Name} равна {sumScale}",
@@ -20,6 +38,7 @@ namespace ItHappened.Domain.Statistics
                 measurementUnit
             ));
         }
+
 
         private bool CanCalculate(EventTracker eventTracker)
         {
