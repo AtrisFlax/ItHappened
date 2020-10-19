@@ -10,7 +10,7 @@ namespace ItHappened.Domain.Statistics
             if (!CanCalculate(eventTracker))
                 return Option<IStatisticsFact>.None;
 
-            var factName = "Количество событий";
+            const string factName = "Количество событий";
             var eventsCount = eventTracker.Events.Count;
             var description = $"Событие {eventTracker.Name} произошло {eventsCount} раз";
             var priority = Math.Log(eventsCount);
@@ -19,7 +19,7 @@ namespace ItHappened.Domain.Statistics
                 .Some(new SingleTrackerEventsCountFact(factName, description, priority, eventsCount));
         }
 
-        private bool CanCalculate(EventTracker eventTracker)
+        private static bool CanCalculate(EventTracker eventTracker)
         {
             return eventTracker.Events.Count > 0;
         }

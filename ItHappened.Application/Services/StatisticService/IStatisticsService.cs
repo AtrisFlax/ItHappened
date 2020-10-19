@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using ItHappened.Domain;
 using ItHappened.Domain.Statistics;
 
 namespace ItHappened.Application.Services.StatisticService

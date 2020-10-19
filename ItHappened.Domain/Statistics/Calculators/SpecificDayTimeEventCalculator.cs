@@ -9,7 +9,6 @@ namespace ItHappened.Domain.Statistics
         {
             if (!CanCalculate(eventTracker))
                 return Option<IStatisticsFact>.None;
-
             var eventsByTimeOfTheDayWithPercent = eventTracker
                 .Events
                 .GroupBy(e => new {TimeOfTheDay = e.HappensDate.Hour.TimeOfTheDay(), e.Title})
@@ -20,15 +19,15 @@ namespace ItHappened.Domain.Statistics
                         Percentage: 100.0 * e.Count() / eventTracker.Events.Count(p => p.Title == e.Key.Title)
                     )
                 );
-
-            var (title, timeOfTheDay, percentage) = eventsByTimeOfTheDayWithPercent
+            var byTimeOfTheDayWithPercent = eventsByTimeOfTheDayWithPercent.ToList();
+            var (title, timeOfTheDay, percentage) = byTimeOfTheDayWithPercent
                 .OrderByDescending(e => e.Percentage)
                 .First();
 
             return Option<IStatisticsFact>.Some(new SpecificTimeOfDayEventFact
             (percentage,
                 title,
-                timeOfTheDay, eventsByTimeOfTheDayWithPercent));
+                timeOfTheDay, byTimeOfTheDayWithPercent));
         }
 
         private bool CanCalculate(EventTracker eventTracker)

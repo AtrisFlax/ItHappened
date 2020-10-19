@@ -2,11 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using ItHappened.Domain;
-using ItHappened.Domain.Statistics;
+using ItHappend.Domain.Statistics;
 using LanguageExt;
 
-namespace ItHappend.Domain.Statistics
+namespace ItHappened.Domain.Statistics
 {
     public class OccursOnCertainDaysOfTheWeekCalculator : ISingleTrackerStatisticsCalculator
     {

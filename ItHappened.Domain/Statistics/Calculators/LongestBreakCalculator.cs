@@ -65,7 +65,7 @@ namespace ItHappened.Domain.Statistics
         {
             var events = eventTracker.Events;
             var numberOfBreaks = events.Count - 1;
-            return (events.First().HappensDate - events.Last().HappensDate).Days / numberOfBreaks;
+            return (double)(events.First().HappensDate - events.Last().HappensDate).Days / numberOfBreaks;
         }
     }
 }
