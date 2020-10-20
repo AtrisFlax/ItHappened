@@ -40,7 +40,6 @@ namespace ItHappened.Domain.Statistics
             if (!eventTracker.HasRating) return false;
             var trackerEvents=_eventRepository.LoadAllTrackerEvents(eventTracker.Id);
             if (trackerEvents.Any(@event => @event.Rating == Option<double>.None)) return false;
-
             return trackerEvents.Count > 1;
         }
     }
