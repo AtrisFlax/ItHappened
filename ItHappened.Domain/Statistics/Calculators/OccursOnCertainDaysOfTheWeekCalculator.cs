@@ -20,16 +20,17 @@ namespace ItHappened.Domain.Statistics
         }
         public Option<IStatisticsFact> Calculate(EventTracker eventTracker)
         {
-            if (!CanCalculate(_eventRepository.LoadAllTrackerEvents(eventTracker.Id).ToList())) return Option<IStatisticsFact>.None;
-
-
+            if (!CanCalculate(_eventRepository.LoadAllTrackerEvents(eventTracker.Id).ToList()))
+            {
+                return Option<IStatisticsFact>.None;
+            }
             var events = _eventRepository.LoadAllTrackerEvents(eventTracker.Id);
             var totalEvents = events.Count;
             var daysOfTheWeek = events.GroupBy(@event => @event.HappensDate.DayOfWeek,
-                    (key, g) => new
+                    (key, group) => new
                     {
                         DayTime = key,
-                        HitOnDayOfWeek = g.Count()
+                        HitOnDayOfWeek = group.Count()
                     })
                 .Where(groupDays => groupDays.HitOnDayOfWeek > LessNotPassPercent * totalEvents).ToList();
 
