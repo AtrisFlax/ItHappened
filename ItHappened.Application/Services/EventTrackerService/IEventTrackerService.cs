@@ -23,7 +23,7 @@ namespace ItHappened.Application.Services.EventTrackerService
         EventTrackerServiceStatusCodes AddEventToTracker(Guid initiatorId, Guid trackerId, Event @event);
         EventTrackerServiceStatusCodes RemoveEventFromTracker(Guid initiatorId, Guid trackerId, Guid eventId);
         EventTrackerServiceStatusCodes EditEventInTracker(Guid initiatorId, Guid trackerId, Event newEvent);
-        (IReadOnlyCollection<Event>, EventTrackerServiceStatusCodes) GetAllEventsFromTracker(Guid trackerId, Guid initiatorId);
+        (IReadOnlyCollection<Event> collection, EventTrackerServiceStatusCodes statusCode) GetAllEventsFromTracker(Guid trackerId, Guid initiatorId);
 
         // Option<IReadOnlyCollection<Event>> GetEventsFiltratedByTime(Guid userId, Guid trackerId, 
         //     DateTimeOffset from, DateTimeOffset to);

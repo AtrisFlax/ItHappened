@@ -189,7 +189,7 @@ namespace ItHappened.Application.Services.EventTrackerService
             return Status.Ok;
         }
 
-        public (IReadOnlyCollection<Event>, Status) GetAllEventsFromTracker(Guid trackerId, Guid initiatorId)
+        public (IReadOnlyCollection<Event> collection, Status statusCode) GetAllEventsFromTracker(Guid trackerId, Guid initiatorId)
         {
             if (!_eventTrackerRepository.IsTrackerIn(trackerId))
             {
