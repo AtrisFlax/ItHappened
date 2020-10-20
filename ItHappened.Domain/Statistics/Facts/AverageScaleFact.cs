@@ -2,21 +2,22 @@
 
 namespace ItHappend.Domain.Statistics
 {
-    public class SumScaleFact : IStatisticsFact
+    public class AverageScaleFact : IStatisticsFact
     {
-        public double SumValue { get; }
-        public string MeasurementUnit { get; }
         public string FactName { get; }
         public string Description { get; }
         public double Priority { get; }
-        internal SumScaleFact(string factName, string description, double priority, double sumValue,
+        public double AverageValue { get; }
+        public string MeasurementUnit { get; }
+
+        internal AverageScaleFact(string factName, string description, double priority, double averageValue,
             string measurementUnit)
         {
             FactName = factName;
             Description = description;
             Priority = priority;
-            SumValue = sumValue;
             MeasurementUnit = measurementUnit;
+            AverageValue = averageValue;
         }
     }
 }
