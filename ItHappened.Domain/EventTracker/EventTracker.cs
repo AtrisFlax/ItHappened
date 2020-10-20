@@ -52,31 +52,6 @@ namespace ItHappened.Domain
             HasComment = eventTrackerBuilder.HasComment;
         }
         
-        //TODO убрать как сделаю замену этим функциям
-        // public bool AddEvent(Event newEvent)
-        // {
-        //     if (IsTrackerAndEventCustomizationsMatch(newEvent))
-        //     {
-        //         Log.Information("Cant add event, wrong customization");
-        //         return false;
-        //     }
-        //
-        //     return true;
-        // }
-        //
-        // public void RemoveEvent(Event eventToRemove)
-        // {
-        //     Events.Remove(eventToRemove);
-        // }
-        //
-        // public IReadOnlyCollection<Event> FilterEventsByTimeSpan(DateTimeOffset from, DateTimeOffset to)
-        // {
-        //     var filteredEvents = Events.Where(eventItem =>
-        //         eventItem.HappensDate.UtcDateTime >= from.UtcDateTime &&
-        //         eventItem.HappensDate.UtcDateTime <= to.UtcDateTime).ToArray();
-        //     return filteredEvents;
-        // }
-
         private bool IsTrackerAndEventCustomizationsMatch(Event newEvent)
         {
             if (HasPhoto != newEvent.Photo.IsSome) return true;

@@ -5,50 +5,48 @@ using ItHappend.Domain.Statistics;
 using ItHappened.Domain;
 using ItHappened.Domain.Statistics;
 using ItHappened.Infrastructure.Repositories;
+using LanguageExt.UnsafeValueAccess;
 using NUnit.Framework;
+using static ItHappened.UnitTests.StatisticsCalculatorsTests.StatisticsCalculatorsTestingConsts;
 
 namespace ItHappened.UnitTests.StatisticsCalculatorsTests
 {
     public class OccursOnCertainDaysOfTheWeekCalculatorTest
     {
         private IEventRepository _eventRepository;
-        
+
         [SetUp]
         public void Init()
         {
             _eventRepository = new EventRepository();
         }
+
         [Test]
         public void EventTrackerHasTwoRatingAndEvents_CalculateSuccess()
         {
             //arrange 
             var eventTracker = CreateTracker();
-            var eventList = CreateEvents_10Events_7OnMonday_3OnWednesday_1Tuesday(eventTracker.Id);
-            _eventRepository.AddRangeOfEvents(eventList);
+            var events = CreateEvents_10Events_7onMonday_3onWednesday_1onTuesday(eventTracker.Id);
+            _eventRepository.AddRangeOfEvents(events);
 
             //act 
             var fact = new OccursOnCertainDaysOfTheWeekCalculator(_eventRepository)
-                .Calculate(eventTracker).ConvertTo<OccursOnCertainDaysOfTheWeekFact>();
-           
-            //assert 
-            Assert.True(fact.IsSome);
+                .Calculate(eventTracker).ConvertTo<OccursOnCertainDaysOfTheWeekFact>().ValueUnsafe();
 
-            fact.Do(f =>
-            {
-                Assert.AreEqual("Происходит в определённые дни недели", f.FactName);
-                Assert.AreEqual("В 90% случаев событие TrackerName происходит в понедельник, в среду", f.Description);
-                Assert.AreEqual(12.6, f.Priority, 1e-5);
-                Assert.AreEqual(new[] {DayOfWeek.Monday, DayOfWeek.Wednesday}, f.DaysOfTheWeek);
-                Assert.AreEqual(90.0, f.Percentage, 1e-5);
-            });
+            //assert 
+            Assert.AreEqual("Происходит в определённые дни недели", fact.FactName);
+            Assert.AreEqual("В 90% случаев событие TrackerName происходит в понедельник, в среду", fact.Description);
+            Assert.AreEqual(12.6, fact.Priority, PriorityAccuracy);
+            Assert.AreEqual(new[] {DayOfWeek.Monday, DayOfWeek.Wednesday}, fact.DaysOfTheWeek);
+            Assert.AreEqual(90.0, fact.Percentage, OccursOnCertainDaysOfTheWeekFactPercentageAccuracy);
         }
-        
+
         [Test]
         public void AllEventNotPasses_25PercentHitToWeekOfDayThreshold_CalculateFailure()
         {
             //arrange 
             var eventTracker = CreateTracker();
-            var eventList = CreateEvents_10Events_7OnMonday_3OnWednesday_1Tuesday(eventTracker.Id);
+            var eventList = CreateOneEventOnEveryDay(eventTracker.Id);
             _eventRepository.AddRangeOfEvents(eventList);
 
             //act 
@@ -56,16 +54,7 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
                 .Calculate(eventTracker).ConvertTo<OccursOnCertainDaysOfTheWeekFact>();
 
             //assert 
-            Assert.True(fact.IsSome);
-
-            fact.Do(f =>
-            {
-                Assert.AreEqual("Происходит в определённые дни недели", f.FactName);
-                Assert.AreEqual("В 90% случаев событие TrackerName происходит в понедельник, в среду", f.Description);
-                Assert.AreEqual(12.6, f.Priority, 1e-5);
-                Assert.AreEqual(new[] {DayOfWeek.Monday, DayOfWeek.Wednesday}, f.DaysOfTheWeek);
-                Assert.AreEqual(90.0, f.Percentage, 1e-5);
-            });
+            Assert.True(fact.IsNone);
         }
 
 
@@ -74,7 +63,8 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
         {
             //arrange 
             var eventTracker = CreateTracker();
-            var eventList = CreateOneEventOnEveryDay(eventTracker.Id);
+            const int notEnoughEvents = 5;
+            var eventList = CreateEvents(eventTracker.Id, notEnoughEvents);
             _eventRepository.AddRangeOfEvents(eventList);
 
             //act 
@@ -93,7 +83,7 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
             return eventTracker;
         }
 
-        private static List<Event> CreateEvents_10Events_7OnMonday_3OnWednesday_1Tuesday(Guid trackerId)
+        private static IEnumerable<Event> CreateEvents_10Events_7onMonday_3onWednesday_1onTuesday(Guid trackerId)
         {
             var monday = new DateTime(2020, 10, 5);
             var tuesday = new DateTime(2020, 10, 6);
@@ -111,13 +101,13 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
                 new DateTimeOffset(wednesday),
                 new DateTimeOffset(wednesday),
             };
-            return dateList
-                .Select((t, i) =>
-                    EventBuilder.Event(Guid.NewGuid(), Guid.NewGuid(), trackerId, DateTimeOffset.Now , $"Event_{i}").Build())
+            return dateList.Select(date => EventBuilder
+                    .Event(Guid.NewGuid(), Guid.NewGuid(), trackerId, date, $"Event {date.Date.DayOfWeek}")
+                    .Build())
                 .ToList();
         }
-        
-        private static List<Event> CreateOneEventOnEveryDay(Guid trackerId)
+
+        private static IEnumerable<Event> CreateOneEventOnEveryDay(Guid trackerId)
         {
             var monday = new DateTime(2020, 10, 5);
             var dateList = new List<DateTimeOffset>
@@ -132,9 +122,22 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
             };
             return dateList
                 .Select((t, i) =>
-                    EventBuilder.Event(Guid.NewGuid(), Guid.NewGuid(), trackerId, DateTimeOffset.Now,  $"Event_{i}").Build())
+                    EventBuilder.Event(Guid.NewGuid(), Guid.NewGuid(), trackerId, DateTimeOffset.Now, $"Event_{i}")
+                        .Build())
                 .ToList();
+        }
+        
+        
+        private static IEnumerable<Event> CreateEvents(Guid trackerId, int num)
+        {
+            var events = new List<Event>();
+            for (var i = 0; i < num; i++)
+            {
+                events.Add(EventBuilder
+                    .Event(Guid.NewGuid(), Guid.NewGuid(), trackerId, DateTimeOffset.UtcNow, $"Event {num}")
+                    .Build());
+            }
+            return events;
         }
     }
 }
-

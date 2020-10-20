@@ -3,7 +3,7 @@ using LanguageExt;
 
 namespace ItHappened.UnitTests.StatisticsCalculatorsTests
 {
-    public static class FactToFactConvertorExtensions
+    public static class FromIFactToFactConvertorExtensions
     {
         public static Option<T> ConvertTo<T>(this Option<IStatisticsFact> fact)
         {
