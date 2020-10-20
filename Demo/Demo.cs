@@ -5,7 +5,7 @@ using ItHappened.Domain;
 using Serilog;
 using Usage;
 
-namespace Demo
+/*namespace Demo
 {
     internal class Demo
     {
@@ -260,4 +260,4 @@ namespace Demo
             return b;
         }
     }
-}
+}*/
