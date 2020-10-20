@@ -13,7 +13,10 @@ namespace ItHappened.Infrastructure.Repositories
         {
             _events.Add(newEvent.Id, newEvent);
         }
-        
+        public bool IsEventIn(Guid eventId)
+        {
+            return _events.ContainsKey(eventId);
+        }
         public void AddRangeOfEvents(IEnumerable<Event> events)
         {
             foreach (var @event in events)

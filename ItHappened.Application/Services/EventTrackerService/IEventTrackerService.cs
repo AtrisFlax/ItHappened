@@ -10,21 +10,20 @@ namespace ItHappened.Application.Services.EventTrackerService
         Guid CreateTracker(
             Guid creatorId,
             string trackerName,
-            bool hasPhoto = false,
-            bool hasScale = false,
-            string scaleMeasurementUnit = "",
-            bool hasRating = false,
-            bool hashGeoTag = false,
-            bool hasComment = false);
+            bool hasPhoto,
+            bool hasScale,
+            string scaleMeasurementUnit,
+            bool hasRating,
+            bool hashGeoTag,
+            bool hasComment);
         
         EventTrackerServiceStatusCodes DeleteTracker(Guid trackerId, Guid creatorId);
 
         IReadOnlyCollection<EventTracker> GetAllUserTrackers(Guid userId);
-        //Option<EventTracker> GetTracker(Guid trackerId, Guid creatorId);
-        EventTrackerServiceStatusCodes AddEventToTracker(Guid creatorId, Guid trackerId, Event @event);
-        bool RemoveEventFromTracker(Guid trackerCreatorId, Guid trackerId, Guid eventId);
-        bool EditEventInTracker(Guid trackerCreatorId, Guid trackerId, Guid eventId, Event newEvent);
-        Option<IList<Event>> GetAllEventsFromTracker(Guid trackerId, Guid trackerCreatorId);
+        EventTrackerServiceStatusCodes AddEventToTracker(Guid initiatorId, Guid trackerId, Event @event);
+        EventTrackerServiceStatusCodes RemoveEventFromTracker(Guid initiatorId, Guid trackerId, Guid eventId);
+        EventTrackerServiceStatusCodes EditEventInTracker(Guid initiatorId, Guid trackerId, Event newEvent);
+        (IReadOnlyCollection<Event>, EventTrackerServiceStatusCodes) GetAllEventsFromTracker(Guid trackerId, Guid initiatorId);
 
         // Option<IReadOnlyCollection<Event>> GetEventsFiltratedByTime(Guid userId, Guid trackerId, 
         //     DateTimeOffset from, DateTimeOffset to);

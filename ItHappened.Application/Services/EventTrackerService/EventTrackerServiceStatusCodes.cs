@@ -3,8 +3,10 @@
     public enum EventTrackerServiceStatusCodes
     {
         Ok,
-        WrongTrackerCreatorId,
+        WrongInitiatorId,
         TrackerDontExist,
-        WrongEventCreatorId
+        WrongEventCreatorId,
+        EventDontExist,
+        EventAlreadyExist
     }
 }
