@@ -12,6 +12,7 @@ namespace ItHappened.Domain.Statistics
         public string FactName { get; } = nameof(SpecificTimeOfDayEventFact);
         public string Description { get; }
         public double Priority { get; }
+
         internal SpecificTimeOfDayEventFact(double percentage, string eventName, string timeOfTheDay,
             IEnumerable<(string title, string timeOfTheDay, double percentage)> visualizationData)
         {
