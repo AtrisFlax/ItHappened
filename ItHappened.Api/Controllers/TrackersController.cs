@@ -56,11 +56,25 @@ namespace ItHappened.Api.Controllers
 
         [HttpDelete(ApiRoutes.Trackers.Delete)]
         [ProducesResponseType(200, Type = typeof(CreateTrackerResponse))]
-        public IActionResult CreateTracker([FromRoute]Guid trackerId, [FromBody]DeleteTrackerRequest request)
+        public IActionResult DeleteTracker([FromRoute]Guid trackerId, [FromBody]DeleteTrackerRequest request)
         {
             var code = _trackerService.DeleteTracker(trackerId, request.UserId);
             var response = new DeleteTrackerResponse();
             return Ok(response);
+        }
+        
+        [HttpGet(ApiRoutes.Trackers.Statistics.GetForSingleTracker)]
+        [ProducesResponseType(200, Type = typeof(CreateTrackerResponse))]
+        public IActionResult GetStatisticsForSingleTracker([FromRoute]Guid trackerId)
+        {
+            return Ok();
+        }
+        
+        [HttpGet(ApiRoutes.Trackers.Statistics.GetForMultipleTrackers)]
+        [ProducesResponseType(200, Type = typeof(CreateTrackerResponse))]
+        public IActionResult GetStatisticsForAllTrackers()
+        {
+            return Ok();
         }
     }
 }

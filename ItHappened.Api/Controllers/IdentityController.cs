@@ -25,8 +25,7 @@ namespace ItHappened.Api.Controllers
             _trackerService = trackerService;
         }
 
-        [HttpPost]
-        [Route("registration")]
+        [HttpPost(ApiRoutes.Identity.Register)]
         [ProducesResponseType(404)]
         public IActionResult CreateUser([FromBody]CreateUserRequest request)
         {

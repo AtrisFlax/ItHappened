@@ -1,8 +1,6 @@
 ﻿using System;
 using ItHappened.Api.Contracts;
-using ItHappened.Api.Contracts.Requests;
 using ItHappened.Api.Contracts.Requests.Events;
-using ItHappened.Api.Contracts.Responses;
 using ItHappened.Api.Contracts.Responses.Events;
 using Microsoft.AspNetCore.Mvc;
 
@@ -22,6 +20,13 @@ namespace ItHappened.Api.Controllers
         public IActionResult GetEvent([FromRoute]Guid eventId, [FromBody]GetEventRequest request)
         {
             return Ok(new GetEventResponse());
+        }
+        
+        [HttpGet(ApiRoutes.Events.GetAll)]
+        [ProducesResponseType(200, Type = typeof(GetAllEventsResponse[]))]
+        public IActionResult GetAllTrackers([FromBody]GetAllEventsRequest request)
+        {
+            return Ok();
         }
         
         [HttpPut(ApiRoutes.Events.Update)]
