@@ -1,10 +1,11 @@
-﻿using System;
+using System;
 
-namespace ItHappened.Api.Options
+namespace ItHappened.Api.Authentication
 {
-    public class JwtOptions
+    public class JwtConfiguration
     {
         public string Secret { get; set; }
+        
         public TimeSpan ExpiresAfter { get; set; }
     }
 }

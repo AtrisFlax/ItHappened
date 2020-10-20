@@ -1,6 +1,4 @@
-﻿using System;
-using ItHappened.Domain;
-using Serilog;
+﻿using ItHappened.Domain;
 
 namespace ItHappened.Application.Services.UserService
 {
@@ -13,12 +11,15 @@ namespace ItHappened.Application.Services.UserService
             _userRepository = userRepository;
         }
 
-        public Guid CreateUser(string name)
+        public void Register(string login, string password)
         {
-            var user = new User(Guid.NewGuid(), name, DateTimeOffset.UtcNow);
-            _userRepository.SaveUser(user);
-            Log.Verbose($"User with login {name} added with id={user.Id}");
-            return user.Id;
+            throw new System.NotImplementedException();
+        }
+
+        public User TryFindByLogin(string login)
+        {
+            var user = _userRepository.TryFindByLogin(login);
+            return user;
         }
     }
 }

@@ -5,6 +5,7 @@ namespace ItHappened.Application.Services.UserService
 {
     public interface IUserService
     {
-        Guid CreateUser(string name);
+        void Register(string login, string password);
+        User TryFindByLogin(string login);
     }
 }

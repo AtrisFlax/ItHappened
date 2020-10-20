@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using ItHappened.Api.Authentication;
 using ItHappened.Api.Options;
 using ItHappened.Application.Services.EventTrackerService;
 using ItHappened.Application.Services.UserService;
@@ -44,6 +45,8 @@ namespace ItHappened.Api
             var jwtOptions = new JwtOptions();
             Configuration.GetSection(nameof(JwtOptions)).Bind(jwtOptions);
             services.AddSingleton(jwtOptions);
+            services.AddSingleton<IJwtIssuer, JwtIssuer>();
+            services.AddSingleton<IPasswordHasher, PasswordHasher>();
 
             services.AddAuthentication(x =>
             {

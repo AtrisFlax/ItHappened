@@ -17,5 +17,10 @@ namespace ItHappened.Infrastructure.Repositories
         {
             return _users[userId];
         }
+
+        public User TryFindByLogin(string login)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
