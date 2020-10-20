@@ -1,4 +1,5 @@
-﻿using ItHappened.Api.Contracts;
+﻿using System;
+using ItHappened.Api.Contracts;
 using ItHappened.Api.Contracts.Requests;
 using ItHappened.Api.Contracts.Requests.Events;
 using ItHappened.Api.Contracts.Responses;
@@ -11,28 +12,28 @@ namespace ItHappened.Api.Controllers
     {
         [HttpPost(ApiRoutes.Events.Create)]
         [ProducesResponseType(200, Type = typeof(CreateEventResponse))]
-        public IActionResult CreateEvent([FromBody]CreateEventRequest request)
+        public IActionResult CreateEvent([FromRoute]Guid trackerId, [FromBody]CreateEventRequest request)
         {
             return Ok(new CreateEventResponse());
         }
         
         [HttpGet(ApiRoutes.Events.Get)]
         [ProducesResponseType(200, Type = typeof(GetEventResponse))]
-        public IActionResult GetEvent([FromBody]GetEventRequest request)
+        public IActionResult GetEvent([FromRoute]Guid eventId, [FromBody]GetEventRequest request)
         {
             return Ok(new GetEventResponse());
         }
         
         [HttpPut(ApiRoutes.Events.Update)]
         [ProducesResponseType(200, Type = typeof(UpdateEventResponse))]
-        public IActionResult UpdateEvent([FromBody]CreateEventRequest request)
+        public IActionResult UpdateEvent([FromRoute]Guid eventId, [FromBody]UpdateEventRequest request)
         {
             return Ok(new CreateEventResponse());
         }
         
         [HttpDelete(ApiRoutes.Events.Delete)]
         [ProducesResponseType(200, Type = typeof(CreateEventResponse))]
-        public IActionResult DeleteEvent([FromBody]CreateEventRequest request)
+        public IActionResult DeleteEvent([FromRoute]Guid eventId, [FromBody]DeleteEventRequest request)
         {
             return Ok(new CreateEventResponse());
         }

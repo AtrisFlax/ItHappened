@@ -23,16 +23,16 @@ namespace ItHappened.Api.Controllers
         
         [HttpPost(ApiRoutes.Trackers.Create)]
         [ProducesResponseType(200, Type = typeof(CreateTrackerResponse))]
-        public IActionResult CreateTracker([FromRoute]Guid userId, [FromBody]CreateTrackerRequest request)
+        public IActionResult CreateTracker([FromBody]CreateTrackerRequest request)
         {
-            var trackerId = _trackerService.CreateTracker(userId, request.TrackerName);
+            var trackerId = _trackerService.CreateTracker(request.UserId, request.TrackerName);
             var response = new CreateTrackerResponse(trackerId);
             return Ok(response);
         }
 
         [HttpGet(ApiRoutes.Trackers.GetAll)]
         [ProducesResponseType(200, Type = typeof(EventTracker[]))]
-        public IActionResult GetTrackers([FromBody]GetAllTrackersRequest request)
+        public IActionResult GetAllTrackers([FromBody]GetAllTrackersRequest request)
         {
             var trackers = _trackerService.GetAllUserTrackers(request.UserId);
             return Ok(trackers);
@@ -40,15 +40,15 @@ namespace ItHappened.Api.Controllers
         
         [HttpGet(ApiRoutes.Trackers.Get)]
         [ProducesResponseType(200, Type = typeof(GetTrackerResponse))]
-        public IActionResult GetTracker([FromBody]GetTrackerRequest request)
+        public IActionResult GetTracker([FromRoute]Guid trackerId, [FromBody]GetTrackerRequest request)
         {
-            var trackers = _trackerService.GetAllUserTrackers(request.TrackerId);
+            var trackers = _trackerService.GetAllUserTrackers(trackerId);
             return Ok(trackers);
         }
         
         [HttpPut(ApiRoutes.Trackers.Update)]
         [ProducesResponseType(200, Type = typeof(UpdateTrackerResponse))]
-        public IActionResult GetTracker([FromBody]UpdateTrackerRequest request)
+        public IActionResult UpdateTracker([FromRoute]Guid trackerId, [FromBody]UpdateTrackerRequest request)
         {
             //var trackers = _trackerService.GetTracker;
             return Ok();
@@ -56,9 +56,9 @@ namespace ItHappened.Api.Controllers
 
         [HttpDelete(ApiRoutes.Trackers.Delete)]
         [ProducesResponseType(200, Type = typeof(CreateTrackerResponse))]
-        public IActionResult CreateTracker([FromRoute]Guid userId, [FromRoute]Guid trackerId)
+        public IActionResult CreateTracker([FromRoute]Guid trackerId, [FromBody]DeleteTrackerRequest request)
         {
-            var code = _trackerService.DeleteTracker(trackerId, userId);
+            var code = _trackerService.DeleteTracker(trackerId, request.UserId);
             var response = new DeleteTrackerResponse();
             return Ok(response);
         }

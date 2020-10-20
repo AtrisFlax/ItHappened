@@ -24,15 +24,15 @@
         
         public static class Events
         {
-            public const string Create = Base + "/events";
+            public const string Create = "/trackers/{trackerId}/events";
 
-            public const string Get = Base + "/events/{eventId}";
+            public const string Get = "/trackers/{trackerId}/events/{eventId}";
 
-            public const string GetAll = Base + "/events";
+            public const string GetAll = "/trackers/{trackerId}/events";
             
-            public const string Update = Base + "/events/{eventId}";
+            public const string Update = "/trackers/{trackerId}/events/{eventId}";
 
-            public const string Delete = Base + "/events/{eventId}";
+            public const string Delete = "/trackers/{trackerId}/events/{eventId}";
         }
 
         public static class Identity
