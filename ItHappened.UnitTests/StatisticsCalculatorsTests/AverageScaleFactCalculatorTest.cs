@@ -8,38 +8,40 @@ using ItHappened.Infrastructure.Repositories;
 using LanguageExt.UnsafeValueAccess;
 using NUnit.Framework;
 using static ItHappened.UnitTests.StatisticsCalculatorsTests.StatisticsCalculatorsTestingConsts;
-
 namespace ItHappened.UnitTests.StatisticsCalculatorsTests
 {
-    public class SumScaleFactCalculatorTest
+    public class AverageScaleFactCalculatorTest
     {
         private IEventRepository _eventRepository;
         private static Random _rand;
-        private const int MinEventForCalculation = 2; 
+        private const int MinEventForCalculation = 2;
         private const string MeasurementUnit = "Kg";
-        
+
         [SetUp]
         public void Init()
         {
             _eventRepository = new EventRepository();
             _rand = new Random();
         }
+
         [Test]
         public void EventsEnoughWithScaleEventsForCalc_CalculateSuccess()
         {
             //arrange 
             var eventTracker = CreateTrackerWithScale(MeasurementUnit);
-            var (events, scaleValues) = CreateEventsWithScale(eventTracker.Id, _rand.Next() % 10 + MinEventForCalculation);
+            var (events, scaleValues) =
+                CreateEventsWithScale(eventTracker.Id, _rand.Next() % 2 + MinEventForCalculation);
             _eventRepository.AddRangeOfEvents(events);
-            
+
             //act 
-            var fact = new SumScaleCalculator(_eventRepository)
-                .Calculate(eventTracker).ConvertTo<SumScaleFact>().ValueUnsafe();
-            
+            var fact = new AverageScaleCalculator(_eventRepository).Calculate(eventTracker)
+                .ConvertTo<AverageScaleFact>().ValueUnsafe();
+
             //assert 
-            Assert.AreEqual(2, fact.Priority, PriorityAccuracy);
-            Assert.AreEqual(scaleValues.Sum(), fact.SumValue);
+            Assert.AreEqual("Среднее значение шкалы", fact.FactName);
+            Assert.AreEqual(3, fact.Priority, PriorityAccuracy);
             Assert.AreEqual(MeasurementUnit, fact.MeasurementUnit);
+            Assert.AreEqual(scaleValues.Average(), fact.AverageValue,AverageAccuracy);
         }
 
         [Test]
@@ -49,9 +51,26 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
             var eventTracker = CreateTrackerWithScale(MeasurementUnit);
             var (events, _) = CreateEventsWithScale(eventTracker.Id, 1);
             _eventRepository.AddRangeOfEvents(events);
-                
+
             //act 
-            var fact = new SumScaleCalculator(_eventRepository).Calculate(eventTracker).ConvertTo<SumScaleFact>();
+            var fact = new AverageScaleCalculator(_eventRepository).Calculate(eventTracker)
+                .ConvertTo<AverageScaleFact>();
+
+            //assert 
+            Assert.True(fact.IsNone);
+        }
+        
+        [Test]
+        public void EventTrackerHasZeroEvent_CalculateFailure()
+        {
+            //arrange 
+            var eventTracker = CreateTrackerWithScale(MeasurementUnit);
+            var (events, _) = CreateEventsWithScale(eventTracker.Id, 0);
+            _eventRepository.AddRangeOfEvents(events);
+
+            //act 
+            var fact = new AverageScaleCalculator(_eventRepository).Calculate(eventTracker)
+                .ConvertTo<AverageScaleFact>();
 
             //assert 
             Assert.True(fact.IsNone);
@@ -66,12 +85,13 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
             _eventRepository.AddRangeOfEvents(events);
 
             //act 
-            var fact = new SumScaleCalculator(_eventRepository).Calculate(eventTracker).ConvertTo<SumScaleFact>();
+            var fact = new AverageScaleCalculator(_eventRepository).Calculate(eventTracker)
+                .ConvertTo<AverageScaleFact>();
 
             //assert 
             Assert.True(fact.IsNone);
         }
-        
+
         [Test]
         public void SomeEventHasNoCustomizationScale_CalculateFailed()
         {
@@ -79,23 +99,26 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
             var eventTracker = CreateTrackerWithScale(MeasurementUnit);
             var (events, _) = CreateAllEventsWithScaleButOneWithoutScale(eventTracker.Id, 1);
             _eventRepository.AddRangeOfEvents(events);
-            
+
             //act 
-            var fact = new SumScaleCalculator(_eventRepository).Calculate(eventTracker).ConvertTo<SumScaleFact>();
+            var fact = new AverageScaleCalculator(_eventRepository).Calculate(eventTracker)
+                .ConvertTo<AverageScaleFact>();
 
             //assert 
             Assert.True(fact.IsNone);
         }
-        
-        private static (IEnumerable<Event> events, IEnumerable<double> scaleValues) CreateEventsWithScale(Guid trackerId, int num)
+
+        private static (IEnumerable<Event> events, IEnumerable<double> scaleValues) CreateEventsWithScale(
+            Guid trackerId, int num)
         {
             var scaleValues = CreateRandomScale(num);
             var events = scaleValues.Select(t => CreateEventWithScale(trackerId, t)).ToList();
             return (events, scaleValues);
         }
-        
+
         // ReSharper disable once UnusedTupleComponentInReturnValue
-        private static (IEnumerable<Event> events, IEnumerable<double> scaleValues) CreateAllEventsWithScaleButOneWithoutScale(Guid trackerId, int num)
+        private static (IEnumerable<Event> events, IEnumerable<double> scaleValues)
+            CreateAllEventsWithScaleButOneWithoutScale(Guid trackerId, int num)
         {
             var scaleValues = CreateRandomScale(num);
             var events = scaleValues.Select(t => CreateEventWithScale(trackerId, t)).ToList();
@@ -104,7 +127,7 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
                 .Build());
             return (events, scaleValues);
         }
-        
+
         private static List<double> CreateRandomScale(int num)
         {
             var ratings = new List<double>();
@@ -112,9 +135,10 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
             {
                 ratings.Add(_rand.NextDouble());
             }
+
             return ratings;
         }
-        
+
         private static Event CreateEventWithScale(Guid trackerId, double scale)
         {
             return EventBuilder
@@ -122,7 +146,7 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
                 .WithScale(scale)
                 .Build();
         }
-        
+
         private static EventTracker CreateTrackerWithScale(string measurementUnit)
         {
             var eventTracker = EventTrackerBuilder
@@ -131,7 +155,7 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
                 .Build();
             return eventTracker;
         }
-        
+
         private static EventTracker CreateTrackerWithoutScale(string measurementUnit)
         {
             var eventTracker = EventTrackerBuilder
@@ -141,4 +165,3 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
         }
     }
 }
-
