@@ -1,14 +1,18 @@
 ﻿using System;
+using System.Security.Claims;
+using ItHappened.Api.Authentication;
 using ItHappened.Api.Contracts;
 using ItHappened.Api.Contracts.Requests.Trackers;
 using ItHappened.Api.Contracts.Responses.Trackers;
 using ItHappened.Application.Services.EventTrackerService;
 using ItHappened.Application.Services.UserService;
 using ItHappened.Domain;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ItHappened.Api.Controllers
 {
+    [Authorize]
     [ApiController]
     public class TrackersController : ControllerBase
     {
@@ -25,7 +29,8 @@ namespace ItHappened.Api.Controllers
         [ProducesResponseType(200, Type = typeof(CreateTrackerResponse))]
         public IActionResult CreateTracker([FromBody]CreateTrackerRequest request)
         {
-            var trackerId = _trackerService.CreateTracker(request.UserId, request.TrackerName);
+            var userId = Guid.Parse(User.FindFirstValue(JwtClaimTypes.Id));
+            var trackerId = _trackerService.CreateTracker(Guid.NewGuid(), request.TrackerName);
             var response = new CreateTrackerResponse(trackerId);
             return Ok(response);
         }
