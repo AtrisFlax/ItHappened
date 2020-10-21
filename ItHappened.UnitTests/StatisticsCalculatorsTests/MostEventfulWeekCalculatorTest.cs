@@ -14,15 +14,16 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
     {
         private IEventRepository _eventRepository;
         private static Random _rand;
-        const string CultureCode = "ru-RU"; //hardcoded culture code 
+        private const string CultureCode = "ru-RU"; //hardcoded culture code 
 
         [SetUp]
         public void Init()
         {
             _eventRepository = new EventRepository();
-            _rand = new Random(16);
+            _rand = new Random();
         }
-
+        
+        [Repeat( 1000 )]
         [Test]
         public void FindInTwoTrackerWithFactMostEventfulWeek_CalculateSuccess()
         {
@@ -31,14 +32,14 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
             var eventTracker1 = CreateTracker(userId, "Покупка");
             var eventTracker2 = CreateTracker(userId, "Продажа");
             const int year = 2020;
-            var eventsOfTracker1 = CreateEventDuringYear(eventTracker1.Id, userId, 5, year);
-            var eventsOfTracker2 = CreateEventDuringYear(eventTracker2.Id, userId, 5, year);
+            var eventsOfTracker1 = CreateEventDuringYear(eventTracker1.Id, userId, 1000, year);
+            var eventsOfTracker2 = CreateEventDuringYear(eventTracker2.Id, userId, 1000, year);
             _eventRepository.AddRangeOfEvents(eventsOfTracker1);
             _eventRepository.AddRangeOfEvents(eventsOfTracker2);
             var allEvents = new List<Event>();
             allEvents.AddRange(eventsOfTracker1);
             allEvents.AddRange(eventsOfTracker2);
-            var eventfullWeek = allEvents
+            var eventfulWeek = allEvents
                 .GroupBy(GetWeekNum,
                     (weekNum, g) => new
                     {
@@ -46,9 +47,7 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
                         Count = g.Count()
                     })
                 .OrderByDescending(g => g.Count).First();
-
-
-            var firstDayOfWeek = FirstDateOfWeek(year, eventfullWeek.WeekNum);
+            var firstDayOfWeek = FirstDateOfWeek(year, eventfulWeek.WeekNum);
             var lastDayOfWeek = firstDayOfWeek.AddDays(6);
 
             //act
@@ -57,15 +56,15 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
                 .ConvertTo<MostEventfulWeekFact>().ValueUnsafe();
 
             //assert 
-            var ruName = RuEventName(eventfullWeek.Count, "событие", "события", "событий");
+            var ruName = RuEventName(eventfulWeek.Count, "событие", "события", "событий");
             Assert.AreEqual("Самая насыщенная событиями неделя", fact.FactName);
             Assert.AreEqual(
-                $@"Самая насыщенная событиями неделя была с {firstDayOfWeek:d} до {lastDayOfWeek:d}. За её время произошло {eventfullWeek.Count} {ruName}",
+                $@"Самая насыщенная событиями неделя была с {firstDayOfWeek:d} до {lastDayOfWeek:d}. За её время произошло {eventfulWeek.Count} {ruName}",
                 fact.Description);
-            Assert.AreEqual(0.75*eventfullWeek.Count, fact.Priority);
+            Assert.AreEqual(0.75*eventfulWeek.Count, fact.Priority);
             Assert.AreEqual(firstDayOfWeek, fact.WeekWithLargestEventCountFirstDay);
             Assert.AreEqual(lastDayOfWeek, fact.WeekWithLargestEventCountLastDay);
-            Assert.AreEqual(eventfullWeek.Count, fact.EventsCount);
+            Assert.AreEqual(eventfulWeek.Count, fact.EventsCount);
         }
         
         [Test]
@@ -147,18 +146,6 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
             var end = new DateTimeOffset(startYear.AddYears(1).AddDays(-1));
             var range = (end - start).Days;
             return start.AddDays(_rand.Next(range));
-        }
-
-        private static IEnumerable<Event> CreateEventsEveryDaysAgo(Guid eventTrackerId, Guid userId, int daysAgo,
-            int num, DateTimeOffset zeroTimePoint)
-        {
-            var events = new List<Event>();
-            for (var i = 0; i < num; i++)
-            {
-                events.Add(CreateEvent(userId, eventTrackerId, "For Tracker 1", zeroTimePoint.AddDays(-daysAgo)));
-            }
-
-            return events;
         }
 
         private static DateTimeOffset FirstDateOfWeek(int year, int weekOfYear)

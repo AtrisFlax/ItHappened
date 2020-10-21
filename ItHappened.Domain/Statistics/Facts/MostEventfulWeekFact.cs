@@ -7,9 +7,9 @@ namespace ItHappened.Domain.Statistics
         public string FactName { get; }
         public string Description { get; }
         public double Priority { get; }
-        public DateTimeOffset WeekWithLargestEventCountFirstDay;
-        public DateTimeOffset WeekWithLargestEventCountLastDay;
-        public int EventsCount;
+        public DateTimeOffset WeekWithLargestEventCountFirstDay { get; }
+        public DateTimeOffset WeekWithLargestEventCountLastDay { get; }
+        public int EventsCount { get; }
 
         internal MostEventfulWeekFact(string type, string description, double priority,
             DateTimeOffset weekWithLargestEventCountFirstDay, DateTimeOffset weekWithLargestEventCountLastDay,
