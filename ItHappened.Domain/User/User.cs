@@ -4,17 +4,15 @@ namespace ItHappened.Domain
 {
     public class User
     {
-        public User(Guid id, string name, DateTimeOffset dateTimeOffset, string passwordHash)
+        public User(Guid id, string name, Password password)
         {
             Id = id;
             Name = name;
-            PasswordHash = passwordHash;
-            DateTimeOffset = dateTimeOffset;
+            Password = password;
         }
 
         public Guid Id { get; }
         public string Name { get; }
-        public string PasswordHash { get; }
-        public DateTimeOffset DateTimeOffset { get; }
+        public Password Password { get; }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using ItHappened.Domain;
 
 namespace ItHappened.Infrastructure.Repositories
@@ -20,7 +21,9 @@ namespace ItHappened.Infrastructure.Repositories
 
         public User TryFindByLogin(string login)
         {
-            throw new NotImplementedException();
+            return _users
+                .FirstOrDefault(x => x.Value.Name == login)
+                .Value;
         }
     }
 }

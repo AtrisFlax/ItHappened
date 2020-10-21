@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Security.Claims;
-using System.Security.Cryptography;
-using System.Security.Policy;
 using ItHappened.Api.Authentication;
 using ItHappened.Api.Contracts;
 using ItHappened.Application.Services.UserService;
+using ItHappened.Domain;
+using ItHappened.Infrastructure;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ItHappened.Api.Controllers
@@ -25,13 +24,11 @@ namespace ItHappened.Api.Controllers
         [Route("registration")]
         public IActionResult Register([FromBody]LoginRequest request)
         {
-            var user = _userService.TryFindByLogin(request.Login);
+            var user = _userService.TryFindByLogin(request.Name);
             if (user != null)
-            {
                 return Unauthorized("Username is already in use");
-            }
 
-            var hashedPassword = _passwordHasher.Hash(request.Password);
+            user = _userService.Register(request.Name, request.Password);
             var token = _jwtIssuer.GenerateToken(user);
             var response = new LoginResponse(token);
             return Ok(response);
@@ -41,16 +38,18 @@ namespace ItHappened.Api.Controllers
         [Route("authentication")]
         public IActionResult Authenticate([FromBody]LoginRequest request)
         {
-            var user = _userService.TryFindByLogin(request.Login);
-            var hashedPassword = _passwordHasher.Hash(request.Password);
-            if (user == null || hashedPassword != request.Password)
-            {
+            var user = _userService.TryFindByLogin(request.Name);
+            if (user == null)
                 return Unauthorized("User with provided credentials not found");
-            }
-
+            
+            var passwordHashedWithSalt = _passwordHasher.HashWithSalt(request.Password, user.Password.Salt);
+            if (passwordHashedWithSalt != user.Password.Hash)
+                return Unauthorized("User with provided credentials not found");
+                
             var token = _jwtIssuer.GenerateToken(user);
             var response = new LoginResponse(token);
             return Ok(response);
+
         }
 
         [HttpGet]

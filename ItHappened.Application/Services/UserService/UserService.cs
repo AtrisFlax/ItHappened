@@ -1,19 +1,25 @@
-﻿using ItHappened.Domain;
+﻿using System;
+using ItHappened.Domain;
+using ItHappened.Infrastructure;
 
 namespace ItHappened.Application.Services.UserService
 {
     public class UserService : IUserService
     {
         private readonly IUserRepository _userRepository;
-
-        public UserService(IUserRepository userRepository)
+        private readonly IPasswordHasher _passwordHasher;
+        public UserService(IUserRepository userRepository, IPasswordHasher passwordHasher)
         {
             _userRepository = userRepository;
+            _passwordHasher = passwordHasher;
         }
 
-        public void Register(string login, string password)
+        public User Register(string name, string password)
         {
-            throw new System.NotImplementedException();
+            var (hashedPassword, salt) = _passwordHasher.HashWithRandomSalt(password);
+            var user = new User(Guid.NewGuid(), name, new Password(hashedPassword, salt));
+            _userRepository.SaveUser(user);
+            return user;
         }
 
         public User TryFindByLogin(string login)
