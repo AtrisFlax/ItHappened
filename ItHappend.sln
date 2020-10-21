@@ -12,8 +12,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ItHappened.Application", "I
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ItHappened.Api", "ItHappened.Api\ItHappened.Api.csproj", "{16E97AFA-5AAF-42C2-BFF7-7AFB5F6A82CC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ItHappened.Persistence", "ItHappened.Persistence\ItHappened.Persistence.csproj", "{5B6C9F96-E0E6-4B09-A1C0-5F7344C68702}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -48,9 +46,5 @@ Global
 		{16E97AFA-5AAF-42C2-BFF7-7AFB5F6A82CC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{16E97AFA-5AAF-42C2-BFF7-7AFB5F6A82CC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{16E97AFA-5AAF-42C2-BFF7-7AFB5F6A82CC}.Release|Any CPU.Build.0 = Release|Any CPU
-		{5B6C9F96-E0E6-4B09-A1C0-5F7344C68702}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{5B6C9F96-E0E6-4B09-A1C0-5F7344C68702}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{5B6C9F96-E0E6-4B09-A1C0-5F7344C68702}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{5B6C9F96-E0E6-4B09-A1C0-5F7344C68702}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
