@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using LanguageExt;
 using LanguageExt.UnsafeValueAccess;
@@ -14,9 +15,10 @@ namespace ItHappened.Domain.Statistics
         }
         public Option<IStatisticsFact> Calculate(EventTracker eventTracker)
         {
-            if (!CanCalculate(eventTracker)) return Option<IStatisticsFact>.None;
+            var trackerEvents=_eventRepository.LoadAllTrackerEvents(eventTracker.Id);
+            if (!CanCalculate(eventTracker, trackerEvents)) return Option<IStatisticsFact>.None;
             const string factName = "Лучшее событие";
-            var bestEvent = _eventRepository.LoadAllTrackerEvents(eventTracker.Id)
+            var bestEvent = trackerEvents
                 .OrderBy(eventItem => eventItem.Rating).Last();
             var priority = bestEvent.Rating.Value();
             var bestEventComment = bestEvent.Comment.Match(
@@ -35,9 +37,8 @@ namespace ItHappened.Domain.Statistics
                 bestEvent));
         }
 
-        private bool CanCalculate(EventTracker eventTracker)
+        private bool CanCalculate(EventTracker eventTracker, IReadOnlyList<Event> trackerEvents)
         {
-            var trackerEvents=_eventRepository.LoadAllTrackerEvents(eventTracker.Id);
             var isEventsNumberWithRatingMoreOrEqualToTen = trackerEvents
                 .Count(eventItem => eventItem.Rating.IsSome) >= 10;
             var isOldestEventHappenedMoreThanThreeMonthsAgo = trackerEvents
