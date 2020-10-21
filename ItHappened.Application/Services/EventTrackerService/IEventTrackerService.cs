@@ -7,18 +7,8 @@ namespace ItHappened.Application.Services.EventTrackerService
 {
     public interface IEventTrackerService
     {
-        Guid CreateTracker(
-            Guid creatorId,
-            string trackerName,
-            bool hasPhoto,
-            bool hasScale,
-            string scaleMeasurementUnit,
-            bool hasRating,
-            bool hashGeoTag,
-            bool hasComment);
-        
+        Guid CreateTracker(EventTracker eventTracker);       
         EventTrackerServiceStatusCodes DeleteTracker(Guid trackerId, Guid creatorId);
-
         IReadOnlyCollection<EventTracker> GetAllUserTrackers(Guid userId);
         EventTrackerServiceStatusCodes AddEventToTracker(Guid initiatorId, Guid trackerId, Event @event);
         EventTrackerServiceStatusCodes RemoveEventFromTracker(Guid initiatorId, Guid trackerId, Guid eventId);

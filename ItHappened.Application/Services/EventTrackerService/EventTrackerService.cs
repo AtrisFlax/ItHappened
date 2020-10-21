@@ -38,44 +38,8 @@ namespace ItHappened.Application.Services.EventTrackerService
             return Status.Ok;;
         }
 
-        public Guid CreateTracker(
-            Guid creatorId,
-            string trackerName,
-            bool hasPhoto,
-            bool hasScale,
-            string scaleMeasurementUnit,
-            bool hasRating,
-            bool hashGeoTag,
-            bool hasComment)
+        public Guid CreateTracker(EventTracker tracker)
         {
-            var trackerBuilder = EventTrackerBuilder
-                .Tracker(creatorId, Guid.NewGuid(), trackerName);
-            if (hasPhoto)
-            {
-                trackerBuilder = trackerBuilder.WithPhoto();
-            }
-
-            if (hasScale)
-            {
-                trackerBuilder = trackerBuilder.WithScale(scaleMeasurementUnit);
-            }
-
-            if (hasRating)
-            {
-                trackerBuilder = trackerBuilder.WithRating();
-            }
-
-            if (hashGeoTag)
-            {
-                trackerBuilder = trackerBuilder.WithGeoTag();
-            }
-
-            if (hasComment)
-            {
-                trackerBuilder = trackerBuilder.WithComment();
-            }
-
-            var tracker = trackerBuilder.Build();
             _eventTrackerRepository.SaveTracker(tracker);
             return tracker.Id;
         }

@@ -2,10 +2,10 @@
 {
     public interface IEventTrackerBuilder
     {
-        EventTrackerBuilder WithPhoto();
-        EventTrackerBuilder WithScale(string measurementUnit);
-        EventTrackerBuilder WithRating();
-        EventTrackerBuilder WithGeoTag();
-        EventTrackerBuilder WithComment();
+        EventTracker.EventTrackerBuilder WithPhoto();
+        EventTracker.EventTrackerBuilder WithScale(string measurementUnit);
+        EventTracker.EventTrackerBuilder WithRating();
+        EventTracker.EventTrackerBuilder WithGeoTag();
+        EventTracker.EventTrackerBuilder WithComment();
     }
 }
