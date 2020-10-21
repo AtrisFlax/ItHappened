@@ -19,7 +19,7 @@ namespace ItHappened.Infrastructure.Repositories
             return _eventTrackers[eventTrackerId];
         }
 
-        public bool IsTrackerIn(Guid trackerId)
+        public bool IsContainTracker(Guid trackerId)
         {
             return _eventTrackers.ContainsKey(trackerId);
         }
