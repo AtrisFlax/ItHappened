@@ -34,7 +34,9 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
             _events[0].HappensDate = DateTimeOffset.Now - TimeSpan.FromDays(91);
             _events[1].Rating = 1;
             _events[1].HappensDate = DateTimeOffset.Now - TimeSpan.FromDays(8);
-            var actual = _bestEventCalculator.Calculate(_eventTracker).ConvertTo<BestEventFact>();
+            
+            var actual = _bestEventCalculator.Calculate(_eventTracker);
+            
             Assert.IsTrue(actual.IsNone);
         }
 
@@ -44,7 +46,9 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
             _eventRepository.AddEvent(CreateEventWithoutComment(_creatorId));
             _events[1].Rating = 1;
             _events[1].HappensDate = DateTimeOffset.Now - TimeSpan.FromDays(8);
-            var actual = _bestEventCalculator.Calculate(_eventTracker).ConvertTo<BestEventFact>();
+            
+            var actual = _bestEventCalculator.Calculate(_eventTracker);
+            
             Assert.IsTrue(actual.IsNone);
         }
 
@@ -55,7 +59,9 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
             _events[0].HappensDate = DateTimeOffset.Now - TimeSpan.FromDays(91);
             _events[1].Rating = 1;
             _events[1].HappensDate = DateTimeOffset.Now - TimeSpan.FromDays(6);
-            var actual = _bestEventCalculator.Calculate(_eventTracker).ConvertTo<BestEventFact>();
+            
+            var actual = _bestEventCalculator.Calculate(_eventTracker);
+            
             Assert.IsTrue(actual.IsNone);
         }
 
