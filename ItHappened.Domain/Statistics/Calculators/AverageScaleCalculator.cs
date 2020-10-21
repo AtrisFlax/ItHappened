@@ -6,11 +6,11 @@ using LanguageExt.UnsafeValueAccess;
 
 namespace ItHappened.Domain.Statistics
 {
-    public class AveragelyScaleCalculator : ISingleTrackerStatisticsCalculator
+    public class AverageScaleCalculator : ISingleTrackerStatisticsCalculator
     {
         private readonly IEventRepository _eventRepository;
 
-        public AveragelyScaleCalculator(IEventRepository eventRepository)
+        public AverageScaleCalculator(IEventRepository eventRepository)
         {
             _eventRepository = eventRepository;
         }

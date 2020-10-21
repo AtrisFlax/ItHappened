@@ -34,7 +34,7 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
             _eventRepository.AddRangeOfEvents(events);
 
             //act 
-            var fact = new AveragelyScaleCalculator(_eventRepository).Calculate(eventTracker)
+            var fact = new AverageScaleCalculator(_eventRepository).Calculate(eventTracker)
                 .ConvertTo<AverageScaleFact>().ValueUnsafe();
 
             //assert 
@@ -53,7 +53,23 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
             _eventRepository.AddRangeOfEvents(events);
 
             //act 
-            var fact = new AveragelyScaleCalculator(_eventRepository).Calculate(eventTracker)
+            var fact = new AverageScaleCalculator(_eventRepository).Calculate(eventTracker)
+                .ConvertTo<AverageScaleFact>();
+
+            //assert 
+            Assert.True(fact.IsNone);
+        }
+        
+        [Test]
+        public void EventTrackerHasZeroEvent_CalculateFailure()
+        {
+            //arrange 
+            var eventTracker = CreateTrackerWithScale(MeasurementUnit);
+            var (events, _) = CreateEventsWithScale(eventTracker.Id, 0);
+            _eventRepository.AddRangeOfEvents(events);
+
+            //act 
+            var fact = new AverageScaleCalculator(_eventRepository).Calculate(eventTracker)
                 .ConvertTo<AverageScaleFact>();
 
             //assert 
@@ -69,7 +85,7 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
             _eventRepository.AddRangeOfEvents(events);
 
             //act 
-            var fact = new AveragelyScaleCalculator(_eventRepository).Calculate(eventTracker)
+            var fact = new AverageScaleCalculator(_eventRepository).Calculate(eventTracker)
                 .ConvertTo<AverageScaleFact>();
 
             //assert 
@@ -85,7 +101,7 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
             _eventRepository.AddRangeOfEvents(events);
 
             //act 
-            var fact = new AveragelyScaleCalculator(_eventRepository).Calculate(eventTracker)
+            var fact = new AverageScaleCalculator(_eventRepository).Calculate(eventTracker)
                 .ConvertTo<AverageScaleFact>();
 
             //assert 
