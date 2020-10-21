@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using ItHappened.Domain;
 
 namespace ItHappened.Infrastructure.Repositories
@@ -10,12 +11,19 @@ namespace ItHappened.Infrastructure.Repositories
 
         public void SaveUser(User newUser)
         {
-            _users.Add(newUser.Guid, newUser);
+            _users.Add(newUser.Id, newUser);
         }
 
         public User LoadUser(Guid userId)
         {
             return _users[userId];
+        }
+
+        public User TryFindByLogin(string login)
+        {
+            return _users
+                .FirstOrDefault(x => x.Value.Name == login)
+                .Value;
         }
     }
 }

@@ -1,24 +1,31 @@
 ﻿using System;
 using ItHappened.Domain;
-using Serilog;
+using ItHappened.Infrastructure;
 
 namespace ItHappened.Application.Services.UserService
 {
     public class UserService : IUserService
     {
         private readonly IUserRepository _userRepository;
-
-        public UserService(IUserRepository userRepository)
+        private readonly IPasswordHasher _passwordHasher;
+        public UserService(IUserRepository userRepository, IPasswordHasher passwordHasher)
         {
             _userRepository = userRepository;
+            _passwordHasher = passwordHasher;
         }
 
-        public Guid CreateUser(string name)
+        public User Register(string name, string password)
         {
-            var user = new User(Guid.NewGuid(), name, DateTimeOffset.UtcNow);
+            var (hashedPassword, salt) = _passwordHasher.HashWithRandomSalt(password);
+            var user = new User(Guid.NewGuid(), name, new Password(hashedPassword, salt));
             _userRepository.SaveUser(user);
-            Log.Verbose($"User with login {name} added with id={user.Guid}");
-            return user.Guid;
+            return user;
+        }
+
+        public User TryFindByLogin(string login)
+        {
+            var user = _userRepository.TryFindByLogin(login);
+            return user;
         }
     }
 }
