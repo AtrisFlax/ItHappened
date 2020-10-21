@@ -57,7 +57,27 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
         }
 
         [Test]
-        public void UserHaveOnlyOneEvent_CalculateSuccess()
+        public void TrackerHaveZeroEvent_CalculateFailure()
+        {
+            //arrange
+            var now = DateTimeOffset.UtcNow;
+            var userId = Guid.NewGuid();
+            var eventTracker = CreateTracker(userId, "Покупка");
+            var eventsTracker = CreateEventsEveryDayByDayInPast(eventTracker.Id, userId, 0, now);
+            _eventRepository.AddRangeOfEvents(eventsTracker);
+
+            //act
+            var fact = new MostEventfulDayCalculator(_eventRepository)
+                .Calculate(new[] {eventTracker})
+                .ConvertTo<MostEventfulDayFact>();
+
+            //assert 
+            Assert.True(fact.IsNone);
+        }
+        
+        
+        [Test]
+        public void TrackerHaveOneEvent_CalculateFailure()
         {
             //arrange
             var now = DateTimeOffset.UtcNow;
