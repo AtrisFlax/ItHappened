@@ -4,9 +4,9 @@ namespace ItHappened.Domain.Statistics
 {
     public interface IMultipleTrackersStatisticsProvider
     {
-        void Add(IMultipleTrackersStatisticsCalculator calculator);
+        void Add(IGeneralCalculator calculator);
 
-        IReadOnlyCollection<IStatisticsFact> GetFacts(
+        IReadOnlyCollection<IFact> GetFacts(
             IEnumerable<EventTracker> eventTrackers);
     }
 }

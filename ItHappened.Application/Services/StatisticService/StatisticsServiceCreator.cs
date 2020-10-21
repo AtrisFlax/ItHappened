@@ -15,27 +15,27 @@ namespace ItHappened.Application.Services.StatisticService
             EventTrackerRepository = eventTrackerRepository;
         }
 
-        public IReadOnlyCollection<IStatisticsFact> GetGeneralFacts(Guid userId)
+        public IReadOnlyCollection<IFact> GetGeneralFacts(Guid userId)
         {
             var eventTrackers = EventTrackerRepository.LoadAllUserTrackers(userId);
             return MultipleTrackersStatisticsProvider().GetFacts(eventTrackers);
         }
 
-        public IReadOnlyCollection<IStatisticsFact> GetSpecificFacts(Guid userId)
+        public IReadOnlyCollection<IFact> GetSpecificFacts(Guid userId)
         {
             var eventTrackers = EventTrackerRepository.LoadAllUserTrackers(userId);
-            var trackersFacts = new List<IStatisticsFact>();
+            var trackersFacts = new List<IFact>();
             foreach (var tracker in eventTrackers)
             {
                 var factsFromTracker = SingleTrackersStatisticsProvider().GetFacts(tracker);
-                var factsList = new List<IStatisticsFact>(factsFromTracker);
+                var factsList = new List<IFact>(factsFromTracker);
                 trackersFacts = trackersFacts.Concat(factsList).ToList();
             }
 
             return trackersFacts.AsReadOnly();
         }
 
-        public IReadOnlyCollection<IStatisticsFact> GetFacts(Guid userId)
+        public IReadOnlyCollection<IFact> GetFacts(Guid userId)
         {
             var multiFacts = GetGeneralFacts(userId);
             var singleFacts = GetSpecificFacts(userId);

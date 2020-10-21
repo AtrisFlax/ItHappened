@@ -2,7 +2,7 @@
 
 namespace ItHappened.Domain.Statistics
 {
-    public class BestEventFact : IStatisticsFact
+    public class BestEventFact : ISpecificFact
     {
         public DateTimeOffset HappensDate { get; }
         public Comment Comment { get; }

@@ -5,15 +5,15 @@ namespace ItHappened.Domain.Statistics
 {
     public class MultipleTrackersStatisticsProvider : IMultipleTrackersStatisticsProvider
     {
-        private readonly List<IMultipleTrackersStatisticsCalculator> _calculators =
-            new List<IMultipleTrackersStatisticsCalculator>();
+        private readonly List<IGeneralCalculator> _calculators =
+            new List<IGeneralCalculator>();
 
-        public void Add(IMultipleTrackersStatisticsCalculator calculator)
+        public void Add(IGeneralCalculator calculator)
         {
             _calculators.Add(calculator);
         }
 
-        public IReadOnlyCollection<IStatisticsFact> GetFacts(
+        public IReadOnlyCollection<IFact> GetFacts(
             IEnumerable<EventTracker> eventTrackers)
         {
             return _calculators

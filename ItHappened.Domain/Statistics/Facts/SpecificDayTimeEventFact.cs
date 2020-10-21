@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace ItHappened.Domain.Statistics
 {
-    public class SpecificTimeOfDayEventFact : IStatisticsFact
+    public class SpecificTimeOfDayEventFact : ISpecificFact
     {
         public double Percentage { get; }
         public string TimeOfTheDay { get; }

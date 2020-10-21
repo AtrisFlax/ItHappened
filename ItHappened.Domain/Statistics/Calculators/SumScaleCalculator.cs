@@ -3,10 +3,11 @@ using System.Linq;
 using ItHappend.Domain.Statistics;
 using LanguageExt;
 using LanguageExt.UnsafeValueAccess;
+using Serilog;
 
 namespace ItHappened.Domain.Statistics
 {
-    public class SumScaleCalculator : ISingleTrackerStatisticsCalculator
+    public class SumScaleCalculator : ISpecificCalculator
     {
         private readonly IEventRepository _eventRepository;
 
@@ -14,16 +15,22 @@ namespace ItHappened.Domain.Statistics
         {
             _eventRepository = eventRepository;
         }
-        public Option<IStatisticsFact> Calculate(EventTracker eventTracker)
+        public Option<ISpecificFact> Calculate(EventTracker eventTracker)
         {
             var loadAllTrackerEvents = _eventRepository.LoadAllTrackerEvents(eventTracker.Id);
             if (!CanCalculate(eventTracker, loadAllTrackerEvents))
             {
-                return Option<IStatisticsFact>.None;
+                return Option<ISpecificFact>.None;
             }
             var sumScale = loadAllTrackerEvents.Select(x=>x.Scale).Somes().Sum();
-            var measurementUnit = eventTracker.ScaleMeasurementUnit.ValueUnsafe();
-            return Option<IStatisticsFact>.Some(new SumScaleFact(
+            var measurementUnit = eventTracker.ScaleMeasurementUnit.Match(
+                x=>x,
+                ()=>
+                {
+                    Log.Error("EventTracker has not scale while calculate inside SumScaleCalculator");
+                    return "";
+                } );
+            return Option<ISpecificFact>.Some(new SumScaleFact(
                 "Суммарное значение шкалы",
                 $"Сумма значений {measurementUnit} для события {eventTracker.Name} равна {sumScale}",
                 2.0,

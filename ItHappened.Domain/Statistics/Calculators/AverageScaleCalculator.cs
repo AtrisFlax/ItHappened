@@ -6,7 +6,7 @@ using LanguageExt.UnsafeValueAccess;
 
 namespace ItHappened.Domain.Statistics
 {
-    public class AverageScaleCalculator : ISingleTrackerStatisticsCalculator
+    public class AverageScaleCalculator : ISpecificCalculator
     {
         private readonly IEventRepository _eventRepository;
 
@@ -15,13 +15,13 @@ namespace ItHappened.Domain.Statistics
             _eventRepository = eventRepository;
         }
 
-        public Option<IStatisticsFact> Calculate(EventTracker eventTracker)
+        public Option<ISpecificFact> Calculate(EventTracker eventTracker)
         {
             var events = _eventRepository.LoadAllTrackerEvents(eventTracker.Id);
-            if (!CanCalculate(eventTracker, events)) return Option<IStatisticsFact>.None;
+            if (!CanCalculate(eventTracker, events)) return Option<ISpecificFact>.None;
             var averageValue = events.Select(x=>x.Scale).Somes().Average();
             var measurementUnit = eventTracker.ScaleMeasurementUnit.ValueUnsafe();
-            return Option<IStatisticsFact>.Some(new AverageScaleFact(
+            return Option<ISpecificFact>.Some(new AverageScaleFact(
                 "Среднее значение шкалы",
                 $"Сумма значений {measurementUnit} для события {eventTracker.Name} равно {averageValue}",
                 3.0, 

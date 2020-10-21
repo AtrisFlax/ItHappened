@@ -8,7 +8,7 @@ namespace ItHappened.API.Mappings
         public MappingProfile()
         {
             //написал пока object, так как не создан ни один класс для маппинга
-            CreateMap<IStatisticsFact, object>();
+            CreateMap<IFact, object>();
         }
     }
 }

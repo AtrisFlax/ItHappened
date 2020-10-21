@@ -1,6 +1,6 @@
 ﻿namespace ItHappened.Domain.Statistics
 {
-    public interface IStatisticsFact
+    public interface IFact
     {
         string FactName { get; }
         string Description { get; }

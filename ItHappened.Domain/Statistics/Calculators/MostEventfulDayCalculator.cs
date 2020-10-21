@@ -4,7 +4,7 @@ using LanguageExt;
 
 namespace ItHappened.Domain.Statistics
 {
-    public class MostEventfulDayCalculator : IMultipleTrackersStatisticsCalculator
+    public class MostEventfulDayCalculator : IGeneralCalculator
     {
         private readonly IEventRepository _eventRepository;
         private const int ThresholdEventAmount = 1;
@@ -14,12 +14,12 @@ namespace ItHappened.Domain.Statistics
             _eventRepository = eventRepository;
         }
 
-        public Option<IStatisticsFact> Calculate(IEnumerable<EventTracker> eventTrackers)
+        public Option<IGeneralFact> Calculate(IEnumerable<EventTracker> eventTrackers)
         {
             var trackers = eventTrackers.ToList();
             if (!CanCalculate(trackers))
             {
-                return Option<IStatisticsFact>.None;
+                return Option<IGeneralFact>.None;
             }
             var dayWithLargestEvent = trackers
                 .SelectMany(tracker => _eventRepository.LoadAllTrackerEvents(tracker.Id))
@@ -32,7 +32,7 @@ namespace ItHappened.Domain.Statistics
             var dayWithLargestEventCount = dayWithLargestEvent.Date;
             var eventsCount = dayWithLargestEvent.Count;
             var ruEventName = RuEventName(eventsCount, "событие", "события", "событий");
-            return Option<IStatisticsFact>.Some(new MostEventfulDayFact(
+            return Option<IGeneralFact>.Some(new MostEventfulDayFact(
                 "Самый насыщенный событиями день",
                 $"Самый насыщенный событиями день был {dayWithLargestEventCount:d}. Тогда произошло {eventsCount} {ruEventName}",
                 1.5 * eventsCount,
