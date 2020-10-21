@@ -13,7 +13,7 @@ namespace ItHappened.Infrastructure.Repositories
         {
             _events.Add(newEvent.Id, newEvent);
         }
-        public bool IsEventIn(Guid eventId)
+        public bool IsContainEvent(Guid eventId)
         {
             return _events.ContainsKey(eventId);
         }

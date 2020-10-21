@@ -5,7 +5,7 @@ namespace ItHappened.Domain
 {
     public interface IEventTrackerRepository
     {
-        bool IsTrackerIn(Guid trackerId);
+        bool IsContainTracker(Guid trackerId);
         void SaveTracker(EventTracker newTracker);
         EventTracker LoadTracker(Guid eventTrackerId);
         IEnumerable<EventTracker> LoadAllUserTrackers(Guid userId);
