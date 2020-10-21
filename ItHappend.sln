@@ -10,9 +10,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ItHappened.Infrastructure",
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ItHappened.Application", "ItHappened.Application\ItHappened.Application.csproj", "{9CD26DFA-BD44-4333-B3AA-3D94DAAEB9A8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ItHappened.Api", "ItHappened.Api\ItHappened.Api.csproj", "{DF2325AD-DC08-4F21-BBF5-997A4CC12B6B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ItHappened.Api", "ItHappened.Api\ItHappened.Api.csproj", "{16E97AFA-5AAF-42C2-BFF7-7AFB5F6A82CC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ItHappened.Persistence", "ItHappened.Persistence\ItHappened.Persistence.csproj", "{D62AEAF6-E73F-4EC3-A7F2-FCB441A937C8}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ItHappened.Persistence", "ItHappened.Persistence\ItHappened.Persistence.csproj", "{5B6C9F96-E0E6-4B09-A1C0-5F7344C68702}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -44,5 +44,13 @@ Global
 		{255D4DF9-A95D-4F8B-8FD9-4A85D9AFAA33}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{255D4DF9-A95D-4F8B-8FD9-4A85D9AFAA33}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{255D4DF9-A95D-4F8B-8FD9-4A85D9AFAA33}.Release|Any CPU.Build.0 = Release|Any CPU
+		{16E97AFA-5AAF-42C2-BFF7-7AFB5F6A82CC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{16E97AFA-5AAF-42C2-BFF7-7AFB5F6A82CC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{16E97AFA-5AAF-42C2-BFF7-7AFB5F6A82CC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{16E97AFA-5AAF-42C2-BFF7-7AFB5F6A82CC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5B6C9F96-E0E6-4B09-A1C0-5F7344C68702}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5B6C9F96-E0E6-4B09-A1C0-5F7344C68702}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5B6C9F96-E0E6-4B09-A1C0-5F7344C68702}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5B6C9F96-E0E6-4B09-A1C0-5F7344C68702}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
