@@ -115,6 +115,13 @@ namespace ItHappened.Application.Services.EventTrackerService
                 return Status.WrongEventCreatorId;
             }
 
+            if (!tracker.IsTrackerAndEventCustomizationsMatch(@event))
+            {
+                Log.Information(
+                    $"Can't add event {@event.Id} to tracker id: {trackerId}. Tracker and event customizations don't match.");
+                return Status.WrongEventCustomisation;
+            }
+
             _eventRepository.AddEvent(@event);
             Log.Information(
                 $"Event: {@event.Id} added to tracker: {trackerId}");
