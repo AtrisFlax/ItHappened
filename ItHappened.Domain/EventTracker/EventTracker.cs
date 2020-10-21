@@ -52,13 +52,13 @@ namespace ItHappened.Domain
             HasComment = eventTrackerBuilder.HasComment;
         }
         
-        private bool IsTrackerAndEventCustomizationsMatch(Event newEvent)
+        public bool IsTrackerAndEventCustomizationsMatch(Event newEvent)
         {
-            if (HasPhoto != newEvent.Photo.IsSome) return true;
-            if (HasScale != newEvent.Scale.IsSome) return true;
-            if (HasRating != newEvent.Rating.IsSome) return true;
-            if (HasGeoTag != newEvent.GeoTag.IsSome) return true;
-            return HasComment != newEvent.Comment.IsSome;
+            if (HasPhoto != newEvent.Photo.IsSome) return false;
+            if (HasScale != newEvent.Scale.IsSome) return false;
+            if (HasRating != newEvent.Rating.IsSome) return false;
+            if (HasGeoTag != newEvent.GeoTag.IsSome) return false;
+            return HasComment == newEvent.Comment.IsSome;
         }
     }
 }

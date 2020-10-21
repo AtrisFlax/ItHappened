@@ -7,6 +7,7 @@
         TrackerDontExist,
         WrongEventCreatorId,
         EventDontExist,
-        EventAlreadyExist
+        EventAlreadyExist,
+        WrongEventCustomisation
     }
 }

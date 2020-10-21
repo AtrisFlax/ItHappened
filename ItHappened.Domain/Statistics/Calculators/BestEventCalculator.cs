@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using LanguageExt;
 using LanguageExt.UnsafeValueAccess;
@@ -8,17 +9,16 @@ namespace ItHappened.Domain.Statistics
     public class BestEventCalculator : ISpecificCalculator
     {
         private readonly IEventRepository _eventRepository;
-        
         public BestEventCalculator(IEventRepository eventRepository)
         {
             _eventRepository = eventRepository;
         }
-        
         public Option<ISpecificFact> Calculate(EventTracker eventTracker)
         {
-            if (!CanCalculate(eventTracker)) return Option<ISpecificFact>.None;
+            var trackerEvents=_eventRepository.LoadAllTrackerEvents(eventTracker.Id);
+            if (!CanCalculate(eventTracker, trackerEvents)) return Option<ISpecificFact>.None;
             const string factName = "Лучшее событие";
-            var bestEvent = _eventRepository.LoadAllTrackerEvents(eventTracker.Id)
+            var bestEvent = trackerEvents
                 .OrderBy(eventItem => eventItem.Rating).Last();
             var priority = bestEvent.Rating.Value();
             var bestEventComment = bestEvent.Comment.Match(
@@ -37,9 +37,8 @@ namespace ItHappened.Domain.Statistics
                 bestEvent));
         }
 
-        private bool CanCalculate(EventTracker eventTracker)
+        private bool CanCalculate(EventTracker eventTracker, IReadOnlyList<Event> trackerEvents)
         {
-            var trackerEvents=_eventRepository.LoadAllTrackerEvents(eventTracker.Id);
             var isEventsNumberWithRatingMoreOrEqualToTen = trackerEvents
                 .Count(eventItem => eventItem.Rating.IsSome) >= 10;
             var isOldestEventHappenedMoreThanThreeMonthsAgo = trackerEvents
