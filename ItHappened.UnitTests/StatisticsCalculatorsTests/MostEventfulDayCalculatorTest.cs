@@ -19,7 +19,7 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
         }
 
         [Test]
-        public void FindInTwoTrackerWithFactMostEventfulDay_CalculateSucess()
+        public void FindInTwoTrackerWithFactMostEventfulDay_CalculateSuccess()
         {
             //arrange
             const int expectedDaysAgo = -15;
@@ -57,7 +57,7 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
         }
 
         [Test]
-        public void UserHaveOnlyOneEvent_CalculateSucess()
+        public void UserHaveOnlyOneEvent_CalculateSuccess()
         {
             //arrange
             var now = DateTimeOffset.UtcNow;
@@ -76,7 +76,7 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
         }
 
         [Test]
-        public void MostEventfulAreTwoDays_CalculateSuccess()
+        public void MostEventfulAreTwoDaysWithSameEventfulnessChoseMoreLateDay_CalculateSuccess()
         {
             //arrange
             const int expectedDaysAgo1 = -15;
