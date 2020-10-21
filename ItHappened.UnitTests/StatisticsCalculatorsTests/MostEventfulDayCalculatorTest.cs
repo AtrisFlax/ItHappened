@@ -19,7 +19,7 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
         }
 
         [Test]
-        public void FindInTwoTrackerWithFactMostEventfulDay_CalculateSucess()
+        public void FindInTwoTrackerWithFactMostEventfulDay_CalculateSuccess()
         {
             //arrange
             const int expectedDaysAgo = -15;
@@ -57,7 +57,27 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
         }
 
         [Test]
-        public void UserHaveOnlyOneEvent_CalculateSucess()
+        public void TrackerHaveZeroEvent_CalculateFailure()
+        {
+            //arrange
+            var now = DateTimeOffset.UtcNow;
+            var userId = Guid.NewGuid();
+            var eventTracker = CreateTracker(userId, "Покупка");
+            var eventsTracker = CreateEventsEveryDayByDayInPast(eventTracker.Id, userId, 0, now);
+            _eventRepository.AddRangeOfEvents(eventsTracker);
+
+            //act
+            var fact = new MostEventfulDayCalculator(_eventRepository)
+                .Calculate(new[] {eventTracker})
+                .ConvertTo<MostEventfulDayFact>();
+
+            //assert 
+            Assert.True(fact.IsNone);
+        }
+        
+        
+        [Test]
+        public void TrackerHaveOneEvent_CalculateFailure()
         {
             //arrange
             var now = DateTimeOffset.UtcNow;
@@ -76,11 +96,12 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
         }
 
         [Test]
-        public void MostEventfulAreTwoDays_CalculateSuccess()
+        public void MostEventfulAreTwoDaysWithSameEventfulnessChoseMoreLateDay_CalculateSuccess()
         {
             //arrange
             const int expectedDaysAgo1 = -15;
             const int expectedDaysAgo2 = -30;
+            const int expectedSameDaysCount = 70;
             var now = DateTimeOffset.UtcNow;
             var expectedDate = now.AddDays(-expectedDaysAgo1);
             var userId = Guid.NewGuid();
@@ -89,12 +110,12 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
             var eventsTracker1 = CreateEventsEveryDayByDayInPast(eventTracker1.Id, userId, 10, now);
             var eventsTracker2 = CreateEventsEveryDayByDayInPast(eventTracker1.Id, userId, 10, now);
             var eventsExtraEvents1 =
-                CreateEventsEveryDaysAgo(eventTracker1.Id, userId, expectedDaysAgo1, 70, now);
+                CreateEventsEveryDaysAgo(eventTracker1.Id, userId, expectedDaysAgo1, expectedSameDaysCount, now);
             var eventsExtraEvents2 = CreateEventsEveryDaysAgo(eventTracker1.Id, userId, 9, 45, now);
             var eventsExtraEvents3 = CreateEventsEveryDaysAgo(eventTracker2.Id, userId, 5, 20, now);
             var eventsExtraEvents4 = CreateEventsEveryDaysAgo(eventTracker2.Id, userId, 40, 15, now);
             var eventsExtraEvents5 =
-                CreateEventsEveryDaysAgo(eventTracker2.Id, userId, expectedDaysAgo2, 70, now);
+                CreateEventsEveryDaysAgo(eventTracker2.Id, userId, expectedDaysAgo2, expectedSameDaysCount, now);
             _eventRepository.AddRangeOfEvents(eventsTracker1);
             _eventRepository.AddRangeOfEvents(eventsTracker2);
             _eventRepository.AddRangeOfEvents(eventsExtraEvents1);
@@ -114,7 +135,7 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
                 fact.Description);
             Assert.AreEqual(105, fact.Priority);
             Assert.AreEqual(expectedDate, fact.DayWithLargestEventsCount);
-            Assert.AreEqual(70, fact.EventsCount);
+            Assert.AreEqual(expectedSameDaysCount, fact.EventsCount);
         }
 
         private static EventTracker CreateTracker(Guid userId, string trackerName)
