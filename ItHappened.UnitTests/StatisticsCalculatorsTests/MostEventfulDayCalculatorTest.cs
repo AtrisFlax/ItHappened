@@ -81,6 +81,7 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
             //arrange
             const int expectedDaysAgo1 = -15;
             const int expectedDaysAgo2 = -30;
+            const int expectedSameDaysCount = 70;
             var now = DateTimeOffset.UtcNow;
             var expectedDate = now.AddDays(-expectedDaysAgo1);
             var userId = Guid.NewGuid();
@@ -89,12 +90,12 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
             var eventsTracker1 = CreateEventsEveryDayByDayInPast(eventTracker1.Id, userId, 10, now);
             var eventsTracker2 = CreateEventsEveryDayByDayInPast(eventTracker1.Id, userId, 10, now);
             var eventsExtraEvents1 =
-                CreateEventsEveryDaysAgo(eventTracker1.Id, userId, expectedDaysAgo1, 70, now);
+                CreateEventsEveryDaysAgo(eventTracker1.Id, userId, expectedDaysAgo1, expectedSameDaysCount, now);
             var eventsExtraEvents2 = CreateEventsEveryDaysAgo(eventTracker1.Id, userId, 9, 45, now);
             var eventsExtraEvents3 = CreateEventsEveryDaysAgo(eventTracker2.Id, userId, 5, 20, now);
             var eventsExtraEvents4 = CreateEventsEveryDaysAgo(eventTracker2.Id, userId, 40, 15, now);
             var eventsExtraEvents5 =
-                CreateEventsEveryDaysAgo(eventTracker2.Id, userId, expectedDaysAgo2, 70, now);
+                CreateEventsEveryDaysAgo(eventTracker2.Id, userId, expectedDaysAgo2, expectedSameDaysCount, now);
             _eventRepository.AddRangeOfEvents(eventsTracker1);
             _eventRepository.AddRangeOfEvents(eventsTracker2);
             _eventRepository.AddRangeOfEvents(eventsExtraEvents1);
@@ -114,7 +115,7 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
                 fact.Description);
             Assert.AreEqual(105, fact.Priority);
             Assert.AreEqual(expectedDate, fact.DayWithLargestEventsCount);
-            Assert.AreEqual(70, fact.EventsCount);
+            Assert.AreEqual(expectedSameDaysCount, fact.EventsCount);
         }
 
         private static EventTracker CreateTracker(Guid userId, string trackerName)
