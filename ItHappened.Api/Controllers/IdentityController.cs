@@ -35,7 +35,7 @@ namespace ItHappened.Api.Controllers
         }
         
         [HttpPost]
-        [Route("authentication")]
+        [Route("login")]
         public IActionResult Authenticate([FromBody]LoginRequest request)
         {
             var user = _userService.TryFindByLogin(request.Name);
