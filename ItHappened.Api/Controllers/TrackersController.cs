@@ -30,9 +30,9 @@ namespace ItHappened.Api.Controllers
         public IActionResult CreateTracker([FromBody]CreateTrackerRequest request)
         {
             var userId = Guid.Parse(User.FindFirstValue(JwtClaimTypes.Id));
-            var trackerId = _trackerService.CreateTracker(Guid.NewGuid(), request.TrackerName);
-            var response = new CreateTrackerResponse(trackerId);
-            return Ok(response);
+            //var trackerId = _trackerService.CreateTracker(Guid.NewGuid(), request.TrackerName);
+            //var response = new CreateTrackerResponse(trackerId);
+            return Ok();
         }
 
         [HttpGet(ApiRoutes.Trackers.GetAll)]
