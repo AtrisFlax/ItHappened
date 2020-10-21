@@ -193,6 +193,11 @@ namespace ItHappened.UnitTests.ServicesTests
             var actual = _eventTrackerService.AddEventToTracker(userId, tracker.Id, eventToAdd);
             
             Assert.AreEqual(expected, actual);
+            Assert.AreNotEqual(tracker.HasComment, eventToAdd.Comment.IsSome);
+            Assert.AreEqual(tracker.HasPhoto, eventToAdd.Photo.IsSome);
+            Assert.AreEqual(tracker.HasGeoTag, eventToAdd.GeoTag.IsSome);
+            Assert.AreEqual(tracker.HasRating, eventToAdd.Rating.IsSome);
+            Assert.AreEqual(tracker.HasScale, eventToAdd.Scale.IsSome);
         }
 
         [Test]
