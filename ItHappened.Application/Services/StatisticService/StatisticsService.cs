@@ -1,34 +1,35 @@
-﻿using ItHappend.Domain.Statistics;
+﻿using System;
+using System.Collections.Generic;
 using ItHappened.Domain;
 using ItHappened.Domain.Statistics;
 
 namespace ItHappened.Application.Services.StatisticService
 {
-    // public class StatisticsService : StatisticsServiceCreator
-    // {
-    //     public StatisticsService(IEventTrackerRepository eventTrackerRepository) : base(eventTrackerRepository)
-    //     {
-    //     }
-    //
-    //     protected override SingleTrackerStatisticsProvider SingleTrackersStatisticsProvider()
-    //     {
-    //         var singleTrackersStatisticsProvider = new SingleTrackerStatisticsProvider();
-    //         singleTrackersStatisticsProvider.Add(new BestEventCalculator());
-    //         singleTrackersStatisticsProvider.Add(new AverageRatingCalculator());
-    //         singleTrackersStatisticsProvider.Add(new LongestBreakCalculator());
-    //         singleTrackersStatisticsProvider.Add(new OccursOnCertainDaysOfTheWeekCalculator());
-    //         singleTrackersStatisticsProvider.Add(new SingleTrackerEventsCountCalculator());
-    //         singleTrackersStatisticsProvider.Add(new SpecificDayTimeEventCalculator());
-    //         singleTrackersStatisticsProvider.Add(new WorstEventCalculator());
-    //         return singleTrackersStatisticsProvider;
-    //     }
-    //
-    //     protected override MultipleTrackersStatisticsProvider MultipleTrackersStatisticsProvider()
-    //     {
-    //         var multipleTrackersStatisticsProvider = new MultipleTrackersStatisticsProvider();
-    //         multipleTrackersStatisticsProvider.Add(new EventsCountCalculator());
-    //         multipleTrackersStatisticsProvider.Add(new MostFrequentEventCalculator());
-    //         return multipleTrackersStatisticsProvider;
-    //     }
-    // }
+    public class StatisticsService : IStatisticsService
+    {
+        private readonly IEventTrackerRepository _eventTrackerRepository;
+        private readonly IGeneralFactProvider _generalFactProvider;
+        private readonly ISpecificFactProvider _specificFactProvider;
+
+        public StatisticsService(IEventTrackerRepository eventTrackerRepository,
+            IGeneralFactProvider generalFactProvider,
+            ISpecificFactProvider specificFactProvider)
+        {
+            _eventTrackerRepository = eventTrackerRepository;
+            _generalFactProvider = generalFactProvider;
+            _specificFactProvider = specificFactProvider;
+        }
+
+        public IReadOnlyCollection<IGeneralFact> GetGeneralTrackersFacts(Guid userId)
+        {
+            var eventTrackers = _eventTrackerRepository.LoadAllUserTrackers(userId);
+            return _generalFactProvider.GetFacts(eventTrackers);
+        }
+
+        public IReadOnlyCollection<ISpecificFact> GetSpecificTrackerFacts(Guid userId, Guid eventTrackerId)
+        {
+            var eventTracker = _eventTrackerRepository.LoadTracker(userId);
+            return _specificFactProvider.GetFacts(eventTracker);
+        }
+    }
 }

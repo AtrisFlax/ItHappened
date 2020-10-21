@@ -7,22 +7,24 @@ using LanguageExt;
 
 namespace ItHappened.Domain.Statistics
 {
-    public class OccursOnCertainDaysOfTheWeekCalculator : ISingleTrackerStatisticsCalculator
+    public class OccursOnCertainDaysOfTheWeekCalculator : ISpecificCalculator
     {
         private const int MinEvents = 7;
         private const double PriorityCoefficient = 0.14;
         private const double LessNotPassPercent = 0.25;
 
         private readonly IEventRepository _eventRepository;
+        
         public OccursOnCertainDaysOfTheWeekCalculator(IEventRepository eventRepository)
         {
             _eventRepository = eventRepository;
         }
-        public Option<IStatisticsFact> Calculate(EventTracker eventTracker)
+        
+        public Option<ISpecificFact> Calculate(EventTracker eventTracker)
         {
             if (!CanCalculate(_eventRepository.LoadAllTrackerEvents(eventTracker.Id).ToList()))
             {
-                return Option<IStatisticsFact>.None;
+                return Option<ISpecificFact>.None;
             }
             var events = _eventRepository.LoadAllTrackerEvents(eventTracker.Id);
             var totalEvents = events.Count;
@@ -38,7 +40,7 @@ namespace ItHappened.Domain.Statistics
             var ruDaysOfWeek = GetRuDaysOfWeek(daysOfTheWeek.Select(x => x.DayTime));
             var percentage = 100.0d * amountEventsMoreThenPassPercent / totalEvents;
 
-            return Option<IStatisticsFact>.Some(new OccursOnCertainDaysOfTheWeekFact(
+            return Option<ISpecificFact>.Some(new OccursOnCertainDaysOfTheWeekFact(
                 "Происходит в определённые дни недели",
                 $"В {percentage}% случаев событие {eventTracker.Name} происходит {ruDaysOfWeek}",
                 percentage * PriorityCoefficient,

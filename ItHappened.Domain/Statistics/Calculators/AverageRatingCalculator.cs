@@ -6,16 +6,18 @@ using Serilog;
 
 namespace ItHappened.Domain.Statistics
 {
-    public class AverageRatingCalculator : ISingleTrackerStatisticsCalculator
+    public class AverageRatingCalculator : ISpecificCalculator
     {
         private readonly IEventRepository _eventRepository;
+        
         public AverageRatingCalculator(IEventRepository eventRepository)
         {
             _eventRepository = eventRepository;
         }
-        public Option<IStatisticsFact> Calculate(EventTracker eventTracker)
+        
+        public Option<ISpecificFact> Calculate(EventTracker eventTracker)
         {
-            if (!CanCalculate(eventTracker)) return Option<IStatisticsFact>.None;
+            if (!CanCalculate(eventTracker)) return Option<ISpecificFact>.None;
 
             var averageRating = _eventRepository.LoadAllTrackerEvents(eventTracker.Id).Average(x =>
             {
@@ -27,7 +29,7 @@ namespace ItHappened.Domain.Statistics
                         return 0;
                     });
             });
-            return Option<IStatisticsFact>.Some(new AverageRatingFact(
+            return Option<ISpecificFact>.Some(new AverageRatingFact(
                 "Среднее значение оценки",
                 $"Средний рейтинг для события {eventTracker.Name} равен {averageRating}",
                 Math.Sqrt(averageRating),

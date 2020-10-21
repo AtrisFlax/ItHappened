@@ -1,6 +1,6 @@
 ﻿namespace ItHappened.Domain.Statistics
 {
-    public class EventsCountFact : IStatisticsFact
+    public class EventsCountFact : IGeneralFact
     {
         public int EventsCount { get; }
         public string FactName { get; }

@@ -5,7 +5,7 @@ using LanguageExt;
 
 namespace ItHappened.Domain.Statistics
 {
-    public class MostFrequentEventCalculator : IMultipleTrackersStatisticsCalculator
+    public class MostFrequentEventCalculator : IGeneralCalculator
     {
         private readonly IEventRepository _eventRepository;
 
@@ -14,12 +14,12 @@ namespace ItHappened.Domain.Statistics
             _eventRepository = eventRepository;
         }
 
-        public Option<IStatisticsFact> Calculate(IEnumerable<EventTracker> eventTrackers)
+        public Option<IGeneralFact> Calculate(IEnumerable<EventTracker> eventTrackers)
         {
             var trackers = eventTrackers.ToList();
             if (!CanCalculate(trackers))
             {
-                return Option<IStatisticsFact>.None;
+                return Option<IGeneralFact>.None;
             }
 
             var trackingNameWithEventsPeriod = trackers
@@ -35,7 +35,7 @@ namespace ItHappened.Domain.Statistics
             var (trackingName, eventsPeriod) = eventTrackersWithPeriods
                 .OrderBy(e => e.eventsPeriod)
                 .FirstOrDefault();
-            return Option<IStatisticsFact>.Some(new MostFrequentEventFact(
+            return Option<IGeneralFact>.Some(new MostFrequentEventFact(
                 "Самое частое событие",
                 $"Чаще всего у вас происходит событие {trackingName} - раз в {eventsPeriod:0.#} дней",
                 10 / eventsPeriod,

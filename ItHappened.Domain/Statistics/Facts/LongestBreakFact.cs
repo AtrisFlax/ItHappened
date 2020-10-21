@@ -1,6 +1,6 @@
 ﻿namespace ItHappened.Domain.Statistics
 {
-    public class LongestBreakFact : IStatisticsFact
+    public class LongestBreakFact : ISpecificFact
     {
         public int DurationInDays { get; }
         public Event LastEventBeforeBreakDate { get; }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using ItHappened.Domain;
 using ItHappened.Domain.Statistics;
 using ItHappened.Infrastructure.Repositories;
+using LanguageExt.UnsafeValueAccess;
 using NUnit.Framework;
 
 namespace ItHappened.UnitTests.StatisticsCalculatorsTests
@@ -33,7 +34,9 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
             _events[0].HappensDate = DateTimeOffset.Now - TimeSpan.FromDays(91);
             _events[1].Rating = 1;
             _events[1].HappensDate = DateTimeOffset.Now - TimeSpan.FromDays(8);
-            var actual = _bestEventCalculator.Calculate(_eventTracker).ConvertTo<BestEventFact>();
+            
+            var actual = _bestEventCalculator.Calculate(_eventTracker);
+            
             Assert.IsTrue(actual.IsNone);
         }
 
@@ -43,7 +46,9 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
             _eventRepository.AddEvent(CreateEventWithoutComment(_creatorId));
             _events[1].Rating = 1;
             _events[1].HappensDate = DateTimeOffset.Now - TimeSpan.FromDays(8);
-            var actual = _bestEventCalculator.Calculate(_eventTracker).ConvertTo<BestEventFact>();
+            
+            var actual = _bestEventCalculator.Calculate(_eventTracker);
+            
             Assert.IsTrue(actual.IsNone);
         }
 
@@ -54,7 +59,9 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
             _events[0].HappensDate = DateTimeOffset.Now - TimeSpan.FromDays(91);
             _events[1].Rating = 1;
             _events[1].HappensDate = DateTimeOffset.Now - TimeSpan.FromDays(6);
-            var actual = _bestEventCalculator.Calculate(_eventTracker).ConvertTo<BestEventFact>();
+            
+            var actual = _bestEventCalculator.Calculate(_eventTracker);
+            
             Assert.IsTrue(actual.IsNone);
         }
 
@@ -63,14 +70,20 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
         {
             _events[0].HappensDate = DateTimeOffset.Now - TimeSpan.FromDays(91);
             var event10 = CreateEventWithoutComment(_creatorId);
+            event10.Comment = new Comment("123");
             event10.Rating = 9;
             event10.HappensDate = DateTimeOffset.Now - TimeSpan.FromDays(8);
-            _eventRepository.AddEvent(CreateEventWithoutComment(_creatorId));
-            
+            _eventRepository.AddEvent(event10);
+
             var optionalBestEventFact = _bestEventCalculator.Calculate(_eventTracker).ConvertTo<BestEventFact>();
+            var bestEventFact = optionalBestEventFact.ValueUnsafe();
             
             Assert.IsTrue(optionalBestEventFact.IsSome);
-            //TODO: проверить факт подбробнее
+            Assert.AreEqual(bestEventFact.Priority, event10.Rating.ValueUnsafe());
+            Assert.AreEqual(bestEventFact.EventReference, event10);
+            Assert.AreEqual(bestEventFact.HappensDate, event10.HappensDate);
+            Assert.AreEqual(bestEventFact.Comment.Text, event10.Comment.ValueUnsafe().Text);
+            Assert.AreEqual(bestEventFact.FactName, "Лучшее событие");
         }
 
         private Event CreateEventWithoutComment(Guid creatorId)

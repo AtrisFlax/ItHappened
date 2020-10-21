@@ -36,7 +36,7 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
 
             //assert 
             Assert.AreEqual("Самое частое событие", fact.FactName);
-            Assert.AreEqual("Чаще всего у вас происходит событие Pains after drinking sugar water - раз в 2.5 дней", fact.Description);
+            Assert.AreEqual($"Чаще всего у вас происходит событие Pains after drinking sugar water - раз в {fact.EventsPeriod:0.#} дней", fact.Description);
             Assert.AreEqual(4.0, fact.Priority, PriorityAccuracy);
             Assert.AreEqual("Pains after drinking sugar water", fact.TrackingName);
             Assert.AreEqual(2.5, fact.EventsPeriod, EventsPeriodAccuracy);

@@ -3,22 +3,23 @@ using System.Linq;
 
 namespace ItHappened.Domain.Statistics
 {
-    public class SingleTrackerStatisticsProvider : ISingleTrackerStatisticsProvider
+    public class SpecificFactProvider : ISpecificFactProvider
     {
-        private readonly List<ISingleTrackerStatisticsCalculator> _calculators =
-            new List<ISingleTrackerStatisticsCalculator>();
+        private readonly List<ISpecificCalculator> _calculators =
+            new List<ISpecificCalculator>();
 
-        public void Add(ISingleTrackerStatisticsCalculator calculator)
+        public void Add(ISpecificCalculator calculator)
         {
             _calculators.Add(calculator);
         }
 
-        public IReadOnlyCollection<IStatisticsFact> GetFacts(EventTracker eventTracker)
+        public IReadOnlyCollection<ISpecificFact> GetFacts(EventTracker eventTracker)
         {
             return _calculators
                 .Select(calculator => calculator.Calculate(eventTracker))
                 .Somes()
                 .OrderByDescending(fact => fact.Priority)
+                .OrderBy(fact => fact.Priority)
                 .ToList();
         }
     }

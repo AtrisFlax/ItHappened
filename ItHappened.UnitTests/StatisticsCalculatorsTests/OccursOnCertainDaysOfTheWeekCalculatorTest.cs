@@ -38,7 +38,7 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
             Assert.AreEqual("В 90% случаев событие TrackerName происходит в понедельник, в среду", fact.Description);
             Assert.AreEqual(12.6, fact.Priority, PriorityAccuracy);
             Assert.AreEqual(new[] {DayOfWeek.Monday, DayOfWeek.Wednesday}, fact.DaysOfTheWeek);
-            Assert.AreEqual(90.0, fact.Percentage, OccursOnCertainDaysOfTheWeekFactPercentageAccuracy);
+            Assert.AreEqual(90.0, fact.Percentage, Percentage);
         }
 
         [Test]
