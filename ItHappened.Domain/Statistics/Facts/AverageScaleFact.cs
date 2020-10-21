@@ -1,8 +1,6 @@
-﻿using ItHappened.Domain.Statistics;
-
-namespace ItHappend.Domain.Statistics
+﻿namespace ItHappened.Domain.Statistics
 {
-    public class AverageScaleFact : IStatisticsFact
+    public class AverageScaleFact : ISpecificFact
     {
         public string FactName { get; }
         public string Description { get; }

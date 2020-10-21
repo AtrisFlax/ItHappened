@@ -1,6 +1,7 @@
 ﻿using ItHappened.Application.Services.EventTrackerService;
 using ItHappened.Application.Services.StatisticService;
 using ItHappened.Application.Services.UserService;
+using ItHappened.Domain.Statistics;
 using ItHappened.Infrastructure.Repositories;
 
 namespace Usage
@@ -17,11 +18,22 @@ namespace Usage
             var userRepository = new UserRepository();
             var eventRepository = new EventRepository();
             var eventTrackerRepository = new EventTrackerRepository();
+            var generalFactProvider = new GeneralFactProvider();
+            generalFactProvider.Add(new MultipleTrackersEventsCountCalculator(eventRepository));
+            generalFactProvider.Add(new MostFrequentEventCalculator(eventRepository));
+            var specificFactProvider = new SpecificFactProvider();
+            specificFactProvider.Add( new BestEventCalculator(eventRepository));
+            specificFactProvider.Add( new AverageRatingCalculator(eventRepository));
+            specificFactProvider.Add( new LongestBreakCalculator(eventRepository));
+            specificFactProvider.Add( new OccursOnCertainDaysOfTheWeekCalculator(eventRepository));
+            specificFactProvider.Add( new SingleTrackerEventsCountCalculator(eventRepository));
+            specificFactProvider.Add( new SpecificDayTimeEventCalculator(eventRepository));
+            specificFactProvider.Add( new WorstEventCalculator(eventRepository));
             return new CompositionRoot
             {
                 UserService = new UserService(userRepository),
                 EventTrackerService = new EventTrackerService(eventTrackerRepository, eventRepository),
-                //StatisticsService = new StatisticsService(eventTrackerRepository)
+                StatisticsService = new StatisticsService(eventTrackerRepository, generalFactProvider, specificFactProvider)
             };
         }
     }

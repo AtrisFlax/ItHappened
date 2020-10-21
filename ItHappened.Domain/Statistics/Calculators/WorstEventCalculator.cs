@@ -6,16 +6,18 @@ using LanguageExt.UnsafeValueAccess;
 
 namespace ItHappened.Domain.Statistics
 {
-    public class WorstEventCalculator : ISingleTrackerStatisticsCalculator
+    public class WorstEventCalculator : ISpecificCalculator
     {
         private readonly IEventRepository _eventRepository;
+        
         public WorstEventCalculator(IEventRepository eventRepository)
         {
             _eventRepository = eventRepository;
         }
-        public Option<IStatisticsFact> Calculate(EventTracker eventTracker)
+        
+        public Option<ISpecificFact> Calculate(EventTracker eventTracker)
         {
-            if (!CanCalculate(eventTracker)) return Option<IStatisticsFact>.None;
+            if (!CanCalculate(eventTracker)) return Option<ISpecificFact>.None;
             const string factName = "Худшее событие";
             var worstEvent = _eventRepository.LoadAllTrackerEvents(eventTracker.Id).OrderBy(eventItem => eventItem.Rating).First();
             var priority = 10 - worstEvent.Rating.Value();
@@ -25,7 +27,7 @@ namespace ItHappened.Domain.Statistics
             var description = $"Событие в отслеживании {eventTracker.Name} с самым низким рейтингом " +
                               $"{worstEvent.Rating} произошло {worstEvent.HappensDate} с комментарием {worstEventComment}";
 
-            return Option<IStatisticsFact>.Some(new WorstEventFact(
+            return Option<ISpecificFact>.Some(new WorstEventFact(
                 factName,
                 description,
                 priority,

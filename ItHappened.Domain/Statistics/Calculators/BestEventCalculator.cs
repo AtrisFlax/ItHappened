@@ -6,17 +6,17 @@ using LanguageExt.UnsafeValueAccess;
 
 namespace ItHappened.Domain.Statistics
 {
-    public class BestEventCalculator : ISingleTrackerStatisticsCalculator
+    public class BestEventCalculator : ISpecificCalculator
     {
         private readonly IEventRepository _eventRepository;
         public BestEventCalculator(IEventRepository eventRepository)
         {
             _eventRepository = eventRepository;
         }
-        public Option<IStatisticsFact> Calculate(EventTracker eventTracker)
+        public Option<ISpecificFact> Calculate(EventTracker eventTracker)
         {
             var trackerEvents=_eventRepository.LoadAllTrackerEvents(eventTracker.Id);
-            if (!CanCalculate(eventTracker, trackerEvents)) return Option<IStatisticsFact>.None;
+            if (!CanCalculate(eventTracker, trackerEvents)) return Option<ISpecificFact>.None;
             const string factName = "Лучшее событие";
             var bestEvent = trackerEvents
                 .OrderBy(eventItem => eventItem.Rating).Last();
@@ -27,7 +27,7 @@ namespace ItHappened.Domain.Statistics
             var description = $"Событие {eventTracker.Name} с самым высоким рейтингом {bestEvent.Rating} " +
                               $"произошло {bestEvent.HappensDate} с комментарием {bestEventComment}";
 
-            return Option<IStatisticsFact>.Some(new BestEventFact(
+            return Option<ISpecificFact>.Some(new BestEventFact(
                 factName,
                 description,
                 priority,
