@@ -21,7 +21,7 @@ namespace ItHappened.Domain.Statistics
             {
                 return Option<IGeneralFact>.None;
             }
-            var dayWithLargestEvent = trackers
+            var dayWithBiggestEventCount = trackers
                 .SelectMany(tracker => _eventRepository.LoadAllTrackerEvents(tracker.Id))
                 .GroupBy(@event => @event.HappensDate,
                     (date, g) => new
@@ -29,8 +29,8 @@ namespace ItHappened.Domain.Statistics
                         Date = date,
                         Count = g.Count()
                     }).OrderByDescending(g => g.Count).First();
-            var dayWithLargestEventCount = dayWithLargestEvent.Date;
-            var eventsCount = dayWithLargestEvent.Count;
+            var dayWithLargestEventCount = dayWithBiggestEventCount.Date;
+            var eventsCount = dayWithBiggestEventCount.Count;
             var ruEventName = RuEventName(eventsCount, "событие", "события", "событий");
             return Option<IGeneralFact>.Some(new MostEventfulDayFact(
                 "Самый насыщенный событиями день",
