@@ -8,6 +8,7 @@ namespace ItHappened.Domain.Statistics
     {
         private readonly IEventRepository _eventRepository;
         private const int ThresholdEventAmount = 1;
+        private const double PriorityCoefficient = 1.5;
 
         public MostEventfulDayCalculator(IEventRepository eventRepository)
         {
@@ -35,7 +36,7 @@ namespace ItHappened.Domain.Statistics
             return Option<IGeneralFact>.Some(new MostEventfulDayFact(
                 "Самый насыщенный событиями день",
                 $"Самый насыщенный событиями день был {dayWithLargestEventCount:d}. Тогда произошло {eventsCount} {ruEventName}",
-                1.5 * eventsCount,
+                PriorityCoefficient * eventsCount,
                 dayWithLargestEventCount,
                 eventsCount
             ));

@@ -7,6 +7,7 @@ namespace ItHappened.Domain.Statistics
 {
     public class MultipleTrackersEventsCountCalculator : IGeneralCalculator
     {
+        private const int EventsThreshold = 5;
         private readonly IEventRepository _eventRepository;
 
         public MultipleTrackersEventsCountCalculator(IEventRepository eventRepository)
@@ -16,11 +17,12 @@ namespace ItHappened.Domain.Statistics
 
         public Option<IGeneralFact> Calculate(IEnumerable<EventTracker> eventTrackers)
         {
-            if (!CanCalculate(eventTrackers))
+            var enumerable = eventTrackers.ToList();
+            if (!CanCalculate(enumerable))
                 return Option<IGeneralFact>.None;
 
             var factName = "Зафиксировано уже N событий";
-            var eventsCount = eventTrackers.Sum(tracker => _eventRepository.LoadAllTrackerEvents(tracker.Id).Count);
+            var eventsCount = enumerable.Sum(tracker => _eventRepository.LoadAllTrackerEvents(tracker.Id).Count);
             var description = $"У вас произошло уже {eventsCount} событий!";
             var priority = Math.Log(eventsCount);
 
@@ -29,9 +31,10 @@ namespace ItHappened.Domain.Statistics
 
         private bool CanCalculate(IEnumerable<EventTracker> eventTrackers)
         {
-            var eventsCount = eventTrackers.Sum(tracker => _eventRepository.LoadAllTrackerEvents(tracker.Id).Count);
-            return eventTrackers.Any() &&
-                   eventsCount > 5;
+            var enumerable = eventTrackers.ToList();
+            var eventsCount = enumerable.Sum(tracker => _eventRepository.LoadAllTrackerEvents(tracker.Id).Count);
+            return enumerable.Any() &&
+                   eventsCount > EventsThreshold;
         }
     }
 }

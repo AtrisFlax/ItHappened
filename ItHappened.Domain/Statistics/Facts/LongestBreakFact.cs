@@ -20,7 +20,5 @@
             LastEventBeforeBreakDate = lastEventBeforeBreakDate;
             FirstEventAfterBreakDate = firstEventAfterBreakDate;
         }
-
- 
     }
 }

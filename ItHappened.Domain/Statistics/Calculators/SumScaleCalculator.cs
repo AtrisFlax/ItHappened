@@ -9,6 +9,8 @@ namespace ItHappened.Domain.Statistics
 {
     public class SumScaleCalculator : ISpecificCalculator
     {
+        private const double PriorityValue = 2.0;
+        private const int EventsThreshold = 1;
         private readonly IEventRepository _eventRepository;
 
         public SumScaleCalculator(IEventRepository eventRepository)
@@ -33,7 +35,7 @@ namespace ItHappened.Domain.Statistics
             return Option<ISpecificFact>.Some(new SumScaleFact(
                 "Суммарное значение шкалы",
                 $"Сумма значений {measurementUnit} для события {eventTracker.Name} равна {sumScale}",
-                2.0,
+                PriorityValue,
                 sumScale,
                 measurementUnit
             ));
@@ -50,7 +52,7 @@ namespace ItHappened.Domain.Statistics
             {
                 return false;
             }
-            return loadAllTrackerEvents.Count > 1;
+            return loadAllTrackerEvents.Count > EventsThreshold;
         }
     }
 }

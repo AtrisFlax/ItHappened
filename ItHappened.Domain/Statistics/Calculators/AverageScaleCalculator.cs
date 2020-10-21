@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using ItHappend.Domain.Statistics;
 using LanguageExt;
 using LanguageExt.UnsafeValueAccess;
 
@@ -8,6 +7,7 @@ namespace ItHappened.Domain.Statistics
 {
     public class AverageScaleCalculator : ISpecificCalculator
     {
+        private const double PriorityValue = 3.0;
         private readonly IEventRepository _eventRepository;
 
         public AverageScaleCalculator(IEventRepository eventRepository)
@@ -24,7 +24,7 @@ namespace ItHappened.Domain.Statistics
             return Option<ISpecificFact>.Some(new AverageScaleFact(
                 "Среднее значение шкалы",
                 $"Сумма значений {measurementUnit} для события {eventTracker.Name} равно {averageValue}",
-                3.0, 
+                PriorityValue, 
                 averageValue,
                 measurementUnit
             ));

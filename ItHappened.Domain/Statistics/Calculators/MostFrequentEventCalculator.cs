@@ -8,6 +8,7 @@ namespace ItHappened.Domain.Statistics
     public class MostFrequentEventCalculator : IGeneralCalculator
     {
         private readonly IEventRepository _eventRepository;
+        private const int PriorityCoefficient = 10;
 
         public MostFrequentEventCalculator(IEventRepository eventRepository)
         {
@@ -38,7 +39,7 @@ namespace ItHappened.Domain.Statistics
             return Option<IGeneralFact>.Some(new MostFrequentEventFact(
                 "Самое частое событие",
                 $"Чаще всего у вас происходит событие {trackingName} - раз в {eventsPeriod:0.#} дней",
-                10 / eventsPeriod,
+                PriorityCoefficient / eventsPeriod,
                 trackingName,
                 eventsPeriod
             ));

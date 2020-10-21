@@ -8,6 +8,10 @@ namespace ItHappened.Domain.Statistics
 {
     public class WorstEventCalculator : ISpecificCalculator
     {
+        private const int EventsThreshold = 10;
+        private const int MinDayThreshold = 7;
+        private const int PriorityBaseValue = 10;
+        private const int MaxDaysThreshold = 90;
         private readonly IEventRepository _eventRepository;
         
         public WorstEventCalculator(IEventRepository eventRepository)
@@ -20,7 +24,7 @@ namespace ItHappened.Domain.Statistics
             if (!CanCalculate(eventTracker)) return Option<ISpecificFact>.None;
             const string factName = "Худшее событие";
             var worstEvent = _eventRepository.LoadAllTrackerEvents(eventTracker.Id).OrderBy(eventItem => eventItem.Rating).First();
-            var priority = 10 - worstEvent.Rating.Value();
+            var priority = PriorityBaseValue - worstEvent.Rating.Value();
             var worstEventComment = worstEvent.Comment.Match(
                 comment => comment.Text,
                 () => string.Empty);
@@ -41,13 +45,13 @@ namespace ItHappened.Domain.Statistics
         {
             var trackerEvents=_eventRepository.LoadAllTrackerEvents(eventTracker.Id);
             var isEventsNumberWithRatingMoreOrEqualToTen = trackerEvents
-                .Count(eventItem => eventItem.Rating.IsSome) >= 10;
+                .Count(eventItem => eventItem.Rating.IsSome) >= EventsThreshold;
             var isOldestEventHappenedMoreThanThreeMonthsAgo = trackerEvents
                 .OrderBy(eventItem => eventItem.HappensDate)
-                .First().HappensDate <= DateTimeOffset.Now - TimeSpan.FromDays(90);
+                .First().HappensDate <= DateTimeOffset.Now - TimeSpan.FromDays(MaxDaysThreshold);
             var isEventWithLowestRatingHappenedMoreThanWeekAgo = trackerEvents
                 .OrderBy(eventItem => eventItem.Rating)
-                .First().HappensDate <= DateTimeOffset.Now - TimeSpan.FromDays(7);
+                .First().HappensDate <= DateTimeOffset.Now - TimeSpan.FromDays(MinDayThreshold);
             return isEventsNumberWithRatingMoreOrEqualToTen &&
                    isOldestEventHappenedMoreThanThreeMonthsAgo &&
                    isEventWithLowestRatingHappenedMoreThanWeekAgo;

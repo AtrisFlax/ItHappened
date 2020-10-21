@@ -9,10 +9,12 @@ namespace ItHappened.Domain.Statistics
     public class BestEventCalculator : ISpecificCalculator
     {
         private readonly IEventRepository _eventRepository;
+        
         public BestEventCalculator(IEventRepository eventRepository)
         {
             _eventRepository = eventRepository;
         }
+        
         public Option<ISpecificFact> Calculate(EventTracker eventTracker)
         {
             var trackerEvents=_eventRepository.LoadAllTrackerEvents(eventTracker.Id);

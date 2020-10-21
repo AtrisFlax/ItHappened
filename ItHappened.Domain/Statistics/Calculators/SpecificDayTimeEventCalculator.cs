@@ -5,8 +5,10 @@ namespace ItHappened.Domain.Statistics
 {
     public class SpecificDayTimeEventCalculator : ISpecificCalculator
     {
+        private const int EventsThreshold = 7;
+        private const double PassCoefficient = 0.7;
         private readonly IEventRepository _eventRepository;
-        
+
         public SpecificDayTimeEventCalculator(IEventRepository eventRepository)
         {
             _eventRepository = eventRepository;
@@ -39,10 +41,10 @@ namespace ItHappened.Domain.Statistics
         private bool CanCalculate(EventTracker eventTracker)
         {
             var trackerEvents = _eventRepository.LoadAllTrackerEvents(eventTracker.Id);
-            return trackerEvents.Count > 7
+            return trackerEvents.Count > EventsThreshold
                    && trackerEvents
                        .GroupBy(e => e.HappensDate.Hour.TimeOfTheDay())
-                       .Any(e => e.Count() > 0.7 * trackerEvents.Count);
+                       .Any(e => e.Count() > PassCoefficient * trackerEvents.Count);
         }
     }
 

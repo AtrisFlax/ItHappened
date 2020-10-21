@@ -12,20 +12,20 @@ namespace ItHappened.Domain.Statistics
         private const int MinEvents = 7;
         private const double PriorityCoefficient = 0.14;
         private const double LessNotPassPercent = 0.25;
-
         private readonly IEventRepository _eventRepository;
-        
+
         public OccursOnCertainDaysOfTheWeekCalculator(IEventRepository eventRepository)
         {
             _eventRepository = eventRepository;
         }
-        
+
         public Option<ISpecificFact> Calculate(EventTracker eventTracker)
         {
             if (!CanCalculate(_eventRepository.LoadAllTrackerEvents(eventTracker.Id).ToList()))
             {
                 return Option<ISpecificFact>.None;
             }
+
             var events = _eventRepository.LoadAllTrackerEvents(eventTracker.Id);
             var totalEvents = events.Count;
             var daysOfTheWeek = events.GroupBy(@event => @event.HappensDate.DayOfWeek,
@@ -72,7 +72,7 @@ namespace ItHappened.Domain.Statistics
                 result.Append($"{ruName}, ");
             }
 
-            result.Remove(result.Length - 2, 2); //delete last comma
+            result.Remove(result.Length - 2, 2); //delete last ", "
             return result.ToString();
         }
 
