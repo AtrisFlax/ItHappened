@@ -30,7 +30,7 @@ namespace ItHappened.Api.Controllers
             _mapper = mapper;
         }
         
-        [HttpPost(ApiRoutes.Trackers.Create)]
+        [HttpPost("/trackers")]
         [ProducesResponseType(200, Type = typeof(TrackerResponse))]
         public IActionResult CreateTracker([FromBody]TrackerRequest request)
         {
@@ -41,7 +41,7 @@ namespace ItHappened.Api.Controllers
             return Ok(_mapper.Map<TrackerResponse>(tracker));
         }
 
-        [HttpGet(ApiRoutes.Trackers.GetAll)]
+        [HttpGet("/trackers")]
         [ProducesResponseType(200, Type = typeof(List<TrackerResponse>))]
         public IActionResult GetAllTrackers()
         {
@@ -50,7 +50,7 @@ namespace ItHappened.Api.Controllers
             return Ok(_mapper.Map<List<TrackerResponse>>(trackers));
         }
         
-        [HttpGet(ApiRoutes.Trackers.Get)]
+        [HttpGet("/trackers/{trackerId}")]
         [ProducesResponseType(200, Type = typeof(TrackerResponse))]
         public IActionResult GetTracker([FromRoute]Guid trackerId)
         {
@@ -59,7 +59,7 @@ namespace ItHappened.Api.Controllers
             return Ok(_mapper.Map<TrackerResponse>(tracker));
         }
         
-        [HttpPut(ApiRoutes.Trackers.Update)]
+        [HttpPut("/trackers/{trackerId}")]
         [ProducesResponseType(200, Type = typeof(TrackerResponse))]
         public IActionResult UpdateTracker([FromRoute]Guid trackerId, [FromBody]TrackerRequest request)
         {
@@ -68,7 +68,7 @@ namespace ItHappened.Api.Controllers
             return Ok(_mapper.Map<TrackerResponse>(tracker));
         }
 
-        [HttpDelete(ApiRoutes.Trackers.Delete)]
+        [HttpDelete("/trackers/{trackerId}")]
         [ProducesResponseType(200, Type = typeof(TrackerResponse))]
         public IActionResult DeleteTracker([FromRoute]Guid trackerId)
         {
@@ -77,14 +77,14 @@ namespace ItHappened.Api.Controllers
             return Ok(_mapper.Map<TrackerResponse>(deletedTracker));
         }
         
-        [HttpGet(ApiRoutes.Trackers.Statistics.GetForSingleTracker)]
+        [HttpGet("/trackers/{trackerId}/statistics")]
         [ProducesResponseType(200, Type = typeof(IFact))]
         public IActionResult GetStatisticsForSingleTracker([FromRoute]Guid trackerId)
         {
             return Ok();
         }
         
-        [HttpGet(ApiRoutes.Trackers.Statistics.GetForMultipleTrackers)]
+        [HttpGet("/trackers/statistics")]
         [ProducesResponseType(200, Type = typeof(List<IFact>))]
         public IActionResult GetStatisticsForAllTrackers()
         {

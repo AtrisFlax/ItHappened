@@ -2,7 +2,6 @@
 using System.Security.Claims;
 using AutoMapper;
 using ItHappened.Api.Authentication;
-using ItHappened.Api.Contracts;
 using ItHappened.Api.Contracts.Requests;
 using ItHappened.Api.Contracts.Responses;
 using ItHappened.Application.Services.EventTrackerService;
@@ -19,7 +18,7 @@ namespace ItHappened.Api.Controllers
             _mapper = mapper;
         }
 
-        [HttpPost(ApiRoutes.Events.Create)]
+        [HttpPost("/trackers/{trackerId}/events")]
         [ProducesResponseType(200, Type = typeof(EventResponse))]
         public IActionResult AddEventToTracker([FromRoute]Guid trackerId, [FromBody]EventRequest request)
         {
@@ -29,7 +28,7 @@ namespace ItHappened.Api.Controllers
             return Ok(_mapper.Map<EventResponse>(newEvent));
         }
         
-        [HttpGet(ApiRoutes.Events.Get)]
+        [HttpGet("/trackers/{trackerId}/events/{eventId}")]
         [ProducesResponseType(200, Type = typeof(EventResponse))]
         public IActionResult GetEvent([FromRoute]Guid eventId)
         {
@@ -38,7 +37,7 @@ namespace ItHappened.Api.Controllers
             return Ok(_mapper.Map<EventResponse>(@event));
         }
         
-        [HttpGet(ApiRoutes.Events.GetAll)]
+        [HttpGet("/trackers/{trackerId}/events")]
         [ProducesResponseType(200, Type = typeof(EventResponse[]))]
 
         public IActionResult GetAllEvents([FromRoute]Guid trackerId)
@@ -48,7 +47,7 @@ namespace ItHappened.Api.Controllers
             return Ok(_mapper.Map<EventResponse[]>(events));
         }
 
-        [HttpPut(ApiRoutes.Events.Update)]
+        [HttpPut("/trackers/{trackerId}/events/{eventId}")]
         [ProducesResponseType(200, Type = typeof(EventResponse))]
         public IActionResult UpdateEvent([FromRoute] Guid eventId, [FromBody]EventRequest request)
         {
@@ -58,7 +57,7 @@ namespace ItHappened.Api.Controllers
             return Ok(_mapper.Map<EventResponse>(editedEvent));
         }
         
-        [HttpDelete(ApiRoutes.Events.Delete)]
+        [HttpDelete("/trackers/{trackerId}/events/{eventId}")]
         [ProducesResponseType(200, Type = typeof(EventResponse))]
         public IActionResult DeleteEvent([FromRoute]Guid eventId)
         {

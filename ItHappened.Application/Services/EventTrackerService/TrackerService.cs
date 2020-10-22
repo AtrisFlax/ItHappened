@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection.Emit;
 using ItHappened.Domain;
+using LanguageExt.Common;
 
 namespace ItHappened.Application.Services.EventTrackerService
 {
