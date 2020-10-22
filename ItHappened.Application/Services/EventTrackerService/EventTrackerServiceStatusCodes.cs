@@ -8,6 +8,7 @@
         WrongEventCreatorId,
         EventDontExist,
         EventAlreadyExist,
-        WrongEventCustomisation
+        WrongEventCustomisation,
+        NoFiltersReceived
     }
 }

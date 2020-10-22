@@ -33,7 +33,7 @@ namespace ItHappened.UnitTests.FiltrationTests
         public void FilterCollection_ReturnCollectionThatMeetsAllFiltersConditions()
         {
             var events = CreateEvents(10);
-            //Each one of these events won't pass its filter
+            //Each one of these events won't pass its one parameter filter
             events[0].Comment = Option<Comment>.Some(new Comment("привет!"));
             events[1].Scale = 1;
             events[2].HappensDate = DateTimeOffset.Now;
@@ -50,6 +50,8 @@ namespace ItHappened.UnitTests.FiltrationTests
             Assert.AreEqual(filteredEvents[0].GeoTag.ValueUnsafe().GpsLat, events[5].GeoTag.ValueUnsafe().GpsLat);
             Assert.AreEqual(filteredEvents[0].Comment.ValueUnsafe().Text, events[5].Comment.ValueUnsafe().Text);
         }
+        
+        //TODO: добавить тест, проверяющий, что порядок фильтров в коллекции влияет на результат фильтрации
         
         private List<Event> CreateEvents(int quantity)
         {

@@ -24,8 +24,9 @@ namespace ItHappened.Application.Services.EventTrackerService
         EventTrackerServiceStatusCodes RemoveEventFromTracker(Guid initiatorId, Guid trackerId, Guid eventId);
         EventTrackerServiceStatusCodes EditEventInTracker(Guid initiatorId, Guid trackerId, Event newEvent);
         (IReadOnlyCollection<Event> collection, EventTrackerServiceStatusCodes statusCode) GetAllEventsFromTracker(Guid trackerId, Guid initiatorId);
-
-        // Option<IReadOnlyCollection<Event>> GetEventsFiltratedByTime(Guid userId, Guid trackerId, 
-        //     DateTimeOffset from, DateTimeOffset to);
+        (IReadOnlyCollection<Event> collection, EventTrackerServiceStatusCodes statusCode) FilterEvents(
+            Guid trackerId,
+            Guid initiatorId,
+            IReadOnlyList<IEventsFilter> filters);
     }
 }
