@@ -30,9 +30,14 @@ namespace ItHappened.Infrastructure.Repositories
                 .Values.Where(tracker => tracker.CreatorId == userId).ToList();
         }
 
-        public bool DeleteTracker(Guid eventId)
+        public void UpdateTracker(EventTracker eventTracker)
         {
-            return _eventTrackers.Remove(eventId);
+            _eventTrackers[eventTracker.Id] = eventTracker;
+        }
+
+        void IEventTrackerRepository.DeleteTracker(Guid eventTrackerId)
+        {
+            _eventTrackers.Remove(eventTrackerId);
         }
     }
 }

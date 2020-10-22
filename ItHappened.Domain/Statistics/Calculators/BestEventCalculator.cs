@@ -6,32 +6,32 @@ using LanguageExt.UnsafeValueAccess;
 
 namespace ItHappened.Domain.Statistics
 {
-    public class BestEventCalculator : ISpecificCalculator
+    public class BestEventCalculator : ISingleTrackerStatisticsCalculator
     {
         private readonly IEventRepository _eventRepository;
         public BestEventCalculator(IEventRepository eventRepository)
         {
             _eventRepository = eventRepository;
         }
-        public Option<ISpecificFact> Calculate(EventTracker eventTracker)
+        public Option<ISingleTrackerFact> Calculate(EventTracker eventTracker)
         {
             var trackerEvents=_eventRepository.LoadAllTrackerEvents(eventTracker.Id);
-            if (!CanCalculate(eventTracker, trackerEvents)) return Option<ISpecificFact>.None;
+            if (!CanCalculate(eventTracker, trackerEvents)) return Option<ISingleTrackerFact>.None;
             const string factName = "Лучшее событие";
             var bestEvent = trackerEvents
-                .OrderBy(eventItem => eventItem.Rating).Last();
-            var priority = bestEvent.Rating.Value();
-            var bestEventComment = bestEvent.Comment.Match(
+                .OrderBy(eventItem => eventItem.CustomizationsParameters.Rating).Last();
+            var priority = bestEvent.CustomizationsParameters.Rating.Value();
+            var bestEventComment = bestEvent.CustomizationsParameters.Comment.Match(
                 comment => comment.Text,
                 () => string.Empty);
-            var description = $"Событие {eventTracker.Name} с самым высоким рейтингом {bestEvent.Rating} " +
+            var description = $"Событие {eventTracker.Name} с самым высоким рейтингом {bestEvent.CustomizationsParameters.Rating} " +
                               $"произошло {bestEvent.HappensDate} с комментарием {bestEventComment}";
 
-            return Option<ISpecificFact>.Some(new BestEventFact(
+            return Option<ISingleTrackerFact>.Some(new BestEventFact(
                 factName,
                 description,
                 priority,
-                bestEvent.Rating.Value(),
+                bestEvent.CustomizationsParameters.Rating.Value(),
                 bestEvent.HappensDate,
                 new Comment(bestEventComment),
                 bestEvent));
@@ -40,12 +40,12 @@ namespace ItHappened.Domain.Statistics
         private bool CanCalculate(EventTracker eventTracker, IReadOnlyList<Event> trackerEvents)
         {
             var isEventsNumberWithRatingMoreOrEqualToTen = trackerEvents
-                .Count(eventItem => eventItem.Rating.IsSome) >= 10;
+                .Count(eventItem => eventItem.CustomizationsParameters.Rating.IsSome) >= 10;
             var isOldestEventHappenedMoreThanThreeMonthsAgo = trackerEvents
                 .OrderBy(eventItem => eventItem.HappensDate)
                 .First().HappensDate <= DateTimeOffset.Now - TimeSpan.FromDays(90);
             var isEventWithLowestRatingHappenedMoreThanWeekAgo = trackerEvents
-                .OrderBy(eventItem => eventItem.Rating)
+                .OrderBy(eventItem => eventItem.CustomizationsParameters.Rating)
                 .First().HappensDate <= DateTimeOffset.Now - TimeSpan.FromDays(7);
             return isEventsNumberWithRatingMoreOrEqualToTen &&
                    isOldestEventHappenedMoreThanThreeMonthsAgo &&

@@ -1,9 +1,11 @@
 using System.Text;
+using AutoMapper;
 using ItHappened.Api.Authentication;
 using ItHappened.Api.Options;
 using ItHappened.Application.Services.EventTrackerService;
 using ItHappened.Application.Services.UserService;
 using ItHappened.Domain;
+using ItHappened.Domain.Statistics;
 using ItHappened.Infrastructure;
 using ItHappened.Infrastructure.Repositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -30,6 +32,7 @@ namespace ItHappened.Api
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
+            
             services.AddSingleton<IUserService, UserService>();
             services.AddSingleton<IEventTrackerService, EventTrackerService>();
             services.AddSingleton<IUserRepository, UserRepository>();
@@ -81,12 +84,14 @@ namespace ItHappened.Api
                         Type = ReferenceType.SecurityScheme
                     }
                 };
-                OpenApiSecurityRequirement securityRequirements = new OpenApiSecurityRequirement()
+                var securityRequirements = new OpenApiSecurityRequirement()
                 {
                     {securityScheme, new string[] { }},
                 };
                 swaggerGenOptions.AddSecurityRequirement(securityRequirements);
             });
+
+            services.AddAutoMapper(typeof(Startup));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -114,6 +119,11 @@ namespace ItHappened.Api
             app.UseAuthorization();
             
             app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
+        }
+
+        private void AddMultipleTrackersStatisticsProvider(IServiceCollection services)
+        {
+            var statisticsProvider = new MultipleTrackersFactProvider();
         }
     }
 }

@@ -6,7 +6,7 @@ using LanguageExt.UnsafeValueAccess;
 
 namespace ItHappened.Domain.Statistics
 {
-    public class WorstEventCalculator : ISpecificCalculator
+    public class WorstEventCalculator : ISingleTrackerStatisticsCalculator
     {
         private readonly IEventRepository _eventRepository;
         
@@ -15,23 +15,26 @@ namespace ItHappened.Domain.Statistics
             _eventRepository = eventRepository;
         }
         
-        public Option<ISpecificFact> Calculate(EventTracker eventTracker)
+        public Option<ISingleTrackerFact> Calculate(EventTracker eventTracker)
         {
-            if (!CanCalculate(eventTracker)) return Option<ISpecificFact>.None;
+            if (!CanCalculate(eventTracker)) return Option<ISingleTrackerFact>.None;
             const string factName = "Худшее событие";
-            var worstEvent = _eventRepository.LoadAllTrackerEvents(eventTracker.Id).OrderBy(eventItem => eventItem.Rating).First();
-            var priority = 10 - worstEvent.Rating.Value();
-            var worstEventComment = worstEvent.Comment.Match(
+            var worstEvent = _eventRepository.LoadAllTrackerEvents(eventTracker.Id)
+                .OrderBy(eventItem => eventItem.CustomizationsParameters.Rating)
+                .First();
+            var priority = 10 - worstEvent.CustomizationsParameters.Rating.Value();
+            var worstEventComment = worstEvent.CustomizationsParameters.Comment.Match(
                 comment => comment.Text,
                 () => string.Empty);
             var description = $"Событие в отслеживании {eventTracker.Name} с самым низким рейтингом " +
-                              $"{worstEvent.Rating} произошло {worstEvent.HappensDate} с комментарием {worstEventComment}";
+                              $"{worstEvent.CustomizationsParameters.Rating} произошло {worstEvent.HappensDate} " +
+                              $"с комментарием {worstEventComment}";
 
-            return Option<ISpecificFact>.Some(new WorstEventFact(
+            return Option<ISingleTrackerFact>.Some(new WorstEventFact(
                 factName,
                 description,
                 priority,
-                worstEvent.Rating.Value(),
+                worstEvent.CustomizationsParameters.Rating.Value(),
                 worstEvent.HappensDate,
                 new Comment(worstEventComment),
                 worstEvent));
@@ -41,12 +44,12 @@ namespace ItHappened.Domain.Statistics
         {
             var trackerEvents=_eventRepository.LoadAllTrackerEvents(eventTracker.Id);
             var isEventsNumberWithRatingMoreOrEqualToTen = trackerEvents
-                .Count(eventItem => eventItem.Rating.IsSome) >= 10;
+                .Count(eventItem => eventItem.CustomizationsParameters.Rating.IsSome) >= 10;
             var isOldestEventHappenedMoreThanThreeMonthsAgo = trackerEvents
                 .OrderBy(eventItem => eventItem.HappensDate)
                 .First().HappensDate <= DateTimeOffset.Now - TimeSpan.FromDays(90);
             var isEventWithLowestRatingHappenedMoreThanWeekAgo = trackerEvents
-                .OrderBy(eventItem => eventItem.Rating)
+                .OrderBy(eventItem => eventItem.CustomizationsParameters.Rating)
                 .First().HappensDate <= DateTimeOffset.Now - TimeSpan.FromDays(7);
             return isEventsNumberWithRatingMoreOrEqualToTen &&
                    isOldestEventHappenedMoreThanThreeMonthsAgo &&

@@ -2,7 +2,7 @@
 
 namespace ItHappend.Domain.Statistics
 {
-    public class SumScaleFact : ISpecificFact
+    public class SumScaleFact : ISingleTrackerFact
     {
         public double SumValue { get; }
         public string MeasurementUnit { get; }

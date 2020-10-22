@@ -9,6 +9,7 @@ namespace ItHappened.Domain
         void SaveTracker(EventTracker newTracker);
         EventTracker LoadTracker(Guid eventTrackerId);
         IEnumerable<EventTracker> LoadAllUserTrackers(Guid userId);
-        bool DeleteTracker(Guid eventId);
+        void UpdateTracker(EventTracker eventTracker);
+        void DeleteTracker(Guid eventTrackerId);
     }
 }

@@ -1,4 +1,4 @@
-﻿﻿namespace ItHappened.Api.Contracts
+﻿namespace ItHappened.Api.Contracts
 {
     public static class ApiRoutes
     {

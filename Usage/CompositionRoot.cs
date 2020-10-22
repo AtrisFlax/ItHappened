@@ -19,16 +19,16 @@ namespace Usage
             var userRepository = new UserRepository();
             var eventRepository = new EventRepository();
             var eventTrackerRepository = new EventTrackerRepository();
-            var generalFactProvider = new GeneralFactProvider();
+            var generalFactProvider = new MultipleTrackersFactProvider();
             generalFactProvider.Add(new MultipleTrackersEventsCountCalculator(eventRepository));
             generalFactProvider.Add(new MostFrequentEventCalculator(eventRepository));
-            var specificFactProvider = new SpecificFactProvider();
+            var specificFactProvider = new SingleTrackerFactProvider();
             specificFactProvider.Add( new BestEventCalculator(eventRepository));
             specificFactProvider.Add( new AverageRatingCalculator(eventRepository));
             specificFactProvider.Add( new LongestBreakCalculator(eventRepository));
             specificFactProvider.Add( new OccursOnCertainDaysOfTheWeekCalculator(eventRepository));
             specificFactProvider.Add( new SingleTrackerEventsCountCalculator(eventRepository));
-            specificFactProvider.Add( new SpecificDayTimeEventCalculator(eventRepository));
+            //specificFactProvider.Add( new SingleTrackerStatisticsDayTimeEventCalculator(eventRepository));
             specificFactProvider.Add( new WorstEventCalculator(eventRepository));
             return new CompositionRoot
             {

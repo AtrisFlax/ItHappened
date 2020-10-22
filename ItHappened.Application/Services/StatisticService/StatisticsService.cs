@@ -8,28 +8,28 @@ namespace ItHappened.Application.Services.StatisticService
     public class StatisticsService : IStatisticsService
     {
         private readonly IEventTrackerRepository _eventTrackerRepository;
-        private readonly IGeneralFactProvider _generalFactProvider;
-        private readonly ISpecificFactProvider _specificFactProvider;
+        private readonly IMultipleTrackersFactProvider _multipleTrackersFactProvider;
+        private readonly ISingleTrackerFactProvider _singleTrackerFactProvider;
 
         public StatisticsService(IEventTrackerRepository eventTrackerRepository,
-            IGeneralFactProvider generalFactProvider,
-            ISpecificFactProvider specificFactProvider)
+            IMultipleTrackersFactProvider multipleTrackersFactProvider,
+            ISingleTrackerFactProvider singleTrackerFactProvider)
         {
             _eventTrackerRepository = eventTrackerRepository;
-            _generalFactProvider = generalFactProvider;
-            _specificFactProvider = specificFactProvider;
+            _multipleTrackersFactProvider = multipleTrackersFactProvider;
+            _singleTrackerFactProvider = singleTrackerFactProvider;
         }
 
-        public IReadOnlyCollection<IGeneralFact> GetGeneralTrackersFacts(Guid userId)
+        public IReadOnlyCollection<IGeneralFact> GetStatisticsFactsForAllUserTrackers(Guid userId)
         {
             var eventTrackers = _eventTrackerRepository.LoadAllUserTrackers(userId);
-            return _generalFactProvider.GetFacts(eventTrackers);
+            return _multipleTrackersFactProvider.GetFacts(eventTrackers);
         }
 
-        public IReadOnlyCollection<ISpecificFact> GetSpecificTrackerFacts(Guid userId, Guid eventTrackerId)
+        public IReadOnlyCollection<ISingleTrackerFact> GetStatisticsFactsForTracker(Guid userId, Guid eventTrackerId)
         {
             var eventTracker = _eventTrackerRepository.LoadTracker(userId);
-            return _specificFactProvider.GetFacts(eventTracker);
+            return _singleTrackerFactProvider.GetFacts(eventTracker);
         }
     }
 }

@@ -4,7 +4,7 @@ using LanguageExt;
 
 namespace ItHappened.Domain.Statistics
 {
-    public class LongestBreakCalculator : ISpecificCalculator
+    public class LongestBreakCalculator : ISingleTrackerStatisticsCalculator
     {
         private readonly IEventRepository _eventRepository;
         
@@ -13,9 +13,9 @@ namespace ItHappened.Domain.Statistics
             _eventRepository = eventRepository;
         }
         
-        public Option<ISpecificFact> Calculate(EventTracker eventTracker)
+        public Option<ISingleTrackerFact> Calculate(EventTracker eventTracker)
         {
-            if (!CanCalculate(eventTracker)) return Option<ISpecificFact>.None;
+            if (!CanCalculate(eventTracker)) return Option<ISingleTrackerFact>.None;
 
             var (lastEventBeforeBreak, firstEventAfterBreak) = GetFirstAndLastEventOfTheLongestBreak(eventTracker);
             var maxDurationInDays = (firstEventAfterBreak.HappensDate - lastEventBeforeBreak.HappensDate).Days;
@@ -25,7 +25,7 @@ namespace ItHappened.Domain.Statistics
                 $" до {firstEventAfterBreak}, он занял {maxDurationInDays} дней";
             const string factName = "Самый долгий перерыв";
 
-            return Option<ISpecificFact>.Some(new LongestBreakFact(factName,
+            return Option<ISingleTrackerFact>.Some(new LongestBreakFact(factName,
                 description,
                 priority,
                 maxDurationInDays,

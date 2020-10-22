@@ -4,7 +4,7 @@ using ItHappened.Domain.Statistics;
 
 namespace ItHappend.Domain.Statistics
 {
-    public class WorstEventFact : ISpecificFact
+    public class WorstEventFact : ISingleTrackerFact
     {
         public double Rating { get; }
         public DateTimeOffset HappensDate { get; }

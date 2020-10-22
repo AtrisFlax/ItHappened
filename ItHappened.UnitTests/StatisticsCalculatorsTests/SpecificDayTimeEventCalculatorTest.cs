@@ -41,9 +41,9 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
                 smokingEventMorning1, smokingEventMorning2 
             });
             
-            var specificDayTimeEventFact = new SpecificDayTimeEventCalculator(_eventRepository)
+            var specificDayTimeEventFact = new SingleTrackerStatisticsDayTimeEventCalculator(_eventRepository)
                 .Calculate(eventTracker)
-                .ConvertTo<SpecificTimeOfDayEventFact>();
+                .ConvertTo<SingleTrackerTimeOfDayEventFact>();
 
             Assert.AreEqual(true, specificDayTimeEventFact.IsSome);
             specificDayTimeEventFact.Do(e =>

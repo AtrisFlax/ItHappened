@@ -35,6 +35,11 @@ namespace ItHappened.Infrastructure.Repositories
             return _events.Values.Where(@event => @event.TrackerId == trackerId).ToList();
         }
 
+        public void UpdateEvent(Event @event)
+        {
+            _events[@event.Id] = @event;
+        }
+
         public void DeleteEvent(Guid eventId)
         {
             _events.Remove(eventId);

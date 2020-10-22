@@ -3,7 +3,7 @@ using LanguageExt;
 
 namespace ItHappened.Domain.Statistics
 {
-    public class SingleTrackerEventsCountCalculator : ISpecificCalculator
+    public class SingleTrackerEventsCountCalculator : ISingleTrackerStatisticsCalculator
     {
         private readonly IEventRepository _eventRepository;
         
@@ -12,17 +12,17 @@ namespace ItHappened.Domain.Statistics
             _eventRepository = eventRepository;
         }
         
-        public Option<ISpecificFact> Calculate(EventTracker eventTracker)
+        public Option<ISingleTrackerFact> Calculate(EventTracker eventTracker)
         {
             if (!CanCalculate(eventTracker))
-                return Option<ISpecificFact>.None;
+                return Option<ISingleTrackerFact>.None;
 
             const string factName = "Количество событий";
             var eventsCount = _eventRepository.LoadAllTrackerEvents(eventTracker.Id).Count;
             var description = $"Событие {eventTracker.Name} произошло {eventsCount} раз";
             var priority = Math.Log(eventsCount);
 
-            return Option<ISpecificFact>
+            return Option<ISingleTrackerFact>
                 .Some(new SingleTrackerEventsCountFact(factName, description, priority, eventsCount));
         }
 
