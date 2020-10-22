@@ -8,7 +8,6 @@ using ItHappened.Api.Contracts.Requests;
 using ItHappened.Api.Contracts.Responses;
 using ItHappened.Application.Services.EventTrackerService;
 using ItHappened.Application.Services.StatisticService;
-using ItHappened.Application.Services.UserService;
 using ItHappened.Domain;
 using ItHappened.Domain.Statistics;
 using Microsoft.AspNetCore.Authorization;
@@ -20,15 +19,15 @@ namespace ItHappened.Api.Controllers
     [ApiController]
     public class TrackersController : ControllerBase
     {
-        public TrackersController(IUserService userService,
-            IEventTrackerService eventTrackerService,
+        public TrackersController(IEventTrackerService eventTrackerService,
             IEventTrackerRepository trackerRepository,
-            IMapper mapper, IStatisticsService statisticsService)
+            IStatisticsService statisticsService,
+            IMapper mapper)
         {
             _eventTrackerService = eventTrackerService;
             _trackerRepository = trackerRepository;
-            _mapper = mapper;
             _statisticsService = statisticsService;
+            _mapper = mapper;
         }
         
         [HttpPost(ApiRoutes.Trackers.Create)]
@@ -36,7 +35,7 @@ namespace ItHappened.Api.Controllers
         public IActionResult CreateTracker([FromBody]TrackerRequest request)
         {
             var userId = Guid.Parse(User.FindFirstValue(JwtClaimTypes.Id));
-            var customizations = _mapper.Map<EventTrackerCustomizations>(request.Customizations);
+            var customizations = _mapper.Map<TrackerCustomizationsSettings>(request.CustomizationSettings);
             var tracker = new EventTracker(Guid.NewGuid(), userId, request.Name, customizations);
             _trackerRepository.SaveTracker(tracker);
             return Ok(_mapper.Map<TrackerResponse>(tracker));

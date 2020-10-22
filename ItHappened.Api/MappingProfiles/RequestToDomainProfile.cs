@@ -8,7 +8,8 @@ namespace ItHappened.Api.MappingProfiles
     {
         public RequestToDomainProfile()
         {
-            CreateMap<CustomizationsRequest, EventCustomParameters>();
+            CreateMap<CustomizationSettingsRequest, EventCustomParameters>();
+            CreateMap<TrackerCustomizationsSettings, TrackerCustomizationsSettings>();
         }
     }
 }

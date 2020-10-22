@@ -3,6 +3,7 @@ using AutoMapper;
 using ItHappened.Api.Authentication;
 using ItHappened.Api.Options;
 using ItHappened.Application.Services.EventTrackerService;
+using ItHappened.Application.Services.StatisticService;
 using ItHappened.Application.Services.UserService;
 using ItHappened.Domain;
 using ItHappened.Domain.Statistics;
@@ -35,6 +36,10 @@ namespace ItHappened.Api
             
             services.AddSingleton<IUserService, UserService>();
             services.AddSingleton<IEventTrackerService, EventTrackerService>();
+            services.AddSingleton<IStatisticsService, StatisticsService>();
+            services.AddSingleton<IMultipleTrackersFactProvider, MultipleTrackersFactProvider>();
+            services.AddSingleton<ISingleTrackerFactProvider, SingleTrackerFactProvider>();
+
             services.AddSingleton<IUserRepository, UserRepository>();
             services.AddSingleton<IEventTrackerRepository, EventTrackerRepository>();
             services.AddSingleton<IEventRepository, EventRepository>();
@@ -118,7 +123,10 @@ namespace ItHappened.Api
             app.UseAuthentication();
             app.UseAuthorization();
             
-            app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllers();
+            });
         }
 
         private void AddMultipleTrackersStatisticsProvider(IServiceCollection services)

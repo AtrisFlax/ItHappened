@@ -19,7 +19,7 @@ namespace ItHappened.Domain.Statistics
             var events = _eventRepository.LoadAllTrackerEvents(eventTracker.Id);
             if (!CanCalculate(eventTracker, events)) return Option<ISingleTrackerFact>.None;
             var averageValue = events.Select(x=>x.CustomizationsParameters.Scale).Somes().Average();
-            var measurementUnit = eventTracker.Customizations.ScaleMeasurementUnit.ValueUnsafe();
+            var measurementUnit = eventTracker.CustomizationsSettings.ScaleMeasurementUnit.ValueUnsafe();
             return Option<ISingleTrackerFact>.Some(new AverageScaleFact(
                 "Среднее значение шкалы",
                 $"Сумма значений {measurementUnit} для события {eventTracker.Name} равно {averageValue}",
@@ -31,7 +31,7 @@ namespace ItHappened.Domain.Statistics
 
         private static bool CanCalculate(EventTracker eventTracker, IReadOnlyList<Event> loadAllTrackerEvents)
         {
-            if (eventTracker.Customizations.ScaleMeasurementUnit.IsNone)
+            if (eventTracker.CustomizationsSettings.ScaleMeasurementUnit.IsNone)
             {
                 return false;
             }

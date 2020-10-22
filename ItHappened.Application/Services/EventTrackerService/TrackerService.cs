@@ -8,7 +8,7 @@ namespace ItHappened.Application.Services.EventTrackerService
 {
     public interface IEventTrackerService
     {
-        EventTracker CreateEventTracker(Guid creatorId, string name, EventTrackerCustomizations customizations);
+        EventTracker CreateEventTracker(Guid creatorId, string name, TrackerCustomizationsSettings customizationsSettings);
         EventTracker GetEventTracker(Guid actorId, Guid trackerId);
         IReadOnlyCollection<EventTracker> GetEventTrackers(Guid actorId);
 
@@ -27,10 +27,10 @@ namespace ItHappened.Application.Services.EventTrackerService
             _eventRepository = eventRepository;
         }
         
-        public EventTracker CreateEventTracker(Guid creatorId, string name, EventTrackerCustomizations customizations)
+        public EventTracker CreateEventTracker(Guid creatorId, string name, TrackerCustomizationsSettings customizationsSettings)
         {
             var id = Guid.NewGuid();
-            var tracker = new EventTracker(id, creatorId, name, customizations);
+            var tracker = new EventTracker(id, creatorId, name, customizationsSettings);
             _eventTrackerRepository.SaveTracker(tracker);
             return tracker;
         }
@@ -57,7 +57,7 @@ namespace ItHappened.Application.Services.EventTrackerService
             if (actorId != tracker.CreatorId)
                 throw new Exception();
             
-            var updatedTracker = new EventTracker(tracker.Id, tracker.CreatorId, name, tracker.Customizations);
+            var updatedTracker = new EventTracker(tracker.Id, tracker.CreatorId, name, tracker.CustomizationsSettings);
             _eventTrackerRepository.UpdateTracker(updatedTracker);
             return updatedTracker;
         }

@@ -38,7 +38,7 @@ namespace ItHappened.Domain.Statistics
 
         private bool CanCalculate(EventTracker eventTracker)
         {
-            if (!eventTracker.Customizations.RatingIsOptional) return false;
+            if (!eventTracker.CustomizationsSettings.RatingIsOptional) return false;
             var trackerEvents=_eventRepository.LoadAllTrackerEvents(eventTracker.Id);
             if (trackerEvents.Any(@event => @event.CustomizationsParameters.Rating == Option<double>.None)) return false;
             return trackerEvents.Count > 1;

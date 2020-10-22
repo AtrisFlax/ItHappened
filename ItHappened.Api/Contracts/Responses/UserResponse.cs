@@ -1,5 +1,4 @@
 ﻿using System;
-using ItHappened.Domain;
 
 namespace ItHappened.Api.Contracts.Responses
 {
