@@ -7,10 +7,10 @@ namespace ItHappened.Domain
 {
     public static class EventsFilter
     {
-        public static IReadOnlyCollection<Event> Filter(IReadOnlyCollection<Event> events,
+        public static IReadOnlyList<Event> Filter(IReadOnlyCollection<Event> events,
             IReadOnlyCollection<IEventsFilter> filters)
         {
-            return filters.Aggregate(events, (current, filter) => filter.Filter(current));
+            return filters.Aggregate(events, (current, filter) => filter.Filter(current)).ToList();
         }
     }
 }
