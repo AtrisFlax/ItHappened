@@ -20,7 +20,7 @@ namespace ItHappened.Domain.Statistics
 
             var averageRating = _eventRepository.LoadAllTrackerEvents(eventTracker.Id).Average(x =>
             {
-                return x.CustomizationsParameters.Rating.Match(
+                return x.CustomParameters.Rating.Match(
                     r => r,
                     () =>
                     {
@@ -40,7 +40,7 @@ namespace ItHappened.Domain.Statistics
         {
             if (!eventTracker.CustomizationSettings.RatingIsOptional) return false;
             var trackerEvents=_eventRepository.LoadAllTrackerEvents(eventTracker.Id);
-            if (trackerEvents.Any(@event => @event.CustomizationsParameters.Rating == Option<double>.None)) return false;
+            if (trackerEvents.Any(@event => @event.CustomParameters.Rating == Option<double>.None)) return false;
             return trackerEvents.Count > 1;
         }
     }

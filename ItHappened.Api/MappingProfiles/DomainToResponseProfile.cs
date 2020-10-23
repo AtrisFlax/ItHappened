@@ -1,7 +1,7 @@
-using System.Collections.Generic;
 using AutoMapper;
 using ItHappened.Api.Models.Responses;
 using ItHappened.Domain;
+using LanguageExt.UnsafeValueAccess;
 
 namespace ItHappened.Api.MappingProfiles
 {
@@ -11,15 +11,10 @@ namespace ItHappened.Api.MappingProfiles
         {
             CreateMap<EventTracker, TrackerResponse>();
             CreateMap<Event, EventResponse>();
-            CreateMap<TrackerCustomizationSettings, CustomizationSettingsResponse>();
-
-
-            //Mapping example
-            /*CreateMap<Post, PostResponse>()
-                .ForMember(dest => dest.Tags, opt => 
-                    opt.MapFrom(src => src.Tags.Select(x => new TagResponse{Name = x.TagName})));
-                    */
-
+            CreateMap<EventCustomParameters, EventCustomParametersResponse>();
+            CreateMap<TrackerCustomizationSettings, CustomizationSettingsResponse>()
+                .ForMember(dest => dest.ScaleMeasurementUnit, opt => 
+                    opt.MapFrom(src => src.ScaleMeasurementUnit.ValueUnsafe()));
         }
     }
 }

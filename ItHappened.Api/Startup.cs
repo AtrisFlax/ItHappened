@@ -71,7 +71,7 @@ namespace ItHappened.Api
             {
                 swaggerGenOptions.SwaggerDoc("v1", new OpenApiInfo {Title = "ItHappened API", Version = "v1"});
                 // Bearer token authentication
-                OpenApiSecurityScheme securityDefinition = new OpenApiSecurityScheme()
+                var securityDefinition = new OpenApiSecurityScheme()
                 {
                     Name = "Bearer",
                     BearerFormat = "JWT",
@@ -83,7 +83,7 @@ namespace ItHappened.Api
                 swaggerGenOptions.AddSecurityDefinition("jwt_auth", securityDefinition);
 
                 // Make sure swagger UI requires a Bearer token specified
-                OpenApiSecurityScheme securityScheme = new OpenApiSecurityScheme()
+                var securityScheme = new OpenApiSecurityScheme()
                 {
                     Reference = new OpenApiReference()
                     {

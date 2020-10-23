@@ -8,19 +8,19 @@ namespace ItHappened.Domain
             Guid creatorId,
             Guid trackerId,
             DateTimeOffset happensDate,
-            EventCustomParameters customizationsParameters)
+            EventCustomParameters customParameters)
         {
             Id = id;
             CreatorId = creatorId;
             TrackerId = trackerId;
             HappensDate = happensDate;
-            CustomizationsParameters = customizationsParameters;
+            CustomParameters = customParameters;
         }
 
         public Guid Id { get; }
         public Guid CreatorId { get; }
         public Guid TrackerId { get; }
         public DateTimeOffset HappensDate { get; }
-        public EventCustomParameters CustomizationsParameters { get; }
+        public EventCustomParameters CustomParameters { get; }
     }
 }

@@ -26,7 +26,7 @@ namespace ItHappened.Api.Controllers
         public IActionResult AddEventToTracker([FromRoute]Guid trackerId, [FromBody]EventRequest request)
         {
             var userId = Guid.Parse(User.FindFirstValue(JwtClaimTypes.Id));
-            var customParameters = _mapper.Map<EventCustomParameters>(request);
+            var customParameters = _mapper.Map<EventCustomParameters>(request.CustomParameters);
             var newEvent = _eventService.AddEvent(userId, trackerId, request.HappensDate, customParameters);
             return Ok(_mapper.Map<EventResponse>(newEvent));
         }

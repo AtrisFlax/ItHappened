@@ -20,21 +20,21 @@ namespace ItHappened.Domain.Statistics
             if (!CanCalculate(eventTracker)) return Option<ISingleTrackerFact>.None;
             const string factName = "Худшее событие";
             var worstEvent = _eventRepository.LoadAllTrackerEvents(eventTracker.Id)
-                .OrderBy(eventItem => eventItem.CustomizationsParameters.Rating)
+                .OrderBy(eventItem => eventItem.CustomParameters.Rating)
                 .First();
-            var priority = 10 - worstEvent.CustomizationsParameters.Rating.Value();
-            var worstEventComment = worstEvent.CustomizationsParameters.Comment.Match(
+            var priority = 10 - worstEvent.CustomParameters.Rating.Value();
+            var worstEventComment = worstEvent.CustomParameters.Comment.Match(
                 comment => comment.Text,
                 () => string.Empty);
             var description = $"Событие в отслеживании {eventTracker.Name} с самым низким рейтингом " +
-                              $"{worstEvent.CustomizationsParameters.Rating} произошло {worstEvent.HappensDate} " +
+                              $"{worstEvent.CustomParameters.Rating} произошло {worstEvent.HappensDate} " +
                               $"с комментарием {worstEventComment}";
 
             return Option<ISingleTrackerFact>.Some(new WorstEventFact(
                 factName,
                 description,
                 priority,
-                worstEvent.CustomizationsParameters.Rating.Value(),
+                worstEvent.CustomParameters.Rating.Value(),
                 worstEvent.HappensDate,
                 new Comment(worstEventComment),
                 worstEvent));
@@ -44,12 +44,12 @@ namespace ItHappened.Domain.Statistics
         {
             var trackerEvents=_eventRepository.LoadAllTrackerEvents(eventTracker.Id);
             var isEventsNumberWithRatingMoreOrEqualToTen = trackerEvents
-                .Count(eventItem => eventItem.CustomizationsParameters.Rating.IsSome) >= 10;
+                .Count(eventItem => eventItem.CustomParameters.Rating.IsSome) >= 10;
             var isOldestEventHappenedMoreThanThreeMonthsAgo = trackerEvents
                 .OrderBy(eventItem => eventItem.HappensDate)
                 .First().HappensDate <= DateTimeOffset.Now - TimeSpan.FromDays(90);
             var isEventWithLowestRatingHappenedMoreThanWeekAgo = trackerEvents
-                .OrderBy(eventItem => eventItem.CustomizationsParameters.Rating)
+                .OrderBy(eventItem => eventItem.CustomParameters.Rating)
                 .First().HappensDate <= DateTimeOffset.Now - TimeSpan.FromDays(7);
             return isEventsNumberWithRatingMoreOrEqualToTen &&
                    isOldestEventHappenedMoreThanThreeMonthsAgo &&

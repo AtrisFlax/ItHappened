@@ -1,6 +1,7 @@
 using AutoMapper;
 using ItHappened.Api.Models.Requests;
 using ItHappened.Domain;
+using LanguageExt;
 
 namespace ItHappened.Api.MappingProfiles
 {
@@ -9,7 +10,9 @@ namespace ItHappened.Api.MappingProfiles
         public RequestToDomainProfile()
         {
             CreateMap<CustomizationSettingsRequest, TrackerCustomizationSettings>();
-            CreateMap<TrackerCustomizationSettings, TrackerCustomizationSettings>();
+            CreateMap<EventCustomParametersRequest, EventCustomParameters>();
+            CreateMap<PhotoRequest, Photo>();
+            CreateMap<GeoTagRequest, GeoTag>();
         }
     }
 }

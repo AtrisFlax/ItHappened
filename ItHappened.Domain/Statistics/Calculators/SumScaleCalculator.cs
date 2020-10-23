@@ -22,7 +22,7 @@ namespace ItHappened.Domain.Statistics
             {
                 return Option<ISingleTrackerFact>.None;
             }
-            var sumScale = loadAllTrackerEvents.Select(x=>x.CustomizationsParameters.Scale).Somes().Sum();
+            var sumScale = loadAllTrackerEvents.Select(x=>x.CustomParameters.Scale).Somes().Sum();
             var measurementUnit = eventTracker.CustomizationSettings.ScaleMeasurementUnit.Match(
                 x=>x,
                 ()=>
@@ -46,7 +46,7 @@ namespace ItHappened.Domain.Statistics
                 return false;
             }
 
-            if (loadAllTrackerEvents.Any(@event => @event.CustomizationsParameters.Scale == Option<double>.None))
+            if (loadAllTrackerEvents.Any(@event => @event.CustomParameters.Scale == Option<double>.None))
             {
                 return false;
             }
