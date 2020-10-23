@@ -1,6 +1,6 @@
 ﻿namespace ItHappened.Domain.Statistics
 {
-    public interface IGeneralFact : IFact
+    public interface IMultipleTrackersFact : IFact
     {
     }
 }

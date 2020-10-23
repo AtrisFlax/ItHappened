@@ -2,7 +2,7 @@
 
 namespace ItHappened.Domain.Statistics
 {
-    public class MostEventfulDayFact : IGeneralFact
+    public class MostEventfulDayFact : IMultipleTrackersFact
     {
         public string FactName { get; }
         public string Description { get; }

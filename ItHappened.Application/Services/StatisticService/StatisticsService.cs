@@ -20,7 +20,7 @@ namespace ItHappened.Application.Services.StatisticService
             _singleTrackerFactProvider = singleTrackerFactProvider;
         }
 
-        public IReadOnlyCollection<IGeneralFact> GetStatisticsFactsForAllUserTrackers(Guid userId)
+        public IReadOnlyCollection<IMultipleTrackersFact> GetStatisticsFactsForAllUserTrackers(Guid userId)
         {
             var eventTrackers = _trackerRepository.LoadAllUserTrackers(userId);
             return _multipleTrackersFactProvider.GetFacts(eventTrackers);

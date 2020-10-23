@@ -14,12 +14,12 @@ namespace ItHappened.Domain.Statistics
             _eventRepository = eventRepository;
         }
 
-        public Option<IGeneralFact> Calculate(IEnumerable<EventTracker> eventTrackers)
+        public Option<IMultipleTrackersFact> Calculate(IEnumerable<EventTracker> eventTrackers)
         {
             var trackers = eventTrackers.ToList();
             if (!CanCalculate(trackers))
             {
-                return Option<IGeneralFact>.None;
+                return Option<IMultipleTrackersFact>.None;
             }
 
             var trackingNameWithEventsPeriod = trackers
@@ -35,7 +35,7 @@ namespace ItHappened.Domain.Statistics
             var (trackingName, eventsPeriod) = eventTrackersWithPeriods
                 .OrderBy(e => e.eventsPeriod)
                 .FirstOrDefault();
-            return Option<IGeneralFact>.Some(new MostFrequentEventFact(
+            return Option<IMultipleTrackersFact>.Some(new MostFrequentEventFact(
                 "Самое частое событие",
                 $"Чаще всего у вас происходит событие {trackingName} - раз в {eventsPeriod:0.#} дней",
                 10 / eventsPeriod,

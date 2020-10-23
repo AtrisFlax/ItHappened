@@ -10,7 +10,7 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
             return fact.Map(f => (T) f);
         }
         
-        public static Option<T> ConvertTo<T>(this Option<IGeneralFact> fact)
+        public static Option<T> ConvertTo<T>(this Option<IMultipleTrackersFact> fact)
         {
             return fact.Map(f => (T) f);
         }

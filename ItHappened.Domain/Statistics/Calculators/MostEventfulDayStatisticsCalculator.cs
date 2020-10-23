@@ -14,12 +14,12 @@ namespace ItHappened.Domain.Statistics
             _eventRepository = eventRepository;
         }
 
-        public Option<IGeneralFact> Calculate(IEnumerable<EventTracker> eventTrackers)
+        public Option<IMultipleTrackersFact> Calculate(IEnumerable<EventTracker> eventTrackers)
         {
             var trackers = eventTrackers.ToList();
             if (!CanCalculate(trackers))
             {
-                return Option<IGeneralFact>.None;
+                return Option<IMultipleTrackersFact>.None;
             }
             var dayWithLargestEvent = trackers
                 .SelectMany(tracker => _eventRepository.LoadAllTrackerEvents(tracker.Id))
@@ -32,7 +32,7 @@ namespace ItHappened.Domain.Statistics
             var dayWithLargestEventCount = dayWithLargestEvent.Date;
             var eventsCount = dayWithLargestEvent.Count;
             var ruEventName = RuEventName(eventsCount, "событие", "события", "событий");
-            return Option<IGeneralFact>.Some(new MostEventfulDayFact(
+            return Option<IMultipleTrackersFact>.Some(new MostEventfulDayFact(
                 "Самый насыщенный событиями день",
                 $"Самый насыщенный событиями день был {dayWithLargestEventCount:d}. Тогда произошло {eventsCount} {ruEventName}",
                 1.5 * eventsCount,

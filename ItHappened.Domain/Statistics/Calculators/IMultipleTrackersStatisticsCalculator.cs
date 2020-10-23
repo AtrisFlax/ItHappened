@@ -5,6 +5,6 @@ namespace ItHappened.Domain.Statistics
 {
     public interface IMultipleTrackersStatisticsCalculator
     {
-        Option<IGeneralFact> Calculate(IEnumerable<EventTracker> eventTrackers);
+        Option<IMultipleTrackersFact> Calculate(IEnumerable<EventTracker> eventTrackers);
     }
 }

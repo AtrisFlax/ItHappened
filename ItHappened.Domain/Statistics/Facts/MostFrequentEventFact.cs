@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace ItHappened.Domain.Statistics
 {
-    public class MostFrequentEventFact : IGeneralFact
+    public class MostFrequentEventFact : IMultipleTrackersFact
     {
         public string FactName { get; }
         public string Description { get; }
