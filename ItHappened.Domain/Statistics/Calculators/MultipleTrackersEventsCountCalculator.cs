@@ -6,7 +6,7 @@ using LanguageExt;
 
 namespace ItHappened.Domain.Statistics
 {
-    public class MultipleTrackersStatisticsEventsCountCalculator : IMultipleTrackersStatisticsCalculator
+    public class MultipleTrackersEventsCountCalculator : IMultipleTrackersStatisticsCalculator
     {
         private const int EventsThreshold = 5;
         private const int TrackersThreshold = 0;
