@@ -11,7 +11,7 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
     public class BestEventCalculatorTests
     {
         private const int InitialEventsNumber = 9;
-        private BestEventCalculator _bestEventCalculator;
+        private BestRatingEventCalculator _bestRatingEventCalculator;
         private Guid _creatorId;
         private List<Event> _events;
         private EventTracker _eventTracker;
@@ -25,7 +25,7 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
             _eventTracker = CreateEventTracker();
             _events = CreateEvents(_creatorId, InitialEventsNumber);
             _eventRepository.AddRangeOfEvents(_events);
-            _bestEventCalculator = new BestEventCalculator(_eventRepository);
+            _bestRatingEventCalculator = new BestRatingEventCalculator(_eventRepository);
         }
 
         [Test]
@@ -35,7 +35,7 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
             _events[1].Rating = 1;
             _events[1].HappensDate = DateTimeOffset.Now - TimeSpan.FromDays(8);
             
-            var actual = _bestEventCalculator.Calculate(_eventTracker);
+            var actual = _bestRatingEventCalculator.Calculate(_eventTracker);
             
             Assert.IsTrue(actual.IsNone);
         }
@@ -47,7 +47,7 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
             _events[1].Rating = 1;
             _events[1].HappensDate = DateTimeOffset.Now - TimeSpan.FromDays(8);
             
-            var actual = _bestEventCalculator.Calculate(_eventTracker);
+            var actual = _bestRatingEventCalculator.Calculate(_eventTracker);
             
             Assert.IsTrue(actual.IsNone);
         }
@@ -60,7 +60,7 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
             _events[1].Rating = 1;
             _events[1].HappensDate = DateTimeOffset.Now - TimeSpan.FromDays(6);
             
-            var actual = _bestEventCalculator.Calculate(_eventTracker);
+            var actual = _bestRatingEventCalculator.Calculate(_eventTracker);
             
             Assert.IsTrue(actual.IsNone);
         }
@@ -75,7 +75,7 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
             event10.HappensDate = DateTimeOffset.Now - TimeSpan.FromDays(8);
             _eventRepository.AddEvent(event10);
 
-            var optionalBestEventFact = _bestEventCalculator.Calculate(_eventTracker).ConvertTo<BestEventTrackerFact>();
+            var optionalBestEventFact = _bestRatingEventCalculator.Calculate(_eventTracker).ConvertTo<BestEventTrackerFact>();
             var bestEventFact = optionalBestEventFact.ValueUnsafe();
             
             Assert.IsTrue(optionalBestEventFact.IsSome);

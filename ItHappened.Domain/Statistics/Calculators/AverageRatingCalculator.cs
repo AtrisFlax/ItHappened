@@ -10,29 +10,26 @@ namespace ItHappened.Domain.Statistics
     {
         public Option<ISingleTrackerTrackerFact> Calculate(IReadOnlyCollection<Event> events, EventTracker tracker)
         {
-            if (!CanCalculate(events)) return Option<ISingleTrackerTrackerFact>.None;
-
-            var averageRating = events.Average(x =>
+            if (!CanCalculate(events))
             {
-                return x.CustomizationsParameters.Rating.Match(
-                    r => r,
-                    () =>
-                    {
-                        Log.Warning("Calculate Empty Rating While Calculate AverageRatingCalculator");
-                        return 0;
-                    });
-            });
+                return Option<ISingleTrackerTrackerFact>.None;
+            }
+            
+            var averageRating = events.Select(e => e.CustomizationsParameters.Rating).Somes().Average();
+            
+            const string factName = "Среднее значение оценки";
+            var description = $"Средний рейтинг для события {tracker.Name} равен {averageRating}";
+            var priority = Math.Sqrt(averageRating);
+            
             return Option<ISingleTrackerTrackerFact>.Some(new AverageRatingTrackerFact(
-                "Среднее значение оценки",
-                $"Средний рейтинг для события {tracker.Name} равен {averageRating}",
-                Math.Sqrt(averageRating),
+                factName,
+                description,
+                priority,
                 averageRating
             ));
         }
 
-        private static bool CanCalculate(IReadOnlyCollection<Event> events)
-        {
-            if (events.Any(@event => @event.CustomizationsParameters.Rating == Option<double>.None)) return false;
+        private static bool CanCalculate(IReadOnlyCollection<Event> events) {
             return events.Count > 1;
         }
     }

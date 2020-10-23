@@ -1,25 +1,25 @@
 ﻿using System;
+using LanguageExt;
 
 namespace ItHappened.Domain.Statistics
 {
     public class BestEventTrackerFact : ISingleTrackerTrackerFact
     {
-        public DateTimeOffset HappensDate { get; }
-        public Comment Comment { get; }
-        public Event EventReference { get; }
         public string FactName { get; }
         public string Description { get; }
         public double Priority { get; }
+        public double BestRating { get; }
+        public DateTimeOffset BestEventDate { get; }
+        public Option<Comment> BestEventComment { get; }
 
-        internal BestEventTrackerFact(string factName, string description, double priority, double rating,
-            DateTimeOffset happensDate, Comment comment, Event eventReference)
+        internal BestEventTrackerFact(string factName, string description, double priority, double bestRating, DateTimeOffset bestEventDate, Option<Comment> bestEventComment)
         {
             FactName = factName;
             Description = description;
             Priority = priority;
-            HappensDate = happensDate;
-            Comment = comment;
-            EventReference = eventReference;
+            BestRating = bestRating;
+            BestEventDate = bestEventDate;
+            BestEventComment = bestEventComment;
         }
     }
 }

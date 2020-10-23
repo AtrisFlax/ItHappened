@@ -9,27 +9,30 @@ namespace ItHappened.Domain.Statistics
     {
         public Option<ISingleTrackerTrackerFact> Calculate(IReadOnlyCollection<Event> events, EventTracker tracker)
         {
-            if (!CanCalculate(events, tracker)) return Option<ISingleTrackerTrackerFact>.None;
+            if (!CanCalculate(events))
+            {
+                return Option<ISingleTrackerTrackerFact>.None;
+            }
+
             var averageValue = events.Select(x => x.CustomizationsParameters.Scale).Somes().Average();
-            var measurementUnit = tracker.CustomizationSettings.ScaleMeasurementUnit
-                .Match(x => x,
-                    () => "No Scale");
+            var measurementUnit =
+                tracker.CustomizationSettings.ScaleMeasurementUnit.Match(x => x, () => string.Empty);
+            
+            const string factName = "Среднее значение шкалы";
+            var description = $"Сумма значений {measurementUnit} для события {tracker.Name} равно {averageValue}";
+            const double priority = 3.0;
+            
             return Option<ISingleTrackerTrackerFact>.Some(new AverageScaleTrackerFact(
-                "Среднее значение шкалы",
-                $"Сумма значений {measurementUnit} для события {tracker.Name} равно {averageValue}",
-                3.0,
+                factName,
+                description,
+                priority,
                 averageValue,
                 measurementUnit
             ));
         }
 
-        private static bool CanCalculate(IReadOnlyCollection<Event> events, EventTracker tracker)
+        private static bool CanCalculate(IReadOnlyCollection<Event> events)
         {
-            if (tracker.CustomizationSettings.ScaleMeasurementUnit.IsNone)
-            {
-                return false;
-            }
-
             if (events.Any(@event => @event.CustomizationsParameters.Scale == Option<double>.None))
             {
                 return false;

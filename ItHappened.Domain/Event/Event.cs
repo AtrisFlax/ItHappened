@@ -4,6 +4,12 @@ namespace ItHappened.Domain
 {
     public class Event
     {
+        public Guid Id { get; }
+        public Guid CreatorId { get; }
+        public Guid TrackerId { get; }
+        public DateTimeOffset HappensDate { get; }
+        public EventCustomParameters CustomizationsParameters { get; }
+
         public Event(Guid id,
             Guid creatorId,
             Guid trackerId,
@@ -16,11 +22,5 @@ namespace ItHappened.Domain
             HappensDate = happensDate;
             CustomizationsParameters = customizationsParameters;
         }
-
-        public Guid Id { get; }
-        public Guid CreatorId { get; }
-        public Guid TrackerId { get; }
-        public DateTimeOffset HappensDate { get; }
-        public EventCustomParameters CustomizationsParameters { get; }
     }
 }
