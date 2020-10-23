@@ -45,7 +45,6 @@ namespace ItHappened.Api.Controllers
         
         [HttpGet("/trackers/{trackerId}/events")]
         [ProducesResponseType(200, Type = typeof(EventResponse[]))]
-
         public IActionResult GetAllEvents([FromRoute]Guid trackerId)
         {
             var userId = Guid.Parse(User.FindFirstValue(JwtClaimTypes.Id));
