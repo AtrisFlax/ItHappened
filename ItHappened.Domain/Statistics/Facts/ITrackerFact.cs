@@ -1,6 +1,6 @@
 ﻿namespace ItHappened.Domain.Statistics
 {
-    public interface IFact
+    public interface ITrackerFact
     {
         string FactName { get; }
         string Description { get; }

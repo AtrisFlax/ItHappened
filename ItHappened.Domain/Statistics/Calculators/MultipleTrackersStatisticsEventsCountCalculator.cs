@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using LanguageExt;
@@ -7,31 +8,34 @@ namespace ItHappened.Domain.Statistics
 {
     public class MultipleTrackersStatisticsEventsCountCalculator : IMultipleTrackersStatisticsCalculator
     {
-        private readonly IEventRepository _eventRepository;
+        private const int EventsThreshold = 5;
+        private const int TrackersThreshold = 0;
 
-        public MultipleTrackersStatisticsEventsCountCalculator(IEventRepository eventRepository)
+        public Option<IMultipleTrackerTrackerFact> Calculate(
+            IReadOnlyCollection<TrackerWithItsEvents> trackerWithItsEvents)
         {
-            _eventRepository = eventRepository;
-        }
+            var allEvents = trackerWithItsEvents.SelectMany(info => info.Events).ToList();
+            if (!CanCalculate(trackerWithItsEvents, allEvents))
+                return Option<IMultipleTrackerTrackerFact>.None;
 
-        public Option<IMultipleTrackersFact> Calculate(IEnumerable<EventTracker> eventTrackers)
-        {
-            if (!CanCalculate(eventTrackers))
-                return Option<IMultipleTrackersFact>.None;
-
-            var factName = "Зафиксировано уже N событий";
-            var eventsCount = eventTrackers.Sum(tracker => _eventRepository.LoadAllTrackerEvents(tracker.Id).Count);
+            const string factName = "Зафиксировано уже N событий";
+            var eventsCount = allEvents.Count;
             var description = $"У вас произошло уже {eventsCount} событий!";
             var priority = Math.Log(eventsCount);
 
-            return Option<IMultipleTrackersFact>.Some(new EventsCountFact(factName, description, priority, eventsCount));
+            return Option<IMultipleTrackerTrackerFact>.Some(
+                new EventsCountTrackerTrackerFact(
+                    factName,
+                    description,
+                    priority,
+                    eventsCount));
         }
 
-        private bool CanCalculate(IEnumerable<EventTracker> eventTrackers)
+        private static bool CanCalculate(IReadOnlyCollection<TrackerWithItsEvents> trackerWithItsEvents,
+            ICollection allEvents)
         {
-            var eventsCount = eventTrackers.Sum(tracker => _eventRepository.LoadAllTrackerEvents(tracker.Id).Count);
-            return eventTrackers.Any() &&
-                   eventsCount > 5;
+            return trackerWithItsEvents.Count > TrackersThreshold &&
+                   allEvents.Count > EventsThreshold;
         }
     }
 }

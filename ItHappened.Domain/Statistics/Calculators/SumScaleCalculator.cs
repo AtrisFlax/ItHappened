@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using ItHappend.Domain.Statistics;
 using LanguageExt;
 using LanguageExt.UnsafeValueAccess;
 using Serilog;
@@ -9,47 +8,34 @@ namespace ItHappened.Domain.Statistics
 {
     public class SumScaleCalculator : ISingleTrackerStatisticsCalculator
     {
-        private readonly IEventRepository _eventRepository;
-
-        public SumScaleCalculator(IEventRepository eventRepository)
+        public Option<ISingleTrackerTrackerFact> Calculate(IReadOnlyCollection<Event> events, EventTracker tracker)
         {
-            _eventRepository = eventRepository;
-        }
-        public Option<ISingleTrackerFact> Calculate(EventTracker eventTracker)
-        {
-            var loadAllTrackerEvents = _eventRepository.LoadAllTrackerEvents(eventTracker.Id);
-            if (!CanCalculate(eventTracker, loadAllTrackerEvents))
+            if (!CanCalculate(events))
             {
-                return Option<ISingleTrackerFact>.None;
+                return Option<ISingleTrackerTrackerFact>.None;
             }
-            var sumScale = loadAllTrackerEvents.Select(x=>x.CustomParameters.Scale).Somes().Sum();
-            var measurementUnit = eventTracker.CustomizationSettings.ScaleMeasurementUnit.Match(
-                x=>x,
-                ()=>
-                {
-                    Log.Error("EventTracker has not scale while calculate inside SumScaleCalculator");
-                    return "";
-                } );
-            return Option<ISingleTrackerFact>.Some(new SumScaleFact(
+
+            var sumScale = events.Select(x => x.CustomizationsParameters.Scale).Somes().Sum();
+            var measurementUnit = tracker.CustomizationSettings.ScaleMeasurementUnit
+                .Match(x => x,
+                    () => "No Scale"
+                );
+            return Option<ISingleTrackerTrackerFact>.Some(new SumScaleTrackerFact(
                 "Суммарное значение шкалы",
-                $"Сумма значений {measurementUnit} для события {eventTracker.Name} равна {sumScale}",
+                $"Сумма значений {measurementUnit} для события {tracker.Name} равна {sumScale}",
                 2.0,
                 sumScale,
                 measurementUnit
             ));
         }
 
-        private static bool CanCalculate(EventTracker eventTracker, IReadOnlyList<Event> loadAllTrackerEvents)
+        private static bool CanCalculate(IReadOnlyCollection<Event> loadAllTrackerEvents)
         {
-            if (eventTracker.CustomizationSettings.ScaleMeasurementUnit.IsNone)
+            if (loadAllTrackerEvents.Any(@event => @event.CustomizationsParameters.Scale == Option<double>.None))
             {
                 return false;
             }
 
-            if (loadAllTrackerEvents.Any(@event => @event.CustomParameters.Scale == Option<double>.None))
-            {
-                return false;
-            }
             return loadAllTrackerEvents.Count > 1;
         }
     }

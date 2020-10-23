@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using ItHappend.Domain.Statistics;
 using ItHappened.Domain;
 using ItHappened.Domain.Statistics;
 using ItHappened.Infrastructure.Repositories;
@@ -35,7 +34,7 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
 
             //act 
             var fact = new AverageScaleCalculator(_eventRepository).Calculate(eventTracker)
-                .ConvertTo<AverageScaleFact>().ValueUnsafe();
+                .ConvertTo<AverageScaleTrackerFact>().ValueUnsafe();
 
             //assert 
             Assert.AreEqual("Среднее значение шкалы", fact.FactName);
@@ -54,7 +53,7 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
 
             //act 
             var fact = new AverageScaleCalculator(_eventRepository).Calculate(eventTracker)
-                .ConvertTo<AverageScaleFact>();
+                .ConvertTo<AverageScaleTrackerFact>();
 
             //assert 
             Assert.True(fact.IsNone);
@@ -70,7 +69,7 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
 
             //act 
             var fact = new AverageScaleCalculator(_eventRepository).Calculate(eventTracker)
-                .ConvertTo<AverageScaleFact>();
+                .ConvertTo<AverageScaleTrackerFact>();
 
             //assert 
             Assert.True(fact.IsNone);
@@ -86,7 +85,7 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
 
             //act 
             var fact = new AverageScaleCalculator(_eventRepository).Calculate(eventTracker)
-                .ConvertTo<AverageScaleFact>();
+                .ConvertTo<AverageScaleTrackerFact>();
 
             //assert 
             Assert.True(fact.IsNone);
@@ -102,7 +101,7 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
 
             //act 
             var fact = new AverageScaleCalculator(_eventRepository).Calculate(eventTracker)
-                .ConvertTo<AverageScaleFact>();
+                .ConvertTo<AverageScaleTrackerFact>();
 
             //assert 
             Assert.True(fact.IsNone);

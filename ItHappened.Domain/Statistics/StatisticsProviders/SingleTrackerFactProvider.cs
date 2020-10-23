@@ -8,18 +8,20 @@ namespace ItHappened.Domain.Statistics
         private readonly List<ISingleTrackerStatisticsCalculator> _calculators =
             new List<ISingleTrackerStatisticsCalculator>();
 
+        private readonly List<ISingleTrackerStatisticsCalculator> _eventRepository;
+        private readonly List<ISingleTrackerStatisticsCalculator> _trackerRepository;
+
         public void Add(ISingleTrackerStatisticsCalculator calculator)
         {
             _calculators.Add(calculator);
         }
 
-        public IReadOnlyCollection<ISingleTrackerFact> GetFacts(EventTracker eventTracker)
+        public IReadOnlyCollection<ISingleTrackerTrackerFact> GetFacts(IReadOnlyCollection<Event> events, EventTracker tracker)
         {
             return _calculators
-                .Select(calculator => calculator.Calculate(eventTracker))
+                .Select(calculator => calculator.Calculate(events, tracker))
                 .Somes()
                 .OrderByDescending(fact => fact.Priority)
-                .OrderBy(fact => fact.Priority)
                 .ToList();
         }
     }

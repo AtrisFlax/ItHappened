@@ -4,6 +4,7 @@ using System.Linq;
 using ItHappened.Domain;
 using ItHappened.Domain.Statistics;
 using ItHappened.Infrastructure.Repositories;
+using LanguageExt;
 using LanguageExt.UnsafeValueAccess;
 using NUnit.Framework;
 
@@ -26,14 +27,14 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
         public void EventTrackerHasTwoRatingAndEvents_CalculateSuccess()
         {
             //arrange 
-            var eventTracker = CreateTrackerWithRating();
+            var eventTracker = CreateTracker();
             var (events, ratings) = CreateEventsWithRating(eventTracker.Id, _rand.Next() % 10 + MinEventForCalculation);
             _eventRepository.AddRangeOfEvents(events);
-            
+
             //act 
-            var fact = new AverageRatingCalculator(_eventRepository).Calculate(eventTracker)
-                .ConvertTo<AverageRatingFact>().ValueUnsafe();
-            
+            var fact = new AverageRatingCalculator().Calculate(events, eventTracker)
+                .ConvertTo<AverageRatingTrackerFact>().ValueUnsafe();
+
             //assert 
             Assert.AreEqual(Math.Sqrt(ratings.Average()), fact.Priority);
             Assert.AreEqual(ratings.Average(), fact.AverageRating);
@@ -43,14 +44,15 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
         public void EventTrackerHasNoRationCustomization_CalculateFailed()
         {
             //arrange 
-            var eventTracker = CreateTrackerWithoutRating();
+            var eventTracker = new EventTracker(Guid.NewGuid(), Guid.NewGuid(), "Tracker name",
+                new TrackerCustomizationSettings());
             var (events, _) = CreateEventsWithRating(eventTracker.Id, _rand.Next() % 10 + MinEventForCalculation);
             _eventRepository.AddRangeOfEvents(events);
-            
+
             //act 
-            var fact = new AverageRatingCalculator(_eventRepository).Calculate(eventTracker)
-                .ConvertTo<AverageRatingFact>();
-            
+            var fact = new AverageRatingCalculator().Calculate(events, eventTracker)
+                .ConvertTo<AverageRatingTrackerFact>();
+
             //assert 
             Assert.True(fact.IsNone);
         }
@@ -59,14 +61,15 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
         public void EventTrackerHasOneEvent_CalculateFailed()
         {
             //arrange 
-            var eventTracker = CreateTrackerWithRating();
+            var eventTracker = new EventTracker(Guid.NewGuid(), Guid.NewGuid(), "Tracker name",
+                new TrackerCustomizationSettings());
             var (events, _) = CreateEventsWithRating(eventTracker.Id, 1);
             _eventRepository.AddRangeOfEvents(events);
-            
+
             //act 
-            var fact = new AverageRatingCalculator(_eventRepository).Calculate(eventTracker)
-                .ConvertTo<AverageRatingFact>();
-            
+            var fact = new AverageRatingCalculator().Calculate(events, eventTracker)
+                .ConvertTo<AverageRatingTrackerFact>();
+
             //assert 
             Assert.True(fact.IsNone);
         }
@@ -75,66 +78,25 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
         public void EventTrackerHasZeroEvents_CalculateFailed()
         {
             //arrange 
-            var eventTracker = CreateTrackerWithRating();
-            
+            var eventTracker = new EventTracker(Guid.NewGuid(), Guid.NewGuid(), "Tracker name",
+                new TrackerCustomizationSettings());
+            var (events, _) = CreateEventsWithRating(eventTracker.Id, 0);
+
             //act 
-            var fact = new AverageRatingCalculator(_eventRepository).Calculate(eventTracker)
-                .ConvertTo<AverageRatingFact>();
-            
+            var fact = new AverageRatingCalculator().Calculate(events, eventTracker)
+                .ConvertTo<AverageRatingTrackerFact>();
+
             //assert 
             Assert.True(fact.IsNone);
         }
 
-        [Test]
-        public void EventTrackerHasNoCustomizationRating_CalculateFailed()
+        private static EventTracker CreateTracker()
         {
-            //arrange 
-            var eventTracker = CreateTrackerWithoutRating();
-            var (events, _) = CreateEventsWithRating(eventTracker.Id, _rand.Next() % 10 + MinEventForCalculation);
-            _eventRepository.AddRangeOfEvents(events);
-            
-            //act 
-            var fact = new AverageRatingCalculator(_eventRepository).Calculate(eventTracker)
-                .ConvertTo<AverageRatingFact>();
-            
-            //assert 
-            Assert.True(fact.IsNone);
+            return new EventTracker(Guid.NewGuid(), Guid.NewGuid(), "Tracker name", new TrackerCustomizationSettings());
         }
 
-        [Test]
-        public void EventTrackerHasCustomizationRatingEventsHasNotCustomization_CalculateFailed()
-        {
-            //arrange 
-            var eventTracker = CreateTrackerWithRating();
-            var events = CreateEventsWithoutRating(eventTracker.Id, _rand.Next() % 10 + MinEventForCalculation);
-            _eventRepository.AddRangeOfEvents(events);
-            
-            //act 
-            var fact = new AverageRatingCalculator(_eventRepository).Calculate(eventTracker)
-                .ConvertTo<AverageRatingFact>();
-            
-            //assert 
-            Assert.True(fact.IsNone);
-        }
-
-        private static EventTracker CreateTrackerWithRating()
-        {
-            var eventTracker = EventTrackerBuilder
-                .Tracker(Guid.NewGuid(), Guid.NewGuid(), "TrackerName")
-                .WithRating()
-                .Build();
-            return eventTracker;
-        }
-
-        private static EventTracker CreateTrackerWithoutRating()
-        {
-            var eventTracker = EventTrackerBuilder
-                .Tracker(Guid.NewGuid(), Guid.NewGuid(), "TrackerName")
-                .Build();
-            return eventTracker;
-        }
-
-        private static (IEnumerable<Event> events, List<double> Rating) CreateEventsWithRating(Guid trackerId, int num)
+        private static (IReadOnlyCollection<Event> events, List<double> Rating) CreateEventsWithRating(Guid trackerId,
+            int num)
         {
             var ratings = CreateRandomRatings(num);
             var events = ratings.Select(t => CreateEventWithRating(trackerId, t)).ToList();
@@ -148,6 +110,7 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
             {
                 events.Add(CreateEventWithoutRating(trackerId));
             }
+
             return events;
         }
 
@@ -158,22 +121,39 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
             {
                 ratings.Add(_rand.NextDouble());
             }
+
             return ratings;
         }
 
         private static Event CreateEventWithRating(Guid trackerId, double rating)
         {
-            return EventBuilder
-                .Event(Guid.NewGuid(), Guid.NewGuid(), trackerId, DateTimeOffset.UtcNow, $"Event with rating {rating}")
-                .WithRating(rating)
-                .Build();
+            return new Event(Guid.NewGuid(),
+                Guid.NewGuid(),
+                trackerId,
+                DateTimeOffset.UtcNow,
+                new EventCustomParameters(
+                    Option<Photo>.None,
+                    Option<double>.None,
+                    Option<double>.Some(rating),
+                    Option<GeoTag>.None,
+                    Option<Comment>.None)
+            );
         }
+
 
         private static Event CreateEventWithoutRating(Guid trackerId)
         {
-            return EventBuilder
-                .Event(Guid.NewGuid(), Guid.NewGuid(), trackerId, DateTimeOffset.UtcNow, "Event without rating")
-                .Build();
+            return new Event(Guid.NewGuid(),
+                Guid.NewGuid(),
+                trackerId,
+                DateTimeOffset.UtcNow,
+                new EventCustomParameters(
+                    Option<Photo>.None,
+                    Option<double>.None,
+                    Option<double>.None,
+                    Option<GeoTag>.None,
+                    Option<Comment>.None)
+            );
         }
     }
 }

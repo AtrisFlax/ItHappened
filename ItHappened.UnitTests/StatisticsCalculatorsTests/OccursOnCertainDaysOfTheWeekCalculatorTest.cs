@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using ItHappend.Domain.Statistics;
 using ItHappened.Domain;
 using ItHappened.Domain.Statistics;
 using ItHappened.Infrastructure.Repositories;
@@ -31,7 +30,7 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
 
             //act 
             var fact = new OccursOnCertainDaysOfTheWeekCalculator(_eventRepository)
-                .Calculate(eventTracker).ConvertTo<OccursOnCertainDaysOfTheWeekFact>().ValueUnsafe();
+                .Calculate(eventTracker).ConvertTo<OccursOnCertainDaysOfTheWeekTrackerFact>().ValueUnsafe();
 
             //assert 
             Assert.AreEqual("Происходит в определённые дни недели", fact.FactName);
@@ -51,7 +50,7 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
 
             //act 
             var fact = new OccursOnCertainDaysOfTheWeekCalculator(_eventRepository)
-                .Calculate(eventTracker).ConvertTo<OccursOnCertainDaysOfTheWeekFact>();
+                .Calculate(eventTracker).ConvertTo<OccursOnCertainDaysOfTheWeekTrackerFact>();
 
             //assert 
             Assert.True(fact.IsNone);
@@ -69,7 +68,7 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
 
             //act 
             var fact = new OccursOnCertainDaysOfTheWeekCalculator(_eventRepository)
-                .Calculate(eventTracker).ConvertTo<OccursOnCertainDaysOfTheWeekFact>();
+                .Calculate(eventTracker).ConvertTo<OccursOnCertainDaysOfTheWeekTrackerFact>();
 
             //assert 
             Assert.True(fact.IsNone);

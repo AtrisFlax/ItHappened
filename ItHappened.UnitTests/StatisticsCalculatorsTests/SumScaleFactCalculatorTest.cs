@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using ItHappend.Domain.Statistics;
 using ItHappened.Domain;
 using ItHappened.Domain.Statistics;
 using ItHappened.Infrastructure.Repositories;
@@ -34,7 +33,7 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
             
             //act 
             var fact = new SumScaleCalculator(_eventRepository)
-                .Calculate(eventTracker).ConvertTo<SumScaleFact>().ValueUnsafe();
+                .Calculate(eventTracker).ConvertTo<SumScaleTrackerFact>().ValueUnsafe();
             
             //assert 
             Assert.AreEqual(2, fact.Priority, PriorityAccuracy);
@@ -51,7 +50,7 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
             _eventRepository.AddRangeOfEvents(events);
                 
             //act 
-            var fact = new SumScaleCalculator(_eventRepository).Calculate(eventTracker).ConvertTo<SumScaleFact>();
+            var fact = new SumScaleCalculator(_eventRepository).Calculate(eventTracker).ConvertTo<SumScaleTrackerFact>();
 
             //assert 
             Assert.True(fact.IsNone);
@@ -66,7 +65,7 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
             _eventRepository.AddRangeOfEvents(events);
 
             //act 
-            var fact = new SumScaleCalculator(_eventRepository).Calculate(eventTracker).ConvertTo<SumScaleFact>();
+            var fact = new SumScaleCalculator(_eventRepository).Calculate(eventTracker).ConvertTo<SumScaleTrackerFact>();
 
             //assert 
             Assert.True(fact.IsNone);
@@ -81,7 +80,7 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
             _eventRepository.AddRangeOfEvents(events);
             
             //act 
-            var fact = new SumScaleCalculator(_eventRepository).Calculate(eventTracker).ConvertTo<SumScaleFact>();
+            var fact = new SumScaleCalculator(_eventRepository).Calculate(eventTracker).ConvertTo<SumScaleTrackerFact>();
 
             //assert 
             Assert.True(fact.IsNone);

@@ -1,16 +1,14 @@
-﻿using ItHappened.Domain.Statistics;
-
-namespace ItHappend.Domain.Statistics
+﻿namespace ItHappened.Domain.Statistics
 {
-    public class SumScaleFact : ISingleTrackerFact
+    public class SumScaleTrackerFact : ISingleTrackerTrackerFact
     {
         public double SumValue { get; }
         public string MeasurementUnit { get; }
         public string FactName { get; }
         public string Description { get; }
         public double Priority { get; }
-        
-        internal SumScaleFact(string factName, string description, double priority, double sumValue,
+
+        internal SumScaleTrackerFact(string factName, string description, double priority, double sumValue,
             string measurementUnit)
         {
             FactName = factName;

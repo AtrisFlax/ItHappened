@@ -1,10 +1,8 @@
 ﻿using System;
-using ItHappened.Domain;
-using ItHappened.Domain.Statistics;
 
-namespace ItHappend.Domain.Statistics
+namespace ItHappened.Domain.Statistics
 {
-    public class WorstEventFact : ISingleTrackerFact
+    public class WorstEventTrackerFact : ISingleTrackerTrackerFact
     {
         public double Rating { get; }
         public DateTimeOffset HappensDate { get; }
@@ -13,8 +11,8 @@ namespace ItHappend.Domain.Statistics
         public string FactName { get; }
         public string Description { get; }
         public double Priority { get; }
-        
-        internal WorstEventFact(string factName,
+
+        internal WorstEventTrackerFact(string factName,
             string description,
             double priority,
             double rating,

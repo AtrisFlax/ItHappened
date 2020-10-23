@@ -1,6 +1,6 @@
 ﻿namespace ItHappened.Domain.Statistics
 {
-    public class LongestBreakFact : ISingleTrackerFact
+    public class LongestBreakTrackerFact : ISingleTrackerTrackerFact
     {
         public int DurationInDays { get; }
         public Event LastEventBeforeBreakDate { get; }
@@ -8,7 +8,8 @@
         public string FactName { get; }
         public string Description { get; }
         public double Priority { get; }
-        internal LongestBreakFact(string factName,
+
+        internal LongestBreakTrackerFact(string factName,
             string description,
             double priority,
             int durationInDays, Event lastEventBeforeBreakDate, Event firstEventAfterBreakDate)
@@ -20,7 +21,5 @@
             LastEventBeforeBreakDate = lastEventBeforeBreakDate;
             FirstEventAfterBreakDate = firstEventAfterBreakDate;
         }
-
- 
     }
 }

@@ -4,6 +4,12 @@ namespace ItHappened.Domain
 {
     public class EventCustomParameters
     {
+        public Option<Photo> Photo { get; }
+        public Option<double> Scale { get; }
+        public Option<double> Rating { get; }
+        public Option<GeoTag> GeoTag { get; }
+        public Option<Comment> Comment { get; }
+
         public EventCustomParameters(Option<Photo> photo,
             Option<double> scale,
             Option<double> rating,
@@ -16,11 +22,5 @@ namespace ItHappened.Domain
             GeoTag = geoTag;
             Comment = comment;
         }
-
-        public Option<Photo> Photo { get; }
-        public Option<double> Scale { get; }
-        public Option<double> Rating { get; }
-        public Option<GeoTag> GeoTag { get; }
-        public Option<Comment> Comment { get; }
     }
 }

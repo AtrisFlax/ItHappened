@@ -4,6 +4,11 @@ namespace ItHappened.Domain
 {
     public class EventTracker
     {
+        public Guid Id { get; }
+        public Guid CreatorId { get; }
+        public string Name { get; }
+        public TrackerCustomizationSettings CustomizationSettings { get; }
+
         public EventTracker(Guid id, Guid creatorId, string name, TrackerCustomizationSettings customizationSettings)
         {
             Id = id;
@@ -11,11 +16,6 @@ namespace ItHappened.Domain
             Name = name;
             CustomizationSettings = customizationSettings;
         }
-        
-        public Guid Id { get; }
-        public Guid CreatorId { get; }
-        public string Name { get; }
-        public TrackerCustomizationSettings CustomizationSettings { get; }
 
         public bool SettingsAndEventCustomizationsMatch(Event @event)
         {
@@ -27,7 +27,6 @@ namespace ItHappened.Domain
                 return false;
             if (@event.CustomParameters.GeoTag.IsNone && !CustomizationSettings.GeoTagIsOptional)
                 return false;
-            
             return true;
         }
     }
