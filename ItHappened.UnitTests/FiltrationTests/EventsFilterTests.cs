@@ -50,9 +50,7 @@ namespace ItHappened.UnitTests.FiltrationTests
             Assert.AreEqual(filteredEvents[0].GeoTag.ValueUnsafe().GpsLat, events[5].GeoTag.ValueUnsafe().GpsLat);
             Assert.AreEqual(filteredEvents[0].Comment.ValueUnsafe().Text, events[5].Comment.ValueUnsafe().Text);
         }
-        
-        //TODO: добавить тест, проверяющий, что порядок фильтров в коллекции влияет на результат фильтрации
-        
+
         private List<Event> CreateEvents(int quantity)
         {
             var events = new List<Event>();
