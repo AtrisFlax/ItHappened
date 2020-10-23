@@ -1,7 +1,10 @@
-﻿namespace ItHappened.Api.Contracts.Requests
+﻿using LanguageExt;
+
+namespace ItHappened.Api.Contracts.Requests
 {
     public class CustomizationSettingsRequest
     {
+        public string ScaleMeasurementUnit { get; set; }
         public bool PhotoIsOptional { get; set; }
         public bool ScaleIsOptional { get; set; }
         public bool RatingIsOptional { get; set; }

@@ -20,8 +20,8 @@ namespace Usage
             var eventRepository = new EventRepository();
             var eventTrackerRepository = new EventTrackerRepository();
             var generalFactProvider = new MultipleTrackersFactProvider();
-            generalFactProvider.Add(new MultipleTrackersEventsCountCalculator(eventRepository));
-            generalFactProvider.Add(new MostFrequentEventCalculator(eventRepository));
+            generalFactProvider.Add(new MultipleTrackersStatisticsEventsCountCalculator(eventRepository));
+            generalFactProvider.Add(new MostFrequentEventStatisticsCalculator(eventRepository));
             var specificFactProvider = new SingleTrackerFactProvider();
             specificFactProvider.Add( new BestEventCalculator(eventRepository));
             specificFactProvider.Add( new AverageRatingCalculator(eventRepository));

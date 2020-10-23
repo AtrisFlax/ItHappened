@@ -26,7 +26,7 @@ namespace ItHappened.Application.Services.StatisticService
             return _multipleTrackersFactProvider.GetFacts(eventTrackers);
         }
 
-        public IReadOnlyCollection<ISingleTrackerFact> GetStatisticsFactsForTracker(Guid userId, Guid eventTrackerId)
+        public IReadOnlyCollection<ISingleTrackerFact> GetStatisticsFactsForTracker(Guid userId, Guid trackerId)
         {
             var eventTracker = _eventTrackerRepository.LoadTracker(userId);
             return _singleTrackerFactProvider.GetFacts(eventTracker);

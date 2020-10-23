@@ -11,15 +11,15 @@ namespace ItHappened.Api.MappingProfiles
         {
             CreateMap<EventTracker, TrackerResponse>();
             CreateMap<Event, EventResponse>();
-            CreateMap<IEnumerable<Event>, IEnumerable<EventResponse>>();
+            CreateMap<TrackerCustomizationSettings, CustomizationSettingsResponse>();
 
-            
+
             //Mapping example
             /*CreateMap<Post, PostResponse>()
                 .ForMember(dest => dest.Tags, opt => 
                     opt.MapFrom(src => src.Tags.Select(x => new TagResponse{Name = x.TagName})));
                     */
-            
+
         }
     }
 }

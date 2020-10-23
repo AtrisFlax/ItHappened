@@ -4,12 +4,12 @@ using LanguageExt;
 
 namespace ItHappened.Domain.Statistics
 {
-    public class MostEventfulDayCalculator : IGeneralCalculator
+    public class MostEventfulDayStatisticsCalculator : IMultipleTrackersStatisticsCalculator
     {
         private readonly IEventRepository _eventRepository;
         private const int ThresholdEventAmount = 1;
 
-        public MostEventfulDayCalculator(IEventRepository eventRepository)
+        public MostEventfulDayStatisticsCalculator(IEventRepository eventRepository)
         {
             _eventRepository = eventRepository;
         }

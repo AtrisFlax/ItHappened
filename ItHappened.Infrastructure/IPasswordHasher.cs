@@ -8,7 +8,6 @@ namespace ItHappened.Infrastructure
     {
         (string hashedPassword, byte[] salt) HashWithRandomSalt(string password);
         string HashWithSalt(string password, byte[] salt);
-
     }
 
     public class PasswordHasher : IPasswordHasher
@@ -16,7 +15,7 @@ namespace ItHappened.Infrastructure
         public (string, byte[]) HashWithRandomSalt(string password)
         {
             // generate a 128-bit salt using a secure PRNG
-            byte[] salt = new byte[128 / 8];
+            var salt = new byte[128 / 8];
             using (var rng = RandomNumberGenerator.Create())
             {
                 rng.GetBytes(salt);

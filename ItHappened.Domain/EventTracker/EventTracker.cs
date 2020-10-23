@@ -4,28 +4,28 @@ namespace ItHappened.Domain
 {
     public class EventTracker
     {
-        public EventTracker(Guid id, Guid creatorId, string name, TrackerCustomizationsSettings customizationsSettings)
+        public EventTracker(Guid id, Guid creatorId, string name, TrackerCustomizationSettings customizationSettings)
         {
             Id = id;
             CreatorId = creatorId;
             Name = name;
-            CustomizationsSettings = customizationsSettings;
+            CustomizationSettings = customizationSettings;
         }
         
         public Guid Id { get; }
         public Guid CreatorId { get; }
         public string Name { get; }
-        public TrackerCustomizationsSettings CustomizationsSettings { get; }
+        public TrackerCustomizationSettings CustomizationSettings { get; }
 
         public bool SettingsAndEventCustomizationsMatch(Event @event)
         {
-            if (@event.CustomizationsParameters.Comment.IsNone && !CustomizationsSettings.CommentIsOptional)
+            if (@event.CustomizationsParameters.Comment.IsNone && !CustomizationSettings.CommentIsOptional)
                 return false;
-            if (@event.CustomizationsParameters.Photo.IsNone && !CustomizationsSettings.PhotoIsOptional)
+            if (@event.CustomizationsParameters.Photo.IsNone && !CustomizationSettings.PhotoIsOptional)
                 return false;
-            if (@event.CustomizationsParameters.Rating.IsNone && !CustomizationsSettings.RatingIsOptional)
+            if (@event.CustomizationsParameters.Rating.IsNone && !CustomizationSettings.RatingIsOptional)
                 return false;
-            if (@event.CustomizationsParameters.GeoTag.IsNone && !CustomizationsSettings.GeoTagIsOptional)
+            if (@event.CustomizationsParameters.GeoTag.IsNone && !CustomizationSettings.GeoTagIsOptional)
                 return false;
             
             return true;

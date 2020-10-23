@@ -34,7 +34,14 @@ namespace ItHappened.Api.Controllers
         public IActionResult CreateTracker([FromBody]TrackerRequest request)
         {
             var userId = Guid.Parse(User.FindFirstValue(JwtClaimTypes.Id));
-            var customizations = _mapper.Map<TrackerCustomizationsSettings>(request.CustomizationSettings);
+            //var customizations = _mapper.Map<TrackerCustomizationsSettings>(request.CustomizationSettings);
+            var customizations = new TrackerCustomizationSettings(
+                request.CustomizationSettings.ScaleMeasurementUnit,
+                request.CustomizationSettings.PhotoIsOptional,
+                request.CustomizationSettings.RatingIsOptional,
+                request.CustomizationSettings.GeoTagIsOptional,
+                request.CustomizationSettings.CommentIsOptional);
+            
             var tracker = new EventTracker(Guid.NewGuid(), userId, request.Name, customizations);
             _trackerRepository.SaveTracker(tracker);
             return Ok(_mapper.Map<TrackerResponse>(tracker));
@@ -63,7 +70,15 @@ namespace ItHappened.Api.Controllers
         public IActionResult UpdateTracker([FromRoute]Guid trackerId, [FromBody]TrackerRequest request)
         {
             var userId = Guid.Parse(User.FindFirstValue(JwtClaimTypes.Id));
-            var tracker = _eventTrackerService.EditEventTracker(userId, trackerId, request.Name);
+            //TODO REFACTOR MAPPING
+            var customizations = new TrackerCustomizationSettings(
+                request.CustomizationSettings.ScaleMeasurementUnit,
+                request.CustomizationSettings.PhotoIsOptional,
+                request.CustomizationSettings.RatingIsOptional,
+                request.CustomizationSettings.GeoTagIsOptional,
+                request.CustomizationSettings.CommentIsOptional);
+            
+            var tracker = _eventTrackerService.EditEventTracker(userId, trackerId, request.Name, customizations);
             return Ok(_mapper.Map<TrackerResponse>(tracker));
         }
 
@@ -80,14 +95,18 @@ namespace ItHappened.Api.Controllers
         [ProducesResponseType(200, Type = typeof(IFact))]
         public IActionResult GetStatisticsForSingleTracker([FromRoute]Guid trackerId)
         {
-            return Ok();
+            var userId = Guid.Parse(User.FindFirstValue(JwtClaimTypes.Id));
+            var statistics = _statisticsService.GetStatisticsFactsForTracker(userId, trackerId);
+            return Ok(statistics);
         }
         
         [HttpGet("/trackers/statistics")]
         [ProducesResponseType(200, Type = typeof(List<IFact>))]
         public IActionResult GetStatisticsForAllTrackers()
         {
-            return Ok();
+            var userId = Guid.Parse(User.FindFirstValue(JwtClaimTypes.Id));
+            var statistics = _statisticsService.GetStatisticsFactsForAllUserTrackers(userId);
+            return Ok(statistics);
         }
 
         private readonly IStatisticsService _statisticsService;

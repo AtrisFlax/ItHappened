@@ -4,7 +4,7 @@ namespace ItHappened.Domain.Statistics
 {
     public interface IMultipleTrackersFactProvider
     {
-        void Add(IGeneralCalculator calculator);
+        void Add(IMultipleTrackersStatisticsCalculator statisticsCalculator);
 
         IReadOnlyCollection<IGeneralFact> GetFacts(IEnumerable<EventTracker> eventTrackers);
     }

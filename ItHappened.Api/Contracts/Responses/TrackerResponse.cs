@@ -7,10 +7,10 @@ namespace ItHappened.Api.Contracts.Responses
         public Guid Id { get; set; }
         public Guid CreatorId { get; set; }
         public string Name { get; set; }
-        public CustomizationSettings CustomizationSettings { get; set; }
+        public CustomizationSettingsResponse CustomizationSettings { get; set; }
     }
 
-    public class CustomizationSettings
+    public class CustomizationSettingsResponse
     {
         public bool PhotoIsOptional { get; set; }
         public bool RatingIsOptional { get; set; }

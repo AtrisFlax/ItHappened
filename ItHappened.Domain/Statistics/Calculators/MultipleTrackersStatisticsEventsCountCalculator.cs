@@ -5,11 +5,11 @@ using LanguageExt;
 
 namespace ItHappened.Domain.Statistics
 {
-    public class MultipleTrackersEventsCountCalculator : IGeneralCalculator
+    public class MultipleTrackersStatisticsEventsCountCalculator : IMultipleTrackersStatisticsCalculator
     {
         private readonly IEventRepository _eventRepository;
 
-        public MultipleTrackersEventsCountCalculator(IEventRepository eventRepository)
+        public MultipleTrackersStatisticsEventsCountCalculator(IEventRepository eventRepository)
         {
             _eventRepository = eventRepository;
         }

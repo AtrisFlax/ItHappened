@@ -23,7 +23,7 @@ namespace ItHappened.Domain.Statistics
                 return Option<ISingleTrackerFact>.None;
             }
             var sumScale = loadAllTrackerEvents.Select(x=>x.CustomizationsParameters.Scale).Somes().Sum();
-            var measurementUnit = eventTracker.CustomizationsSettings.ScaleMeasurementUnit.Match(
+            var measurementUnit = eventTracker.CustomizationSettings.ScaleMeasurementUnit.Match(
                 x=>x,
                 ()=>
                 {
@@ -41,7 +41,7 @@ namespace ItHappened.Domain.Statistics
 
         private static bool CanCalculate(EventTracker eventTracker, IReadOnlyList<Event> loadAllTrackerEvents)
         {
-            if (eventTracker.CustomizationsSettings.ScaleMeasurementUnit.IsNone)
+            if (eventTracker.CustomizationSettings.ScaleMeasurementUnit.IsNone)
             {
                 return false;
             }

@@ -3,7 +3,7 @@ using LanguageExt;
 
 namespace ItHappened.Domain.Statistics
 {
-    public interface IGeneralCalculator
+    public interface IMultipleTrackersStatisticsCalculator
     {
         Option<IGeneralFact> Calculate(IEnumerable<EventTracker> eventTrackers);
     }

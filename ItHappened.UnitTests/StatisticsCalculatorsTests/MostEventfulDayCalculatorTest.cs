@@ -43,7 +43,7 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
             _eventRepository.AddRangeOfEvents(eventsExtraEvents4);
 
             //act
-            var fact = new MostEventfulDayCalculator(_eventRepository)
+            var fact = new MostEventfulDayStatisticsCalculator(_eventRepository)
                 .Calculate(new[] {eventTracker1, eventTracker2})
                 .ConvertTo<MostEventfulDayFact>().ValueUnsafe();
 
@@ -67,7 +67,7 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
             _eventRepository.AddRangeOfEvents(eventsTracker);
 
             //act
-            var fact = new MostEventfulDayCalculator(_eventRepository)
+            var fact = new MostEventfulDayStatisticsCalculator(_eventRepository)
                 .Calculate(new[] {eventTracker})
                 .ConvertTo<MostEventfulDayFact>();
 
@@ -87,7 +87,7 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
             _eventRepository.AddRangeOfEvents(eventsTracker);
 
             //act
-            var fact = new MostEventfulDayCalculator(_eventRepository)
+            var fact = new MostEventfulDayStatisticsCalculator(_eventRepository)
                 .Calculate(new[] {eventTracker})
                 .ConvertTo<MostEventfulDayFact>();
 
@@ -125,7 +125,7 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
             _eventRepository.AddRangeOfEvents(eventsExtraEvents5);
 
             //act
-            var fact = new MostEventfulDayCalculator(_eventRepository)
+            var fact = new MostEventfulDayStatisticsCalculator(_eventRepository)
                 .Calculate(new[] {eventTracker1, eventTracker2})
                 .ConvertTo<MostEventfulDayFact>().ValueUnsafe();
 

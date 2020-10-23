@@ -2,9 +2,9 @@
 
 namespace ItHappened.Domain
 {
-    public class TrackerCustomizationsSettings
+    public class TrackerCustomizationSettings
     {
-        public TrackerCustomizationsSettings(Option<string> scaleMeasurementUnit,
+        public TrackerCustomizationSettings(Option<string> scaleMeasurementUnit,
             bool photoIsOptional,
             bool ratingIsOptional,
             bool geoTagIsOptional,

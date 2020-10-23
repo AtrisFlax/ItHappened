@@ -30,7 +30,7 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
             _eventRepository.AddRangeOfEvents(events);
 
             //act
-            var fact = new MostFrequentEventCalculator(_eventRepository)
+            var fact = new MostFrequentEventStatisticsCalculator(_eventRepository)
                 .Calculate(new[] {eventTracker1, eventTracker2})
                 .ConvertTo<MostFrequentEventFact>().ValueUnsafe();
 

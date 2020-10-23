@@ -5,11 +5,11 @@ using LanguageExt;
 
 namespace ItHappened.Domain.Statistics
 {
-    public class MostFrequentEventCalculator : IGeneralCalculator
+    public class MostFrequentEventStatisticsCalculator : IMultipleTrackersStatisticsCalculator
     {
         private readonly IEventRepository _eventRepository;
 
-        public MostFrequentEventCalculator(IEventRepository eventRepository)
+        public MostFrequentEventStatisticsCalculator(IEventRepository eventRepository)
         {
             _eventRepository = eventRepository;
         }
