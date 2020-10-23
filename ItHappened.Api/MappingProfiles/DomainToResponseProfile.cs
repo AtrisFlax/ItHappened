@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using AutoMapper;
-using ItHappened.Api.Contracts.Responses;
+using ItHappened.Api.Models.Responses;
 using ItHappened.Domain;
 
 namespace ItHappened.Api.MappingProfiles

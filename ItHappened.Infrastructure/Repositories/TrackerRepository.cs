@@ -5,7 +5,7 @@ using ItHappened.Domain;
 
 namespace ItHappened.Infrastructure.Repositories
 {
-    public class EventTrackerRepository : IEventTrackerRepository
+    public class TrackerRepository : ITrackerRepository
     {
         private readonly Dictionary<Guid, EventTracker> _eventTrackers = new Dictionary<Guid, EventTracker>();
 
@@ -35,7 +35,7 @@ namespace ItHappened.Infrastructure.Repositories
             _eventTrackers[eventTracker.Id] = eventTracker;
         }
 
-        void IEventTrackerRepository.DeleteTracker(Guid eventTrackerId)
+        void ITrackerRepository.DeleteTracker(Guid eventTrackerId)
         {
             _eventTrackers.Remove(eventTrackerId);
         }

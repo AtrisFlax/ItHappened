@@ -16,7 +16,7 @@ namespace ItHappened.Domain
             GeoTag = geoTag;
             Comment = comment;
         }
-        
+
         public Option<Photo> Photo { get; }
         public Option<double> Scale { get; }
         public Option<double> Rating { get; }

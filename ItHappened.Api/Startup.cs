@@ -2,8 +2,9 @@ using System.Text;
 using AutoMapper;
 using ItHappened.Api.Authentication;
 using ItHappened.Api.Options;
-using ItHappened.Application.Services.EventTrackerService;
+using ItHappened.Application.Services.EventService;
 using ItHappened.Application.Services.StatisticService;
+using ItHappened.Application.Services.TrackerService;
 using ItHappened.Application.Services.UserService;
 using ItHappened.Domain;
 using ItHappened.Domain.Statistics;
@@ -35,13 +36,14 @@ namespace ItHappened.Api
             services.AddControllers();
             
             services.AddSingleton<IUserService, UserService>();
-            services.AddSingleton<IEventTrackerService, EventTrackerService>();
+            services.AddSingleton<IEventService, EventService>();
+            services.AddSingleton<ITrackerService, TrackerService>();
             services.AddSingleton<IStatisticsService, StatisticsService>();
             services.AddSingleton<IMultipleTrackersFactProvider, MultipleTrackersFactProvider>();
             services.AddSingleton<ISingleTrackerFactProvider, SingleTrackerFactProvider>();
 
             services.AddSingleton<IUserRepository, UserRepository>();
-            services.AddSingleton<IEventTrackerRepository, EventTrackerRepository>();
+            services.AddSingleton<ITrackerRepository, TrackerRepository>();
             services.AddSingleton<IEventRepository, EventRepository>();
             
             var jwtOptions = new JwtOptions();

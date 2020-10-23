@@ -1,5 +1,5 @@
-﻿using ItHappened.Application.Services.EventTrackerService;
-using ItHappened.Application.Services.StatisticService;
+﻿using ItHappened.Application.Services.StatisticService;
+using ItHappened.Application.Services.TrackerService;
 using ItHappened.Application.Services.UserService;
 using ItHappened.Domain.Statistics;
 using ItHappened.Infrastructure;
@@ -9,7 +9,7 @@ namespace Usage
 {
     public class CompositionRoot
     {
-        public IEventTrackerService EventTrackerService { get; private set; }
+        public ITrackerService TrackerService { get; private set; }
         public IUserService UserService { get; private set; }
 
         public IStatisticsService StatisticsService { get; private set; }
@@ -18,7 +18,7 @@ namespace Usage
         {
             var userRepository = new UserRepository();
             var eventRepository = new EventRepository();
-            var eventTrackerRepository = new EventTrackerRepository();
+            var eventTrackerRepository = new TrackerRepository();
             var generalFactProvider = new MultipleTrackersFactProvider();
             generalFactProvider.Add(new MultipleTrackersStatisticsEventsCountCalculator(eventRepository));
             generalFactProvider.Add(new MostFrequentEventStatisticsCalculator(eventRepository));
@@ -33,7 +33,7 @@ namespace Usage
             return new CompositionRoot
             {
                 UserService = new UserService(userRepository, new PasswordHasher()),
-                EventTrackerService = new EventTrackerService(eventTrackerRepository, eventRepository),
+                TrackerService = new TrackerService(eventTrackerRepository, eventRepository),
                 StatisticsService = new StatisticsService(eventTrackerRepository, generalFactProvider, specificFactProvider)
             };
         }

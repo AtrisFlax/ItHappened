@@ -13,12 +13,7 @@ namespace ItHappened.Infrastructure.Repositories
         {
             _users.Add(newUser.Id, newUser);
         }
-
-        public User LoadUser(Guid userId)
-        {
-            return _users[userId];
-        }
-
+        
         public User TryFindByLogin(string login)
         {
             return _users

@@ -1,8 +1,8 @@
 ﻿using System.Security.Claims;
 using AutoMapper;
 using ItHappened.Api.Authentication;
-using ItHappened.Api.Contracts.Requests;
-using ItHappened.Api.Contracts.Responses;
+using ItHappened.Api.Models.Requests;
+using ItHappened.Api.Models.Responses;
 using ItHappened.Application.Services.UserService;
 using ItHappened.Infrastructure;
 using Microsoft.AspNetCore.Authorization;
@@ -13,7 +13,13 @@ namespace ItHappened.Api.Controllers
     [ApiController]
     public class IdentityController : ControllerBase
     {
-        public IdentityController(IUserService userService, IJwtIssuer jwtIssuer, IPasswordHasher passwordHasher, IMapper mapper)
+        private readonly IUserService _userService;
+        private readonly IJwtIssuer _jwtIssuer;
+        private readonly IPasswordHasher _passwordHasher;
+        private readonly IMapper _mapper;
+
+        public IdentityController(IUserService userService, IJwtIssuer jwtIssuer, IPasswordHasher passwordHasher,
+            IMapper mapper)
         {
             _userService = userService;
             _jwtIssuer = jwtIssuer;
@@ -24,7 +30,7 @@ namespace ItHappened.Api.Controllers
         [HttpPost]
         [Route("registration")]
         [ProducesResponseType(200, Type = typeof(UserResponse))]
-        public IActionResult Register([FromBody]UserRequest request)
+        public IActionResult Register([FromBody] UserRequest request)
         {
             var user = _userService.TryFindByLogin(request.Name);
             if (user != null)
@@ -34,23 +40,22 @@ namespace ItHappened.Api.Controllers
             var token = _jwtIssuer.GenerateToken(user);
             return Ok(new UserResponse(user.Id, user.Name, token));
         }
-        
+
         [HttpPost]
         [Route("login")]
         [ProducesResponseType(200, Type = typeof(UserResponse))]
-        public IActionResult Authenticate([FromBody]UserRequest request)
+        public IActionResult Authenticate([FromBody] UserRequest request)
         {
             var user = _userService.TryFindByLogin(request.Name);
             if (user == null)
                 return Unauthorized("User with provided credentials not found");
-            
+
             var passwordHashedWithSalt = _passwordHasher.HashWithSalt(request.Password, user.Password.Salt);
             if (passwordHashedWithSalt != user.Password.Hash)
                 return Unauthorized("User with provided credentials not found");
-                
+
             var token = _jwtIssuer.GenerateToken(user);
             return Ok(new UserResponse(user.Id, user.Name, token));
-
         }
 
         [HttpGet]
@@ -63,13 +68,8 @@ namespace ItHappened.Api.Controllers
                 Id = User.FindFirstValue(JwtClaimTypes.Id),
                 Login = User.FindFirstValue(JwtClaimTypes.Login)
             };
-            
+
             return Ok(result);
         }
-        
-        private readonly IUserService _userService;
-        private readonly IJwtIssuer _jwtIssuer;
-        private readonly IPasswordHasher _passwordHasher;
-        private readonly IMapper _mapper;
     }
 }

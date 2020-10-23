@@ -2,19 +2,27 @@
 using System.Collections.Generic;
 using ItHappened.Domain;
 
-namespace ItHappened.Application.Services.EventTrackerService
+namespace ItHappened.Application.Services.EventService
 {
     public class EventService : IEventService
     {
-        public EventService(IEventRepository eventRepository, IEventTrackerRepository trackerRepository)
+        private readonly ITrackerRepository _trackerRepository;
+        private readonly IEventRepository _eventRepository;
+        
+        public EventService(IEventRepository eventRepository, ITrackerRepository trackerRepository)
         {
             _eventRepository = eventRepository;
             _trackerRepository = trackerRepository;
         }
         
-        public Event AddEvent(Guid actorId, Guid trackerId, DateTimeOffset timeStamp, EventCustomParameters customParameters)
+        public Event AddEvent(Guid actorId, Guid trackerId, DateTimeOffset eventHappensDate, EventCustomParameters customParameters)
         {
-            var newEvent = new Event(Guid.NewGuid(), actorId, trackerId, timeStamp, customParameters);
+            var newEvent = new Event(Guid.NewGuid(), actorId, trackerId, eventHappensDate, customParameters);
+            var tracker = _trackerRepository.LoadTracker(trackerId);
+            if (tracker.SettingsAndEventCustomizationsMatch(newEvent))
+            {
+                return null; //todo return no result 
+            }
             _eventRepository.AddEvent(newEvent);
             return newEvent;
         }
@@ -45,7 +53,7 @@ namespace ItHappened.Application.Services.EventTrackerService
             if (actorId != tracker.CreatorId)
                 throw new Exception();
 
-            var updatedEvent = new Event(Guid.NewGuid(), tracker.Id, tracker.CreatorId, timeStamp, customParameters);
+            var updatedEvent = new Event(eventId, tracker.Id, tracker.CreatorId, timeStamp, customParameters);
             _eventRepository.UpdateEvent(updatedEvent);
             return updatedEvent;
         }
@@ -59,9 +67,5 @@ namespace ItHappened.Application.Services.EventTrackerService
             _eventRepository.DeleteEvent(eventId);
             return @event;
         }
-        
-        
-        private readonly IEventTrackerRepository _trackerRepository;
-        private readonly IEventRepository _eventRepository;
     }
 }

@@ -2,15 +2,11 @@
 using ItHappened.Domain;
 using LanguageExt;
 
-namespace ItHappened.Api.Contracts.Responses
+namespace ItHappened.Api.Models.Requests
 {
-    public class EventResponse
+    public class EventRequest
     {
-        public Guid Id { get; set; }
-        public Guid CreatorId { get; set; }
-        public Guid TrackerId { get; set; }
         public DateTimeOffset HappensDate { get; set; }
-        public string Title { get; set; }
         public Option<Photo> Photo { get; set; }
         public Option<double> Scale { get; set; }
         public Option<double> Rating { get; set; }

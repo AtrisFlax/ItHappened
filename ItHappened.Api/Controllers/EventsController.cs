@@ -2,9 +2,9 @@
 using System.Security.Claims;
 using AutoMapper;
 using ItHappened.Api.Authentication;
-using ItHappened.Api.Contracts.Requests;
-using ItHappened.Api.Contracts.Responses;
-using ItHappened.Application.Services.EventTrackerService;
+using ItHappened.Api.Models.Requests;
+using ItHappened.Api.Models.Responses;
+using ItHappened.Application.Services.EventService;
 using ItHappened.Domain;
 using Microsoft.AspNetCore.Mvc;
 
@@ -12,6 +12,9 @@ namespace ItHappened.Api.Controllers
 {
     public class EventsController : ControllerBase
     {
+        private readonly IEventService _eventService;
+        private readonly IMapper _mapper;
+        
         public EventsController(IEventService eventService, IMapper mapper)
         {
             _eventService = eventService;
@@ -65,8 +68,5 @@ namespace ItHappened.Api.Controllers
             var deletedTracker = _eventService.DeleteEvent(userId, eventId);
             return Ok(_mapper.Map<EventResponse>(deletedTracker));
         }
-
-        private readonly IEventService _eventService;
-        private readonly IMapper _mapper;
     }
 }

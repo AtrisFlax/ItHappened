@@ -16,6 +16,7 @@ namespace ItHappened.Domain
             HappensDate = happensDate;
             CustomizationsParameters = customizationsParameters;
         }
+
         public Guid Id { get; }
         public Guid CreatorId { get; }
         public Guid TrackerId { get; }

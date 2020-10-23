@@ -1,6 +1,4 @@
-﻿using LanguageExt;
-
-namespace ItHappened.Api.Contracts.Requests
+﻿namespace ItHappened.Api.Models.Requests
 {
     public class CustomizationSettingsRequest
     {
