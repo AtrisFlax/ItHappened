@@ -28,22 +28,21 @@ namespace ItHappened.Domain.Statistics
                         Event = x,
                         Rating = x.CustomizationsParameters.Rating.ValueUnsafe()
                     })
-                    .OrderBy(x => x.Rating).Last();
+                    .OrderByDescending(x => x.Rating).First();
 
             if (bestRatingEventInfo.Event.HappensDate < now.AddDays(-MinDaysThreshold))
             {
-                return Option<ISingleTrackerTrackerFact>.None;
+                 return Option<ISingleTrackerTrackerFact>.None;
             }
 
             var bestRatingEvent = bestRatingEventInfo.Event;
             var comment = bestRatingEvent.CustomizationsParameters.Comment;
             var bestRating = bestRatingEventInfo.Rating;
-            var commentInfo = comment.Match(
-                comm => $" с комментарием {comm}",
-                () => string.Empty);
+            var commentInfo = comment.IfNone(new Comment(string.Empty));
+            var textComment = $" с комментарием {commentInfo.Text}";
             const string factName = "Лучшее событие";
             var description = $"Событие {tracker.Name} с самым высоким рейтингом {bestRating} " +
-                              $"произошло {bestRatingEvent.HappensDate}{commentInfo}";
+                              $"произошло {bestRatingEvent.HappensDate:d}{textComment}";
             var priority = bestRating;
             var bestEventDate = bestRatingEventInfo.Event.HappensDate;
 

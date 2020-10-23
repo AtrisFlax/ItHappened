@@ -22,5 +22,14 @@ namespace ItHappened.Domain
             GeoTag = geoTag;
             Comment = comment;
         }
+        
+        public EventCustomParameters()
+        {
+            Photo = Option<Photo>.None;
+            Scale = Option<double>.None;
+            Rating = Option<double>.None;
+            GeoTag = Option<GeoTag>.None;
+            Comment = Option<Comment>.None;
+        }
     }
 }

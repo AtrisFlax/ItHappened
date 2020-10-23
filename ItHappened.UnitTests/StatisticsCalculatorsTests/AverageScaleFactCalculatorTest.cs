@@ -28,7 +28,8 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
         public void EventsOnlyWithScale_CalculateSuccess()
         {
             //arrange 
-            var tracker = CreateTrackerWithScale(MeasurementUnit);
+            var userId = Guid.NewGuid();
+            var tracker = CreateTrackerWithScale(userId, MeasurementUnit);
             var (events, scaleValues) =
                 CreateEventsWithScale(tracker.Id, _rand.Next() % 10 + MinEventForCalculation);
             _eventRepository.AddRangeOfEvents(events);
@@ -49,11 +50,12 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
         public void EventsWithScaleAndWithoutScaleCalculateSuccess()
         {
             //arrange 
-            var tracker = CreateTrackerWithScale(MeasurementUnit);
+            var userId = Guid.NewGuid();
+            var tracker = CreateTrackerWithScale(userId, MeasurementUnit);
             var (eventsWithScale, scaleValues) =
                 CreateEventsWithScale(tracker.Id, _rand.Next() % 10 + MinEventForCalculation);
             var eventsWithoutScale =
-                CreateEventsWithoutCustomization(tracker.Id, _rand.Next() % 10 + MinEventForCalculation);
+                CreateEventsWithoutCustomization(tracker.Id, userId, _rand.Next() % 10 + MinEventForCalculation);
             _eventRepository.AddRangeOfEvents(eventsWithScale);
             _eventRepository.AddRangeOfEvents(eventsWithoutScale);
             var allEvents = _eventRepository.LoadAllTrackerEvents(tracker.Id);
@@ -73,7 +75,8 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
         public void EventTrackerHasOneEvent_CalculateFailure()
         {
             //arrange 
-            var tracker = CreateTrackerWithScale(MeasurementUnit);
+            var userId = Guid.NewGuid();
+            var tracker = CreateTrackerWithScale(userId, MeasurementUnit);
             var (events, _) = CreateEventsWithScale(tracker.Id, 1);
             _eventRepository.AddRangeOfEvents(events);
             var allEvents = _eventRepository.LoadAllTrackerEvents(tracker.Id);
@@ -90,7 +93,8 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
         public void EventTrackerHasZeroEvent_CalculateFailure()
         {
             //arrange 
-            var tracker = CreateTrackerWithScale(MeasurementUnit);
+            var userId = Guid.NewGuid();
+            var tracker = CreateTrackerWithScale(userId, MeasurementUnit);
             var (events, _) = CreateEventsWithScale(tracker.Id, 0);
             _eventRepository.AddRangeOfEvents(events);
             var allEvents = _eventRepository.LoadAllTrackerEvents(tracker.Id);

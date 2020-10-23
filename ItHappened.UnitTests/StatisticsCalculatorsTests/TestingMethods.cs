@@ -6,22 +6,19 @@ using LanguageExt;
 
 namespace ItHappened.UnitTests.StatisticsCalculatorsTests
 {
-    public class TestingMethods
+    public static class TestingMethods
     {
         public static readonly Random Rand = new Random();
 
-        public TestingMethods()
+
+        public static EventTracker CreateTracker(Guid userId, string name = "Tracker name")
         {
+            return new EventTracker(Guid.NewGuid(), userId, name, new TrackerCustomizationSettings());
         }
 
-        public static EventTracker CreateTracker()
+        public static EventTracker CreateTrackerWithScale(Guid userId, string scale)
         {
-            return new EventTracker(Guid.NewGuid(), Guid.NewGuid(), "Tracker name", new TrackerCustomizationSettings());
-        }
-
-        public static EventTracker CreateTrackerWithScale(string scale)
-        {
-            return new EventTracker(Guid.NewGuid(), Guid.NewGuid(), "Tracker name",
+            return new EventTracker(userId, Guid.NewGuid(), "Tracker name",
                 new TrackerCustomizationSettings(
                     Option<string>.Some(scale),
                     false,
@@ -32,10 +29,11 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
         }
 
         public static (IReadOnlyCollection<Event> events, List<double> Rating) CreateEventsWithRating(Guid trackerId,
+            Guid userId,
             int num)
         {
             var ratings = CreateRandomRatings(num);
-            var events = ratings.Select(t => CreateEventWithRating(trackerId, t)).ToList();
+            var events = ratings.Select(t => CreateEventWithRating(trackerId, userId, t)).ToList();
             return (events, ratings);
         }
 
@@ -50,15 +48,17 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
                 .AsReadOnly();
             return (events, ratings);
         }
-        
-        public static (IReadOnlyCollection<Event> events, List<double> Rating) CreateEventsWithCommentAndWithRatingInsideFromToTime(
-            Guid trackerId,
-            int createNumEvents,
-            DateTimeOffset from, DateTimeOffset to)
+
+        public static (IReadOnlyCollection<Event> events, List<double> Rating)
+            CreateEventsWithCommentAndWithRatingInsideFromToTime(
+                Guid trackerId,
+                int createNumEvents,
+                DateTimeOffset from, DateTimeOffset to)
         {
             var ratings = CreateRandomRatings(createNumEvents);
             var events = ratings
-                .Select((t, i) => CreateEventWithRatingAndCommentInsideFromTo(trackerId, t, new Comment($"Comment {i}"), from, to))
+                .Select((t, i) =>
+                    CreateEventWithRatingAndCommentInsideFromTo(trackerId, t, new Comment($"Comment {i}"), from, to))
                 .ToList()
                 .AsReadOnly();
             return (events, ratings);
@@ -73,12 +73,12 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
         }
 
 
-        public static IEnumerable<Event> CreateEventsWithoutCustomization(Guid trackerId, int num)
+        public static IEnumerable<Event> CreateEventsWithoutCustomization(Guid trackerId, Guid userId, int num)
         {
             var events = new List<Event>();
             for (var i = 0; i < num; i++)
             {
-                events.Add(CreateEvent(trackerId));
+                events.Add(CreateEvent(trackerId, userId));
             }
 
             return events;
@@ -95,10 +95,10 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
             return ratings;
         }
 
-        public static Event CreateEventWithRating(Guid trackerId, double rating)
+        public static Event CreateEventWithRating(Guid trackerId, Guid userId, double rating)
         {
             return new Event(Guid.NewGuid(),
-                Guid.NewGuid(),
+                userId,
                 trackerId,
                 DateTimeOffset.UtcNow,
                 new EventCustomParameters(
@@ -125,8 +125,9 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
                 )
             );
         }
-        
-        public static Event CreateEventWithRatingAndCommentInsideFromTo(Guid trackerId, double rating, Comment comment, DateTimeOffset from, DateTimeOffset to)
+
+        public static Event CreateEventWithRatingAndCommentInsideFromTo(Guid trackerId, double rating, Comment comment,
+            DateTimeOffset from, DateTimeOffset to)
         {
             return new Event(Guid.NewGuid(),
                 Guid.NewGuid(),
@@ -141,9 +142,10 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
                 )
             );
         }
-        
-        
-        public static Event CreateEventWithRatingAndFixDate(Guid trackerId, double rating, Comment comment, DateTimeOffset fixDate)
+
+
+        public static Event CreateEventWithRatingAndFixDate(Guid trackerId, double rating, Comment comment,
+            DateTimeOffset fixDate)
         {
             return new Event(Guid.NewGuid(),
                 Guid.NewGuid(),
@@ -158,12 +160,23 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
                 )
             );
         }
+
+        public static Event CreateEventFixDate(Guid trackerId, Guid userId, DateTimeOffset fixDate)
+        {
+            return new Event(Guid.NewGuid(),
+                userId,
+                trackerId,
+                fixDate,
+                new EventCustomParameters()
+            );
+        }
+
         private static DateTimeOffset RandomDayFromTo(DateTimeOffset from, DateTimeOffset to)
         {
             var range = (to - from).Days;
             return from.AddDays(Rand.Next(range));
         }
-        
+
         public static Event CreateEventWithScale(Guid trackerId, double scale)
         {
             return new Event(Guid.NewGuid(),
@@ -179,10 +192,10 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
             );
         }
 
-        public static Event CreateEvent(Guid trackerId)
+        public static Event CreateEvent(Guid trackerId, Guid userId)
         {
             return new Event(Guid.NewGuid(),
-                Guid.NewGuid(),
+                userId,
                 trackerId,
                 DateTimeOffset.UtcNow,
                 new EventCustomParameters(
@@ -193,6 +206,8 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
                     Option<Comment>.None)
             );
         }
+        
+        
 
         private static List<double> CreateRandomScale(int num)
         {
@@ -203,6 +218,40 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
             }
 
             return scaleValues;
+        }
+
+        public static IEnumerable<Event> CreateEventsEveryDayByDayInPast(Guid trackerId, Guid userId, int num,
+            DateTimeOffset time)
+        {
+            var events = new List<Event>();
+            for (var i = 0; i < num; i++)
+            {
+                events.Add(CreateEventFixDate(trackerId, userId, time.AddDays(-i)));
+            }
+            return events;
+        }
+        
+        public static IEnumerable<Event> CreateEventsEveryDaysAgo(Guid eventTrackerId, Guid userId, int daysAgo,
+            int num, DateTimeOffset now)
+        {
+            var events = new List<Event>();
+            for (var i = 0; i < num; i++)
+            {
+                events.Add(CreateEventFixDate(eventTrackerId, userId, now.AddDays(-daysAgo)));
+            }
+
+            return events;
+        }
+        
+        public static IReadOnlyCollection<Event> CreateEvents(Guid eventTrackerId, Guid userId, int num)
+        {
+            var events = new List<Event>();
+            for (var i = 0; i < num; i++)
+            {
+                events.Add(CreateEvent(eventTrackerId, userId));
+            }
+
+            return events;
         }
     }
 }

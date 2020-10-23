@@ -26,8 +26,9 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
         public void EventTrackerHasOnlyRatingEvents_CalculateSuccess()
         {
             //arrange 
-            var tracker = CreateTracker();
-            var (events, ratings) = CreateEventsWithRating(tracker.Id, _rand.Next() % 10 + MinEventForCalculation);
+            var userId = Guid.NewGuid();
+            var tracker = CreateTracker(userId);
+            var (events, ratings) = CreateEventsWithRating(tracker.Id, userId, _rand.Next() % 10 + MinEventForCalculation);
             _eventRepository.AddRangeOfEvents(events);
             var allEvents = _eventRepository.LoadAllTrackerEvents(tracker.Id);
 
@@ -44,9 +45,10 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
         public void EventTrackerHasEventsWithRatingAndEventsWithoutRating_CalculateSuccess()
         {
             //arrange 
-            var tracker = CreateTracker();
-            var (events, ratings) = CreateEventsWithRating(tracker.Id, _rand.Next() % 10 + MinEventForCalculation);
-            var eventsWithoutRating = CreateEventsWithoutCustomization(tracker.Id, _rand.Next() % 10 + MinEventForCalculation);
+            var userId = Guid.NewGuid();
+            var tracker = CreateTracker(userId);
+            var (events, ratings) = CreateEventsWithRating(tracker.Id, userId,_rand.Next() % 10 + MinEventForCalculation);
+            var eventsWithoutRating = CreateEventsWithoutCustomization(tracker.Id, userId,_rand.Next() % 10 + MinEventForCalculation);
             _eventRepository.AddRangeOfEvents(events);
             _eventRepository.AddRangeOfEvents(eventsWithoutRating);
             var allEvents = _eventRepository.LoadAllTrackerEvents(tracker.Id);
@@ -65,9 +67,10 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
         public void EventTrackerHasOneEvent_CalculateFailed()
         {
             //arrange 
+            var userId = Guid.NewGuid();
             var tracker = new EventTracker(Guid.NewGuid(), Guid.NewGuid(), "Tracker name",
                 new TrackerCustomizationSettings());
-            var (events, _) = CreateEventsWithRating(tracker.Id, 1);
+            var (events, _) = CreateEventsWithRating(tracker.Id, userId, 1);
             _eventRepository.AddRangeOfEvents(events);
             var allEvents = _eventRepository.LoadAllTrackerEvents(tracker.Id);
 
@@ -83,9 +86,10 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
         public void EventTrackerHasZeroEvents_CalculateFailed()
         {
             //arrange 
+            var userId = Guid.NewGuid();
             var tracker = new EventTracker(Guid.NewGuid(), Guid.NewGuid(), "Tracker name",
                 new TrackerCustomizationSettings());
-            var (events, _) = CreateEventsWithRating(tracker.Id, 0);
+            var (events, _) = CreateEventsWithRating(tracker.Id, userId,0);
             var allEvents = _eventRepository.LoadAllTrackerEvents(tracker.Id);
 
             //act 
