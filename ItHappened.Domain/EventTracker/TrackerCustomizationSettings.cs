@@ -4,6 +4,12 @@ namespace ItHappened.Domain
 {
     public class TrackerCustomizationSettings
     {
+        public Option<string> ScaleMeasurementUnit { get; }
+        public bool PhotoIsOptional { get; }
+        public bool RatingIsOptional { get; }
+        public bool GeoTagIsOptional { get; }
+        public bool CommentIsOptional { get; }
+
         public TrackerCustomizationSettings(Option<string> scaleMeasurementUnit,
             bool photoIsOptional,
             bool ratingIsOptional,
@@ -16,11 +22,14 @@ namespace ItHappened.Domain
             GeoTagIsOptional = geoTagIsOptional;
             CommentIsOptional = commentIsOptional;
         }
-        
-        public Option<string> ScaleMeasurementUnit { get; }
-        public bool PhotoIsOptional { get; }
-        public bool RatingIsOptional { get; }
-        public bool GeoTagIsOptional { get; }
-        public bool CommentIsOptional { get; }
+
+        public TrackerCustomizationSettings()
+        {
+            ScaleMeasurementUnit = Option<string>.None;
+            PhotoIsOptional = false;
+            RatingIsOptional = false;
+            GeoTagIsOptional = false;
+            CommentIsOptional = false;
+        }
     }
 }
