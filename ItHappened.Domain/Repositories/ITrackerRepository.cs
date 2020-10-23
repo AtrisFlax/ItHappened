@@ -3,9 +3,8 @@ using System.Collections.Generic;
 
 namespace ItHappened.Domain
 {
-    public interface IEventTrackerRepository
+    public interface ITrackerRepository
     {
-        bool IsContainTracker(Guid trackerId);
         void SaveTracker(EventTracker newTracker);
         EventTracker LoadTracker(Guid eventTrackerId);
         IEnumerable<EventTracker> LoadAllUserTrackers(Guid userId);

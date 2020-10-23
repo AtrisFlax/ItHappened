@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using ItHappened.Domain;
 
-namespace ItHappened.Application.Services.EventTrackerService
+namespace ItHappened.Application.Services.EventService
 {
     public interface IEventService
     {
-        Event AddEvent(Guid actorId, Guid trackerId, DateTimeOffset timeStamp, EventCustomParameters customParameters);
+        Event AddEvent(Guid actorId, Guid trackerId, DateTimeOffset eventHappensDate, EventCustomParameters customParameters);
         Event GetEvent(Guid actorId, Guid eventId);
         IReadOnlyCollection<Event> GetAllEvents(Guid actorId, Guid trackerId);
 

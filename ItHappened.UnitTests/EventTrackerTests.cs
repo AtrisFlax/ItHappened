@@ -1,5 +1,4 @@
 ﻿using System;
-using ItHappened.Application.Services.EventTrackerService;
 using ItHappened.Domain;
 using ItHappened.Infrastructure.Repositories;
 using NUnit.Framework;
