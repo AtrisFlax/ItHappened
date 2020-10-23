@@ -1,13 +1,13 @@
 ﻿namespace ItHappened.Domain.Statistics
 {
-    public class AverageRatingFact : ISingleTrackerFact
+    public class AverageRatingTrackerFact : ISingleTrackerTrackerFact
     {
         public double AverageRating { get; }
         public string FactName { get; }
         public string Description { get; }
         public double Priority { get; }
-        
-        internal AverageRatingFact(string type, string description, double priority, double averageRating)
+
+        internal AverageRatingTrackerFact(string type, string description, double priority, double averageRating)
         {
             FactName = type;
             Description = description;

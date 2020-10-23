@@ -1,6 +1,6 @@
 ﻿namespace ItHappened.Domain.Statistics
 {
-    public class AverageScaleFact : ISingleTrackerFact
+    public class AverageScaleTrackerFact : ISingleTrackerTrackerFact
     {
         public string FactName { get; }
         public string Description { get; }
@@ -8,7 +8,7 @@
         public double AverageValue { get; }
         public string MeasurementUnit { get; }
 
-        internal AverageScaleFact(string factName, string description, double priority, double averageValue,
+        internal AverageScaleTrackerFact(string factName, string description, double priority, double averageValue,
             string measurementUnit)
         {
             FactName = factName;

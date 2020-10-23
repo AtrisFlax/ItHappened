@@ -53,7 +53,7 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
             //act
             var fact = new MostEventfulWeekCalculator(_eventRepository)
                 .Calculate(new[] {eventTracker1, eventTracker2})
-                .ConvertTo<MostEventfulWeekFact>().ValueUnsafe();
+                .ConvertTo<MostEventfulWeekTrackerTrackerFact>().ValueUnsafe();
 
             //assert 
             var ruName = RuEventName(eventfulWeek.Count, "событие", "события", "событий");
@@ -81,7 +81,7 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
             //act
             var fact = new MostEventfulDayCalculator(_eventRepository)
                 .Calculate(new[] {eventTracker})
-                .ConvertTo<MostEventfulDayFact>();
+                .ConvertTo<MostEventfulDayTrackerTrackerFact>();
 
             //assert 
             Assert.True(fact.IsNone);
@@ -102,7 +102,7 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
             //act
             var fact = new MostEventfulDayCalculator(_eventRepository)
                 .Calculate(new[] {eventTracker})
-                .ConvertTo<MostEventfulDayFact>();
+                .ConvertTo<MostEventfulDayTrackerTrackerFact>();
 
             //assert 
             Assert.True(fact.IsNone);

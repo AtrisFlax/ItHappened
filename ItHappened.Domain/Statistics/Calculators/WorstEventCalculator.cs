@@ -1,6 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
-using ItHappend.Domain.Statistics;
 using LanguageExt;
 using LanguageExt.UnsafeValueAccess;
 
@@ -8,29 +8,22 @@ namespace ItHappened.Domain.Statistics
 {
     public class WorstEventCalculator : ISingleTrackerStatisticsCalculator
     {
-        private readonly IEventRepository _eventRepository;
-        
-        public WorstEventCalculator(IEventRepository eventRepository)
+        public Option<ISingleTrackerTrackerFact> Calculate(IReadOnlyCollection<Event> events, EventTracker tracker)
         {
-            _eventRepository = eventRepository;
-        }
-        
-        public Option<ISingleTrackerFact> Calculate(EventTracker eventTracker)
-        {
-            if (!CanCalculate(eventTracker)) return Option<ISingleTrackerFact>.None;
+            if (!CanCalculate(events)) return Option<ISingleTrackerTrackerFact>.None;
             const string factName = "Худшее событие";
-            var worstEvent = _eventRepository.LoadAllTrackerEvents(eventTracker.Id)
+            var worstEvent = events
                 .OrderBy(eventItem => eventItem.CustomizationsParameters.Rating)
                 .First();
             var priority = 10 - worstEvent.CustomizationsParameters.Rating.Value();
             var worstEventComment = worstEvent.CustomizationsParameters.Comment.Match(
                 comment => comment.Text,
                 () => string.Empty);
-            var description = $"Событие в отслеживании {eventTracker.Name} с самым низким рейтингом " +
+            var description = $"Событие в отслеживании {tracker.Name} с самым низким рейтингом " +
                               $"{worstEvent.CustomizationsParameters.Rating} произошло {worstEvent.HappensDate} " +
                               $"с комментарием {worstEventComment}";
 
-            return Option<ISingleTrackerFact>.Some(new WorstEventFact(
+            return Option<ISingleTrackerTrackerFact>.Some(new WorstEventTrackerFact(
                 factName,
                 description,
                 priority,
@@ -40,15 +33,14 @@ namespace ItHappened.Domain.Statistics
                 worstEvent));
         }
 
-        private bool CanCalculate(EventTracker eventTracker)
+        private bool CanCalculate(IReadOnlyCollection<Event> events)
         {
-            var trackerEvents=_eventRepository.LoadAllTrackerEvents(eventTracker.Id);
-            var isEventsNumberWithRatingMoreOrEqualToTen = trackerEvents
+            var isEventsNumberWithRatingMoreOrEqualToTen = events
                 .Count(eventItem => eventItem.CustomizationsParameters.Rating.IsSome) >= 10;
-            var isOldestEventHappenedMoreThanThreeMonthsAgo = trackerEvents
+            var isOldestEventHappenedMoreThanThreeMonthsAgo = events
                 .OrderBy(eventItem => eventItem.HappensDate)
                 .First().HappensDate <= DateTimeOffset.Now - TimeSpan.FromDays(90);
-            var isEventWithLowestRatingHappenedMoreThanWeekAgo = trackerEvents
+            var isEventWithLowestRatingHappenedMoreThanWeekAgo = events
                 .OrderBy(eventItem => eventItem.CustomizationsParameters.Rating)
                 .First().HappensDate <= DateTimeOffset.Now - TimeSpan.FromDays(7);
             return isEventsNumberWithRatingMoreOrEqualToTen &&

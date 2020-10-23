@@ -2,7 +2,7 @@
 
 namespace ItHappened.Domain.Statistics
 {
-    public class BestEventFact : ISingleTrackerFact
+    public class BestEventTrackerFact : ISingleTrackerTrackerFact
     {
         public DateTimeOffset HappensDate { get; }
         public Comment Comment { get; }
@@ -10,8 +10,8 @@ namespace ItHappened.Domain.Statistics
         public string FactName { get; }
         public string Description { get; }
         public double Priority { get; }
-        
-        internal BestEventFact(string factName, string description, double priority, double rating,
+
+        internal BestEventTrackerFact(string factName, string description, double priority, double rating,
             DateTimeOffset happensDate, Comment comment, Event eventReference)
         {
             FactName = factName;

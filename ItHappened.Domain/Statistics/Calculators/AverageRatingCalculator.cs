@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using LanguageExt;
 using Serilog;
@@ -7,18 +8,11 @@ namespace ItHappened.Domain.Statistics
 {
     public class AverageRatingCalculator : ISingleTrackerStatisticsCalculator
     {
-        private readonly IEventRepository _eventRepository;
-        
-        public AverageRatingCalculator(IEventRepository eventRepository)
+        public Option<ISingleTrackerTrackerFact> Calculate(IReadOnlyCollection<Event> events, EventTracker tracker)
         {
-            _eventRepository = eventRepository;
-        }
-        
-        public Option<ISingleTrackerFact> Calculate(EventTracker eventTracker)
-        {
-            if (!CanCalculate(eventTracker)) return Option<ISingleTrackerFact>.None;
+            if (!CanCalculate(events)) return Option<ISingleTrackerTrackerFact>.None;
 
-            var averageRating = _eventRepository.LoadAllTrackerEvents(eventTracker.Id).Average(x =>
+            var averageRating = events.Average(x =>
             {
                 return x.CustomizationsParameters.Rating.Match(
                     r => r,
@@ -28,20 +22,18 @@ namespace ItHappened.Domain.Statistics
                         return 0;
                     });
             });
-            return Option<ISingleTrackerFact>.Some(new AverageRatingFact(
+            return Option<ISingleTrackerTrackerFact>.Some(new AverageRatingTrackerFact(
                 "Среднее значение оценки",
-                $"Средний рейтинг для события {eventTracker.Name} равен {averageRating}",
+                $"Средний рейтинг для события {tracker.Name} равен {averageRating}",
                 Math.Sqrt(averageRating),
                 averageRating
             ));
         }
 
-        private bool CanCalculate(EventTracker eventTracker)
+        private static bool CanCalculate(IReadOnlyCollection<Event> events)
         {
-            if (!eventTracker.CustomizationSettings.RatingIsOptional) return false;
-            var trackerEvents=_eventRepository.LoadAllTrackerEvents(eventTracker.Id);
-            if (trackerEvents.Any(@event => @event.CustomizationsParameters.Rating == Option<double>.None)) return false;
-            return trackerEvents.Count > 1;
+            if (events.Any(@event => @event.CustomizationsParameters.Rating == Option<double>.None)) return false;
+            return events.Count > 1;
         }
     }
 }

@@ -75,7 +75,7 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
             event10.HappensDate = DateTimeOffset.Now - TimeSpan.FromDays(8);
             _eventRepository.AddEvent(event10);
 
-            var optionalBestEventFact = _bestEventCalculator.Calculate(_eventTracker).ConvertTo<BestEventFact>();
+            var optionalBestEventFact = _bestEventCalculator.Calculate(_eventTracker).ConvertTo<BestEventTrackerFact>();
             var bestEventFact = optionalBestEventFact.ValueUnsafe();
             
             Assert.IsTrue(optionalBestEventFact.IsSome);

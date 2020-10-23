@@ -7,35 +7,29 @@ namespace ItHappened.Domain.Statistics
 {
     public class MostFrequentEventStatisticsCalculator : IMultipleTrackersStatisticsCalculator
     {
-        private readonly IEventRepository _eventRepository;
+        private const int ThresholdEvents = 3;
+        private const int ThresholdTrackers = 2;
 
-        public MostFrequentEventStatisticsCalculator(IEventRepository eventRepository)
+        public Option<IMultipleTrackerTrackerFact> Calculate(
+            IReadOnlyCollection<TrackerWithItsEvents> trackerWithItsEvents)
         {
-            _eventRepository = eventRepository;
-        }
-
-        public Option<IGeneralFact> Calculate(IEnumerable<EventTracker> eventTrackers)
-        {
-            var trackers = eventTrackers.ToList();
-            if (!CanCalculate(trackers))
+            if (!CanCalculate(trackerWithItsEvents))
             {
-                return Option<IGeneralFact>.None;
+                return Option<IMultipleTrackerTrackerFact>.None;
             }
 
-            var trackingNameWithEventsPeriod = trackers
-                .Select(eventTracker => (trackingName: eventTracker.Name, eventsPeriod: 1.0 * (DateTime.Now -
-                        _eventRepository.LoadAllTrackerEvents(eventTracker.Id)
-                            .OrderBy(e => e.HappensDate)
-                            .First()
-                            .HappensDate)
-                    .TotalDays / _eventRepository.LoadAllTrackerEvents(eventTracker.Id).Count)
+            var nowTime = DateTimeOffset.Now;
+            var trackingNameWithEventsPeriod = trackerWithItsEvents
+                .Select(x => (
+                        trackingName: x.Tracker.Name,
+                        eventsPeriod: 1.0 *
+                        (nowTime - x.Events.OrderBy(e => e.HappensDate).First().HappensDate).TotalDays / x.Events.Count
+                    )
                 );
-
-            var eventTrackersWithPeriods = trackingNameWithEventsPeriod.ToList();
-            var (trackingName, eventsPeriod) = eventTrackersWithPeriods
+            var (trackingName, eventsPeriod) = trackingNameWithEventsPeriod
                 .OrderBy(e => e.eventsPeriod)
                 .FirstOrDefault();
-            return Option<IGeneralFact>.Some(new MostFrequentEventFact(
+            return Option<IMultipleTrackerTrackerFact>.Some(new MostFrequentEventTrackerTrackerFact(
                 "Самое частое событие",
                 $"Чаще всего у вас происходит событие {trackingName} - раз в {eventsPeriod:0.#} дней",
                 10 / eventsPeriod,
@@ -44,10 +38,11 @@ namespace ItHappened.Domain.Statistics
             ));
         }
 
-        private bool CanCalculate(IReadOnlyCollection<EventTracker> eventTrackers)
+        private static bool CanCalculate(IReadOnlyCollection<TrackerWithItsEvents> trackerWithItsEvents)
         {
-            return eventTrackers.Count > 1 &&
-                   eventTrackers.All(tracker => _eventRepository.LoadAllTrackerEvents(tracker.Id).Count > 3);
+            return trackerWithItsEvents
+                .Select(x => x.Events.Count > ThresholdEvents)
+                .Count(x => x.Equals(true)) >= ThresholdTrackers;
         }
     }
 }

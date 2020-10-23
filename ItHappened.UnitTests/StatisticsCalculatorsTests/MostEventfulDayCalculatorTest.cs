@@ -45,7 +45,7 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
             //act
             var fact = new MostEventfulDayStatisticsCalculator(_eventRepository)
                 .Calculate(new[] {eventTracker1, eventTracker2})
-                .ConvertTo<MostEventfulDayFact>().ValueUnsafe();
+                .ConvertTo<MostEventfulDayTrackerTrackerFact>().ValueUnsafe();
 
             //assert 
             Assert.AreEqual("Самый насыщенный событиями день", fact.FactName);
@@ -69,7 +69,7 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
             //act
             var fact = new MostEventfulDayStatisticsCalculator(_eventRepository)
                 .Calculate(new[] {eventTracker})
-                .ConvertTo<MostEventfulDayFact>();
+                .ConvertTo<MostEventfulDayTrackerTrackerFact>();
 
             //assert 
             Assert.True(fact.IsNone);
@@ -89,7 +89,7 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
             //act
             var fact = new MostEventfulDayStatisticsCalculator(_eventRepository)
                 .Calculate(new[] {eventTracker})
-                .ConvertTo<MostEventfulDayFact>();
+                .ConvertTo<MostEventfulDayTrackerTrackerFact>();
 
             //assert 
             Assert.True(fact.IsNone);
@@ -127,7 +127,7 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
             //act
             var fact = new MostEventfulDayStatisticsCalculator(_eventRepository)
                 .Calculate(new[] {eventTracker1, eventTracker2})
-                .ConvertTo<MostEventfulDayFact>().ValueUnsafe();
+                .ConvertTo<MostEventfulDayTrackerTrackerFact>().ValueUnsafe();
 
             //assert 
             Assert.AreEqual("Самый насыщенный событиями день", fact.FactName);

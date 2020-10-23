@@ -1,6 +1,5 @@
 ﻿ using System;
  using System.Collections.Generic;
- using ItHappend.Domain.Statistics;
  using ItHappened.Domain;
  using ItHappened.Domain.Statistics;
  using ItHappened.Infrastructure.Repositories;
@@ -37,7 +36,7 @@
              _events[0].HappensDate = DateTimeOffset.Now - TimeSpan.FromDays(91);
              _events[1].Rating = 1;
              _events[1].HappensDate = DateTimeOffset.Now - TimeSpan.FromDays(8);
-             var expected = Option<ISingleTrackerFact>.None;
+             var expected = Option<ISingleTrackerTrackerFact>.None;
 
              //act
              var actual = _worstEventCalculator.Calculate(_eventTracker);
@@ -53,7 +52,7 @@
              _events.Add(CreateEventWithoutComment(_creatorId));
              _events[1].Rating = 1;
              _events[1].HappensDate = DateTimeOffset.Now - TimeSpan.FromDays(8);
-             var expected = Option<ISingleTrackerFact>.None;
+             var expected = Option<ISingleTrackerTrackerFact>.None;
 
              //act
              var actual = _worstEventCalculator.Calculate(_eventTracker);
@@ -70,7 +69,7 @@
              _events[0].HappensDate = DateTimeOffset.Now - TimeSpan.FromDays(91);
              _events[1].Rating = 1;
              _events[1].HappensDate = DateTimeOffset.Now - TimeSpan.FromDays(6);
-             var expected = Option<ISingleTrackerFact>.None;
+             var expected = Option<ISingleTrackerTrackerFact>.None;
 
              //act
              var actual = _worstEventCalculator.Calculate(_eventTracker);
@@ -92,7 +91,7 @@
 
              //act
              var optionalWorstEventFact = 
-                 _worstEventCalculator.Calculate(_eventTracker).ConvertTo<WorstEventFact>();
+                 _worstEventCalculator.Calculate(_eventTracker).ConvertTo<WorstEventTrackerFact>();
              var worstEventFact = optionalWorstEventFact.ValueUnsafe();
 
              //assert

@@ -2,7 +2,7 @@
 
 namespace ItHappened.Domain.Statistics
 {
-    public class MostEventfulWeekFact : IGeneralFact
+    public class MostEventfulWeekTrackerTrackerFact : IMultipleTrackerTrackerFact
     {
         public string FactName { get; }
         public string Description { get; }
@@ -11,7 +11,7 @@ namespace ItHappened.Domain.Statistics
         public DateTimeOffset WeekWithLargestEventCountLastDay { get; }
         public int EventsCount { get; }
 
-        internal MostEventfulWeekFact(string type, string description, double priority,
+        internal MostEventfulWeekTrackerTrackerFact(string type, string description, double priority,
             DateTimeOffset weekWithLargestEventCountFirstDay, DateTimeOffset weekWithLargestEventCountLastDay,
             int eventsCount)
         {

@@ -32,7 +32,7 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
             
             //act 
             var fact = new AverageRatingCalculator(_eventRepository).Calculate(eventTracker)
-                .ConvertTo<AverageRatingFact>().ValueUnsafe();
+                .ConvertTo<AverageRatingTrackerFact>().ValueUnsafe();
             
             //assert 
             Assert.AreEqual(Math.Sqrt(ratings.Average()), fact.Priority);
@@ -49,7 +49,7 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
             
             //act 
             var fact = new AverageRatingCalculator(_eventRepository).Calculate(eventTracker)
-                .ConvertTo<AverageRatingFact>();
+                .ConvertTo<AverageRatingTrackerFact>();
             
             //assert 
             Assert.True(fact.IsNone);
@@ -65,7 +65,7 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
             
             //act 
             var fact = new AverageRatingCalculator(_eventRepository).Calculate(eventTracker)
-                .ConvertTo<AverageRatingFact>();
+                .ConvertTo<AverageRatingTrackerFact>();
             
             //assert 
             Assert.True(fact.IsNone);
@@ -79,7 +79,7 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
             
             //act 
             var fact = new AverageRatingCalculator(_eventRepository).Calculate(eventTracker)
-                .ConvertTo<AverageRatingFact>();
+                .ConvertTo<AverageRatingTrackerFact>();
             
             //assert 
             Assert.True(fact.IsNone);
@@ -95,7 +95,7 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
             
             //act 
             var fact = new AverageRatingCalculator(_eventRepository).Calculate(eventTracker)
-                .ConvertTo<AverageRatingFact>();
+                .ConvertTo<AverageRatingTrackerFact>();
             
             //assert 
             Assert.True(fact.IsNone);
@@ -111,7 +111,7 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
             
             //act 
             var fact = new AverageRatingCalculator(_eventRepository).Calculate(eventTracker)
-                .ConvertTo<AverageRatingFact>();
+                .ConvertTo<AverageRatingTrackerFact>();
             
             //assert 
             Assert.True(fact.IsNone);

@@ -8,26 +8,20 @@ namespace ItHappened.Domain.Statistics
 {
     public class BestEventCalculator : ISingleTrackerStatisticsCalculator
     {
-        private readonly IEventRepository _eventRepository;
-        public BestEventCalculator(IEventRepository eventRepository)
+        public Option<ISingleTrackerTrackerFact> Calculate(IReadOnlyCollection<Event> events, EventTracker tracker)
         {
-            _eventRepository = eventRepository;
-        }
-        public Option<ISingleTrackerFact> Calculate(EventTracker eventTracker)
-        {
-            var trackerEvents=_eventRepository.LoadAllTrackerEvents(eventTracker.Id);
-            if (!CanCalculate(eventTracker, trackerEvents)) return Option<ISingleTrackerFact>.None;
+            if (!CanCalculate(events)) return Option<ISingleTrackerTrackerFact>.None;
             const string factName = "Лучшее событие";
-            var bestEvent = trackerEvents
+            var bestEvent = events
                 .OrderBy(eventItem => eventItem.CustomizationsParameters.Rating).Last();
             var priority = bestEvent.CustomizationsParameters.Rating.Value();
             var bestEventComment = bestEvent.CustomizationsParameters.Comment.Match(
                 comment => comment.Text,
                 () => string.Empty);
-            var description = $"Событие {eventTracker.Name} с самым высоким рейтингом {bestEvent.CustomizationsParameters.Rating} " +
-                              $"произошло {bestEvent.HappensDate} с комментарием {bestEventComment}";
-
-            return Option<ISingleTrackerFact>.Some(new BestEventFact(
+            var description =
+                $"Событие {tracker.Name} с самым высоким рейтингом {bestEvent.CustomizationsParameters.Rating} " +
+                $"произошло {bestEvent.HappensDate} с комментарием {bestEventComment}";
+            return Option<ISingleTrackerTrackerFact>.Some(new BestEventTrackerFact(
                 factName,
                 description,
                 priority,
@@ -37,14 +31,14 @@ namespace ItHappened.Domain.Statistics
                 bestEvent));
         }
 
-        private bool CanCalculate(EventTracker eventTracker, IReadOnlyList<Event> trackerEvents)
+        private static bool CanCalculate(IReadOnlyCollection<Event> events)
         {
-            var isEventsNumberWithRatingMoreOrEqualToTen = trackerEvents
+            var isEventsNumberWithRatingMoreOrEqualToTen = events
                 .Count(eventItem => eventItem.CustomizationsParameters.Rating.IsSome) >= 10;
-            var isOldestEventHappenedMoreThanThreeMonthsAgo = trackerEvents
+            var isOldestEventHappenedMoreThanThreeMonthsAgo = events
                 .OrderBy(eventItem => eventItem.HappensDate)
                 .First().HappensDate <= DateTimeOffset.Now - TimeSpan.FromDays(90);
-            var isEventWithLowestRatingHappenedMoreThanWeekAgo = trackerEvents
+            var isEventWithLowestRatingHappenedMoreThanWeekAgo = events
                 .OrderBy(eventItem => eventItem.CustomizationsParameters.Rating)
                 .First().HappensDate <= DateTimeOffset.Now - TimeSpan.FromDays(7);
             return isEventsNumberWithRatingMoreOrEqualToTen &&

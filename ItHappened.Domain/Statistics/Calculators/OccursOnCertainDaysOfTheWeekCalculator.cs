@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using ItHappend.Domain.Statistics;
 using LanguageExt;
 
 namespace ItHappened.Domain.Statistics
@@ -13,20 +12,13 @@ namespace ItHappened.Domain.Statistics
         private const double PriorityCoefficient = 0.14;
         private const double LessNotPassPercent = 0.25;
 
-        private readonly IEventRepository _eventRepository;
-        
-        public OccursOnCertainDaysOfTheWeekCalculator(IEventRepository eventRepository)
+        public Option<ISingleTrackerTrackerFact> Calculate(IReadOnlyCollection<Event> events, EventTracker tracker)
         {
-            _eventRepository = eventRepository;
-        }
-        
-        public Option<ISingleTrackerFact> Calculate(EventTracker eventTracker)
-        {
-            if (!CanCalculate(_eventRepository.LoadAllTrackerEvents(eventTracker.Id).ToList()))
+            if (!CanCalculate(events))
             {
-                return Option<ISingleTrackerFact>.None;
+                return Option<ISingleTrackerTrackerFact>.None;
             }
-            var events = _eventRepository.LoadAllTrackerEvents(eventTracker.Id);
+
             var totalEvents = events.Count;
             var daysOfTheWeek = events.GroupBy(@event => @event.HappensDate.DayOfWeek,
                     (key, group) => new
@@ -40,16 +32,16 @@ namespace ItHappened.Domain.Statistics
             var ruDaysOfWeek = GetRuDaysOfWeek(daysOfTheWeek.Select(x => x.DayTime));
             var percentage = 100.0d * amountEventsMoreThenPassPercent / totalEvents;
 
-            return Option<ISingleTrackerFact>.Some(new OccursOnCertainDaysOfTheWeekFact(
+            return Option<ISingleTrackerTrackerFact>.Some(new OccursOnCertainDaysOfTheWeekTrackerFact(
                 "Происходит в определённые дни недели",
-                $"В {percentage}% случаев событие {eventTracker.Name} происходит {ruDaysOfWeek}",
+                $"В {percentage}% случаев событие {tracker.Name} происходит {ruDaysOfWeek}",
                 percentage * PriorityCoefficient,
                 daysOfTheWeek.Select(x => x.DayTime),
                 percentage
             ));
         }
 
-        private static bool CanCalculate(IList<Event> events)
+        private static bool CanCalculate(IReadOnlyCollection<Event> events)
         {
             if (events.Count <= MinEvents) return false;
 

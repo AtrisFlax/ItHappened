@@ -32,7 +32,7 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
             //act
             var fact = new MostFrequentEventStatisticsCalculator(_eventRepository)
                 .Calculate(new[] {eventTracker1, eventTracker2})
-                .ConvertTo<MostFrequentEventFact>().ValueUnsafe();
+                .ConvertTo<MostFrequentEventTrackerTrackerFact>().ValueUnsafe();
 
             //assert 
             Assert.AreEqual("Самое частое событие", fact.FactName);
