@@ -19,10 +19,11 @@ namespace ItHappened.Application.Services.EventService
         {
             var newEvent = new Event(Guid.NewGuid(), actorId, trackerId, eventHappensDate, customParameters);
             var tracker = _trackerRepository.LoadTracker(trackerId);
-            if (tracker.SettingsAndEventCustomizationsMatch(newEvent))
+            if (!tracker.SettingsAndEventCustomizationsMatch(newEvent))
             {
-                return null; //todo return no result 
+                throw new Exception(); //todo return no result
             }
+            
             _eventRepository.AddEvent(newEvent);
             return newEvent;
         }
