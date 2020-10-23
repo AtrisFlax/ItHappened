@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using ItHappened.Application.Services.EventTrackerService;
 using ItHappened.Domain;
 using ItHappened.Infrastructure.Repositories;
+using LanguageExt;
 using LanguageExt.Common;
 using LanguageExt.UnsafeValueAccess;
 using NUnit.Framework;
@@ -376,6 +378,76 @@ namespace ItHappened.UnitTests.ServicesTests
             Assert.AreEqual(expected, statusOfResult);
             Assert.AreEqual(2, collection.Count);
         }
+
+        [Test]
+        public void FilterEventsWhenTrackerDontExist_TrackerDontExistStatusAndEmptyCollection()
+        {
+            const EventTrackerServiceStatusCodes expected = EventTrackerServiceStatusCodes.TrackerDontExist;
+            var filter = new RatingFilter("rating", 5, 6);
+            
+            var (collection, statusOfResult) = _eventTrackerService
+                .FilterEvents(Guid.NewGuid(), Guid.NewGuid(), new IEventsFilter[] {filter});
+            
+            Assert.AreEqual(expected, statusOfResult);
+            Assert.False(collection.Any());
+        }
+
+        [Test]
+        public void FilterEventsFromTrackerNotByTrackerCreator_WrongInitiatorIdStatusAndEmptyCollection()
+        {
+            _eventTrackerRepository.SaveTracker(_eventTracker);
+            var filter = new RatingFilter("rating", 5, 6);
+            const EventTrackerServiceStatusCodes expected = EventTrackerServiceStatusCodes.WrongInitiatorId;
+            
+            var (collection, statusOfResult) = _eventTrackerService
+                .FilterEvents(_eventTracker.Id, Guid.NewGuid(), new IEventsFilter[] {filter});
+            
+            Assert.AreEqual(expected, statusOfResult);
+            Assert.False(collection.Any());
+        }
+
+        [Test]
+        public void FilterEventsWhenGivenEmptyFilterCollection_NoFiltersReceivedStatusAndAllTrackerEventsCollection()
+        {
+            var userId = Guid.NewGuid();
+            var tracker = CreateEventTracker(userId);
+            _eventTrackerRepository.SaveTracker(tracker);
+            var event1 = CreateEvent(userId, tracker.Id);
+            var event2 = CreateEvent(userId, tracker.Id);
+            _eventRepository.AddRangeOfEvents(new []{event1, event2});
+            const EventTrackerServiceStatusCodes expected = EventTrackerServiceStatusCodes.NoFiltersReceived;
+            const int expectedNumberOfReturnedEvents = 2;
+            var (collection, statusOfResult) = _eventTrackerService
+                .FilterEvents(tracker.Id, userId, new IEventsFilter[] {});
+            
+            Assert.AreEqual(expected, statusOfResult);
+            Assert.AreEqual(expectedNumberOfReturnedEvents,collection.Count);
+        }
+
+        [Test]
+        public void FilterEventsGoodCase_OkStatusAndFilteredCollectionOfEvents()
+        {
+            var userId = Guid.NewGuid();
+            var tracker = CreateEventTracker(userId);
+            _eventTrackerRepository.SaveTracker(tracker);
+            var events = CreateEvents(tracker.Id, userId, 10);
+            //Each one of these events won't pass its one parameter filter
+            events[0].Comment = Option<Comment>.Some(new Comment("привет!"));
+            events[1].Scale = 1;
+            events[2].HappensDate = DateTimeOffset.Now;
+            events[3].Rating = 1;
+            events[4].GeoTag = new GeoTag(0, 0);
+            _eventRepository.AddRangeOfEvents(events);
+            var filters = CreateFilters();
+            const EventTrackerServiceStatusCodes expected = EventTrackerServiceStatusCodes.Ok;
+            const int expectedNumberOfReturnedEvents = 5;
+            
+            var (collection, statusOfResult) = _eventTrackerService
+                .FilterEvents(tracker.Id, userId, filters);
+            
+            Assert.AreEqual(expected, statusOfResult);
+            Assert.AreEqual(expectedNumberOfReturnedEvents,collection.Count);
+        }
         
         private EventTracker CreateEventTracker()
         {
@@ -409,5 +481,35 @@ namespace ItHappened.UnitTests.ServicesTests
                 .Build();
         }
         
+        private List<Event> CreateEvents(Guid trackerId, Guid userId,int quantity)
+        {
+            var events = new List<Event>();
+            for (var i = 0; i < quantity; i++)
+                events.Add(EventBuilder
+                    .Event(Guid.NewGuid(), userId, trackerId,
+                        new DateTimeOffset(2020, 10, 14, 18, 00, 00, TimeSpan.Zero).ToLocalTime(),
+                        "tittle")
+                    .WithComment("здравствуй!")
+                    .WithRating(5.6)
+                    .WithScale(8)
+                    .WithGeoTag(new GeoTag(11, 16))
+                    .Build());
+            return events;
+        }
+
+        private IReadOnlyList<IEventsFilter> CreateFilters()
+        {
+            var from = new DateTimeOffset(2020, 10, 14, 18, 00, 00, TimeSpan.Zero);
+            var to = new DateTimeOffset(2020, 10, 14, 18, 01, 00, TimeSpan.Zero);
+            return new IEventsFilter[]
+            {
+                new CommentFilter("regex", @"\A[з]"),
+                new GeoTagFilter("geotag", new GeoTag(10, 15), new GeoTag(20, 25)),
+                new RatingFilter("rating", 5.5, 8.6),
+                new DateTimeFilter("DateTime", from, to),
+                new ScaleFilter("scale", 5.5, 8.6)
+            };
+
+        }
     }
 }

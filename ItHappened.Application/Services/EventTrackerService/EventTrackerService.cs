@@ -215,6 +215,36 @@ namespace ItHappened.Application.Services.EventTrackerService
             Log.Information($"Returned events from trackerId={trackerId}");
             return (_eventRepository.LoadAllTrackerEvents(trackerId), Status.Ok);
         }
+
+        public (IReadOnlyCollection<Event> collection, Status statusCode) FilterEvents(Guid trackerId, Guid initiatorId,
+            IReadOnlyList<IEventsFilter> filters)
+        {
+            if (!_eventTrackerRepository.IsContainTracker(trackerId))
+            {
+                Log.Information(
+                    $"Tracker with id: {trackerId} doesn't exist in repository");
+                return (new List<Event>(), Status.TrackerDontExist);
+            }
+            
+            var tracker = _eventTrackerRepository.LoadTracker(trackerId);
+            if (initiatorId != tracker.CreatorId)
+            {
+                Log.Information(
+                    $"Can't edit event from tracker id: {trackerId}. TrackerCreatorId does not match initiator id: {initiatorId}");
+                return (new List<Event>(), Status.WrongInitiatorId);
+            }
+            
+            var trackerEvents = _eventRepository.LoadAllTrackerEvents(trackerId);
+            if (!filters.Any())
+            {
+                Log.Information("Didn't receive any filter to apply");
+                return (trackerEvents, Status.NoFiltersReceived);
+            }
+            var filteredEvents = EventsFilter.Filter(trackerEvents, filters);
+            Log.Information($"Returned filtered events. On the input filter got {trackerEvents.Count} events," +
+                            $"on the output filter returned {filteredEvents.Count}");
+            return (filteredEvents, Status.Ok);
+        }
     }
 }
 
