@@ -8,13 +8,13 @@ namespace ItHappened.Domain.Statistics
     {
         private const int ThresholdEventAmount = 1;
 
-        public Option<IMultipleTrackerTrackerFact> Calculate(
+        public Option<IMultipleTrackersFact> Calculate(
             IReadOnlyCollection<TrackerWithItsEvents> trackerWithItsEvents)
         {
             var allTrackersEvents = trackerWithItsEvents.SelectMany(info => info.Events).ToList();
             if (!CanCalculate(allTrackersEvents))
             {
-                return Option<IMultipleTrackerTrackerFact>.None;
+                return Option<IMultipleTrackersFact>.None;
             }
 
             var dayWithBiggestEventCount = allTrackersEvents
@@ -27,7 +27,7 @@ namespace ItHappened.Domain.Statistics
             var dayWithLargestEventCount = dayWithBiggestEventCount.Date;
             var eventsCount = dayWithBiggestEventCount.Count;
             var ruEventName = RuEventName(eventsCount, "событие", "события", "событий");
-            return Option<IMultipleTrackerTrackerFact>.Some(new MostEventfulDayTrackerTrackerFact(
+            return Option<IMultipleTrackersFact>.Some(new MostEventfulDayTrackersFact(
                 "Самый насыщенный событиями день",
                 $"Самый насыщенный событиями день был {dayWithLargestEventCount:d}. Тогда произошло {eventsCount} {ruEventName}",
                 1.5 * eventsCount,

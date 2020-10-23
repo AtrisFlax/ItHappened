@@ -36,7 +36,7 @@
              _events[0].HappensDate = DateTimeOffset.Now - TimeSpan.FromDays(91);
              _events[1].Rating = 1;
              _events[1].HappensDate = DateTimeOffset.Now - TimeSpan.FromDays(8);
-             var expected = Option<ISingleTrackerTrackerFact>.None;
+             var expected = Option<ISingleTrackerFact>.None;
 
              //act
              var actual = _worstEventCalculator.Calculate(_eventTracker);
@@ -52,7 +52,7 @@
              _events.Add(CreateEventWithoutComment(_creatorId));
              _events[1].Rating = 1;
              _events[1].HappensDate = DateTimeOffset.Now - TimeSpan.FromDays(8);
-             var expected = Option<ISingleTrackerTrackerFact>.None;
+             var expected = Option<ISingleTrackerFact>.None;
 
              //act
              var actual = _worstEventCalculator.Calculate(_eventTracker);
@@ -69,7 +69,7 @@
              _events[0].HappensDate = DateTimeOffset.Now - TimeSpan.FromDays(91);
              _events[1].Rating = 1;
              _events[1].HappensDate = DateTimeOffset.Now - TimeSpan.FromDays(6);
-             var expected = Option<ISingleTrackerTrackerFact>.None;
+             var expected = Option<ISingleTrackerFact>.None;
 
              //act
              var actual = _worstEventCalculator.Calculate(_eventTracker);

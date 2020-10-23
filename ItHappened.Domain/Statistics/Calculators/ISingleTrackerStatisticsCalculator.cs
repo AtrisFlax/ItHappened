@@ -5,6 +5,6 @@ namespace ItHappened.Domain.Statistics
 {
     public interface ISingleTrackerStatisticsCalculator
     {
-        public Option<ISingleTrackerTrackerFact> Calculate(IReadOnlyCollection<Event> events, EventTracker tracker);
+        public Option<ISingleTrackerFact> Calculate(IReadOnlyCollection<Event> events, EventTracker tracker);
     }
 }

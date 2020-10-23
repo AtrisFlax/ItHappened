@@ -7,11 +7,11 @@ namespace ItHappened.Domain.Statistics
 {
     public class AverageScaleCalculator : ISingleTrackerStatisticsCalculator
     {
-        public Option<ISingleTrackerTrackerFact> Calculate(IReadOnlyCollection<Event> events, EventTracker tracker)
+        public Option<ISingleTrackerFact> Calculate(IReadOnlyCollection<Event> events, EventTracker tracker)
         {
             if (!CanCalculate(events))
             {
-                return Option<ISingleTrackerTrackerFact>.None;
+                return Option<ISingleTrackerFact>.None;
             }
 
             var averageValue = events.Select(x => x.CustomizationsParameters.Scale).Somes().Average();
@@ -22,7 +22,7 @@ namespace ItHappened.Domain.Statistics
             var description = $"Сумма значений {measurementUnit} для события {tracker.Name} равно {averageValue}";
             const double priority = 3.0;
             
-            return Option<ISingleTrackerTrackerFact>.Some(new AverageScaleTrackerFact(
+            return Option<ISingleTrackerFact>.Some(new AverageScaleTrackerFact(
                 factName,
                 description,
                 priority,

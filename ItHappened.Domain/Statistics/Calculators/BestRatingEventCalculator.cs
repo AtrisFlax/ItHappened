@@ -11,11 +11,11 @@ namespace ItHappened.Domain.Statistics
         private static int MaxDateThreshold;
         private const int TresholdEventsWithRating = 10;
 
-        public Option<ISingleTrackerTrackerFact> Calculate(IReadOnlyCollection<Event> events, EventTracker tracker)
+        public Option<ISingleTrackerFact> Calculate(IReadOnlyCollection<Event> events, EventTracker tracker)
         {
             if (!CanCalculate(events))
             {
-                return Option<ISingleTrackerTrackerFact>.None;
+                return Option<ISingleTrackerFact>.None;
             }
 
             var bestRatingEventInfo
@@ -40,7 +40,7 @@ namespace ItHappened.Domain.Statistics
                                     $"произошло {bestRatingEvent.HappensDate} {commentInfo}";
             var priority = bestRating;
             var bestEventDate = bestRatingEventInfo.Event.HappensDate;
-            return Option<ISingleTrackerTrackerFact>.Some(new BestEventTrackerFact(
+            return Option<ISingleTrackerFact>.Some(new BestEventTrackerFact(
                 factName,
                 description,
                 priority,

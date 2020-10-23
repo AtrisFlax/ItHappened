@@ -12,13 +12,13 @@ namespace ItHappened.Domain.Statistics
         private const string CultureCode = "ru-RU"; //hardcoded culture code 
 
 
-        public Option<IMultipleTrackerTrackerFact> Calculate(
+        public Option<IMultipleTrackersFact> Calculate(
             IReadOnlyCollection<TrackerWithItsEvents> trackerWithItsEvents)
         {
             var allTrackersEvents = trackerWithItsEvents.SelectMany(info => info.Events).ToList();
             if (!CanCalculate(allTrackersEvents))
             {
-                return Option<IMultipleTrackerTrackerFact>.None;
+                return Option<IMultipleTrackersFact>.None;
             }
 
             var eventfulWeek = allTrackersEvents
@@ -39,7 +39,7 @@ namespace ItHappened.Domain.Statistics
             var ruEventName = RuEventName(eventsCount, "событие", "события", "событий");
             var firstDayOfWeek = FirstDateOfWeek(eventfulWeek.Year, eventfulWeek.Date);
             var lastDayOfWeek = firstDayOfWeek.AddDays(6);
-            return Option<IMultipleTrackerTrackerFact>.Some(new MostEventfulWeekTrackerTrackerFact(
+            return Option<IMultipleTrackersFact>.Some(new MostEventfulWeekTrackersFact(
                 "Самая насыщенная событиями неделя",
                 $"Самая насыщенная событиями неделя была с {firstDayOfWeek:d} до {lastDayOfWeek:d}. За её время произошло {eventsCount} {ruEventName}",
                 0.75 * eventsCount,

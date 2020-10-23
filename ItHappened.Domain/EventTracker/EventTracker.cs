@@ -19,13 +19,13 @@ namespace ItHappened.Domain
 
         public bool SettingsAndEventCustomizationsMatch(Event @event)
         {
-            if (@event.CustomParameters.Comment.IsNone && !CustomizationSettings.CommentIsOptional)
+            if (@event.CustomizationsParameters.Comment.IsNone && !CustomizationSettings.CommentIsOptional)
                 return false;
-            if (@event.CustomParameters.Photo.IsNone && !CustomizationSettings.PhotoIsOptional)
+            if (@event.CustomizationsParameters.Photo.IsNone && !CustomizationSettings.PhotoIsOptional)
                 return false;
-            if (@event.CustomParameters.Rating.IsNone && !CustomizationSettings.RatingIsOptional)
+            if (@event.CustomizationsParameters.Rating.IsNone && !CustomizationSettings.RatingIsOptional)
                 return false;
-            if (@event.CustomParameters.GeoTag.IsNone && !CustomizationSettings.GeoTagIsOptional)
+            if (@event.CustomizationsParameters.GeoTag.IsNone && !CustomizationSettings.GeoTagIsOptional)
                 return false;
             return true;
         }

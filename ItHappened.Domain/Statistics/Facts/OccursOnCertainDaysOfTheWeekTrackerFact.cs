@@ -4,7 +4,7 @@ using ItHappened.Domain.Statistics;
 
 namespace ItHappened.Domain.Statistics
 {
-    public class OccursOnCertainDaysOfTheWeekTrackerFact : ISingleTrackerTrackerFact
+    public class OccursOnCertainDaysOfTheWeekTrackerFact : ISingleTrackerFact
     {
         public IEnumerable<DayOfWeek> DaysOfTheWeek { get; }
         public double Percentage { get; }

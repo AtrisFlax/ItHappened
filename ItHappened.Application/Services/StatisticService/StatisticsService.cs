@@ -23,7 +23,7 @@ namespace ItHappened.Application.Services.StatisticService
             _singleTrackerFactProvider = singleTrackerFactProvider;
         }
 
-        public IReadOnlyCollection<IMultipleTrackerTrackerFact> GetStatisticsFactsForAllTrackers(Guid userId)
+        public IReadOnlyCollection<IMultipleTrackersFact> GetStatisticsFactsForAllTrackers(Guid userId)
         {
             var trackers = _trackerRepository.LoadAllUserTrackers(userId);
             var a = trackers.Select(x =>
@@ -35,7 +35,7 @@ namespace ItHappened.Application.Services.StatisticService
             return _multipleTrackersFactProvider.GetFacts(a.AsReadOnly());
         }
 
-        public IReadOnlyCollection<ISingleTrackerTrackerFact> GetStatisticsFactsForTracker(Guid trackerId, Guid userId)
+        public IReadOnlyCollection<ISingleTrackerFact> GetStatisticsFactsForTracker(Guid trackerId, Guid userId)
         {
             var tracker = _trackerRepository.LoadTracker(trackerId);
             var events = _eventRepository.LoadAllTrackerEvents(trackerId);

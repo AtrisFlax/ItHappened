@@ -6,7 +6,7 @@ namespace ItHappened.Domain.Statistics
     {
         void Add(IMultipleTrackersStatisticsCalculator statisticsCalculator);
 
-        IReadOnlyCollection<IMultipleTrackerTrackerFact> GetFacts(
+        IReadOnlyCollection<IMultipleTrackersFact> GetFacts(
             IReadOnlyCollection<TrackerWithItsEvents> trackerWithItsEvents);
     }
 }

@@ -8,11 +8,11 @@ namespace ItHappened.Domain.Statistics
 {
     public class SumScaleCalculator : ISingleTrackerStatisticsCalculator
     {
-        public Option<ISingleTrackerTrackerFact> Calculate(IReadOnlyCollection<Event> events, EventTracker tracker)
+        public Option<ISingleTrackerFact> Calculate(IReadOnlyCollection<Event> events, EventTracker tracker)
         {
             if (!CanCalculate(events))
             {
-                return Option<ISingleTrackerTrackerFact>.None;
+                return Option<ISingleTrackerFact>.None;
             }
 
             var sumScale = events.Select(x => x.CustomizationsParameters.Scale).Somes().Sum();
@@ -20,7 +20,7 @@ namespace ItHappened.Domain.Statistics
                 .Match(x => x,
                     () => "No Scale"
                 );
-            return Option<ISingleTrackerTrackerFact>.Some(new SumScaleTrackerFact(
+            return Option<ISingleTrackerFact>.Some(new SumScaleTrackerFact(
                 "Суммарное значение шкалы",
                 $"Сумма значений {measurementUnit} для события {tracker.Name} равна {sumScale}",
                 2.0,

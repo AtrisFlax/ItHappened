@@ -3,7 +3,7 @@ using LanguageExt;
 
 namespace ItHappened.Domain.Statistics
 {
-    public class BestEventTrackerFact : ISingleTrackerTrackerFact
+    public class BestEventTrackerFact : ISingleTrackerFact
     {
         public string FactName { get; }
         public string Description { get; }
