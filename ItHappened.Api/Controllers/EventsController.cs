@@ -23,7 +23,7 @@ namespace ItHappened.Api.Controllers
 
         [HttpPost("/trackers/{trackerId}/events")]
         [ProducesResponseType(200, Type = typeof(EventResponse))]
-        public IActionResult AddEventToTracker([FromRoute]Guid trackerId, [FromBody]EventRequest request)
+        public IActionResult AddEventToTracker([FromBody]EventRequest request, [FromRoute]Guid trackerId)
         {
             var userId = Guid.Parse(User.FindFirstValue(JwtClaimTypes.Id));
             var customParameters = _mapper.Map<EventCustomParameters>(request.CustomParameters);

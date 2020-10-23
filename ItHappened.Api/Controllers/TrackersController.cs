@@ -41,7 +41,6 @@ namespace ItHappened.Api.Controllers
             var userId = Guid.Parse(User.FindFirstValue(JwtClaimTypes.Id));
             var customizations = _mapper.Map<TrackerCustomizationSettings>(request.CustomizationSettings);
             var tracker = _trackerService.CreateEventTracker(userId, request.Name, customizations);
-            var map = _mapper.Map<TrackerResponse>(tracker);
             return Ok(_mapper.Map<TrackerResponse>(tracker));
         }
 
