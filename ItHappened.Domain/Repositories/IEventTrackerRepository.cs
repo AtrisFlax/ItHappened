@@ -10,5 +10,6 @@ namespace ItHappened.Domain
         EventTracker LoadTracker(Guid eventTrackerId);
         IEnumerable<EventTracker> LoadAllUserTrackers(Guid userId);
         bool DeleteTracker(Guid eventId);
+        IEnumerable<EventTracker> LoadAllTrackers();
     }
 }

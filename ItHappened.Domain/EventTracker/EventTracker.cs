@@ -17,6 +17,7 @@ namespace ItHappened.Domain
         public bool HasRating { get; }
         public bool HasGeoTag { get; }
         public bool HasComment { get; }
+        public bool IsUpdated { get; set; } = true;
 
         public Option<string> ScaleMeasurementUnit;
 

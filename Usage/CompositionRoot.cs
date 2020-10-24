@@ -19,6 +19,8 @@ namespace Usage
             var userRepository = new UserRepository();
             var eventRepository = new EventRepository();
             var eventTrackerRepository = new EventTrackerRepository();
+            var generalFactsRepository = new GeneralFactsRepository();
+            var specificFactsRepository = new SpecificFactsRepository();
             var generalFactProvider = new GeneralFactProvider();
             generalFactProvider.Add(new MultipleTrackersEventsCountCalculator(eventRepository));
             generalFactProvider.Add(new MostFrequentEventCalculator(eventRepository));
@@ -30,11 +32,12 @@ namespace Usage
             specificFactProvider.Add( new SingleTrackerEventsCountCalculator(eventRepository));
             specificFactProvider.Add( new SpecificDayTimeEventCalculator(eventRepository));
             specificFactProvider.Add( new WorstEventCalculator(eventRepository));
+            var statisticGenerator = new StatisticGenerator(generalFactsRepository, generalFactProvider, specificFactProvider, specificFactsRepository, eventTrackerRepository, userRepository);
             return new CompositionRoot
             {
                 UserService = new UserService(userRepository, new PasswordHasher()),
                 EventTrackerService = new EventTrackerService(eventTrackerRepository, eventRepository),
-                StatisticsService = new StatisticsService(eventTrackerRepository, generalFactProvider, specificFactProvider)
+                StatisticsService = new StatisticsService(generalFactsRepository, specificFactsRepository, statisticGenerator)
             };
         }
     }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace ItHappened.Domain
 {
@@ -7,5 +8,6 @@ namespace ItHappened.Domain
         void SaveUser(User user);
         User LoadUser(Guid userId);
         User TryFindByLogin(string login);
+        IEnumerable<Guid> LoadAllUsersIds();
     }
 }
