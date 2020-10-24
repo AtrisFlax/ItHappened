@@ -29,9 +29,10 @@ namespace ItHappened.Api.Controllers
         public IActionResult AddEventToTracker([FromRoute]Guid trackerId, [FromBody]EventRequest request)
         {
             var userId = Guid.Parse(User.FindFirstValue(JwtClaimTypes.Id));
-            //var customParameters = _mapper.Map<EventCustomParameters>(request.CustomParameters);
+            //var customParameters = _mapper.Map<EventCustomParameters>(request);
             var customParameters = GetEventCustomParametersFromRequest(request);
             var newEvent = _eventService.AddEvent(userId, trackerId, request.HappensDate, customParameters);
+            var map = _mapper.Map<EventResponse>(newEvent);
             return Ok(_mapper.Map<EventResponse>(newEvent));
         }
         
@@ -58,7 +59,7 @@ namespace ItHappened.Api.Controllers
         public IActionResult UpdateEvent([FromRoute] Guid eventId, [FromBody]EventRequest request)
         {
             var userId = Guid.Parse(User.FindFirstValue(JwtClaimTypes.Id));
-            var customParameters = _mapper.Map<EventCustomParameters>(request);
+            var customParameters = GetEventCustomParametersFromRequest(request);
             var editedEvent = _eventService.EditEvent(userId, eventId, request.HappensDate, customParameters);
             return Ok(_mapper.Map<EventResponse>(editedEvent));
         }
@@ -76,11 +77,11 @@ namespace ItHappened.Api.Controllers
         {
             var customParameters = new EventCustomParameters(
                 null,
-                Option<double>.Some(request.CustomParameters.Scale),
-                Option<double>.Some(request.CustomParameters.Rating),
-                Option<GeoTag>.Some(new GeoTag(request.CustomParameters.GeoTag.GpsLat,
-                    request.CustomParameters.GeoTag.GpsLng)),
-                Option<Comment>.Some(new Comment(request.CustomParameters.Comment))
+                Option<double>.Some(request.Scale),
+                Option<double>.Some(request.Rating),
+                Option<GeoTag>.Some(new GeoTag(request.GeoTag.GpsLat,
+                    request.GeoTag.GpsLng)),
+                Option<Comment>.Some(new Comment(request.Comment))
             );
             return customParameters;
         }
