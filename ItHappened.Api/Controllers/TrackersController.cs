@@ -9,6 +9,7 @@ using ItHappened.Application.Services.StatisticService;
 using ItHappened.Application.Services.TrackerService;
 using ItHappened.Domain;
 using ItHappened.Domain.Statistics;
+using LanguageExt;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -51,6 +52,7 @@ namespace ItHappened.Api.Controllers
             _trackerRepository.SaveTracker(tracker);
             return Ok(_mapper.Map<TrackerResponse>(tracker));
         }
+        
 
         [HttpGet("/trackers")]
         [ProducesResponseType(200, Type = typeof(List<TrackerResponse>))]
@@ -94,24 +96,6 @@ namespace ItHappened.Api.Controllers
             var userId = Guid.Parse(User.FindFirstValue(JwtClaimTypes.Id));
             var deletedTracker = _trackerService.DeleteEventTracker(userId, trackerId);
             return Ok(_mapper.Map<TrackerResponse>(deletedTracker));
-        }
-        
-        [HttpGet("/trackers/{trackerId}/statistics")]
-        [ProducesResponseType(200, Type = typeof(ITrackerFact))]
-        public IActionResult GetStatisticsForSingleTracker([FromRoute]Guid trackerId)
-        {
-            var userId = Guid.Parse(User.FindFirstValue(JwtClaimTypes.Id));
-            var statistics = _statisticsService.GetStatisticsFactsForTracker(trackerId, userId);
-            return Ok(statistics);
-        }
-        
-        [HttpGet("/trackers/statistics")]
-        [ProducesResponseType(200, Type = typeof(List<ITrackerFact>))]
-        public IActionResult GetStatisticsForAllTrackers()
-        {
-            var userId = Guid.Parse(User.FindFirstValue(JwtClaimTypes.Id));
-            var statistics = _statisticsService.GetStatisticsFactsForAllTrackers(userId);
-            return Ok(statistics);
         }
     }
 }
