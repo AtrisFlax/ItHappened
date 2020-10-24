@@ -20,7 +20,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Compile Remove="Models\Requests\GeoTagRequest.cs" />
       <Compile Remove="Models\Requests\PhotoRequest.cs" />
       <Compile Remove="Models\Requests\Events.cs" />
     </ItemGroup>

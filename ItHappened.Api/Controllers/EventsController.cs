@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using AutoMapper;
@@ -27,7 +28,8 @@ namespace ItHappened.Api.Controllers
 
         [HttpPost("/trackers/{trackerId}/events")]
         [ProducesResponseType(200)]
-        public IActionResult AddEventToTracker([FromRoute] Guid trackerId, [FromBody]EventsRequest request)
+        public IActionResult AddEventsToTracker([FromRoute] Guid trackerId,
+            [FromBody]EventsRequest request)
         {
             var userId = Guid.Parse(User.FindFirstValue(JwtClaimTypes.Id));
             var eventsInfoRange = request.Events
