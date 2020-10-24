@@ -30,7 +30,7 @@ namespace ItHappened.Api.Controllers
         [HttpPost("/trackers/{trackerId}/events")]
         [ProducesResponseType(200)]
         public IActionResult AddEventsToTracker([FromRoute] Guid trackerId,
-            [FromBody]EventsRequest request)
+            [FromBody] EventsRequest request)
         {
             var userId = Guid.Parse(User.FindFirstValue(JwtClaimTypes.Id));
             var eventsInfoRange = request.Events
@@ -43,27 +43,15 @@ namespace ItHappened.Api.Controllers
             return Ok();
         }
 
-        [HttpGet("/trackers/{trackerid}/events/filters")]
-        public IActionResult GetFilteredEvents([FromRoute] Guid trackerId,[FromQuery] EventFilterRequest eventFilterRequest)
+        [HttpGet("/trackers/{trackerId}/events/filters")]
+        public IActionResult GetFilteredEvents([FromRoute] Guid trackerId,
+            [FromQuery] EventFilterRequest eventFilterRequest)
         {
             var userId = Guid.Parse(User.FindFirstValue(JwtClaimTypes.Id));
-
-            var filters = new List<IEventsFilter>();
-            if (eventFilterRequest.ToDateTime.HasValue && eventFilterRequest.FromDateTime.HasValue)
-                filters.Add(new DateTimeFilter(null, eventFilterRequest.FromDateTime.Value, eventFilterRequest.ToDateTime.Value));
-            if (!string.IsNullOrEmpty(eventFilterRequest.CommentRegexPattern))
-                filters.Add(new CommentFilter(null, eventFilterRequest.CommentRegexPattern));
-            if (eventFilterRequest.ScaleLowerLimit.HasValue && eventFilterRequest.ScaleUpperLimit.HasValue)
-                filters.Add(new ScaleFilter(null, eventFilterRequest.ScaleLowerLimit.Value, eventFilterRequest.ScaleUpperLimit.Value));
-            if (eventFilterRequest.LowerLimitRating.HasValue && eventFilterRequest.UpperLimitRating.HasValue)
-                filters.Add(new RatingFilter(null, eventFilterRequest.LowerLimitRating.Value, eventFilterRequest.UpperLimitRating.Value));
-            if (eventFilterRequest.ScaleLowerLimit.HasValue && eventFilterRequest.ScaleUpperLimit.HasValue)
-                filters.Add(new ScaleFilter(null, eventFilterRequest.ScaleLowerLimit.Value, eventFilterRequest.ScaleUpperLimit.Value));
-
-            _eventService.GetAllFilteredEvents(userId, trackerId, filters);
-            return Ok();
+            var filters = CreateFilters(eventFilterRequest);
+            var filteredEvents = _eventService.GetAllFilteredEvents(userId, trackerId, filters);
+            return Ok(_mapper.Map<EventResponse[]>(filteredEvents));
         }
-
 
         [HttpGet("/events/{eventId}")]
         [ProducesResponseType(200, Type = typeof(EventResponse))]
@@ -113,6 +101,27 @@ namespace ItHappened.Api.Controllers
                 Option<Comment>.Some(new Comment(request.Comment))
             );
             return customParameters;
+        }
+
+        private static IEnumerable<IEventsFilter> CreateFilters(EventFilterRequest eventFilterRequest)
+        {
+            var filters = new List<IEventsFilter>();
+            if (eventFilterRequest.ToDateTime.HasValue && eventFilterRequest.FromDateTime.HasValue)
+                filters.Add(
+                    new DateTimeFilter(null, eventFilterRequest.FromDateTime.Value,
+                        eventFilterRequest.ToDateTime.Value));
+            if (!string.IsNullOrEmpty(eventFilterRequest.CommentRegexPattern))
+                filters.Add(new CommentFilter(null, eventFilterRequest.CommentRegexPattern));
+            if (eventFilterRequest.ScaleLowerLimit.HasValue && eventFilterRequest.ScaleUpperLimit.HasValue)
+                filters.Add(new ScaleFilter(null, eventFilterRequest.ScaleLowerLimit.Value,
+                    eventFilterRequest.ScaleUpperLimit.Value));
+            if (eventFilterRequest.LowerLimitRating.HasValue && eventFilterRequest.UpperLimitRating.HasValue)
+                filters.Add(new RatingFilter(null, eventFilterRequest.LowerLimitRating.Value,
+                    eventFilterRequest.UpperLimitRating.Value));
+            if (eventFilterRequest.ScaleLowerLimit.HasValue && eventFilterRequest.ScaleUpperLimit.HasValue)
+                filters.Add(new ScaleFilter(null, eventFilterRequest.ScaleLowerLimit.Value,
+                    eventFilterRequest.ScaleUpperLimit.Value));
+            return filters;
         }
     }
 }

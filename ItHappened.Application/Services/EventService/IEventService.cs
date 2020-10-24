@@ -21,6 +21,6 @@ namespace ItHappened.Application.Services.EventService
 
         Event DeleteEvent(Guid actorId, Guid eventId);
 
-        public IEnumerable<Event> GetAllFilteredEvents(Guid actorId, Guid trackerId, IEnumerable<IEventsFilter> eventsFilters);
+        public IReadOnlyCollection<Event> GetAllFilteredEvents(Guid actorId, Guid trackerId, IEnumerable<IEventsFilter> eventsFilters);
     }
 }
