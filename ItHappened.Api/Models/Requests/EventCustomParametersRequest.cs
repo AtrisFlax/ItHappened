@@ -1,10 +1,11 @@
-﻿using ItHappened.Domain;
+﻿using FluentValidation;
+using ItHappened.Domain;
 
 namespace ItHappened.Api.Models.Requests
 {
     public class EventCustomParametersRequest
     {
-        public PhotoRequest Photo { get; set; }
+        //public PhotoRequest Photo { get; set; }
         public double Scale { get; set; }
         public double Rating { get; set; }
         public GeoTagRequest GeoTag { get; set; }
@@ -20,5 +21,13 @@ namespace ItHappened.Api.Models.Requests
     {
         public double GpsLat { get; set; }
         public double GpsLng { get; set; }
+    }
+    
+    public class EventCustomParametersRequestValidator : AbstractValidator<EventCustomParametersRequest>
+    {
+        public EventCustomParametersRequestValidator()
+        {
+            //RuleFor(x => x.)
+        }
     }
 }

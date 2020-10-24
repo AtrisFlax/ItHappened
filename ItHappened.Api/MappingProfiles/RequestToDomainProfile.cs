@@ -17,8 +17,9 @@ namespace ItHappened.Api.MappingProfiles
             CreateMap<EventCustomParametersRequest, EventCustomParameters>()
                 .ForMember(dest => dest.Comment, opt =>
                     opt.MapFrom(src => Option<Comment>.Some(new Comment(src.Comment))))
-                .ForMember(dest => dest.Photo, opt =>
+                /*.ForMember(dest => dest.Photo, opt =>
                     opt.MapFrom(src => Option<Photo>.Some(new Photo(src.Photo.PhotoBytes))))
+                */
                 .ForMember(dest => dest.Rating, opt =>
                     opt.MapFrom(src => Option<double>.Some(src.Rating)))
                 .ForMember(dest => dest.Scale, opt =>

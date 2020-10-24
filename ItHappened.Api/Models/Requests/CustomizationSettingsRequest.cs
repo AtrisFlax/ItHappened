@@ -1,4 +1,6 @@
-﻿namespace ItHappened.Api.Models.Requests
+﻿using FluentValidation;
+
+namespace ItHappened.Api.Models.Requests
 {
     public class CustomizationSettingsRequest
     {
@@ -8,5 +10,13 @@
         public bool RatingIsOptional { get; set; }
         public bool GeoTagIsOptional { get; set; }
         public bool CommentIsOptional { get; set; }
+    }
+    
+    public class CustomizationSettingsRequestValidator : AbstractValidator<CustomizationSettingsRequest>
+    {
+        public CustomizationSettingsRequestValidator()
+        {
+            //RuleFor(x => x.)
+        }
     }
 }

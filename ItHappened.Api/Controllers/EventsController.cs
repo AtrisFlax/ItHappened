@@ -7,10 +7,12 @@ using ItHappened.Api.Models.Responses;
 using ItHappened.Application.Services.EventService;
 using ItHappened.Domain;
 using LanguageExt;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ItHappened.Api.Controllers
 {
+    [Authorize]
     public class EventsController : ControllerBase
     {
         private readonly IEventService _eventService;
@@ -73,7 +75,7 @@ namespace ItHappened.Api.Controllers
         private EventCustomParameters GetEventCustomParametersFromRequest(EventRequest request)
         {
             var customParameters = new EventCustomParameters(
-                Option<Photo>.Some(new Photo(request.CustomParameters.Photo.PhotoBytes)),
+                null,
                 Option<double>.Some(request.CustomParameters.Scale),
                 Option<double>.Some(request.CustomParameters.Rating),
                 Option<GeoTag>.Some(new GeoTag(request.CustomParameters.GeoTag.GpsLat,

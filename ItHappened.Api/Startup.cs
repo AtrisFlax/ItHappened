@@ -1,6 +1,8 @@
 using System.Text;
 using AutoMapper;
+using FluentValidation.AspNetCore;
 using ItHappened.Api.Authentication;
+using ItHappened.Api.Models.Requests;
 using ItHappened.Api.Options;
 using ItHappened.Application.Services.EventService;
 using ItHappened.Application.Services.StatisticService;
@@ -33,7 +35,11 @@ namespace ItHappened.Api
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers();
+            services.AddControllers()
+                .AddFluentValidation(cfg =>
+                {
+                    cfg.RegisterValidatorsFromAssemblyContaining<TrackerRequest>();
+                });
             
             services.AddSingleton<IUserService, UserService>();
             services.AddSingleton<IEventService, EventService>();
