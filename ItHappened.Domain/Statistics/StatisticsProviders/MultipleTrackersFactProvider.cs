@@ -12,7 +12,7 @@ namespace ItHappened.Domain.Statistics
             _calculators.Add(statisticsCalculator);
         }
 
-        public IReadOnlyCollection<IMultipleTrackerTrackerFact> GetFacts(IReadOnlyCollection<TrackerWithItsEvents> trackerWithItsEvents)
+        public IReadOnlyCollection<IMultipleTrackersFact> GetFacts(IReadOnlyCollection<TrackerWithItsEvents> trackerWithItsEvents)
         {
             return _calculators
                 .Select(calculator => calculator.Calculate(trackerWithItsEvents))

@@ -8,9 +8,9 @@ namespace ItHappened.Domain.Statistics
 {
     public class WorstEventCalculator : ISingleTrackerStatisticsCalculator
     {
-        public Option<ISingleTrackerTrackerFact> Calculate(IReadOnlyCollection<Event> events, EventTracker tracker)
+        public Option<ISingleTrackerFact> Calculate(IReadOnlyCollection<Event> events, EventTracker tracker)
         {
-            if (!CanCalculate(events)) return Option<ISingleTrackerTrackerFact>.None;
+            if (!CanCalculate(events)) return Option<ISingleTrackerFact>.None;
             const string factName = "Худшее событие";
             var worstEvent = events
                 .OrderBy(eventItem => eventItem.CustomizationsParameters.Rating)
@@ -23,7 +23,7 @@ namespace ItHappened.Domain.Statistics
                               $"{worstEvent.CustomizationsParameters.Rating} произошло {worstEvent.HappensDate} " +
                               $"с комментарием {worstEventComment}";
 
-            return Option<ISingleTrackerTrackerFact>.Some(new WorstEventTrackerFact(
+            return Option<ISingleTrackerFact>.Some(new WorstEventTrackerFact(
                 factName,
                 description,
                 priority,

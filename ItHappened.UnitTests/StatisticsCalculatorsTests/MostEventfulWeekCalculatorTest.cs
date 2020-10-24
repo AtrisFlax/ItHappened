@@ -7,7 +7,7 @@ using ItHappened.Domain.Statistics;
 using ItHappened.Infrastructure.Repositories;
 using LanguageExt.UnsafeValueAccess;
 using NUnit.Framework;
-using static ItHappened.UnitTests.StatisticsCalculatorsTests.TestingMethods;
+
 namespace ItHappened.UnitTests.StatisticsCalculatorsTests
 {
     public class MostEventfulWeekCalculatorTest
@@ -29,11 +29,11 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
         {
             //arrange 
             var userId = Guid.NewGuid();
-            var tracker1 = CreateTracker(userId);
-            var tracker2 = CreateTracker(userId);
+            var eventTracker1 = CreateTracker(userId, "Покупка");
+            var eventTracker2 = CreateTracker(userId, "Продажа");
             const int year = 2020;
-            var eventsOfTracker1 = CreateEventDuringYear(tracker1.Id, userId, 1000, year);
-            var eventsOfTracker2 = CreateEventDuringYear(tracker2.Id, userId, 1000, year);
+            var eventsOfTracker1 = CreateEventDuringYear(eventTracker1.Id, userId, 1000, year);
+            var eventsOfTracker2 = CreateEventDuringYear(eventTracker2.Id, userId, 1000, year);
             _eventRepository.AddRangeOfEvents(eventsOfTracker1);
             _eventRepository.AddRangeOfEvents(eventsOfTracker2);
             var allEvents = new List<Event>();
@@ -49,18 +49,11 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
                 .OrderByDescending(g => g.Count).First();
             var firstDayOfWeek = FirstDateOfWeek(year, eventfulWeek.WeekNum);
             var lastDayOfWeek = firstDayOfWeek.AddDays(6);
-            var allEventsTracker1 = _eventRepository.LoadAllTrackerEvents(tracker1.Id);
-            var allEventsTracker2 = _eventRepository.LoadAllTrackerEvents(tracker2.Id);
-            var trackerWithItsEvents = new List<TrackerWithItsEvents>
-            {
-                new TrackerWithItsEvents(tracker1, allEventsTracker1),
-                new TrackerWithItsEvents(tracker2, allEventsTracker2)
-            };
-            
+
             //act
-            var fact = new MostEventfulWeekCalculator()
-                .Calculate(trackerWithItsEvents)
-                .ConvertTo<MostEventfulWeekTrackerTrackerFact>().ValueUnsafe();
+            var fact = new MostEventfulWeekCalculator(_eventRepository)
+                .Calculate(new[] {eventTracker1, eventTracker2})
+                .ConvertTo<MostEventfulWeekTrackersFact>().ValueUnsafe();
 
             //assert 
             var ruName = RuEventName(eventfulWeek.Count, "событие", "события", "событий");
@@ -78,21 +71,17 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
         public void TrackerHaveZeroEvent_CalculateFailure()
         {
             //arrange
+            var now = DateTimeOffset.UtcNow;
             var userId = Guid.NewGuid();
             const int year = 2020;
-            var tracker = CreateTracker(userId);
-            var trackerEvents = CreateEventDuringYear(tracker.Id, userId, 0, year);
-            _eventRepository.AddRangeOfEvents(trackerEvents);
-            var allEventsTracker1 = _eventRepository.LoadAllTrackerEvents(tracker.Id);
-            var trackerWithItsEvents = new List<TrackerWithItsEvents>
-            {
-                new TrackerWithItsEvents(tracker, allEventsTracker1)
-            };
-            
+            var eventTracker = CreateTracker(userId, "Покупка");
+            var eventsTracker = CreateEventDuringYear(eventTracker.Id, userId, 0, year);
+            _eventRepository.AddRangeOfEvents(eventsTracker);
+
             //act
-            var fact = new MostEventfulWeekCalculator()
-                .Calculate(trackerWithItsEvents)
-                .ConvertTo<MostEventfulDayTrackerTrackerFact>();
+            var fact = new MostEventfulDayCalculator(_eventRepository)
+                .Calculate(new[] {eventTracker})
+                .ConvertTo<MostEventfulDayTrackersFact>();
 
             //assert 
             Assert.True(fact.IsNone);
@@ -103,21 +92,17 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
         public void TrackerHaveOneEvent_CalculateFailure()
         {
             //arrange
+            var now = DateTimeOffset.UtcNow;
             var userId = Guid.NewGuid();
             const int year = 2020;
-            var tracker = CreateTracker(userId);
-            var trackerEvents = CreateEventDuringYear(tracker.Id, userId, 1, year);
-            _eventRepository.AddRangeOfEvents(trackerEvents);
-            var allEventsTracker1 = _eventRepository.LoadAllTrackerEvents(tracker.Id);
-            var trackerWithItsEvents = new List<TrackerWithItsEvents>
-            {
-                new TrackerWithItsEvents(tracker, allEventsTracker1)
-            };
-            
+            var eventTracker = CreateTracker(userId, "Покупка");
+            var eventsTracker = CreateEventDuringYear(eventTracker.Id, userId, 1, year);
+            _eventRepository.AddRangeOfEvents(eventsTracker);
+
             //act
-            var fact = new MostEventfulWeekCalculator()
-                .Calculate(trackerWithItsEvents)
-                .ConvertTo<MostEventfulDayTrackerTrackerFact>();
+            var fact = new MostEventfulDayCalculator(_eventRepository)
+                .Calculate(new[] {eventTracker})
+                .ConvertTo<MostEventfulDayTrackersFact>();
 
             //assert 
             Assert.True(fact.IsNone);
@@ -128,19 +113,32 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
             return new CultureInfo(CultureCode).Calendar.GetWeekOfYear(@event.HappensDate.Date,
                 CalendarWeekRule.FirstDay, DayOfWeek.Monday);
         }
-        
+
+        private static EventTracker CreateTracker(Guid userId, string trackerName)
+        {
+            return EventTrackerBuilder
+                .Tracker(userId, Guid.NewGuid(), trackerName)
+                .Build();
+        }
+
         private static IList<Event> CreateEventDuringYear(Guid eventTrackerId, Guid userId, int num, int year)
         {
             var events = new List<Event>();
             for (var i = 0; i < num; i++)
             {
-                var newEvent = CreateEventFixDate(eventTrackerId, userId, RandomDayDuringYear(year));
+                var newEvent = CreateEvent(userId, eventTrackerId, "For Tracker 1", RandomDayDuringYear(year));
                 events.Add(newEvent);
             }
 
             return events;
         }
-        
+
+        private static Event CreateEvent(Guid userId, Guid trackerId, string title,
+            DateTimeOffset dateTime)
+        {
+            return EventBuilder.Event(Guid.NewGuid(), userId, trackerId, dateTime, title).Build();
+        }
+
         private static DateTimeOffset RandomDayDuringYear(int year)
         {
             var startYear = new DateTime(year, 1, 1);

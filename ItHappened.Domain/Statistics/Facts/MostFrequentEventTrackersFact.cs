@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace ItHappened.Domain.Statistics
 {
-    public class MostFrequentEventTrackerTrackerFact : IMultipleTrackerTrackerFact
+    public class MostFrequentEventTrackersFact : IMultipleTrackersFact
     {
         public string FactName { get; }
         public string Description { get; }
@@ -12,7 +12,7 @@ namespace ItHappened.Domain.Statistics
         public string TrackingName { get; }
         public double EventsPeriod { get; }
 
-        internal MostFrequentEventTrackerTrackerFact(string factName, string description, double priority,
+        internal MostFrequentEventTrackersFact(string factName, string description, double priority,
             string trackingName, double eventsPeriod)
         {
             FactName = factName;

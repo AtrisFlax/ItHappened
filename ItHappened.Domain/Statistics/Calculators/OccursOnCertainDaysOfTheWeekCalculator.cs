@@ -12,11 +12,11 @@ namespace ItHappened.Domain.Statistics
         private const double PriorityCoefficient = 0.14;
         private const double LessNotPassPercent = 0.25;
 
-        public Option<ISingleTrackerTrackerFact> Calculate(IReadOnlyCollection<Event> events, EventTracker tracker)
+        public Option<ISingleTrackerFact> Calculate(IReadOnlyCollection<Event> events, EventTracker tracker)
         {
             if (!CanCalculate(events))
             {
-                return Option<ISingleTrackerTrackerFact>.None;
+                return Option<ISingleTrackerFact>.None;
             }
 
             var totalEvents = events.Count;
@@ -33,7 +33,7 @@ namespace ItHappened.Domain.Statistics
             var ruDaysOfWeek = GetRuDaysOfWeek(daysOfTheWeek.Select(x => x.DayTime));
             var percentage = 100.0d * amountEventsMoreThenPassPercent / totalEvents;
 
-            return Option<ISingleTrackerTrackerFact>.Some(new OccursOnCertainDaysOfTheWeekTrackerFact(
+            return Option<ISingleTrackerFact>.Some(new OccursOnCertainDaysOfTheWeekTrackerFact(
                 "Происходит в определённые дни недели",
                 $"В {percentage}% случаев событие {tracker.Name} происходит {ruDaysOfWeek}",
                 percentage * PriorityCoefficient,

@@ -7,18 +7,18 @@ namespace ItHappened.Domain.Statistics
 {
     public class SingleTrackerEventsCountCalculator : ISingleTrackerStatisticsCalculator
     {
-        public Option<ISingleTrackerTrackerFact> Calculate(IReadOnlyCollection<Event> events, EventTracker tracker)
+        public Option<ISingleTrackerFact> Calculate(IReadOnlyCollection<Event> events, EventTracker tracker)
         {
             if (!CanCalculate(events)) 
-                return Option<ISingleTrackerTrackerFact>.None;
+                return Option<ISingleTrackerFact>.None;
 
             const string factName = "Количество событий";
             var eventsCount = events.Count;
             var description = $"Событие {tracker.Name} произошло {eventsCount} раз";
             var priority = Math.Log(eventsCount);
 
-            return Option<ISingleTrackerTrackerFact>
-                .Some(new SingleTrackerTrackerEventsCountFact(factName, description, priority, eventsCount));
+            return Option<ISingleTrackerFact>
+                .Some(new SingleTrackerEventsCountFact(factName, description, priority, eventsCount));
         }
 
         private static bool CanCalculate(IEnumerable<Event> events)

@@ -10,11 +10,11 @@ namespace ItHappened.Domain.Statistics
         private const int EventsThreshold = 10;
         private const int DaysThreshold = 7;
 
-        public Option<ISingleTrackerTrackerFact> Calculate(IReadOnlyCollection<Event> events, EventTracker tracker)
+        public Option<ISingleTrackerFact> Calculate(IReadOnlyCollection<Event> events, EventTracker tracker)
         {
             if (!CanCalculate(events))
             {
-                return Option<ISingleTrackerTrackerFact>.None;
+                return Option<ISingleTrackerFact>.None;
             }
 
             var (lastEventBeforeBreak, firstEventAfterBreak) = GetFirstAndLastEventOfTheLongestBreak(events);
@@ -25,7 +25,7 @@ namespace ItHappened.Domain.Statistics
                 $" до {firstEventAfterBreak}, он занял {maxDurationInDays} дней";
             const string factName = "Самый долгий перерыв";
 
-            return Option<ISingleTrackerTrackerFact>.Some(new LongestBreakTrackerFact(
+            return Option<ISingleTrackerFact>.Some(new LongestBreakTrackerFact(
                 factName,
                 description,
                 priority,

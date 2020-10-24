@@ -1,6 +1,6 @@
 ﻿namespace ItHappened.Domain.Statistics
 {
-    public class SumScaleTrackerFact : ISingleTrackerTrackerFact
+    public class SumScaleTrackerFact : ISingleTrackerFact
     {
         public double SumValue { get; }
         public string MeasurementUnit { get; }

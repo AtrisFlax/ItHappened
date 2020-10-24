@@ -2,7 +2,7 @@
 
 namespace ItHappened.Domain.Statistics
 {
-    public class MostEventfulDayTrackerTrackerFact : IMultipleTrackerTrackerFact
+    public class MostEventfulDayTrackersFact : IMultipleTrackersFact
     {
         public string FactName { get; }
         public string Description { get; }
@@ -10,7 +10,7 @@ namespace ItHappened.Domain.Statistics
         public DateTimeOffset DayWithLargestEventsCount { get; }
         public int EventsCount { get; }
 
-        internal MostEventfulDayTrackerTrackerFact(string type, string description, double priority,
+        internal MostEventfulDayTrackersFact(string type, string description, double priority,
             DateTimeOffset dayWithLargestEventsCount, int eventsCount)
         {
             FactName = type;

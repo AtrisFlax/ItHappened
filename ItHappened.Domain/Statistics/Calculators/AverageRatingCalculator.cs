@@ -8,11 +8,11 @@ namespace ItHappened.Domain.Statistics
 {
     public class AverageRatingCalculator : ISingleTrackerStatisticsCalculator
     {
-        public Option<ISingleTrackerTrackerFact> Calculate(IReadOnlyCollection<Event> events, EventTracker tracker)
+        public Option<ISingleTrackerFact> Calculate(IReadOnlyCollection<Event> events, EventTracker tracker)
         {
             if (!CanCalculate(events))
             {
-                return Option<ISingleTrackerTrackerFact>.None;
+                return Option<ISingleTrackerFact>.None;
             }
             
             var averageRating = events.Select(e => e.CustomizationsParameters.Rating).Somes().Average();
@@ -21,7 +21,7 @@ namespace ItHappened.Domain.Statistics
             var description = $"Средний рейтинг для события {tracker.Name} равен {averageRating}";
             var priority = Math.Sqrt(averageRating);
             
-            return Option<ISingleTrackerTrackerFact>.Some(new AverageRatingTrackerFact(
+            return Option<ISingleTrackerFact>.Some(new AverageRatingTrackerFact(
                 factName,
                 description,
                 priority,

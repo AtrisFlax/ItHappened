@@ -41,6 +41,8 @@ namespace ItHappened.Api
             services.AddSingleton<IStatisticsService, StatisticsService>();
             services.AddSingleton<IMultipleTrackersFactProvider, MultipleTrackersFactProvider>();
             services.AddSingleton<ISingleTrackerFactProvider, SingleTrackerFactProvider>();
+            AddMultipleTrackersStatisticsProvider(services);
+            AddSingleTrackerStatisticsProvider(services);
 
             services.AddSingleton<IUserRepository, UserRepository>();
             services.AddSingleton<ITrackerRepository, TrackerRepository>();
@@ -71,7 +73,7 @@ namespace ItHappened.Api
             {
                 swaggerGenOptions.SwaggerDoc("v1", new OpenApiInfo {Title = "ItHappened API", Version = "v1"});
                 // Bearer token authentication
-                OpenApiSecurityScheme securityDefinition = new OpenApiSecurityScheme()
+                var securityDefinition = new OpenApiSecurityScheme()
                 {
                     Name = "Bearer",
                     BearerFormat = "JWT",
@@ -83,7 +85,7 @@ namespace ItHappened.Api
                 swaggerGenOptions.AddSecurityDefinition("jwt_auth", securityDefinition);
 
                 // Make sure swagger UI requires a Bearer token specified
-                OpenApiSecurityScheme securityScheme = new OpenApiSecurityScheme()
+                var securityScheme = new OpenApiSecurityScheme()
                 {
                     Reference = new OpenApiReference()
                     {
@@ -134,6 +136,27 @@ namespace ItHappened.Api
         private void AddMultipleTrackersStatisticsProvider(IServiceCollection services)
         {
             var statisticsProvider = new MultipleTrackersFactProvider();
+            statisticsProvider.Add(new MostEventfulWeekCalculator());
+            statisticsProvider.Add(new MostEventfulDayStatisticsCalculator());
+            statisticsProvider.Add(new MostFrequentEventStatisticsCalculator());
+            statisticsProvider.Add(new MultipleTrackersEventsCountCalculator());
+
+            services.AddSingleton(statisticsProvider);
+        }
+        
+        private void AddSingleTrackerStatisticsProvider(IServiceCollection services)
+        {
+            var statisticsProvider = new SingleTrackerFactProvider();
+            statisticsProvider.Add(new AverageRatingCalculator());
+            statisticsProvider.Add(new AverageScaleCalculator());
+            statisticsProvider.Add(new BestRatingEventCalculator());
+            statisticsProvider.Add(new LongestBreakCalculator());
+            statisticsProvider.Add(new OccursOnCertainDaysOfTheWeekCalculator());
+            statisticsProvider.Add(new SingleTrackerEventsCountCalculator());
+            statisticsProvider.Add(new SumScaleCalculator());
+            statisticsProvider.Add(new WorstEventCalculator());
+
+            services.AddSingleton(statisticsProvider);
         }
     }
 }

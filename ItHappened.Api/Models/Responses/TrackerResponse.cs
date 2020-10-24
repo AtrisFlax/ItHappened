@@ -1,4 +1,5 @@
 ﻿using System;
+using LanguageExt;
 
 namespace ItHappened.Api.Models.Responses
 {
@@ -16,6 +17,6 @@ namespace ItHappened.Api.Models.Responses
         public bool RatingIsOptional { get; set; }
         public bool GeoTagIsOptional { get; set; }
         public bool CommentIsOptional { get; set; }
-        public string ScaleMeasurementUnit;
+        public string ScaleMeasurementUnit { get; set; }
     }
 }

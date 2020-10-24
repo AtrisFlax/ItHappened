@@ -10,12 +10,12 @@ namespace ItHappened.Domain.Statistics
         private const int ThresholdEvents = 3;
         private const int ThresholdTrackers = 2;
 
-        public Option<IMultipleTrackerTrackerFact> Calculate(
+        public Option<IMultipleTrackersFact> Calculate(
             IReadOnlyCollection<TrackerWithItsEvents> trackerWithItsEvents)
         {
             if (!CanCalculate(trackerWithItsEvents))
             {
-                return Option<IMultipleTrackerTrackerFact>.None;
+                return Option<IMultipleTrackersFact>.None;
             }
 
             var nowTime = DateTimeOffset.Now;
@@ -29,7 +29,7 @@ namespace ItHappened.Domain.Statistics
             var (trackingName, eventsPeriod) = trackingNameWithEventsPeriod
                 .OrderBy(e => e.eventsPeriod)
                 .FirstOrDefault();
-            return Option<IMultipleTrackerTrackerFact>.Some(new MostFrequentEventTrackerTrackerFact(
+            return Option<IMultipleTrackersFact>.Some(new MostFrequentEventTrackersFact(
                 "Самое частое событие",
                 $"Чаще всего у вас происходит событие {trackingName} - раз в {eventsPeriod:0.#} дней",
                 10 / eventsPeriod,

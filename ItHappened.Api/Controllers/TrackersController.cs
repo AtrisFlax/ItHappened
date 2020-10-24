@@ -40,16 +40,8 @@ namespace ItHappened.Api.Controllers
         public IActionResult CreateTracker([FromBody]TrackerRequest request)
         {
             var userId = Guid.Parse(User.FindFirstValue(JwtClaimTypes.Id));
-            //var customizations = _mapper.Map<TrackerCustomizationsSettings>(request.CustomizationSettings);
-            var customizations = new TrackerCustomizationSettings(
-                request.CustomizationSettings.ScaleMeasurementUnit,
-                request.CustomizationSettings.PhotoIsOptional,
-                request.CustomizationSettings.RatingIsOptional,
-                request.CustomizationSettings.GeoTagIsOptional,
-                request.CustomizationSettings.CommentIsOptional);
-            
-            var tracker = new EventTracker(Guid.NewGuid(), userId, request.Name, customizations);
-            _trackerRepository.SaveTracker(tracker);
+            var customizations = _mapper.Map<TrackerCustomizationSettings>(request.CustomizationSettings);
+            var tracker = _trackerService.CreateEventTracker(userId, request.Name, customizations);
             return Ok(_mapper.Map<TrackerResponse>(tracker));
         }
         
@@ -77,14 +69,7 @@ namespace ItHappened.Api.Controllers
         public IActionResult UpdateTracker([FromRoute]Guid trackerId, [FromBody]TrackerRequest request)
         {
             var userId = Guid.Parse(User.FindFirstValue(JwtClaimTypes.Id));
-            //TODO REFACTOR MAPPING
-            var customizations = new TrackerCustomizationSettings(
-                request.CustomizationSettings.ScaleMeasurementUnit,
-                request.CustomizationSettings.PhotoIsOptional,
-                request.CustomizationSettings.RatingIsOptional,
-                request.CustomizationSettings.GeoTagIsOptional,
-                request.CustomizationSettings.CommentIsOptional);
-            
+            var customizations = _mapper.Map<TrackerCustomizationSettings>(request.CustomizationSettings);
             var tracker = _trackerService.EditEventTracker(userId, trackerId, request.Name, customizations);
             return Ok(_mapper.Map<TrackerResponse>(tracker));
         }

@@ -2,7 +2,7 @@
 
 namespace ItHappened.Domain.Statistics
 {
-    public class WorstEventTrackerFact : ISingleTrackerTrackerFact
+    public class WorstEventTrackerFact : ISingleTrackerFact
     {
         public double Rating { get; }
         public DateTimeOffset HappensDate { get; }
