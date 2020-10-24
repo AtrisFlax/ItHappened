@@ -13,4 +13,4 @@ namespace ItHappened.Domain
             return filters.Aggregate(events, (current, filter) => filter.Filter(current)).ToList();
         }
     }
-}
+} 

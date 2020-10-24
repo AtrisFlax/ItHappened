@@ -1,6 +1,4 @@
 ﻿using System;
-using FluentValidation;
-using LanguageExt;
 
 namespace ItHappened.Api.Models.Requests
 {
@@ -12,19 +10,5 @@ namespace ItHappened.Api.Models.Requests
         public double Rating { get; set; }
         public GeoTagRequest GeoTag { get; set; }
         public string Comment { get; set; }
-    }
-
-    public class GeoTagRequest
-    {
-        public double GpsLat { get; set; }
-        public double GpsLng { get; set; }
-    }
-    
-    public class EventRequestValidator : AbstractValidator<EventRequest>
-    {
-        public EventRequestValidator()
-        {
-            RuleFor(x => x.HappensDate).NotEmpty();
-        }
     }
 }
