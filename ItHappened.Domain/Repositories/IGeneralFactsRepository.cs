@@ -7,6 +7,6 @@ namespace ItHappened.Domain
     public interface IGeneralFactsRepository
     {
         IReadOnlyCollection<IGeneralFact> LoadUserGeneralFacts(Guid userId);
-        void UpdateUserGeneralFacts(Guid userId);
+        void UpdateUserGeneralFacts(IReadOnlyCollection<IGeneralFact> facts,Guid userId);
     }
 }
