@@ -14,7 +14,7 @@ namespace ItHappened.Api.MappingProfiles
             //CreateMap<PhotoRequest, Photo>();
             //CreateMap<GeoTagRequest, GeoTag>();
 
-            CreateMap<EventCustomParametersRequest, EventCustomParameters>()
+            CreateMap<EventRequest, EventCustomParameters>()
                 .ForMember(dest => dest.Comment, opt =>
                     opt.MapFrom(src => Option<Comment>.Some(new Comment(src.Comment))))
                 /*.ForMember(dest => dest.Photo, opt =>
