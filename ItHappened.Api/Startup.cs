@@ -47,8 +47,6 @@ namespace ItHappened.Api
             services.AddSingleton<IEventService, EventService>();
             services.AddSingleton<ITrackerService, TrackerService>();
             services.AddSingleton<IStatisticsService, StatisticsService>();
-            services.AddSingleton<IMultipleTrackersFactProvider, MultipleTrackersFactProvider>();
-            services.AddSingleton<ISingleTrackerFactProvider, SingleTrackerFactProvider>();
             AddMultipleTrackersStatisticsProvider(services);
             AddSingleTrackerStatisticsProvider(services);
 
@@ -125,8 +123,8 @@ namespace ItHappened.Api
 
             var swaggerOptions = new SwaggerOptions();
             Configuration.GetSection(nameof(SwaggerOptions)).Bind(swaggerOptions);
-            app.UseSwagger((options) => options.RouteTemplate = swaggerOptions.JsonRoute);
-            app.UseSwaggerUI((options) => options.SwaggerEndpoint(swaggerOptions.UiEndpoint,
+            app.UseSwagger(options => options.RouteTemplate = swaggerOptions.JsonRoute);
+            app.UseSwaggerUI(options => options.SwaggerEndpoint(swaggerOptions.UiEndpoint,
                 swaggerOptions.ApiDescription));
             
             var jwtOptions = new JwtOptions();
@@ -152,8 +150,7 @@ namespace ItHappened.Api
             statisticsProvider.Add(new MostEventfulDayStatisticsCalculator());
             statisticsProvider.Add(new MostFrequentEventStatisticsCalculator());
             statisticsProvider.Add(new MultipleTrackersEventsCountCalculator());
-
-            services.AddSingleton(statisticsProvider);
+            services.AddSingleton<IMultipleTrackersFactProvider>(statisticsProvider);
         }
         
         private void AddSingleTrackerStatisticsProvider(IServiceCollection services)
@@ -167,8 +164,7 @@ namespace ItHappened.Api
             statisticsProvider.Add(new SingleTrackerEventsCountCalculator());
             statisticsProvider.Add(new SumScaleCalculator());
             statisticsProvider.Add(new WorstEventCalculator());
-
-            services.AddSingleton(statisticsProvider);
+            services.AddSingleton<ISingleTrackerFactProvider>(statisticsProvider);
         }
     }
 }

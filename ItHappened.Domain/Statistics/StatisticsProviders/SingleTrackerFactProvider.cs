@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace ItHappened.Domain.Statistics
@@ -7,7 +8,7 @@ namespace ItHappened.Domain.Statistics
     {
         private readonly List<ISingleTrackerStatisticsCalculator> _calculators =
             new List<ISingleTrackerStatisticsCalculator>();
-
+        
         public void Add(ISingleTrackerStatisticsCalculator calculator)
         {
             _calculators.Add(calculator);
