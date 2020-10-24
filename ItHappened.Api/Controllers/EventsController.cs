@@ -30,11 +30,10 @@ namespace ItHappened.Api.Controllers
             //var customParameters = _mapper.Map<EventCustomParameters>(request.CustomParameters);
             var customParameters = GetEventCustomParametersFromRequest(request);
             var newEvent = _eventService.AddEvent(userId, trackerId, request.HappensDate, customParameters);
-            var map = _mapper.Map<EventResponse>(newEvent);
             return Ok(_mapper.Map<EventResponse>(newEvent));
         }
         
-        [HttpGet("/trackers/{trackerId}/events/{eventId}")]
+        [HttpGet("/events/{eventId}")]
         [ProducesResponseType(200, Type = typeof(EventResponse))]
         public IActionResult GetEvent([FromRoute]Guid eventId)
         {
@@ -52,7 +51,7 @@ namespace ItHappened.Api.Controllers
             return Ok(_mapper.Map<EventResponse[]>(events));
         }
 
-        [HttpPut("/trackers/{trackerId}/events/{eventId}")]
+        [HttpPut("/events/{eventId}")]
         [ProducesResponseType(200, Type = typeof(EventResponse))]
         public IActionResult UpdateEvent([FromRoute] Guid eventId, [FromBody]EventRequest request)
         {
@@ -62,7 +61,7 @@ namespace ItHappened.Api.Controllers
             return Ok(_mapper.Map<EventResponse>(editedEvent));
         }
         
-        [HttpDelete("/trackers/{trackerId}/events/{eventId}")]
+        [HttpDelete("events/{eventId}")]
         [ProducesResponseType(200, Type = typeof(EventResponse))]
         public IActionResult DeleteEvent([FromRoute]Guid eventId)
         {

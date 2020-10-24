@@ -80,23 +80,5 @@ namespace ItHappened.Api.Controllers
             var deletedTracker = _trackerService.DeleteEventTracker(userId, trackerId);
             return Ok(_mapper.Map<TrackerResponse>(deletedTracker));
         }
-        
-        [HttpGet("/trackers/{trackerId}/statistics")]
-        [ProducesResponseType(200, Type = typeof(ITrackerFact))]
-        public IActionResult GetStatisticsForSingleTracker([FromRoute]Guid trackerId)
-        {
-            var userId = Guid.Parse(User.FindFirstValue(JwtClaimTypes.Id));
-            var statistics = _statisticsService.GetStatisticsFactsForTracker(trackerId, userId);
-            return Ok(statistics);
-        }
-        
-        [HttpGet("/trackers/statistics")]
-        [ProducesResponseType(200, Type = typeof(List<ITrackerFact>))]
-        public IActionResult GetStatisticsForAllTrackers()
-        {
-            var userId = Guid.Parse(User.FindFirstValue(JwtClaimTypes.Id));
-            var statistics = _statisticsService.GetStatisticsFactsForAllTrackers(userId);
-            return Ok(statistics);
-        }
     }
 }
