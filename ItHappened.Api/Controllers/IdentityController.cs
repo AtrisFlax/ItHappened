@@ -1,10 +1,13 @@
-﻿using System.Security.Claims;
+﻿using System;
+using System.Security.Claims;
 using AutoMapper;
 using ItHappened.Api.Authentication;
 using ItHappened.Api.Models.Requests;
 using ItHappened.Api.Models.Responses;
 using ItHappened.Application.Services.UserService;
+using ItHappened.Domain;
 using ItHappened.Infrastructure;
+using LanguageExt;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -36,6 +39,7 @@ namespace ItHappened.Api.Controllers
             if (user != null)
                 return Unauthorized("Username is already in use");
 
+            
             user = _userService.Register(request.Name, request.Password);
             var token = _jwtIssuer.GenerateToken(user);
             return Ok(new UserResponse(user.Id, user.Name, token));

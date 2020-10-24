@@ -27,7 +27,7 @@ namespace ItHappened.Infrastructure.Repositories
             return _events[eventId];
         }
 
-        public IReadOnlyList<Event> LoadAllTrackerEvents(Guid trackerId)
+        public IReadOnlyCollection<Event> LoadAllTrackerEvents(Guid trackerId)
         {
             return _events.Values.Where(@event => @event.TrackerId == trackerId).ToList();
         }
