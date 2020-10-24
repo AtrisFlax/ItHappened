@@ -16,7 +16,7 @@ namespace ItHappened.Domain
             RegexPattern = regexPattern;
         }
 
-        public IReadOnlyCollection<Event> Filter(IReadOnlyCollection<Event> events)
+        public IEnumerable<Event> Filter(IReadOnlyCollection<Event> events)
         {
             return events.Where(@event => @event.CustomizationsParameters.Comment.IsSome)
                 .Where(@event =>
