@@ -20,7 +20,8 @@ namespace ItHappened.Domain.Statistics
             }
 
             var totalEvents = events.Count;
-            var daysOfTheWeek = events.GroupBy(@event => @event.HappensDate.DayOfWeek,
+            var daysOfTheWeek = events
+                .GroupBy(@event => @event.HappensDate.DayOfWeek,
                     (key, group) => new
                     {
                         DayTime = key,

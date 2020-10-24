@@ -9,6 +9,7 @@ using ItHappened.Application.Services.StatisticService;
 using ItHappened.Application.Services.TrackerService;
 using ItHappened.Domain;
 using ItHappened.Domain.Statistics;
+using LanguageExt;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -43,6 +44,7 @@ namespace ItHappened.Api.Controllers
             var tracker = _trackerService.CreateEventTracker(userId, request.Name, customizations);
             return Ok(_mapper.Map<TrackerResponse>(tracker));
         }
+        
 
         [HttpGet("/trackers")]
         [ProducesResponseType(200, Type = typeof(List<TrackerResponse>))]
