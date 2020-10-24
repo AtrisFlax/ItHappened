@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Security.Claims;
 using AutoMapper;
 using ItHappened.Api.Authentication;
@@ -25,16 +26,19 @@ namespace ItHappened.Api.Controllers
         }
 
         [HttpPost("/trackers/{trackerId}/events")]
-        [ProducesResponseType(200, Type = typeof(EventResponse))]
-        public IActionResult AddEventToTracker([FromRoute]Guid trackerId, [FromBody]EventRequest request)
+        [ProducesResponseType(200)]
+        public IActionResult AddEventToTracker([FromRoute]Guid trackerId, [FromBody]EventsRequest request)
         {
             var userId = Guid.Parse(User.FindFirstValue(JwtClaimTypes.Id));
-            //var customParameters = _mapper.Map<EventCustomParameters>(request);
-            var customParameters = GetEventCustomParametersFromRequest(request);
-            var newEvent = _eventService.AddEvent(userId, trackerId, request.HappensDate, customParameters);
-            var map = _mapper.Map<EventResponse>(newEvent);
-            return Ok(_mapper.Map<EventResponse>(newEvent));
+            var eventsInfoRange =request.Events.Select(@event => new EventsInfoRange
+            {
+                HappensDate = @event.HappensDate,
+                CustomParameters = GetEventCustomParametersFromRequest(@event)
+            });
+            _eventService.AddRangeEvent(userId, trackerId, eventsInfoRange);
+            return Ok();
         }
+        
         
         [HttpGet("/events/{eventId}")]
         [ProducesResponseType(200, Type = typeof(EventResponse))]

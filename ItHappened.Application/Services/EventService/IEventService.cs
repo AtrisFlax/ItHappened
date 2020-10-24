@@ -6,7 +6,11 @@ namespace ItHappened.Application.Services.EventService
 {
     public interface IEventService
     {
-        Event AddEvent(Guid actorId, Guid trackerId, DateTimeOffset eventHappensDate, EventCustomParameters customParameters);
+        Event AddEvent(Guid actorId, Guid trackerId, DateTimeOffset eventHappensDate,
+            EventCustomParameters customParameters);
+
+        void AddRangeEvent(Guid actorId, Guid trackerId, IEnumerable<EventsInfoRange> eventsInfoRange);
+
         Event GetEvent(Guid actorId, Guid eventId);
         IReadOnlyCollection<Event> GetAllEvents(Guid actorId, Guid trackerId);
 

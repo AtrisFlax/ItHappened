@@ -8,14 +8,15 @@ namespace ItHappened.Application.Services.EventService
     {
         private readonly ITrackerRepository _trackerRepository;
         private readonly IEventRepository _eventRepository;
-        
+
         public EventService(IEventRepository eventRepository, ITrackerRepository trackerRepository)
         {
             _eventRepository = eventRepository;
             _trackerRepository = trackerRepository;
         }
-        
-        public Event AddEvent(Guid actorId, Guid trackerId, DateTimeOffset eventHappensDate, EventCustomParameters customParameters)
+
+        public Event AddEvent(Guid actorId, Guid trackerId, DateTimeOffset eventHappensDate,
+            EventCustomParameters customParameters)
         {
             var newEvent = new Event(Guid.NewGuid(), actorId, trackerId, eventHappensDate, customParameters);
             var tracker = _trackerRepository.LoadTracker(trackerId);
@@ -23,11 +24,26 @@ namespace ItHappened.Application.Services.EventService
             {
                 throw new Exception(); //todo return no result
             }
-            
+
             _eventRepository.AddEvent(newEvent);
             return newEvent;
         }
-        
+
+        public void AddRangeEvent(Guid actorId, Guid trackerId, IEnumerable<EventsInfoRange> eventsInfoRange)
+        {
+            var tracker = _trackerRepository.LoadTracker(trackerId);
+            foreach (var eventInfo in eventsInfoRange)
+            {
+                var newEvent = new Event(Guid.NewGuid(), actorId, trackerId, eventInfo.HappensDate,
+                    eventInfo.CustomParameters);
+                if (tracker.SettingsAndEventCustomizationsMatch(newEvent))
+                {
+                    _eventRepository.AddEvent(newEvent);
+                } //if customization not match skip
+            }
+        }
+
+
         public Event GetEvent(Guid actorId, Guid eventId)
         {
             var @event = _eventRepository.LoadEvent(eventId);
@@ -35,7 +51,7 @@ namespace ItHappened.Application.Services.EventService
                 throw new Exception();
             return @event;
         }
-        
+
         public IReadOnlyCollection<Event> GetAllEvents(Guid actorId, Guid trackerId)
         {
             var tracker = _trackerRepository.LoadTracker(trackerId);
@@ -44,7 +60,7 @@ namespace ItHappened.Application.Services.EventService
             var events = _eventRepository.LoadAllTrackerEvents(trackerId);
             return events;
         }
-        
+
         public Event EditEvent(Guid actorId,
             Guid eventId,
             DateTimeOffset timeStamp,
