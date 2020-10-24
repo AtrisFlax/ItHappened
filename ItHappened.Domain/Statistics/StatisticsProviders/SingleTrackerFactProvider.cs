@@ -8,9 +8,6 @@ namespace ItHappened.Domain.Statistics
         private readonly List<ISingleTrackerStatisticsCalculator> _calculators =
             new List<ISingleTrackerStatisticsCalculator>();
 
-        private readonly List<ISingleTrackerStatisticsCalculator> _eventRepository;
-        private readonly List<ISingleTrackerStatisticsCalculator> _trackerRepository;
-
         public void Add(ISingleTrackerStatisticsCalculator calculator)
         {
             _calculators.Add(calculator);
