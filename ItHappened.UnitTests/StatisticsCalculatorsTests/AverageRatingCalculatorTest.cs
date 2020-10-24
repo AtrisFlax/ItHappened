@@ -99,5 +99,26 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
             //assert 
             Assert.True(fact.IsNone);
         }
+        
+        
+        [Test]
+        void AllEvents()
+        {
+
+
+            for (var i = 0; i <100; i++)
+            {
+                Console.WriteLine(RandomDay());
+            }
+        }
+        
+        
+        private Random gen = new Random();
+        DateTime RandomDay()
+        {
+            DateTime start = new DateTime(1995, 1, 1);
+            int range = (DateTime.Today - start).Days;           
+            return start.AddDays(gen.Next(range));
+        }
     }
 }

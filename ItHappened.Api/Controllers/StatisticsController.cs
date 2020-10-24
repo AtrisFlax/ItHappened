@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Security.Claims;
 using AutoMapper;
 using ItHappened.Api.Authentication;
@@ -9,6 +10,7 @@ using ItHappened.Domain;
 using ItHappened.Domain.Statistics;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 
 namespace ItHappened.Api.Controllers
 {
@@ -38,7 +40,11 @@ namespace ItHappened.Api.Controllers
         {
             var userId = Guid.Parse(User.FindFirstValue(JwtClaimTypes.Id));
             var statistics = _statisticsService.GetStatisticsFactsForTracker(trackerId, userId);
-            return Ok(statistics);
+            var allJsonFacts = JsonConvert.SerializeObject(statistics, Formatting.Indented, new JsonSerializerSettings
+            {
+                TypeNameHandling = TypeNameHandling.None
+            });
+            return Ok(allJsonFacts);
         }
         
         [HttpGet("statistics")]
@@ -46,8 +52,12 @@ namespace ItHappened.Api.Controllers
         public IActionResult GetStatisticsForAllTrackers()
         {
             var userId = Guid.Parse(User.FindFirstValue(JwtClaimTypes.Id));
-            var statistics = _statisticsService.GetStatisticsFactsForAllTrackers(userId);
-            return Ok(statistics);
+            var statisticsFacts = _statisticsService.GetStatisticsFactsForAllTrackers(userId);
+            var allJsonFacts = JsonConvert.SerializeObject(statisticsFacts, Formatting.Indented, new JsonSerializerSettings
+            {
+                TypeNameHandling = TypeNameHandling.None
+            });
+            return Ok(allJsonFacts);
         }
     }
 }

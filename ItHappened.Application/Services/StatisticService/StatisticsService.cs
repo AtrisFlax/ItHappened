@@ -26,13 +26,13 @@ namespace ItHappened.Application.Services.StatisticService
         public IReadOnlyCollection<IMultipleTrackersFact> GetStatisticsFactsForAllTrackers(Guid userId)
         {
             var trackers = _trackerRepository.LoadAllUserTrackers(userId);
-            var a = trackers.Select(x =>
+            var infoForCalculation  = trackers.Select(x =>
             {
                 var tracker = _trackerRepository.LoadTracker(x.Id);
                 var events = _eventRepository.LoadAllTrackerEvents(x.Id);
                 return new TrackerWithItsEvents(tracker, events);
             }).ToList();
-            return _multipleTrackersFactProvider.GetFacts(a.AsReadOnly());
+            return _multipleTrackersFactProvider.GetFacts(infoForCalculation.AsReadOnly());
         }
 
         public IReadOnlyCollection<ISingleTrackerFact> GetStatisticsFactsForTracker(Guid trackerId, Guid userId)
