@@ -19,19 +19,10 @@ namespace ItHappened.Api.Controllers
     public class StatisticsController : ControllerBase
     {
         private readonly IStatisticsService _statisticsService;
-        private readonly ITrackerService _trackerService;
-        private readonly ITrackerRepository _trackerRepository;
-        private readonly IMapper _mapper;
         
-        public StatisticsController(ITrackerService trackerService,
-            ITrackerRepository trackerRepository,
-            IStatisticsService statisticsService,
-            IMapper mapper)
+        public StatisticsController(IStatisticsService statisticsService)
         {
-            _trackerService = trackerService;
-            _trackerRepository = trackerRepository;
             _statisticsService = statisticsService;
-            _mapper = mapper;
         }
 
         [HttpGet("statistics/{trackerId}")]

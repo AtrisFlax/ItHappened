@@ -52,7 +52,7 @@ namespace ItHappened.Application.Services.EventService
             return @event;
         }
 
-        public IEnumerable<Event> GetAllFilteredEvents(Guid actorId, Guid trackerId, IEnumerable<IEventsFilter> eventsFilters)
+        public IReadOnlyCollection<Event> GetAllFilteredEvents(Guid actorId, Guid trackerId, IEnumerable<IEventsFilter> eventsFilters)
         {
             return EventsFilter.Filter(GetAllEvents(actorId, trackerId), eventsFilters);
         }

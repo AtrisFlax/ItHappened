@@ -38,8 +38,6 @@ namespace ItHappened.Api.Controllers
             var user = _userService.TryFindByLogin(request.Name);
             if (user != null)
                 return Unauthorized("Username is already in use");
-
-            
             user = _userService.Register(request.Name, request.Password);
             var token = _jwtIssuer.GenerateToken(user);
             return Ok(new UserResponse(user.Id, user.Name, token));
@@ -72,7 +70,6 @@ namespace ItHappened.Api.Controllers
                 Id = User.FindFirstValue(JwtClaimTypes.Id),
                 Login = User.FindFirstValue(JwtClaimTypes.Login)
             };
-
             return Ok(result);
         }
     }

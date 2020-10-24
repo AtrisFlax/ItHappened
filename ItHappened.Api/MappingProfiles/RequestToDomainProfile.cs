@@ -26,12 +26,6 @@ namespace ItHappened.Api.MappingProfiles
                     opt.MapFrom(src => Option<double>.Some(src.Scale)))
                 .ForMember(dest => dest.GeoTag, opt =>
                     opt.MapFrom(src => Option<GeoTag>.Some(new GeoTag(src.GeoTag.GpsLat, src.GeoTag.GpsLng))));
-
-            CreateMap<EventFilterRequest, DateTimeFilter>()
-                .ForMember(s => s, opt => opt.MapFrom((src, s) => { DateTimeFilter dateTimeFilter = null; return dateTimeFilter; }));
-                //.ConstructUsing(s => new DateTimeFilter("FilterOnDemand", s.FromDateTime.Value, s.ToDateTime.Value))
-                //.ForMember(dest => dest.To, opt => opt.MapFrom(src => src.ToDateTime))
-                //.ForMember(dest => dest.From, opt => opt.MapFrom(src => src.FromDateTime));
         }
 
         public class EventCustomParametersPlay
