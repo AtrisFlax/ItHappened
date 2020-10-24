@@ -10,11 +10,11 @@ namespace ItHappened.Domain.Statistics
         private const double CoefficientEventsPass = 0.70;
         private const double PercentageCoefficient = 0.14;
 
-        public Option<ISingleTrackerTrackerFact> Calculate(IReadOnlyCollection<Event> events, EventTracker tracker)
+        public Option<ISingleTrackerFact> Calculate(IReadOnlyCollection<Event> events, EventTracker tracker)
         {
             if (!CanCalculate(events))
             {
-                return Option<ISingleTrackerTrackerFact>.None;
+                return Option<ISingleTrackerFact>.None;
             }
 
             var totalEvents = events.Count;
@@ -28,7 +28,7 @@ namespace ItHappened.Domain.Statistics
             var specificDayTimeInfo = daysOfTheWeek.FirstOrDefault();
             if (specificDayTimeInfo == null)
             {
-                return Option<ISingleTrackerTrackerFact>.None;
+                return Option<ISingleTrackerFact>.None;
             }
 
             var amountEventsMoreThenPassPercent = specificDayTimeInfo.HitOnDayOfWeek;
@@ -39,7 +39,7 @@ namespace ItHappened.Domain.Statistics
             var priority = PercentageCoefficient * percentage;
             var timeOfTheDay = specificDayTimeInfo.TimeOfTheDay;
 
-            return Option<ISingleTrackerTrackerFact>.Some(new SpecificDayTimeFact(
+            return Option<ISingleTrackerFact>.Some(new SpecificDayTimeFact(
                 factName,
                 description,
                 priority,

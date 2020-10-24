@@ -12,12 +12,12 @@ namespace ItHappened.Domain.Statistics
         private const int MaxMonthThreshold = 3;
         private const int ThresholdEventsWithRating = 10;
 
-        public Option<ISingleTrackerTrackerFact> Calculate(IReadOnlyCollection<Event> events, EventTracker tracker)
+        public Option<ISingleTrackerFact> Calculate(IReadOnlyCollection<Event> events, EventTracker tracker)
         {
             var now = DateTimeOffset.Now;
             if (!CanCalculate(events, now))
             {
-                return Option<ISingleTrackerTrackerFact>.None;
+                return Option<ISingleTrackerFact>.None;
             }
 
             var bestRatingEventInfo
@@ -32,7 +32,7 @@ namespace ItHappened.Domain.Statistics
 
             if (bestRatingEventInfo.Event.HappensDate < now.AddDays(-MinDaysThreshold))
             {
-                 return Option<ISingleTrackerTrackerFact>.None;
+                 return Option<ISingleTrackerFact>.None;
             }
 
             var bestRatingEvent = bestRatingEventInfo.Event;
@@ -46,7 +46,7 @@ namespace ItHappened.Domain.Statistics
             var priority = bestRating;
             var bestEventDate = bestRatingEventInfo.Event.HappensDate;
 
-            return Option<ISingleTrackerTrackerFact>.Some(new BestEventTrackerFact(
+            return Option<ISingleTrackerFact>.Some(new BestEventTrackerFact(
                 factName,
                 description,
                 priority,
