@@ -34,5 +34,10 @@ namespace ItHappened.Infrastructure.Repositories
         {
             return _eventTrackers.Remove(eventId);
         }
+
+        public IEnumerable<EventTracker> LoadAllTrackers()
+        {
+            return _eventTrackers.Values;
+        }
     }
 }
