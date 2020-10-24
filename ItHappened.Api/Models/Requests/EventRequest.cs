@@ -12,8 +12,7 @@ namespace ItHappened.Api.Models.Requests
         public GeoTagRequest GeoTag { get; set; }
         public string Comment { get; set; }
     }
-    
-    
+
     public class EventsRequest
     {
         public EventRequest[] Events { get; set; }
@@ -24,7 +23,7 @@ namespace ItHappened.Api.Models.Requests
         public double GpsLat { get; set; }
         public double GpsLng { get; set; }
     }
-    
+
     public class EventRequestValidator : AbstractValidator<EventRequest>
     {
         public EventRequestValidator()

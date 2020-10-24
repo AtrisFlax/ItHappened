@@ -42,6 +42,7 @@ namespace ItHappened.Api
                     cfg.RegisterValidatorsFromAssemblyContaining<TrackerRequest>();
                 });
             
+            //app services
             services.AddSingleton<IUserService, UserService>();
             services.AddSingleton<IEventService, EventService>();
             services.AddSingleton<ITrackerService, TrackerService>();
@@ -51,16 +52,18 @@ namespace ItHappened.Api
             AddMultipleTrackersStatisticsProvider(services);
             AddSingleTrackerStatisticsProvider(services);
 
+            //repos
             services.AddSingleton<IUserRepository, UserRepository>();
             services.AddSingleton<ITrackerRepository, TrackerRepository>();
             services.AddSingleton<IEventRepository, EventRepository>();
             
+            //jwt
             var jwtOptions = new JwtOptions();
             Configuration.GetSection(nameof(JwtOptions)).Bind(jwtOptions);
             services.AddSingleton(jwtOptions);
             services.AddSingleton<IJwtIssuer, JwtIssuer>();
             services.AddSingleton<IPasswordHasher, PasswordHasher>();
-
+            
             services
                 .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>
