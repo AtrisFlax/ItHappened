@@ -16,7 +16,7 @@ namespace ItHappened.Domain
             UpperLimit = upperLimit;
         }
 
-        public IEnumerable<Event> Filter(IReadOnlyCollection<Event> events)
+        public IEnumerable<Event> Filter(IEnumerable<Event> events)
         {
             return events
                 .Where(@event => @event.CustomizationsParameters.Rating >= LowerLimit &&
