@@ -7,8 +7,8 @@ namespace ItHappened.Domain
 {
     public static class EventsFilter
     {
-        public static IReadOnlyList<Event> Filter(IReadOnlyCollection<Event> events,
-            IReadOnlyCollection<IEventsFilter> filters)
+        public static IEnumerable<Event> Filter(IEnumerable<Event> events,
+            IEnumerable<IEventsFilter> filters)
         {
             return filters.Aggregate(events, (current, filter) => filter.Filter(current)).ToList();
         }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
+using System.Security.Cryptography;
 using AutoMapper;
 using ItHappened.Api.Authentication;
 using ItHappened.Api.Models.Requests;
@@ -39,6 +40,27 @@ namespace ItHappened.Api.Controllers
                     CustomParameters = GetEventCustomParametersFromRequest(@event)
                 });
             _eventService.AddRangeEvent(userId, trackerId, eventsInfoRange);
+            return Ok();
+        }
+
+        [HttpGet("/trackers/{trackerid}/events/filters")]
+        public IActionResult GetFilteredEvents([FromRoute] Guid trackerId,[FromQuery] EventFilterRequest eventFilterRequest)
+        {
+            var userId = Guid.Parse(User.FindFirstValue(JwtClaimTypes.Id));
+
+            var filters = new List<IEventsFilter>();
+            if (eventFilterRequest.ToDateTime.HasValue && eventFilterRequest.FromDateTime.HasValue)
+                filters.Add(new DateTimeFilter(null, eventFilterRequest.FromDateTime.Value, eventFilterRequest.ToDateTime.Value));
+            if (!string.IsNullOrEmpty(eventFilterRequest.CommentRegexPattern))
+                filters.Add(new CommentFilter(null, eventFilterRequest.CommentRegexPattern));
+            if (eventFilterRequest.ScaleLowerLimit.HasValue && eventFilterRequest.ScaleUpperLimit.HasValue)
+                filters.Add(new ScaleFilter(null, eventFilterRequest.ScaleLowerLimit.Value, eventFilterRequest.ScaleUpperLimit.Value));
+            if (eventFilterRequest.LowerLimitRating.HasValue && eventFilterRequest.UpperLimitRating.HasValue)
+                filters.Add(new RatingFilter(null, eventFilterRequest.LowerLimitRating.Value, eventFilterRequest.UpperLimitRating.Value));
+            if (eventFilterRequest.ScaleLowerLimit.HasValue && eventFilterRequest.ScaleUpperLimit.HasValue)
+                filters.Add(new ScaleFilter(null, eventFilterRequest.ScaleLowerLimit.Value, eventFilterRequest.ScaleUpperLimit.Value));
+
+            _eventService.GetAllFilteredEvents(userId, trackerId, filters);
             return Ok();
         }
 

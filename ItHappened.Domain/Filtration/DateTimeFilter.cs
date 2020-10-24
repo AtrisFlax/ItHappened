@@ -17,7 +17,7 @@ namespace ItHappened.Domain
             To = to;
         }
 
-        public IReadOnlyCollection<Event> Filter(IReadOnlyCollection<Event> events)
+        public IEnumerable<Event> Filter(IReadOnlyCollection<Event> events)
         {
             return events
                 .Where(eventItem =>

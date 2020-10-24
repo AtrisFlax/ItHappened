@@ -17,7 +17,7 @@ namespace ItHappened.Domain
             UpperRightCorner = upperRightCorner;
         }
 
-        public IReadOnlyCollection<Event> Filter(IReadOnlyCollection<Event> events)
+        public IEnumerable<Event> Filter(IReadOnlyCollection<Event> events)
         {
             if (LowerLeftCorner.GpsLat > UpperRightCorner.GpsLat || LowerLeftCorner.GpsLng > UpperRightCorner.GpsLng)
             {
