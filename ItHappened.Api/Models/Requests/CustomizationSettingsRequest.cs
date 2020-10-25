@@ -5,11 +5,12 @@ namespace ItHappened.Api.Models.Requests
     public class CustomizationSettingsRequest
     {
         public string ScaleMeasurementUnit { get; set; }
-        public bool PhotoIsOptional { get; set; }
-        public bool ScaleIsOptional { get; set; }
-        public bool RatingIsOptional { get; set; }
-        public bool GeoTagIsOptional { get; set; }
-        public bool CommentIsOptional { get; set; }
+        public bool IsPhotoRequired { get; set; }
+        public bool IsScaleRequired { get; set; }
+        public bool IsRatingRequired { get; set; }
+        public bool IsGeotagRequired { get; set; }
+        public bool IsCommentRequired { get; set; }
+        public bool AreCustomizationsOptional { get; set; }
     }
     
     public class CustomizationSettingsRequestValidator : AbstractValidator<CustomizationSettingsRequest>

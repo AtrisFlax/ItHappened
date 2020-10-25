@@ -13,10 +13,13 @@ namespace ItHappened.Api.Models.Responses
 
     public class CustomizationSettingsResponse
     {
-        public bool PhotoIsOptional { get; set; }
-        public bool RatingIsOptional { get; set; }
-        public bool GeoTagIsOptional { get; set; }
-        public bool CommentIsOptional { get; set; }
         public string ScaleMeasurementUnit { get; set; }
+        public bool IsPhotoRequired { get; set; }
+        public bool IsScaleRequired { get; set; }
+        public bool IsRatingRequired { get; set; }
+        public bool IsGeotagRequired { get; set; }
+        public bool IsCommentRequired { get; set; }
+        public bool AreCustomizationsOptional { get; set; }
+
     }
 }

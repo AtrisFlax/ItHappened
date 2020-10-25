@@ -9,6 +9,8 @@ namespace ItHappened.Domain
         public bool IsRatingRequired { get; }
         public bool IsGeoTagRequired { get; }
         public bool IsCommentRequired { get; }
+        public bool IsScaleRequired { get; }
+
         public bool AreCustomizationsOptional { get; }
 
         public TrackerCustomizationSettings(Option<string> scaleMeasurementUnit,
@@ -16,6 +18,7 @@ namespace ItHappened.Domain
             bool isRatingRequired,
             bool isGeoTagRequired,
             bool isCommentRequired,
+            bool isScaleRequired,
             bool areCustomizationsOptional)
         {
             ScaleMeasurementUnit = scaleMeasurementUnit;
@@ -24,16 +27,19 @@ namespace ItHappened.Domain
             IsGeoTagRequired = isGeoTagRequired;
             IsCommentRequired = isCommentRequired;
             AreCustomizationsOptional = areCustomizationsOptional;
+            IsScaleRequired = isScaleRequired;
         }
 
-        public TrackerCustomizationSettings(bool areCustomizationsOptional)
+        public TrackerCustomizationSettings()
         {
-            AreCustomizationsOptional = areCustomizationsOptional;
+            AreCustomizationsOptional = false;
+            IsScaleRequired = false;
             ScaleMeasurementUnit = Option<string>.None;
             IsPhotoRequired = false;
             IsRatingRequired = false;
             IsGeoTagRequired = false;
             IsCommentRequired = false;
+            
         }
     }
 }

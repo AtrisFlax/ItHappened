@@ -70,14 +70,7 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
             //arrange 
             var userId = Guid.NewGuid();
             var tracker = new EventTracker(Guid.NewGuid(), Guid.NewGuid(), "Tracker name",
-                new TrackerCustomizationSettings(
-                    Option<string>.None,
-                    false,
-                    false,
-                    false,
-                    false,
-                    true
-                ));
+                new TrackerCustomizationSettings());
             var (events, _) = CreateEventsWithRating(tracker.Id, userId, 1);
             _eventRepository.AddRangeOfEvents(events);
             var allEvents = _eventRepository.LoadAllTrackerEvents(tracker.Id);
@@ -96,14 +89,7 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
             //arrange 
             var userId = Guid.NewGuid();
             var tracker = new EventTracker(Guid.NewGuid(), Guid.NewGuid(), "Tracker name",
-                new TrackerCustomizationSettings(
-                    Option<string>.None,
-                    false,
-                    false,
-                    false,
-                    false,
-                    true
-                ));
+                new TrackerCustomizationSettings());
             var (events, _) = CreateEventsWithRating(tracker.Id, userId,0);
             var allEvents = _eventRepository.LoadAllTrackerEvents(tracker.Id);
 

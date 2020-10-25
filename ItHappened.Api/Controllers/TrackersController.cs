@@ -5,11 +5,8 @@ using AutoMapper;
 using ItHappened.Api.Authentication;
 using ItHappened.Api.Models.Requests;
 using ItHappened.Api.Models.Responses;
-using ItHappened.Application.Services.StatisticService;
 using ItHappened.Application.Services.TrackerService;
 using ItHappened.Domain;
-using ItHappened.Domain.Statistics;
-using LanguageExt;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -19,19 +16,12 @@ namespace ItHappened.Api.Controllers
     [ApiController]
     public class TrackersController : ControllerBase
     {
-        private readonly IStatisticsService _statisticsService;
         private readonly ITrackerService _trackerService;
-        private readonly ITrackerRepository _trackerRepository;
         private readonly IMapper _mapper;
         
-        public TrackersController(ITrackerService trackerService,
-            ITrackerRepository trackerRepository,
-            IStatisticsService statisticsService,
-            IMapper mapper)
+        public TrackersController(ITrackerService trackerService, IMapper mapper)
         {
             _trackerService = trackerService;
-            _trackerRepository = trackerRepository;
-            _statisticsService = statisticsService;
             _mapper = mapper;
         }
         
@@ -40,8 +30,8 @@ namespace ItHappened.Api.Controllers
         public IActionResult CreateTracker([FromBody]TrackerRequest request)
         {
             var userId = Guid.Parse(User.FindFirstValue(JwtClaimTypes.Id));
-            var customizations = _mapper.Map<TrackerCustomizationSettings>(request.CustomizationSettings);
-            var tracker = _trackerService.CreateEventTracker(userId, request.Name, customizations);
+            var customizationSettings = _mapper.Map<TrackerCustomizationSettings>(request.CustomizationSettings);
+            var tracker = _trackerService.CreateEventTracker(userId, request.Name, customizationSettings);
             return Ok(_mapper.Map<TrackerResponse>(tracker));
         }
         
