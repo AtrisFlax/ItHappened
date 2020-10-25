@@ -4,7 +4,7 @@ namespace ItHappened.Api.Models.Requests
 {
     public class UserRequest
     {
-        public string Name { get; set; }
+        public string UserName { get; set; }
         public string Password { get; set; }
     }
     
@@ -12,7 +12,7 @@ namespace ItHappened.Api.Models.Requests
     {
         public UserRequestValidator()
         {
-            RuleFor(x => x.Name).NotEmpty();
+            RuleFor(x => x.UserName).NotEmpty();
             RuleFor(x => x.Password).Password();
         }
     }
