@@ -2,6 +2,7 @@ using System.Text;
 using AutoMapper;
 using FluentValidation.AspNetCore;
 using ItHappened.Api.Authentication;
+using ItHappened.Api.MappingProfiles;
 using ItHappened.Api.Middleware;
 using ItHappened.Api.Models.Requests;
 using ItHappened.Api.Options;
@@ -109,6 +110,7 @@ namespace ItHappened.Api
             });
 
             services.AddAutoMapper(typeof(Startup));
+            services.AddSingleton<IMyMapper, MyMapper>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

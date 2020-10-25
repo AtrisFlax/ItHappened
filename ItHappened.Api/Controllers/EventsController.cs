@@ -5,6 +5,7 @@ using System.Security.Claims;
 using System.Security.Cryptography;
 using AutoMapper;
 using ItHappened.Api.Authentication;
+using ItHappened.Api.MappingProfiles;
 using ItHappened.Api.Models.Requests;
 using ItHappened.Api.Models.Responses;
 using ItHappened.Application.Services.EventService;
@@ -20,26 +21,24 @@ namespace ItHappened.Api.Controllers
     {
         private readonly IEventService _eventService;
         private readonly IMapper _mapper;
+        private readonly IMyMapper _myMapper;
 
-        public EventsController(IEventService eventService, IMapper mapper)
+
+        public EventsController(IEventService eventService, IMapper mapper, IMyMapper myMapper)
         {
             _eventService = eventService;
             _mapper = mapper;
+            _myMapper = myMapper;
         }
 
         [HttpPost("/trackers/{trackerId}/events")]
         [ProducesResponseType(200)]
-        public IActionResult AddEventsToTracker([FromRoute] Guid trackerId,
-            [FromBody] EventsRequest request)
+        public IActionResult AddEventToTracker([FromRoute] Guid trackerId,
+            [FromBody]EventRequest request)
         {
             var userId = Guid.Parse(User.FindFirstValue(JwtClaimTypes.Id));
-            var eventsInfoRange = request.Events
-                .Select(@event => new EventsInfoRange
-                {
-                    HappensDate = @event.HappensDate,
-                    CustomParameters = GetEventCustomParametersFromRequest(@event)
-                });
-            _eventService.AddRangeEvent(userId, trackerId, eventsInfoRange);
+            var customParameters = _myMapper.GetEventCustomParametersFromRequest(request);
+            _eventService.AddEvent(userId, trackerId, request.HappensDate, customParameters);
             return Ok();
         }
 
@@ -76,7 +75,7 @@ namespace ItHappened.Api.Controllers
         public IActionResult UpdateEvent([FromRoute] Guid eventId, [FromBody] EventRequest request)
         {
             var userId = Guid.Parse(User.FindFirstValue(JwtClaimTypes.Id));
-            var customParameters = GetEventCustomParametersFromRequest(request);
+            var customParameters = _myMapper.GetEventCustomParametersFromRequest(request);
             var editedEvent = _eventService.EditEvent(userId, eventId, request.HappensDate, customParameters);
             return Ok(_mapper.Map<EventResponse>(editedEvent));
         }
@@ -88,19 +87,6 @@ namespace ItHappened.Api.Controllers
             var userId = Guid.Parse(User.FindFirstValue(JwtClaimTypes.Id));
             var deletedTracker = _eventService.DeleteEvent(userId, eventId);
             return Ok(_mapper.Map<EventResponse>(deletedTracker));
-        }
-
-        private EventCustomParameters GetEventCustomParametersFromRequest(EventRequest request)
-        {
-            var customParameters = new EventCustomParameters(
-                null,
-                Option<double>.Some(request.Scale),
-                Option<double>.Some(request.Rating),
-                Option<GeoTag>.Some(new GeoTag(request.GeoTag.GpsLat,
-                    request.GeoTag.GpsLng)),
-                Option<Comment>.Some(new Comment(request.Comment))
-            );
-            return customParameters;
         }
 
         private static IEnumerable<IEventsFilter> CreateFilters(EventFilterRequest eventFilterRequest)
