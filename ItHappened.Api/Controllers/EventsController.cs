@@ -35,8 +35,8 @@ namespace ItHappened.Api.Controllers
         {
             var userId = Guid.Parse(User.FindFirstValue(JwtClaimTypes.Id));
             var customParameters = _myMapper.GetEventCustomParametersFromRequest(request);
-            _eventService.AddEvent(userId, trackerId, request.HappensDate, customParameters);
-            return Ok();
+            var @event = _eventService.AddEvent(userId, trackerId, request.HappensDate, customParameters);
+            return Ok(_mapper.Map<EventResponse>(@event));
         }
 
         [HttpGet("/trackers/{trackerId}/events/filters")]

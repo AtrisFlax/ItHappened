@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
+using ItHappened.Application.Errors;
 using ItHappened.Domain;
 
 namespace ItHappened.Application.Services.TrackerService
@@ -27,7 +29,7 @@ namespace ItHappened.Application.Services.TrackerService
         {
             var tracker = _trackerRepository.LoadTracker(trackerId);
             if (actorId != tracker.CreatorId)
-                throw new Exception();
+                throw new RestException(HttpStatusCode.BadRequest);
             return tracker;
         }
         
@@ -44,7 +46,7 @@ namespace ItHappened.Application.Services.TrackerService
         {
             var tracker = _trackerRepository.LoadTracker(trackerId);
             if (actorId != tracker.CreatorId)
-                throw new Exception();
+                throw new RestException(HttpStatusCode.BadRequest);
             
             var updatedTracker = new EventTracker(tracker.Id, tracker.CreatorId, name, customizationSettings);
             _trackerRepository.UpdateTracker(updatedTracker);
@@ -55,7 +57,7 @@ namespace ItHappened.Application.Services.TrackerService
         {
             var tracker = _trackerRepository.LoadTracker(trackerId);
             if (actorId != tracker.CreatorId)
-                throw new Exception();
+                throw new RestException(HttpStatusCode.BadRequest);
 
             _trackerRepository.DeleteTracker(trackerId);
             return tracker;

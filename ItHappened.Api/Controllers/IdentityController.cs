@@ -33,8 +33,8 @@ namespace ItHappened.Api.Controllers
         [ProducesResponseType(200, Type = typeof(UserWithToken))]
         public IActionResult Authenticate([FromBody] UserRequest request)
         {
-            var token = _userService.Authenticate(request.UserName, request.Password);
-            return Ok(token);
+            var userWithToken = _userService.Authenticate(request.UserName, request.Password);
+            return Ok(new UserResponse(userWithToken.User.Id, userWithToken.User.Name, userWithToken.Token));
         }
 
         [HttpGet]

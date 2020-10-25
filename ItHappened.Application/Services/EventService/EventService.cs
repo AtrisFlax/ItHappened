@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Net;
+using ItHappened.Application.Errors;
 using ItHappened.Domain;
 
 namespace ItHappened.Application.Services.EventService
@@ -21,9 +23,7 @@ namespace ItHappened.Application.Services.EventService
             var newEvent = new Event(Guid.NewGuid(), actorId, trackerId, eventHappensDate, customParameters);
             var tracker = _trackerRepository.LoadTracker(trackerId);
             if (!tracker.SettingsAndEventCustomizationsMatch(newEvent))
-            {
-                throw new Exception(); //todo return no result
-            }
+                throw new RestException(HttpStatusCode.BadRequest);
 
             _eventRepository.AddEvent(newEvent);
             return newEvent;
@@ -48,7 +48,7 @@ namespace ItHappened.Application.Services.EventService
         {
             var @event = _eventRepository.LoadEvent(eventId);
             if (actorId != @event.CreatorId)
-                throw new Exception();
+                throw new RestException(HttpStatusCode.BadRequest);
             return @event;
         }
 
@@ -61,7 +61,7 @@ namespace ItHappened.Application.Services.EventService
         {
             var tracker = _trackerRepository.LoadTracker(trackerId);
             if (actorId != tracker.CreatorId)
-                throw new Exception();
+                throw new RestException(HttpStatusCode.BadRequest);
             var events = _eventRepository.LoadAllTrackerEvents(trackerId);
             return events;
         }
@@ -71,9 +71,9 @@ namespace ItHappened.Application.Services.EventService
             DateTimeOffset timeStamp,
             EventCustomParameters customParameters)
         {
-            var tracker = _trackerRepository.LoadTracker(eventId);
+            var tracker = _eventRepository.LoadEvent(eventId);
             if (actorId != tracker.CreatorId)
-                throw new Exception();
+                throw new RestException(HttpStatusCode.BadRequest);
 
             var updatedEvent = new Event(eventId, tracker.Id, tracker.CreatorId, timeStamp, customParameters);
             _eventRepository.UpdateEvent(updatedEvent);
@@ -84,7 +84,7 @@ namespace ItHappened.Application.Services.EventService
         {
             var @event = _eventRepository.LoadEvent(eventId);
             if (actorId != @event.CreatorId)
-                throw new Exception();
+                throw new RestException(HttpStatusCode.BadRequest);
 
             _eventRepository.DeleteEvent(eventId);
             return @event;
