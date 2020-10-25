@@ -5,31 +5,35 @@ namespace ItHappened.Domain
     public class TrackerCustomizationSettings
     {
         public Option<string> ScaleMeasurementUnit { get; }
-        public bool PhotoIsOptional { get; }
-        public bool RatingIsOptional { get; }
-        public bool GeoTagIsOptional { get; }
-        public bool CommentIsOptional { get; }
+        public bool IsPhotoRequired { get; }
+        public bool IsRatingRequired { get; }
+        public bool IsGeoTagRequired { get; }
+        public bool IsCommentRequired { get; }
+        public bool AreCustomizationsOptional { get; }
 
         public TrackerCustomizationSettings(Option<string> scaleMeasurementUnit,
-            bool photoIsOptional,
-            bool ratingIsOptional,
-            bool geoTagIsOptional,
-            bool commentIsOptional)
+            bool isPhotoRequired,
+            bool isRatingRequired,
+            bool isGeoTagRequired,
+            bool isCommentRequired,
+            bool areCustomizationsOptional)
         {
             ScaleMeasurementUnit = scaleMeasurementUnit;
-            PhotoIsOptional = photoIsOptional;
-            RatingIsOptional = ratingIsOptional;
-            GeoTagIsOptional = geoTagIsOptional;
-            CommentIsOptional = commentIsOptional;
+            IsPhotoRequired = isPhotoRequired;
+            IsRatingRequired = isRatingRequired;
+            IsGeoTagRequired = isGeoTagRequired;
+            IsCommentRequired = isCommentRequired;
+            AreCustomizationsOptional = areCustomizationsOptional;
         }
 
-        public TrackerCustomizationSettings()
+        public TrackerCustomizationSettings(bool areCustomizationsOptional)
         {
+            AreCustomizationsOptional = areCustomizationsOptional;
             ScaleMeasurementUnit = Option<string>.None;
-            PhotoIsOptional = false;
-            RatingIsOptional = false;
-            GeoTagIsOptional = false;
-            CommentIsOptional = false;
+            IsPhotoRequired = false;
+            IsRatingRequired = false;
+            IsGeoTagRequired = false;
+            IsCommentRequired = false;
         }
     }
 }

@@ -19,15 +19,16 @@ namespace ItHappened.Domain
 
         public bool SettingsAndEventCustomizationsMatch(Event @event)
         {
-            if (@event.CustomizationsParameters.Comment.IsNone && !CustomizationSettings.CommentIsOptional)
-                return false;
-            if (@event.CustomizationsParameters.Photo.IsNone && !CustomizationSettings.PhotoIsOptional)
-                return false;
-            if (@event.CustomizationsParameters.Rating.IsNone && !CustomizationSettings.RatingIsOptional)
-                return false;
-            if (@event.CustomizationsParameters.GeoTag.IsNone && !CustomizationSettings.GeoTagIsOptional)
-                return false;
-            return true;
+            return CustomizationSettings.IsPhotoRequired &&
+             (@event.CustomizationsParameters.Photo.IsSome || CustomizationSettings.AreCustomizationsOptional) &&
+                   CustomizationSettings.IsCommentRequired &&
+                    (@event.CustomizationsParameters.Comment.IsSome || CustomizationSettings.AreCustomizationsOptional) &&
+                   CustomizationSettings.IsRatingRequired &&
+                    (@event.CustomizationsParameters.Rating.IsSome || CustomizationSettings.AreCustomizationsOptional) &&
+                   CustomizationSettings.IsGeoTagRequired &&
+                   (@event.CustomizationsParameters.GeoTag.IsSome || CustomizationSettings.AreCustomizationsOptional) &&
+                   CustomizationSettings.ScaleMeasurementUnit.IsSome &&
+                   (@event.CustomizationsParameters.Scale.IsSome || CustomizationSettings.AreCustomizationsOptional);
         }
     }
 }

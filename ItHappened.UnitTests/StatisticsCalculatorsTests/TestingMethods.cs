@@ -13,7 +13,14 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
 
         public static EventTracker CreateTracker(Guid userId, string name = "Tracker name")
         {
-            return new EventTracker(Guid.NewGuid(), userId, name, new TrackerCustomizationSettings());
+            return new EventTracker(Guid.NewGuid(), userId, name, new TrackerCustomizationSettings(
+                Option<string>.None,
+                false,
+                false,
+                false,
+                false,
+                true
+            ));
         }
 
         public static EventTracker CreateTrackerWithScale(Guid userId, string scale)
@@ -24,7 +31,8 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
                     false,
                     false,
                     false,
-                    false
+                    false,
+                    true
                 ));
         }
 

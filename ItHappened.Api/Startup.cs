@@ -120,7 +120,7 @@ namespace ItHappened.Api
             
             if (env.IsDevelopment())
             {
-                app.UseDeveloperExceptionPage();
+                //app.UseDeveloperExceptionPage();
             }
 
             var swaggerOptions = new SwaggerOptions();

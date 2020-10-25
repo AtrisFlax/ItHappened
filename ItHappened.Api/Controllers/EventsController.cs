@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Security.Claims;
-using System.Security.Cryptography;
 using AutoMapper;
 using ItHappened.Api.Authentication;
 using ItHappened.Api.MappingProfiles;
@@ -10,7 +8,6 @@ using ItHappened.Api.Models.Requests;
 using ItHappened.Api.Models.Responses;
 using ItHappened.Application.Services.EventService;
 using ItHappened.Domain;
-using LanguageExt;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
