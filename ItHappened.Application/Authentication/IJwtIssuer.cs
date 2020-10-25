@@ -1,6 +1,6 @@
 using ItHappened.Domain;
 
-namespace ItHappened.Api.Authentication
+namespace ItHappened.Application.Authentication
 {
     public interface IJwtIssuer
     {

@@ -6,6 +6,7 @@ using ItHappened.Api.MappingProfiles;
 using ItHappened.Api.Middleware;
 using ItHappened.Api.Models.Requests;
 using ItHappened.Api.Options;
+using ItHappened.Application.Authentication;
 using ItHappened.Application.Services.EventService;
 using ItHappened.Application.Services.StatisticService;
 using ItHappened.Application.Services.TrackerService;

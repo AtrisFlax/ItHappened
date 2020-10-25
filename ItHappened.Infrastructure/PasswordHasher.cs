@@ -1,15 +1,10 @@
 ﻿using System;
 using System.Security.Cryptography;
+using ItHappened.Application.Authentication;
 using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 
 namespace ItHappened.Infrastructure
 {
-    public interface IPasswordHasher
-    {
-        (string hashedPassword, byte[] salt) HashWithRandomSalt(string password);
-        string HashWithSalt(string password, byte[] salt);
-    }
-
     public class PasswordHasher : IPasswordHasher
     {
         public (string, byte[]) HashWithRandomSalt(string password)

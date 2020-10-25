@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Net;
-using ItHappened.Api.Authentication;
+using ItHappened.Application.Authentication;
 using ItHappened.Application.Errors;
 using ItHappened.Domain;
-using ItHappened.Infrastructure;
 
 namespace ItHappened.Application.Services.UserService
 {
@@ -21,7 +20,7 @@ namespace ItHappened.Application.Services.UserService
             _jwtIssuer = jwtIssuer;
         }
 
-        public User Register(string loginName, string password)
+        public UserWithToken Register(string loginName, string password)
         {
             var user = _userRepository.TryFindByLogin(loginName);
             if (user != null)
@@ -29,10 +28,10 @@ namespace ItHappened.Application.Services.UserService
             var (hashedPassword, salt) = _passwordHasher.HashWithRandomSalt(password);
             user = new User(Guid.NewGuid(), loginName, new Password(hashedPassword, salt));
             _userRepository.SaveUser(user);
-            return user;
+            return new UserWithToken(user, _jwtIssuer.GenerateToken(user));
         }
         
-        public Token Authenticate(string loginName, string password)
+        public UserWithToken Authenticate(string loginName, string password)
         {
             var user = _userRepository.TryFindByLogin(loginName);
             if (user == null)
@@ -42,8 +41,7 @@ namespace ItHappened.Application.Services.UserService
             if (passwordHashedWithSalt != user.Password.Hash)
                 throw new RestException(HttpStatusCode.NotFound, new { User = "User with provided credentials not found", });
 
-            var token = new Token(_jwtIssuer.GenerateToken(user));
-            return token;
+            return new UserWithToken(user, _jwtIssuer.GenerateToken(user));
         }
     }
 }
