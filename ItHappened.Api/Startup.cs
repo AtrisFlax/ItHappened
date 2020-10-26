@@ -45,19 +45,26 @@ namespace ItHappened.Api
                 {
                     cfg.RegisterValidatorsFromAssemblyContaining<TrackerRequest>();
                 });
-            
-            //app services
-            services.AddSingleton<IUserService, UserService>();
-            services.AddSingleton<IEventService, EventService>();
-            services.AddSingleton<ITrackerService, TrackerService>();
-            services.AddSingleton<IStatisticsService, StatisticsService>();
-            AddMultipleTrackersStatisticsProvider(services);
-            AddSingleTrackerStatisticsProvider(services);
-
             //repos
             services.AddSingleton<IUserRepository, UserRepository>();
             services.AddSingleton<ITrackerRepository, TrackerRepository>();
             services.AddSingleton<IEventRepository, EventRepository>();
+            services.AddSingleton<ISingleFactsRepository, SingleFactsRepository>();
+            services.AddSingleton<IMultipleFactsRepository, MultipleFactsRepository>();
+            
+            //app services
+            
+            services.AddSingleton<IEventService, EventService>();
+            services.AddSingleton<ITrackerService, TrackerService>();
+            
+            AddMultipleTrackersStatisticsProvider(services);
+            AddSingleTrackerStatisticsProvider(services);
+
+            services.AddSingleton<IBackgroundStatisticGenerator, StatisticGenerator>();
+            services.AddSingleton<IManualStatisticGenerator, StatisticGenerator>();
+            
+            services.AddSingleton<IUserService, UserService>();
+            services.AddSingleton<IStatisticsService, StatisticsService>();
             
             //mappers
             services.AddAutoMapper(typeof(Startup));
@@ -116,10 +123,11 @@ namespace ItHappened.Api
             });
 
             services.AddHangfire(configuration => configuration.UseMemoryStorage());
+            services.AddHangfireServer();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IBackgroundJobClient backgroundJobs)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             app.UseMiddleware<ErrorHandlingMiddleware>();
             
