@@ -22,10 +22,13 @@ namespace ItHappened.Application.Services.EventService
         {
             var newEvent = new Event(Guid.NewGuid(), actorId, trackerId, eventHappensDate, customParameters);
             var tracker = _trackerRepository.LoadTracker(trackerId);
-            if (!tracker.SettingsAndEventCustomizationsMatch(newEvent))
+            if (!tracker.IsSettingsAndEventCustomizationsMatch(newEvent))
+            {
                 throw new RestException(HttpStatusCode.BadRequest);
+            }
 
             _eventRepository.AddEvent(newEvent);
+            tracker.IsUpdated = true;
             return newEvent;
         }
 
@@ -36,9 +39,10 @@ namespace ItHappened.Application.Services.EventService
             {
                 var newEvent = new Event(Guid.NewGuid(), actorId, trackerId, eventInfo.HappensDate,
                     eventInfo.CustomParameters);
-                if (tracker.SettingsAndEventCustomizationsMatch(newEvent))
+                if (tracker.IsSettingsAndEventCustomizationsMatch(newEvent))
                 {
                     _eventRepository.AddEvent(newEvent);
+                    tracker.IsUpdated = true;
                 } //if customization not match skip
             }
         }
@@ -48,7 +52,9 @@ namespace ItHappened.Application.Services.EventService
         {
             var @event = _eventRepository.LoadEvent(eventId);
             if (actorId != @event.CreatorId)
+            {
                 throw new RestException(HttpStatusCode.BadRequest);
+            }
             return @event;
         }
 
@@ -60,8 +66,9 @@ namespace ItHappened.Application.Services.EventService
         public IReadOnlyCollection<Event> GetAllEvents(Guid actorId, Guid trackerId)
         {
             var tracker = _trackerRepository.LoadTracker(trackerId);
-            if (actorId != tracker.CreatorId)
+            if (actorId != tracker.CreatorId) {
                 throw new RestException(HttpStatusCode.BadRequest);
+            }
             var events = _eventRepository.LoadAllTrackerEvents(trackerId);
             return events;
         }
@@ -71,12 +78,15 @@ namespace ItHappened.Application.Services.EventService
             DateTimeOffset timeStamp,
             EventCustomParameters customParameters)
         {
-            var tracker = _eventRepository.LoadEvent(eventId);
-            if (actorId != tracker.CreatorId)
+            var @event = _eventRepository.LoadEvent(eventId);
+            if (actorId != @event.CreatorId) 
+            {
                 throw new RestException(HttpStatusCode.BadRequest);
-
-            var updatedEvent = new Event(eventId, tracker.Id, tracker.CreatorId, timeStamp, customParameters);
+            }
+            var tracker = _trackerRepository.LoadTracker(@event.TrackerId);
+            var updatedEvent = new Event(eventId, @event.CreatorId, @event.TrackerId, timeStamp, customParameters);
             _eventRepository.UpdateEvent(updatedEvent);
+            tracker.IsUpdated = true;
             return updatedEvent;
         }
 
@@ -84,9 +94,13 @@ namespace ItHappened.Application.Services.EventService
         {
             var @event = _eventRepository.LoadEvent(eventId);
             if (actorId != @event.CreatorId)
-                throw new RestException(HttpStatusCode.BadRequest);
+            {
+                throw new RestException(HttpStatusCode.BadRequest);   
+            }
 
+            var tracker = _trackerRepository.LoadTracker(@event.TrackerId);
             _eventRepository.DeleteEvent(eventId);
+            tracker.IsUpdated = true;
             return @event;
         }
     }
