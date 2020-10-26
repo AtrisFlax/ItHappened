@@ -13,7 +13,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace ItHappened.Api.Controllers
 {
-    
+    [ApiController]
     [Authorize]
     public class EventsController : ControllerBase
     {
