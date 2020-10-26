@@ -1,6 +1,8 @@
 using System.Text;
 using AutoMapper;
 using FluentValidation.AspNetCore;
+using Hangfire;
+using Hangfire.MemoryStorage;
 using ItHappened.Api.Authentication;
 using ItHappened.Api.MappingProfiles;
 using ItHappened.Api.Middleware;
@@ -113,11 +115,11 @@ namespace ItHappened.Api
                 swaggerGenOptions.AddSecurityRequirement(securityRequirements);
             });
 
-        
+            services.AddHangfire(configuration => configuration.UseMemoryStorage());
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IBackgroundJobClient backgroundJobs)
         {
             app.UseMiddleware<ErrorHandlingMiddleware>();
             
@@ -141,10 +143,14 @@ namespace ItHappened.Api
 
             app.UseAuthentication();
             app.UseAuthorization();
+
+            app.UseHangfireDashboard();
+            
             
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+                endpoints.MapHangfireDashboard();
             });
         }
 
