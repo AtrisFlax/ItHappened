@@ -57,13 +57,16 @@ namespace ItHappened.Api
             services.AddSingleton<ITrackerRepository, TrackerRepository>();
             services.AddSingleton<IEventRepository, EventRepository>();
             
+            //mappers
+            services.AddAutoMapper(typeof(Startup));
+            services.AddSingleton<IMyMapper, MyMapper>();
+            
             //jwt
             var jwtOptions = new JwtOptions();
             Configuration.GetSection(nameof(JwtOptions)).Bind(jwtOptions);
             services.AddSingleton(jwtOptions);
             services.AddSingleton<IJwtIssuer, JwtIssuer>();
             services.AddSingleton<IPasswordHasher, PasswordHasher>();
-            
             services
                 .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>
@@ -78,7 +81,7 @@ namespace ItHappened.Api
                     };
                 });
 
-            
+            //swagger
             services.AddSwaggerGen(swaggerGenOptions =>
             {
                 swaggerGenOptions.SwaggerDoc("v1", new OpenApiInfo {Title = "ItHappened API", Version = "v1"});
@@ -110,8 +113,7 @@ namespace ItHappened.Api
                 swaggerGenOptions.AddSecurityRequirement(securityRequirements);
             });
 
-            services.AddAutoMapper(typeof(Startup));
-            services.AddSingleton<IMyMapper, MyMapper>();
+        
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

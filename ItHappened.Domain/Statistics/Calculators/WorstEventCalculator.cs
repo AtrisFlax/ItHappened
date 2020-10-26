@@ -15,12 +15,13 @@ namespace ItHappened.Domain.Statistics
             var worstEvent = events
                 .OrderBy(eventItem => eventItem.CustomizationsParameters.Rating)
                 .First();
-            var priority = 10 - worstEvent.CustomizationsParameters.Rating.Value();
+            var rating = worstEvent.CustomizationsParameters.Rating.Value();
+            var priority = 10 - rating;
             var worstEventComment = worstEvent.CustomizationsParameters.Comment.Match(
                 comment => comment.Text,
                 () => string.Empty);
             var description = $"Событие в отслеживании {tracker.Name} с самым низким рейтингом " +
-                              $"{worstEvent.CustomizationsParameters.Rating} произошло {worstEvent.HappensDate} " +
+                              $"{rating} произошло {worstEvent.HappensDate} " +
                               $"с комментарием {worstEventComment}";
 
             return Option<ISingleTrackerFact>.Some(new WorstEventTrackerFact(
