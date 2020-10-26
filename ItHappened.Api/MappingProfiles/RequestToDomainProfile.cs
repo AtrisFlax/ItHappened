@@ -21,9 +21,9 @@ namespace ItHappened.Api.MappingProfiles
                     opt.MapFrom(src => Option<Photo>.Some(new Photo(src.Photo.PhotoBytes))))
                 */
                 .ForMember(dest => dest.Rating, opt =>
-                    opt.MapFrom(src => Option<double>.Some(src.Rating)))
+                    opt.MapFrom(src => Option<double?>.Some(src.Rating)))
                 .ForMember(dest => dest.Scale, opt =>
-                    opt.MapFrom(src => Option<double>.Some(src.Scale)))
+                    opt.MapFrom(src => Option<double?>.Some(src.Scale)))
                 .ForMember(dest => dest.GeoTag, opt =>
                     opt.MapFrom(src => Option<GeoTag>.Some(new GeoTag(src.GeoTag.GpsLat, src.GeoTag.GpsLng))));
         }

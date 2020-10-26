@@ -13,5 +13,6 @@ namespace ItHappened.Api.Models.Responses
         public double Scale { get; set; }
         public double Rating { get; set; }
         public GeoTag GeoTag { get; set; }
-        public string Comment { get; set; }    }
+        public string Comment { get; set; }
+    }
 }

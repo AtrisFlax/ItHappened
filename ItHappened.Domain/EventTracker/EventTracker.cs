@@ -19,16 +19,17 @@ namespace ItHappened.Domain
 
         public bool SettingsAndEventCustomizationsMatch(Event @event)
         {
-            return CustomizationSettings.IsPhotoRequired &&
-             (@event.CustomizationsParameters.Photo.IsSome || CustomizationSettings.AreCustomizationsOptional) &&
-                   CustomizationSettings.IsCommentRequired &&
-                    (@event.CustomizationsParameters.Comment.IsSome || CustomizationSettings.AreCustomizationsOptional) &&
-                   CustomizationSettings.IsRatingRequired &&
-                    (@event.CustomizationsParameters.Rating.IsSome || CustomizationSettings.AreCustomizationsOptional) &&
-                   CustomizationSettings.IsGeoTagRequired &&
-                   (@event.CustomizationsParameters.GeoTag.IsSome || CustomizationSettings.AreCustomizationsOptional) &&
-                   CustomizationSettings.ScaleMeasurementUnit.IsSome &&
-                   (@event.CustomizationsParameters.Scale.IsSome || CustomizationSettings.AreCustomizationsOptional);
+            return /*CustomizationMatch(CustomizationSettings.IsPhotoRequired, @event.CustomizationsParameters.Photo.IsSome) &&*/ //TODO issue #148
+                   CustomizationMatch(CustomizationSettings.IsCommentRequired, @event.CustomizationsParameters.Comment.IsSome) &&
+                   CustomizationMatch(CustomizationSettings.IsRatingRequired, @event.CustomizationsParameters.Rating.IsSome) &&
+                   CustomizationMatch(CustomizationSettings.IsGeoTagRequired, @event.CustomizationsParameters.GeoTag.IsSome) &&
+                   CustomizationMatch(CustomizationSettings.ScaleMeasurementUnit.IsSome, @event.CustomizationsParameters.Scale.IsSome);
+        }
+
+
+        private bool CustomizationMatch(bool isRequired, bool isEventSome)
+        {
+            return isRequired && isEventSome || CustomizationSettings.AreCustomizationsOptional;
         }
     }
 }

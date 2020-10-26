@@ -13,8 +13,8 @@ namespace ItHappened.Api.MappingProfiles
             CreateMap<Event, EventResponse>()
                 .ForMember(dest => dest.Comment, opt =>
                     opt.MapFrom(src => src.CustomizationsParameters.Comment.Match((c) => c.Text, () => null)))
-                .ForMember(dest => dest.Photo, opt =>
-                    opt.MapFrom(src => src.CustomizationsParameters.Photo.ValueUnsafe()))
+                // .ForMember(dest => dest.Photo, opt =>
+                //     opt.MapFrom(src => src.CustomizationsParameters.Photo.ValueUnsafe())) #TO DO ssue 148
                 .ForMember(dest => dest.Rating, opt =>
                     opt.MapFrom(src => src.CustomizationsParameters.Rating.ValueUnsafe()))
                 .ForMember(dest => dest.Scale, opt =>

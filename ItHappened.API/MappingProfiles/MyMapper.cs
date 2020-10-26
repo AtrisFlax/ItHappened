@@ -1,27 +1,50 @@
-﻿using ItHappened.Api.Models.Requests;
+﻿using System.Collections.Generic;
+using ItHappened.Api.Models.Requests;
 using ItHappened.Domain;
 using LanguageExt;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 
 namespace ItHappened.Api.MappingProfiles
 {
-    public interface IMyMapper
-    {
-        EventCustomParameters GetEventCustomParametersFromRequest(EventRequest request);
-    }
-
     public class MyMapper : IMyMapper
     {
+        private readonly JsonSerializerSettings _jsonSerializerSettings = new JsonSerializerSettings {
+            NullValueHandling = NullValueHandling.Ignore,
+            DefaultValueHandling = DefaultValueHandling.Ignore,
+            ContractResolver = new CamelCasePropertyNamesContractResolver()
+        };
+        
         public EventCustomParameters GetEventCustomParametersFromRequest(EventRequest request)
         {
+            var scale = request.Scale == null ? Option<double>.None : Option<double>.Some(request.Scale.Value);
+            var rating = request.Rating == null ? Option<double>.None : Option<double>.Some(request.Rating.Value);
+            var geoTag = request.GeoTag == null
+                ? Option<GeoTag>.None
+                : Option<GeoTag>.Some(new GeoTag(request.GeoTag.GpsLat, request.GeoTag.GpsLng));
+            var comment = request.Comment == null
+                ? Option<Comment>.None
+                : Option<Comment>.Some(new Comment(request.Comment));
+
             var customParameters = new EventCustomParameters(
-                null,
-                Option<double>.Some(request.Scale),
-                Option<double>.Some(request.Rating),
-                Option<GeoTag>.Some(new GeoTag(request.GeoTag.GpsLat,
-                    request.GeoTag.GpsLng)),
-                Option<Comment>.Some(new Comment(request.Comment))
+                Option<Photo>.None, //TODO issue #148
+                scale,
+                rating,
+                geoTag,
+                comment
             );
             return customParameters;
+        }
+
+        public string EventToJson(Event request)
+        {
+            return JsonConvert.SerializeObject(request, Formatting.Indented, _jsonSerializerSettings);
+        }
+
+        public string EventsToJson(IReadOnlyCollection<Event> events)
+        {
+           
+            return JsonConvert.SerializeObject(events, Formatting.Indented, _jsonSerializerSettings);
         }
     }
 }
