@@ -18,7 +18,7 @@ namespace ItHappened.Domain
             CustomizationSettings = customizationSettings;
         }
 
-        public bool SettingsAndEventCustomizationsMatch(Event @event)
+        public bool IsSettingsAndEventCustomizationsMatch(Event @event)
         {
             return /*CustomizationMatch(CustomizationSettings.IsPhotoRequired, @event.CustomizationsParameters.Photo.IsSome) &&*/ //TODO issue #148
                    CustomizationMatch(CustomizationSettings.IsCommentRequired, @event.CustomizationsParameters.Comment.IsSome) &&
