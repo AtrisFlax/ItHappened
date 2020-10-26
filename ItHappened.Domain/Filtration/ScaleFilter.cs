@@ -20,7 +20,7 @@ namespace ItHappened.Domain
         {
             return events
                 .Where(@event => @event.CustomizationsParameters.Scale >= LowerLimit &&
-                                 @event.CustomizationsParameters.Scale <= UpperLimit).ToList();
+                                 @event.CustomizationsParameters.Scale <= UpperLimit);
         }
     }
 }
