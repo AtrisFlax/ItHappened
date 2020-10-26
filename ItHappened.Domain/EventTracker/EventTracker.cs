@@ -8,6 +8,7 @@ namespace ItHappened.Domain
         public Guid CreatorId { get; }
         public string Name { get; }
         public TrackerCustomizationSettings CustomizationSettings { get; }
+        public bool IsUpdated { get; set; } = true;
 
         public EventTracker(Guid id, Guid creatorId, string name, TrackerCustomizationSettings customizationSettings)
         {
