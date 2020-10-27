@@ -14,9 +14,14 @@ namespace ItHappened.Infrastructure.Repositories
             return _generalFacts[userId].ToList();
         }
 
-        public void UpdateUserGeneralFacts(IReadOnlyCollection<IMultipleTrackersFact> facts, Guid userId)
+        public void UpdateUserGeneralFacts(Guid userId, IReadOnlyCollection<IMultipleTrackersFact> facts)
         {
             _generalFacts[userId] = facts;
+        }
+
+        public bool IsContainFactsForUser(Guid userId)
+        {
+            return _generalFacts.ContainsKey(userId);
         }
     }
 }

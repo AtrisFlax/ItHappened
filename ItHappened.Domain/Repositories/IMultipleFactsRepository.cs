@@ -7,6 +7,7 @@ namespace ItHappened.Domain
     public interface IMultipleFactsRepository
     {
         IReadOnlyCollection<IMultipleTrackersFact> LoadUserGeneralFacts(Guid userId);
-        void UpdateUserGeneralFacts(IReadOnlyCollection<IMultipleTrackersFact> facts, Guid userId);
+        void UpdateUserGeneralFacts(Guid userId, IReadOnlyCollection<IMultipleTrackersFact> facts);
+        bool IsContainFactsForUser(Guid userId);
     }
 }

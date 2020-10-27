@@ -7,6 +7,7 @@ namespace ItHappened.Domain
     public interface ISingleFactsRepository
     {
         IReadOnlyCollection<ISingleTrackerFact> LoadTrackerSpecificFacts(Guid trackerId);
-        void UpdateTrackerSpecificFacts(Guid guid, IReadOnlyCollection<ISingleTrackerFact> trackerId);
+        void UpdateTrackerSpecificFacts(Guid trackerId, IReadOnlyCollection<ISingleTrackerFact> facts);
+        bool IsContainFactForTracker(Guid trackerId);
     }
 }

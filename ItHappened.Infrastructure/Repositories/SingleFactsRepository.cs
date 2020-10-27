@@ -18,5 +18,10 @@ namespace ItHappened.Infrastructure.Repositories
         {
             _specificFacts[trackerId] = updatedFacts;
         }
+
+        public bool IsContainFactForTracker(Guid trackerId)
+        {
+            return _specificFacts.ContainsKey(trackerId);
+        }
     }
 }
