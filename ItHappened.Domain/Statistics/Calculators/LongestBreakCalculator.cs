@@ -10,7 +10,7 @@ namespace ItHappened.Domain.Statistics
         private const int EventsThreshold = 10;
         private const int DaysThreshold = 7;
 
-        public Option<ISingleTrackerFact> Calculate(IReadOnlyCollection<Event> events, EventTracker tracker)
+        public Option<ISingleTrackerFact> Calculate(IReadOnlyCollection<Event> events, EventTracker tracker, DateTimeOffset now)
         {
             if (!CanCalculate(events))
             {

@@ -4,7 +4,7 @@ using LanguageExt;
 
 namespace ItHappened.Domain.Statistics
 {
-    public class MostEventfulDayStatisticsCalculator : IMultipleTrackersStatisticsCalculator
+    public class MostEventfulDayCalculator : IMultipleTrackersStatisticsCalculator
     {
         private const int ThresholdEventAmount = 1;
 

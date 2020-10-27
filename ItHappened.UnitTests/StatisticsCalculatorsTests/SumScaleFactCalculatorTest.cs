@@ -16,12 +16,14 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
         private static Random _rand;
         private const int MinEventForCalculation = 2;
         private const string MeasurementUnit = "Kg";
+        private DateTimeOffset _now;
 
         [SetUp]
         public void Init()
         {
             _eventRepository = new EventRepository();
             _rand = new Random();
+            _now = DateTimeOffset.UtcNow;
         }
 
         [Test]
@@ -37,12 +39,13 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
 
             //act 
             var fact = new SumScaleCalculator()
-                .Calculate(allEvents, tracker).ConvertTo<SumScaleTrackerFact>().ValueUnsafe();
+                .Calculate(allEvents, tracker, _now).ConvertTo<SumScaleTrackerFact>().ValueUnsafe();
 
             //assert 
             Assert.AreEqual(2, fact.Priority, PriorityAccuracy);
             Assert.AreEqual(scaleValues.Sum(), fact.SumValue);
             Assert.AreEqual(MeasurementUnit, fact.MeasurementUnit);
+            
         }
 
         [Test]
@@ -51,11 +54,11 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
             //arrange 
             var userId = Guid.NewGuid();
             var eventTracker = CreateTrackerWithScale(userId,MeasurementUnit);
-            var (events, _) = CreateEventsWithScale(eventTracker.Id, MinEventForCalculation);
+            var (events, _) = CreateEventsWithScale(eventTracker.Id, MinEventForCalculation-1);
             _eventRepository.AddRangeOfEvents(events);
 
             //act 
-            var fact = new SumScaleCalculator().Calculate(events, eventTracker)
+            var fact = new SumScaleCalculator().Calculate(events, eventTracker, _now)
                 .ConvertTo<SumScaleTrackerFact>();
 
             //assert 

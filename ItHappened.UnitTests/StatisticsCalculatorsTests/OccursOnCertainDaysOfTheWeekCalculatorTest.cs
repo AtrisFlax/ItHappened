@@ -8,16 +8,19 @@ using LanguageExt.UnsafeValueAccess;
 using NUnit.Framework;
 using static ItHappened.UnitTests.StatisticsCalculatorsTests.StatisticsCalculatorsTestingConsts;
 using static ItHappened.UnitTests.StatisticsCalculatorsTests.TestingMethods;
+
 namespace ItHappened.UnitTests.StatisticsCalculatorsTests
 {
-    public class OccursOnCertainDaysOfTheWeekCalculatorT
+    public class OccursOnCertainDaysOfTheWeekCalculator
     {
         private IEventRepository _eventRepository;
+        private DateTimeOffset _now;
 
         [SetUp]
         public void Init()
         {
             _eventRepository = new EventRepository();
+            _now = DateTimeOffset.UtcNow;
         }
 
         [Test]
@@ -30,12 +33,13 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
             _eventRepository.AddRangeOfEvents(events);
 
             //act 
-            var fact = new OccursOnCertainDaysOfTheWeekCalculator()
-                .Calculate(events, tracker).ConvertTo<OccursOnCertainDaysOfTheWeekTrackerFact>().ValueUnsafe();
+            var fact = new Domain.Statistics.OccursOnCertainDaysOfTheWeekCalculator()
+                .Calculate(events, tracker, _now).ConvertTo<OccursOnCertainDaysOfTheWeekTrackerFact>().ValueUnsafe();
 
             //assert 
             Assert.AreEqual("Происходит в определённые дни недели", fact.FactName);
-            Assert.AreEqual($"В 90% случаев событие {tracker.Name} происходит в понедельник, в среду", fact.Description);
+            Assert.AreEqual($"В 90% случаев событие {tracker.Name} происходит в понедельник, в среду",
+                fact.Description);
             Assert.AreEqual(12.6, fact.Priority, PriorityAccuracy);
             Assert.AreEqual(new[] {DayOfWeek.Monday, DayOfWeek.Wednesday}, fact.DaysOfTheWeek);
             Assert.AreEqual(90.0, fact.Percentage, Percentage);
@@ -51,8 +55,8 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
             _eventRepository.AddRangeOfEvents(events);
 
             //act 
-            var fact = new OccursOnCertainDaysOfTheWeekCalculator()
-                .Calculate(events, tracker).ConvertTo<OccursOnCertainDaysOfTheWeekTrackerFact>();
+            var fact = new Domain.Statistics.OccursOnCertainDaysOfTheWeekCalculator()
+                .Calculate(events, tracker, _now).ConvertTo<OccursOnCertainDaysOfTheWeekTrackerFact>();
 
             //assert 
             Assert.True(fact.IsNone);
@@ -70,14 +74,15 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
             _eventRepository.AddRangeOfEvents(events);
 
             //act 
-            var fact = new OccursOnCertainDaysOfTheWeekCalculator()
-                .Calculate(events, tracker).ConvertTo<OccursOnCertainDaysOfTheWeekTrackerFact>();
+            var fact = new Domain.Statistics.OccursOnCertainDaysOfTheWeekCalculator()
+                .Calculate(events, tracker, _now).ConvertTo<OccursOnCertainDaysOfTheWeekTrackerFact>();
 
             //assert 
             Assert.True(fact.IsNone);
         }
-        
-        private static IReadOnlyCollection<Event> CreateEvents_10Events_7onMonday_3onWednesday_1onTuesday(Guid trackerId,
+
+        private static IReadOnlyCollection<Event> CreateEvents_10Events_7onMonday_3onWednesday_1onTuesday(
+            Guid trackerId,
             Guid userId)
         {
             var monday = new DateTime(2020, 10, 5);
@@ -97,7 +102,7 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
                 new DateTimeOffset(wednesday),
             };
             return dateList
-                .Select((t, i) => CreateEventFixDate(trackerId, userId, t))
+                .Select((t, i) => CreateEventWithFixTime(trackerId, userId, t))
                 .ToList().AsReadOnly();
         }
 
@@ -114,9 +119,9 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
                 new DateTimeOffset(monday.AddDays(5)),
                 new DateTimeOffset(monday.AddDays(6)),
             };
-            
+
             return dateList
-                .Select((t, i) => CreateEventFixDate(trackerId, userId, t))
+                .Select((t, i) => CreateEventWithFixTime(trackerId, userId, t))
                 .ToList().AsReadOnly();
         }
     }

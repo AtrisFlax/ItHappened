@@ -16,8 +16,9 @@ namespace ItHappened.Domain.Statistics
 
         public IReadOnlyCollection<ISingleTrackerFact> GetFacts(IReadOnlyCollection<Event> events, EventTracker tracker)
         {
+            DateTimeOffset now = DateTimeOffset.UtcNow;
             return _calculators
-                .Select(calculator => calculator.Calculate(events, tracker))
+                .Select(calculator => calculator.Calculate(events, tracker, now))
                 .Somes()
                 .OrderByDescending(fact => fact.Priority)
                 .ToList();
