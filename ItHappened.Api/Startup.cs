@@ -61,8 +61,7 @@ namespace ItHappened.Api
             AddSingleTrackerStatisticsProvider(services);
 
             services.AddSingleton<IBackgroundStatisticGenerator, StatisticGenerator>();
-            services.AddSingleton<IManualStatisticGenerator, StatisticGenerator>();
-            
+
             services.AddSingleton<IUserService, UserService>();
             services.AddSingleton<IStatisticsService, StatisticsService>();
             

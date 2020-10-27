@@ -8,6 +8,10 @@ namespace ItHappened.Domain.Statistics
 {
     public class WorstEventCalculator : ISingleTrackerStatisticsCalculator
     {
+        private const int MinNumberOfEventsWithRating = 10;
+        private const int MinNumberOfDaysFromOldestEvent = 90;
+        private const int MinNumberOfDaysFromOccurenceOfEventWithLowestRating = 7;
+        
         public Option<ISingleTrackerFact> Calculate(IReadOnlyCollection<Event> events, EventTracker tracker)
         {
             if (!CanCalculate(events)) return Option<ISingleTrackerFact>.None;
@@ -37,13 +41,13 @@ namespace ItHappened.Domain.Statistics
         private bool CanCalculate(IReadOnlyCollection<Event> events)
         {
             var isEventsNumberWithRatingMoreOrEqualToTen = events
-                .Count(eventItem => eventItem.CustomizationsParameters.Rating.IsSome) >= 10;
+                .Count(eventItem => eventItem.CustomizationsParameters.Rating.IsSome) >= MinNumberOfEventsWithRating;
             var isOldestEventHappenedMoreThanThreeMonthsAgo = events
                 .OrderBy(eventItem => eventItem.HappensDate)
-                .First().HappensDate <= DateTimeOffset.Now - TimeSpan.FromDays(90);
+                .First().HappensDate <= DateTimeOffset.Now - TimeSpan.FromDays(MinNumberOfDaysFromOldestEvent);
             var isEventWithLowestRatingHappenedMoreThanWeekAgo = events
                 .OrderBy(eventItem => eventItem.CustomizationsParameters.Rating)
-                .First().HappensDate <= DateTimeOffset.Now - TimeSpan.FromDays(7);
+                .First().HappensDate <= DateTimeOffset.Now - TimeSpan.FromDays(MinNumberOfDaysFromOccurenceOfEventWithLowestRating);
             return isEventsNumberWithRatingMoreOrEqualToTen &&
                    isOldestEventHappenedMoreThanThreeMonthsAgo &&
                    isEventWithLowestRatingHappenedMoreThanWeekAgo;
