@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace ItHappened.Domain.Statistics
 {
-    public class StatisticGenerator : IManualStatisticGenerator, IBackgroundStatisticGenerator
+    public class StatisticGenerator : IBackgroundStatisticGenerator
     {
         private readonly IMultipleFactsRepository _multipleFactsRepository;
         private readonly IMultipleTrackersFactProvider _generalFactProvider;
@@ -27,19 +27,7 @@ namespace ItHappened.Domain.Statistics
             _trackerRepository = trackerRepository;
             _eventRepository = eventRepository;
         }
-        
-        public void UpdateOnRequestTrackerSpecificFacts(Guid trackerId)
-        {
-            if (!_trackerRepository.IsContainTracker(trackerId)) return;
-            var tracker = _trackerRepository.LoadTracker(trackerId);
-            var trackerEvents = _eventRepository.LoadAllTrackerEvents(trackerId);
-            if (!tracker.IsUpdated || !trackerEvents.Any()) return;
-            var updatedFacts = _specificFactProvider.GetFacts(trackerEvents, tracker);
-            if (!updatedFacts.Any()) return;
-            _singleFactsRepository.UpdateTrackerSpecificFacts(trackerId, updatedFacts);
-            tracker.IsUpdated = false;
-        }
-        
+
         public void UpdateUserFacts(Guid userId)
         {
             var userTrackers = _trackerRepository.LoadAllUserTrackers(userId);

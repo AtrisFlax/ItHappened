@@ -16,9 +16,9 @@ namespace ItHappened.UnitTests.StatisticsProvidersTests
         private ISingleFactsRepository _singleFactsRepository;
         private readonly EventTracker _tracker = TestingMethods.CreateTracker(Guid.NewGuid());
         private List<Event> _events;
+        private IEventRepository _eventRepository;
         private StatisticGenerator _statisticGenerator;
         private ITrackerRepository _trackerRepository;
-        private IEventRepository _eventRepository;
 
         [SetUp]
         public void Init()
