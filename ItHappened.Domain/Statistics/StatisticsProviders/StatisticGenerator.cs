@@ -27,40 +27,29 @@ namespace ItHappened.Domain.Statistics
             _trackerRepository = trackerRepository;
             _eventRepository = eventRepository;
         }
-
-        public void UpdateOnRequestUserGeneralFacts(Guid userId)
-        {
-            var userTrackers = _trackerRepository.LoadAllUserTrackers(userId);
-            var trackersWithEvents = new List<TrackerWithItsEvents>();
-            foreach (var tracker in userTrackers)
-            {
-                var events = _eventRepository.LoadAllTrackerEvents(tracker.Id);
-                trackersWithEvents.Add(new TrackerWithItsEvents(tracker, events));
-            }
-            var updatedFacts = _generalFactProvider.GetFacts(trackersWithEvents);
-            _multipleFactsRepository.UpdateUserGeneralFacts(updatedFacts, userId);
-        }
-
+        
         public void UpdateOnRequestTrackerSpecificFacts(Guid trackerId)
         {
+            if (!_trackerRepository.IsContainTracker(trackerId)) return;
             var tracker = _trackerRepository.LoadTracker(trackerId);
             var trackerEvents = _eventRepository.LoadAllTrackerEvents(trackerId);
-            if (!tracker.IsUpdated) return;
+            if (!tracker.IsUpdated || !trackerEvents.Any()) return;
             var updatedFacts = _specificFactProvider.GetFacts(trackerEvents, tracker);
+            if (!updatedFacts.Any()) return;
             _singleFactsRepository.UpdateTrackerSpecificFacts(trackerId, updatedFacts);
             tracker.IsUpdated = false;
         }
-
+        
         public void UpdateUserFacts(Guid userId)
         {
             var userTrackers = _trackerRepository.LoadAllUserTrackers(userId);
+            if (userTrackers.All(tracker => tracker.IsUpdated == false)) return;
             UpdateUserGeneralFacts(userId, userTrackers);
-            UpdateUserSpecificFacts(userId, userTrackers);
+            UpdateUserSpecificFacts(userTrackers);
         }
         
         private void UpdateUserGeneralFacts(Guid userId, IEnumerable<EventTracker> userTrackers)
         {
-            if (userTrackers.All(tracker => tracker.IsUpdated == false)) return;
             var trackersWithEvents = new List<TrackerWithItsEvents>();
             foreach (var tracker in userTrackers)
             {
@@ -69,20 +58,21 @@ namespace ItHappened.Domain.Statistics
             }
             
             var updatedFacts = _generalFactProvider.GetFacts(trackersWithEvents);
-            _multipleFactsRepository.UpdateUserGeneralFacts(updatedFacts, userId);
+            _multipleFactsRepository.UpdateUserGeneralFacts(userId, updatedFacts);
         }
         
-        private void UpdateUserSpecificFacts(Guid userId, IEnumerable<EventTracker> userTrackers)
+        private void UpdateUserSpecificFacts(IEnumerable<EventTracker> userTrackers)
         {
-            foreach (var tracker in userTrackers)
+            var updatedTrackers = userTrackers.Where(tracker => tracker.IsUpdated);
+            foreach (var tracker in updatedTrackers)
             {
                 var trackerEvents = _eventRepository.LoadAllTrackerEvents(tracker.Id);
-                if (!tracker.IsUpdated) return;
                 var updatedFacts = _specificFactProvider.GetFacts(trackerEvents, tracker);
                 _singleFactsRepository.UpdateTrackerSpecificFacts(tracker.Id, updatedFacts);
                 tracker.IsUpdated = false;
             }
         }
+        
     }
     
 }
