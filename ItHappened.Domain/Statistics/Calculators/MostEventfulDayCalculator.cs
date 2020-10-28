@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using LanguageExt;
 
@@ -9,7 +10,7 @@ namespace ItHappened.Domain.Statistics
         private const int ThresholdEventAmount = 1;
 
         public Option<IMultipleTrackersFact> Calculate(
-            IReadOnlyCollection<TrackerWithItsEvents> trackerWithItsEvents)
+            IReadOnlyCollection<TrackerWithItsEvents> trackerWithItsEvents, DateTimeOffset now)
         {
             var allTrackersEvents = trackerWithItsEvents.SelectMany(info => info.Events).ToList();
             if (!CanCalculate(allTrackersEvents))

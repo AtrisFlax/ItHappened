@@ -30,8 +30,8 @@ namespace ItHappened.Domain.Statistics
                 description,
                 priority,
                 maxDurationInDays,
-                lastEventBeforeBreak,
-                firstEventAfterBreak));
+                lastEventBeforeBreak.HappensDate,
+                firstEventAfterBreak.HappensDate));
         }
 
         private static bool CanCalculate(IReadOnlyCollection<Event> events)

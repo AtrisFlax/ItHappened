@@ -14,11 +14,14 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
     public class MostFrequentEventCalculatorTest
     {
         private IEventRepository _eventRepository;
+        private DateTimeOffset _now;
 
         [SetUp]
         public void Init()
         {
             _eventRepository = new EventRepository();
+            _now = DateTimeOffset.UtcNow;
+
         }
 
         [Test]
@@ -43,7 +46,7 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
 
             //act
             var fact = new MostFrequentEventStatisticsCalculator()
-                .Calculate(trackerWithItsEvents)
+                .Calculate(trackerWithItsEvents, _now)
                 .ConvertTo<MostFrequentEventTrackersFact>().ValueUnsafe();
 
             //assert 

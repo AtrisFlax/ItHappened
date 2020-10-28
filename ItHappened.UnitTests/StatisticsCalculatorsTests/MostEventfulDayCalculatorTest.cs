@@ -12,11 +12,13 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
     public class MostEventfulDayCalculatorTest
     {
         private IEventRepository _eventRepository;
+        private DateTimeOffset _now;
 
         [SetUp]
         public void Init()
         {
             _eventRepository = new EventRepository();
+            _now = DateTimeOffset.UtcNow;
         }
 
         [Test]
@@ -52,7 +54,7 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
 
             //act
             var fact = new MostEventfulDayCalculator()
-                .Calculate(trackerWithItsEvents)
+                .Calculate(trackerWithItsEvents, _now)
                 .ConvertTo<MostEventfulDayTrackersFact>().ValueUnsafe();
 
             //assert 
@@ -79,7 +81,7 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
                 new TrackerWithItsEvents(tracker, allEventsTracker)
             };
             //act
-            var fact = new MostEventfulDayCalculator().Calculate(trackerWithItsEvents)
+            var fact = new MostEventfulDayCalculator().Calculate(trackerWithItsEvents, _now)
                 .ConvertTo<MostEventfulDayTrackersFact>();
 
             //assert 
@@ -102,7 +104,7 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
                 new TrackerWithItsEvents(tracker, allEventsTracker)
             };
             //act
-            var fact = new MostEventfulDayCalculator().Calculate(trackerWithItsEvents)
+            var fact = new MostEventfulDayCalculator().Calculate(trackerWithItsEvents, _now)
                 .ConvertTo<MostEventfulDayTrackersFact>();
 
             //assert 
@@ -147,7 +149,7 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
 
             //act
             var fact = new MostEventfulDayCalculator()
-                .Calculate(trackerWithItsEvents)
+                .Calculate(trackerWithItsEvents, _now)
                 .ConvertTo<MostEventfulDayTrackersFact>().ValueUnsafe();
 
             //assert 

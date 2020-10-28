@@ -12,7 +12,7 @@ namespace ItHappened.Domain.Statistics
         private const int TrackersThreshold = 0;
 
         public Option<IMultipleTrackersFact> Calculate(
-            IReadOnlyCollection<TrackerWithItsEvents> trackerWithItsEvents)
+            IReadOnlyCollection<TrackerWithItsEvents> trackerWithItsEvents, DateTimeOffset now)
         {
             var allEvents = trackerWithItsEvents.SelectMany(info => info.Events).ToList();
             if (!CanCalculate(trackerWithItsEvents, allEvents))

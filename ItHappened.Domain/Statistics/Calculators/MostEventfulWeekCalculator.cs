@@ -13,7 +13,7 @@ namespace ItHappened.Domain.Statistics
 
 
         public Option<IMultipleTrackersFact> Calculate(
-            IReadOnlyCollection<TrackerWithItsEvents> trackerWithItsEvents)
+            IReadOnlyCollection<TrackerWithItsEvents> trackerWithItsEvents, DateTimeOffset now)
         {
             var allTrackersEvents = trackerWithItsEvents.SelectMany(info => info.Events).ToList();
             if (!CanCalculate(allTrackersEvents))

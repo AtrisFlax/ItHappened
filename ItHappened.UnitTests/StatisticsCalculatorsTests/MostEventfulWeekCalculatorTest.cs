@@ -15,6 +15,7 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
     {
         private IEventRepository _eventRepository;
         private static Random _rand;
+        private DateTimeOffset _now;
         private const string CultureCode = "ru-RU"; //hardcoded culture code 
 
         [SetUp]
@@ -22,6 +23,7 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
         {
             _eventRepository = new EventRepository();
             _rand = new Random();
+            _now = DateTimeOffset.UtcNow;
         }
 
         [Repeat(1000)]
@@ -62,7 +64,7 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
 
             //act
             var fact = new MostEventfulWeekCalculator()
-                .Calculate(trackerWithItsEvents)
+                .Calculate(trackerWithItsEvents, _now)
                 .ConvertTo<MostEventfulWeekTrackersFact>().ValueUnsafe();
 
             //assert 
@@ -95,7 +97,7 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
 
             //act
             var fact = new MostEventfulDayCalculator()
-                .Calculate(trackerWithItsEvents)
+                .Calculate(trackerWithItsEvents, _now)
                 .ConvertTo<MostEventfulDayTrackersFact>();
 
             //assert 
@@ -121,7 +123,7 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
 
             //act
             var fact = new MostEventfulDayCalculator()
-                .Calculate(trackerWithItsEvents)
+                .Calculate(trackerWithItsEvents, _now)
                 .ConvertTo<MostEventfulDayTrackersFact>();
 
             //assert 

@@ -16,7 +16,7 @@ namespace ItHappened.Domain.Statistics
 
         public IReadOnlyCollection<ISingleTrackerFact> GetFacts(IReadOnlyCollection<Event> events, EventTracker tracker)
         {
-            DateTimeOffset now = DateTimeOffset.UtcNow;
+            var now = DateTimeOffset.UtcNow;
             return _calculators
                 .Select(calculator => calculator.Calculate(events, tracker, now))
                 .Somes()
