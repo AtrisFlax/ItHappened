@@ -18,7 +18,7 @@ namespace ItHappened.Infrastructure.Repositories
         {
             foreach (var @event in events)
             {
-                AddEvent(@event);
+                SaveEvent(@event);
             }
         }
 

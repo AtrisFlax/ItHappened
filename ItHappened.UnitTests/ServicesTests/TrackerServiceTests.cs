@@ -32,10 +32,10 @@ namespace ItHappened.UnitTests.ServicesTests
             var creatorId = Guid.NewGuid();
             var trackerId = _trackerService.CreateEventTracker(creatorId, "tracker",
                 new TrackerCustomizationSettings(
+                    true,
+                    true, 
                     Option<string>.Some("meter"), 
-                    true, 
-                    false, 
-                    true, 
+                    false,
                     false, 
                     true, 
                     false));
@@ -53,7 +53,7 @@ namespace ItHappened.UnitTests.ServicesTests
             Assert.True(trackerFromRepository.CustomizationSettings.IsGeoTagRequired);
             Assert.False(trackerFromRepository.CustomizationSettings.IsCommentRequired);
             Assert.True(trackerFromRepository.CustomizationSettings.IsScaleRequired);
-            Assert.False(trackerFromRepository.CustomizationSettings.AreCustomizationsOptional);
+            Assert.False(trackerFromRepository.CustomizationSettings.ForceCustomizations);
         }
         
         [Test]

@@ -62,7 +62,7 @@ namespace ItHappened.UnitTests.StatisticsProvidersTests
             return new List<IMultipleTrackersStatisticsCalculator>()
             {
                 new MostEventfulWeekCalculator(),
-                new MostEventfulDayStatisticsCalculator(),
+                new MostEventfulDayCalculator(),
                 new MostFrequentEventStatisticsCalculator(),
                 new MultipleTrackersEventsCountCalculator()
             };

@@ -317,7 +317,15 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
                 )
             );
         }
-
+        public static Event CreateEventFixDate(Guid trackerId, Guid userId, DateTimeOffset fixDate)
+        {
+            return new Event(Guid.NewGuid(),
+                userId,
+                trackerId,
+                fixDate,
+                new EventCustomParameters()
+            );
+        }
         public static Event CreateEventWithRatingAndFixDate(Guid trackerId, Guid userId, double rating,
             DateTimeOffset fixDate)
         {

@@ -100,15 +100,15 @@ namespace ItHappened.UnitTests.ServicesTests
         
         private IMultipleTrackersFact CreateGeneralFact()
         {
-            var calculator = new MostEventfulDayStatisticsCalculator();
-            var fact = calculator.Calculate(new[] {new TrackerWithItsEvents(_tracker, _events)});
+            var calculator = new MostEventfulDayCalculator();
+            var fact = calculator.Calculate(new[] {new TrackerWithItsEvents(_tracker, _events)}, DateTimeOffset.Now);
             return fact.ValueUnsafe();
         }
         
         private ISingleTrackerFact CreateSpecificFact()
         {
             var calculator = new SingleTrackerEventsCountCalculator();
-            var fact = calculator.Calculate(_events, _tracker);
+            var fact = calculator.Calculate(_events, _tracker, DateTimeOffset.Now);
             return fact.ValueUnsafe();
         }
     }

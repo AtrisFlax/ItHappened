@@ -7,7 +7,7 @@ namespace ItHappened.Domain
 {
     public static class EventsFilter
     {
-        public static IEnumerable<Event> Filter(IEnumerable<Event> events,
+        public static IReadOnlyCollection<Event> Filter(IEnumerable<Event> events,
             IEnumerable<IEventsFilter> filters)
         {
             IEnumerable<Event> result = events;
@@ -15,7 +15,7 @@ namespace ItHappened.Domain
             {
                 result = filter.Filter(result);
             }
-            return result;
+            return result.ToList();
         }
     }
 } 

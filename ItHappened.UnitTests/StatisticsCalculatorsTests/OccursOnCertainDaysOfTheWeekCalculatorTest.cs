@@ -11,7 +11,7 @@ using static ItHappened.UnitTests.StatisticsCalculatorsTests.TestingMethods;
 
 namespace ItHappened.UnitTests.StatisticsCalculatorsTests
 {
-    public class OccursOnCertainDaysOfTheWeekCalculator
+    public class OccursOnCertainDaysOfTheWeekCalculatorTests
     {
         private IEventRepository _eventRepository;
         private DateTimeOffset _now;

@@ -32,7 +32,7 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
         {
             _eventRepository = new EventRepository();
             _creatorId = Guid.NewGuid();
-            _tracker = CreateTracker(_creatorId);
+            _tracker = CreateTrackerWithDefaultCustomization(_creatorId);
             _events = CreateEvents(_creatorId, _creatorId, EventsNumber);
             _eventRepository.AddRangeOfEvents(_events);
             _worstEventCalculator = new WorstRatingEventCalculator();

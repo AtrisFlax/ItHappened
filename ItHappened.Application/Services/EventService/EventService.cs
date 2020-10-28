@@ -38,7 +38,7 @@ namespace ItHappened.Application.Services.EventService
             
             var newEvent = new Event(newEventId, actorId, trackerId, eventHappensDate, customParameters);
             
-            if (!tracker.IsSettingsAndEventCustomizationsMatch(newEvent))
+            if (!tracker.IsTrackerCustomizationAndEventCustomizationMatch(newEvent))
             {
                 throw new RestException(HttpStatusCode.BadRequest);
             }

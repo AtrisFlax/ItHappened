@@ -6,6 +6,7 @@ using ItHappened.Domain.Statistics;
 using ItHappened.UnitTests.StatisticsCalculatorsTests;
 using LanguageExt;
 using NUnit.Framework;
+using OccursOnCertainDaysOfTheWeekCalculator = ItHappened.Domain.Statistics.OccursOnCertainDaysOfTheWeekCalculator;
 
 namespace ItHappened.UnitTests.StatisticsProvidersTests
 {
@@ -52,16 +53,17 @@ namespace ItHappened.UnitTests.StatisticsProvidersTests
                 new OccursOnCertainDaysOfTheWeekCalculator(),
                 new SingleTrackerEventsCountCalculator(),
                 new SumScaleCalculator(),
-                new WorstEventCalculator()
+                new WorstRatingEventCalculator()
             };
         }
         
         public EventTracker CreateTrackerWithRating()
         {
             return TestingMethods.CreateTrackerWithRequiredCustomization(Guid.NewGuid(), "Tracker name",
-                    new TrackerCustomizationSettings(Option<string>.None, 
+                    new TrackerCustomizationSettings(
+                        false, 
                         false,
-                        true,
+                        Option<string>.None, 
                         false,
                         false,
                         false,

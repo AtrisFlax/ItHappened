@@ -53,9 +53,9 @@ namespace ItHappened.UnitTests.ServicesTests
         {
             var tracker = TestingMethods.CreateTrackerWithRequiredCustomization(Guid.NewGuid(), "tracker",
                 new TrackerCustomizationSettings(
-                    Option<string>.Some("meter"), 
                     true, 
-                    false, 
+                    true,
+                    Option<string>.Some("meter"), 
                     true, 
                     false, 
                     true, 

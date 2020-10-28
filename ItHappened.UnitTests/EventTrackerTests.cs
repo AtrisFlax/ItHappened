@@ -129,7 +129,7 @@ namespace ItHappened.UnitTests
 
             //act
 
-            var isCustomizationsIsMatch = tracker.TrackerCustomizationsAndEventCustomizationsMatch(@event);
+            var isCustomizationsIsMatch = tracker.IsTrackerCustomizationAndEventCustomizationMatch(@event);
             // 
 
             //assert
@@ -160,7 +160,7 @@ namespace ItHappened.UnitTests
 
             //act
 
-            var isCustomizationsIsMatch = tracker.TrackerCustomizationsAndEventCustomizationsMatch(@event);
+            var isCustomizationsIsMatch = tracker.IsTrackerCustomizationAndEventCustomizationMatch(@event);
             // 
 
             //assert
@@ -192,7 +192,7 @@ namespace ItHappened.UnitTests
 
             //act
 
-            var isCustomizationsIsMatch = tracker.TrackerCustomizationsAndEventCustomizationsMatch(@event);
+            var isCustomizationsIsMatch = tracker.IsTrackerCustomizationAndEventCustomizationMatch(@event);
             // 
 
             //assert
