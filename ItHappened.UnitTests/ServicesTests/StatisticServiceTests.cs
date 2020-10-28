@@ -18,7 +18,7 @@ namespace ItHappened.UnitTests.ServicesTests
         private ISingleFactsRepository _singleFactsRepository;
         private ITrackerRepository _trackerRepository;
         private IStatisticsService _statisticsService;
-        private readonly EventTracker _tracker = TestingMethods.CreateTracker(Guid.NewGuid());
+        private readonly EventTracker _tracker = TestingMethods.CreateTrackerWithDefaultCustomization(Guid.NewGuid());
         private List<Event> _events;
         private IEventRepository _eventRepository;
 

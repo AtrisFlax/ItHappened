@@ -29,8 +29,8 @@
 //         {
 //             //arrange 
 //             var userId = Guid.NewGuid();
-//             var eventTracker1 = CreateTracker(userId, "Покупка");
-//             var eventTracker2 = CreateTracker(userId, "Продажа");
+//             var eventTracker1 = CreateTrackerWithDefaultCustomization(userId, "Покупка");
+//             var eventTracker2 = CreateTrackerWithDefaultCustomization(userId, "Продажа");
 //             const int year = 2020;
 //             var eventsOfTracker1 = CreateEventDuringYear(eventTracker1.Id, userId, 1000, year);
 //             var eventsOfTracker2 = CreateEventDuringYear(eventTracker2.Id, userId, 1000, year);
@@ -74,7 +74,7 @@
 //             var now = DateTimeOffset.UtcNow;
 //             var userId = Guid.NewGuid();
 //             const int year = 2020;
-//             var eventTracker = CreateTracker(userId, "Покупка");
+//             var eventTracker = CreateTrackerWithDefaultCustomization(userId, "Покупка");
 //             var eventsTracker = CreateEventDuringYear(eventTracker.Id, userId, 0, year);
 //             _eventRepository.AddRangeOfEvents(eventsTracker);
 //
@@ -95,7 +95,7 @@
 //             var now = DateTimeOffset.UtcNow;
 //             var userId = Guid.NewGuid();
 //             const int year = 2020;
-//             var eventTracker = CreateTracker(userId, "Покупка");
+//             var eventTracker = CreateTrackerWithDefaultCustomization(userId, "Покупка");
 //             var eventsTracker = CreateEventDuringYear(eventTracker.Id, userId, 1, year);
 //             _eventRepository.AddRangeOfEvents(eventsTracker);
 //
@@ -114,7 +114,7 @@
 //                 CalendarWeekRule.FirstDay, DayOfWeek.Monday);
 //         }
 //
-//         private static EventTracker CreateTracker(Guid userId, string trackerName)
+//         private static EventTracker CreateTrackerWithDefaultCustomization(Guid userId, string trackerName)
 //         {
 //             return EventTrackerBuilder
 //                 .Tracker(userId, Guid.NewGuid(), trackerName)

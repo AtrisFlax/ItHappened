@@ -11,12 +11,12 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
         public static readonly Random Rand = new Random();
 
 
-        public static EventTracker CreateTracker(Guid userId, string name = "Tracker name")
+        public static EventTracker CreateTrackerWithDefaultCustomization(Guid userId, string name = "Tracker name")
         {
             return new EventTracker(Guid.NewGuid(), userId, name, new TrackerCustomizationSettings());
         }
         
-        public static EventTracker CreateTracker(Guid userId, string name, TrackerCustomizationSettings trackerCustomizationSettings)
+        public static EventTracker CreateTrackerWithRequiredCustomization(Guid userId, string name, TrackerCustomizationSettings trackerCustomizationSettings)
         {
             return new EventTracker(Guid.NewGuid(), userId, name,
                 trackerCustomizationSettings);

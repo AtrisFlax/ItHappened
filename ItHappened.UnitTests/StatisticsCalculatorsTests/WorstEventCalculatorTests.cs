@@ -87,7 +87,7 @@
  //             event10.Comment = new Comment("123");
  //             event10.Rating = 1;
  //             event10.HappensDate = DateTimeOffset.Now - TimeSpan.FromDays(8);
- //             _eventRepository.AddEvent(event10);
+ //             _eventRepository.CreateEvent(event10);
  //
  //             //act
  //             var optionalWorstEventFact = 

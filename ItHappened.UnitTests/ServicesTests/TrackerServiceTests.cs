@@ -23,7 +23,7 @@ namespace ItHappened.UnitTests.ServicesTests
         {
             _trackerRepository = new TrackerRepository();
             _trackerService = new TrackerService(_trackerRepository);
-            _tracker = TestingMethods.CreateTracker(Guid.NewGuid());
+            _tracker = TestingMethods.CreateTrackerWithDefaultCustomization(Guid.NewGuid());
         }
 
         [Test]
@@ -94,8 +94,8 @@ namespace ItHappened.UnitTests.ServicesTests
         public void GetAllUserTrackers_ReturnsUserTrackers()
         {
             var userId = Guid.NewGuid();
-            var tracker1 = TestingMethods.CreateTracker(userId);
-            var tracker2 = TestingMethods.CreateTracker(userId);
+            var tracker1 = TestingMethods.CreateTrackerWithDefaultCustomization(userId);
+            var tracker2 = TestingMethods.CreateTrackerWithDefaultCustomization(userId);
             _trackerRepository.SaveTracker(tracker1);
             _trackerRepository.SaveTracker(tracker2);
             const int expected = 2;

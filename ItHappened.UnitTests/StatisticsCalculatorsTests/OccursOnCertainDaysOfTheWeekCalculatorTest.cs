@@ -25,7 +25,7 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
         {
             //arrange 
             var userId = Guid.NewGuid();
-            var tracker = CreateTracker(userId, "some name");
+            var tracker = CreateTrackerWithDefaultCustomization(userId, "some name");
             var events = CreateEvents_10Events_7onMonday_3onWednesday_1onTuesday(tracker.Id, userId);
             _eventRepository.AddRangeOfEvents(events);
 
@@ -46,7 +46,7 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
         {
             //arrange 
             var userId = Guid.NewGuid();
-            var tracker = CreateTracker(userId);
+            var tracker = CreateTrackerWithDefaultCustomization(userId);
             var events = CreateOneEventOnEveryDay(tracker.Id, userId);
             _eventRepository.AddRangeOfEvents(events);
 
@@ -64,7 +64,7 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
         {
             //arrange 
             var userId = Guid.NewGuid();
-            var tracker = CreateTracker(userId);
+            var tracker = CreateTrackerWithDefaultCustomization(userId);
             const int notEnoughEvents = 5;
             var events = CreateEvents(userId, tracker.Id, notEnoughEvents);
             _eventRepository.AddRangeOfEvents(events);

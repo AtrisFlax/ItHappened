@@ -17,7 +17,7 @@ namespace ItHappened.UnitTests.StatisticsProvidersTests
         public void GetFactsFromTrackerWithEvents_ReturnsFacts()
         {
             InitializeFactProviderWithCalculators();
-            var tracker = TestingMethods.CreateTracker(Guid.NewGuid());
+            var tracker = TestingMethods.CreateTrackerWithDefaultCustomization(Guid.NewGuid());
             var event1 = TestingMethods.CreateEvent(tracker.Id, tracker.CreatorId);
             var event2 = TestingMethods.CreateEvent(tracker.Id, tracker.CreatorId);
             const int expected = 2;
@@ -36,7 +36,7 @@ namespace ItHappened.UnitTests.StatisticsProvidersTests
         public void GetFactsFromTrackerWithoutEvents_ReturnsEmptyFactsCollection()
         {
             InitializeFactProviderWithCalculators();
-            var tracker = TestingMethods.CreateTracker(Guid.NewGuid());
+            var tracker = TestingMethods.CreateTrackerWithDefaultCustomization(Guid.NewGuid());
             var emtyEventsCollection = new List<Event>();
             const int expected = 0;
             

@@ -27,8 +27,8 @@
 //             var now = DateTimeOffset.UtcNow;
 //             var expectedDate = now.AddDays(-expectedDaysAgo);
 //             var userId = Guid.NewGuid();
-//             var tracker1 = CreateTracker(userId);
-//             var tracker2 = CreateTracker(userId);
+//             var tracker1 = CreateTrackerWithDefaultCustomization(userId);
+//             var tracker2 = CreateTrackerWithDefaultCustomization(userId);
 //             var eventsTracker1 = CreateEventsEveryDayByDayInPast(tracker1.Id, userId, 10, now);
 //             var eventsTracker2 = CreateEventsEveryDayByDayInPast(tracker1.Id, userId, 10, now);
 //             var eventsExtraEvents1 =
@@ -70,7 +70,7 @@
 //             //arrange
 //             var now = DateTimeOffset.UtcNow;
 //             var userId = Guid.NewGuid();
-//             var tracker = CreateTracker(userId);
+//             var tracker = CreateTrackerWithDefaultCustomization(userId);
 //             var events = CreateEventsEveryDayByDayInPast(tracker.Id, userId, 0, now);
 //             _eventRepository.AddRangeOfEvents(events);
 //             var allEventsTracker = _eventRepository.LoadAllTrackerEvents(tracker.Id);
@@ -93,7 +93,7 @@
 //             //arrange
 //             var now = DateTimeOffset.UtcNow;
 //             var userId = Guid.NewGuid();
-//             var tracker = CreateTracker(userId);
+//             var tracker = CreateTrackerWithDefaultCustomization(userId);
 //             var events = CreateEventsEveryDayByDayInPast(tracker.Id, userId, 1, now);
 //             _eventRepository.AddRangeOfEvents(events);
 //             var allEventsTracker = _eventRepository.LoadAllTrackerEvents(tracker.Id);
@@ -119,8 +119,8 @@
 //             var now = DateTimeOffset.UtcNow;
 //             var expectedDate = now.AddDays(-expectedDaysAgo1);
 //             var userId = Guid.NewGuid();
-//             var tracker1 = CreateTracker(userId);
-//             var tracker2 = CreateTracker(userId);
+//             var tracker1 = CreateTrackerWithDefaultCustomization(userId);
+//             var tracker2 = CreateTrackerWithDefaultCustomization(userId);
 //             var eventsTracker1 = CreateEventsEveryDayByDayInPast(tracker1.Id, userId, 10, now);
 //             var eventsTracker2 = CreateEventsEveryDayByDayInPast(tracker1.Id, userId, 10, now);
 //             var eventsExtraEvents1 =

@@ -25,7 +25,7 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
             //assert
             var userId = Guid.NewGuid();
             var trackerName = "Tracker name";
-            var tracker = CreateTracker(userId, trackerName);
+            var tracker = CreateTrackerWithDefaultCustomization(userId, trackerName);
             var events = new List<Event>
             {
                 CreateEventWithNameAndDateTime(userId, tracker.Id, "2020.10.8 01:05:00"),

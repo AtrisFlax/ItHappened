@@ -58,14 +58,14 @@ namespace ItHappened.UnitTests.StatisticsProvidersTests
         
         public EventTracker CreateTrackerWithRating()
         {
-            return new EventTracker(Guid.NewGuid(), Guid.NewGuid(), "Tracker name",
-                new TrackerCustomizationSettings(Option<string>.None, 
-                    false,
-                    true,
-                    false,
-                    false,
-                    false,
-                    false));
+            return TestingMethods.CreateTrackerWithRequiredCustomization(Guid.NewGuid(), "Tracker name",
+                    new TrackerCustomizationSettings(Option<string>.None, 
+                        false,
+                        true,
+                        false,
+                        false,
+                        false,
+                        false));
         }
     }
 }

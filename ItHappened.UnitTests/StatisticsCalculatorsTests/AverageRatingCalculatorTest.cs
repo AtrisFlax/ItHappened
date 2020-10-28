@@ -28,7 +28,7 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
         {
             //arrange 
             var userId = Guid.NewGuid();
-            var tracker = CreateTracker(userId);
+            var tracker = CreateTrackerWithDefaultCustomization(userId);
             var (events, ratings) = CreateEventsWithRating(tracker.Id, userId, _rand.Next() % 10 + MinEventForCalculation);
             _eventRepository.AddRangeOfEvents(events);
             var allEvents = _eventRepository.LoadAllTrackerEvents(tracker.Id);
@@ -47,7 +47,7 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
         {
             //arrange 
             var userId = Guid.NewGuid();
-            var tracker = CreateTracker(userId);
+            var tracker = CreateTrackerWithDefaultCustomization(userId);
             var (events, ratings) = CreateEventsWithRating(tracker.Id, userId,_rand.Next() % 10 + MinEventForCalculation);
             var eventsWithoutRating = CreateEventsWithoutCustomization(tracker.Id, userId,_rand.Next() % 10 + MinEventForCalculation);
             _eventRepository.AddRangeOfEvents(events);

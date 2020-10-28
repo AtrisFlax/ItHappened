@@ -24,8 +24,8 @@
 //         {
 //             //arrange
 //             var userId = Guid.NewGuid();
-//             var eventTracker1 = CreateTracker(userId, "Pains after drinking sugar water");
-//             var eventTracker2 = CreateTracker(userId, "Pains after eating sugar");
+//             var eventTracker1 = CreateTrackerWithDefaultCustomization(userId, "Pains after drinking sugar water");
+//             var eventTracker2 = CreateTrackerWithDefaultCustomization(userId, "Pains after eating sugar");
 //             var events = CreateEventsEnoughEventForCalculateForTwoTrackers(eventTracker1.Id, eventTracker2.Id, Guid.NewGuid());
 //             _eventRepository.AddRangeOfEvents(events);
 //
@@ -50,7 +50,7 @@
 //         
 //         
 //         
-//         private static EventTracker CreateTracker(Guid userId, string trackerName)
+//         private static EventTracker CreateTrackerWithDefaultCustomization(Guid userId, string trackerName)
 //         {
 //             var eventTracker1 = EventTrackerBuilder
 //                 .Tracker(userId, Guid.NewGuid(), trackerName)
