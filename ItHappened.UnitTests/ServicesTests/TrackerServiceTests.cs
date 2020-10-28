@@ -36,8 +36,8 @@ namespace ItHappened.UnitTests.ServicesTests
                     true, 
                     Option<string>.Some("meter"), 
                     false,
-                    false, 
                     true, 
+                    false, 
                     false));
             
             var trackerFromRepository = _trackerRepository.LoadTracker(trackerId);
