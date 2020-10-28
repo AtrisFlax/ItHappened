@@ -1,4 +1,4 @@
-﻿﻿using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using LanguageExt;
@@ -12,7 +12,8 @@ namespace ItHappened.Domain.Statistics
         private const int MaxMonthThreshold = 3;
         private const int ThresholdEventsWithRating = 10;
 
-        public Option<ISingleTrackerFact> Calculate(IReadOnlyCollection<Event> events, EventTracker tracker, DateTimeOffset now)
+        public Option<ISingleTrackerFact> Calculate(IReadOnlyCollection<Event> events, EventTracker tracker,
+            DateTimeOffset now)
         {
             if (!CanCalculate(events, now))
             {
@@ -31,7 +32,7 @@ namespace ItHappened.Domain.Statistics
 
             if (bestRatingEventInfo.Event.HappensDate > now.AddDays(-MinDaysThreshold))
             {
-                 return Option<ISingleTrackerFact>.None;
+                return Option<ISingleTrackerFact>.None;
             }
 
             var bestRatingEvent = bestRatingEventInfo.Event;
@@ -62,22 +63,16 @@ namespace ItHappened.Domain.Statistics
                 return false;
             }
 
-            var isRatherEventHappenedMoreThanThreeMonthsAgo = EarliestEventDate(events);
-            if (now.AddMonths(-MaxMonthThreshold) >= isRatherEventHappenedMoreThanThreeMonthsAgo)
-            {
-                return false;
-            }
-
-            return true;
+            var isEventEarlyThanThreeMonthsAgo = EarliestEventDate(events);
+            return now.AddMonths(-MaxMonthThreshold) < isEventEarlyThanThreeMonthsAgo;
         }
 
         private static DateTimeOffset EarliestEventDate(IReadOnlyCollection<Event> events)
         {
-            var isRatherEventHappenedMoreThanThreeMonthsAgo = events
+            return events
                 .OrderBy(eventItem => eventItem.HappensDate)
                 .First()
                 .HappensDate;
-            return isRatherEventHappenedMoreThanThreeMonthsAgo;
         }
 
         private static int CountEventWithRating(IReadOnlyCollection<Event> events)

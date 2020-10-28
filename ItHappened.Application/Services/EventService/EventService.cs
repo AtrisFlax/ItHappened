@@ -56,7 +56,7 @@ namespace ItHappened.Application.Services.EventService
         public IReadOnlyCollection<Event> GetAllFilteredEvents(Guid actorId, Guid trackerId, IEnumerable<IEventsFilter> eventsFilters)
         {
             var filteredEvents = EventsFilter.Filter(GetAllEvents(actorId, trackerId), eventsFilters);
-            return filteredEvents.ToList().AsReadOnly();
+            return filteredEvents.ToList();
         }
 
         public IReadOnlyCollection<Event> GetAllEvents(Guid actorId, Guid trackerId)
