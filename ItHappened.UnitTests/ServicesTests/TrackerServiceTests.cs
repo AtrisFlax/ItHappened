@@ -53,7 +53,7 @@ namespace ItHappened.UnitTests.ServicesTests
             Assert.True(trackerFromRepository.CustomizationSettings.IsGeoTagRequired);
             Assert.False(trackerFromRepository.CustomizationSettings.IsCommentRequired);
             Assert.True(trackerFromRepository.CustomizationSettings.IsScaleRequired);
-            Assert.False(trackerFromRepository.CustomizationSettings.ForceCustomizations);
+            Assert.False(trackerFromRepository.CustomizationSettings.IsCustomizationRequired);
         }
         
         [Test]
