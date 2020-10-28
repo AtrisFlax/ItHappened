@@ -6,7 +6,7 @@ using ItHappened.Infrastructure.Repositories;
 using LanguageExt.UnsafeValueAccess;
 using NUnit.Framework;
 using static ItHappened.UnitTests.StatisticsCalculatorsTests.TestingMethods;
-using static ItHappened.UnitTests.StatisticsCalculatorsTests.StatisticsCalculatorsTestingConsts;
+using static ItHappened.UnitTests.StatisticsCalculatorsTests.StatisticsCalculatorsTestingConstants;
 namespace ItHappened.UnitTests.StatisticsCalculatorsTests
 {
     public class SpecificDayTimeEventCalculatorTest

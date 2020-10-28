@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using ItHappened.Domain;
 using ItHappened.Domain.Statistics;
@@ -7,6 +6,7 @@ using ItHappened.Infrastructure.Repositories;
 using LanguageExt.UnsafeValueAccess;
 using NUnit.Framework;
 using static ItHappened.UnitTests.StatisticsCalculatorsTests.TestingMethods;
+using static ItHappened.UnitTests.StatisticsCalculatorsTests.StatisticsCalculatorsTestingConstants;
 
 namespace ItHappened.UnitTests.StatisticsCalculatorsTests
 {
@@ -47,7 +47,7 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
 
 
         [Test]
-        public void EventsTooOld_CalculateFailure()
+        public void AllEventsAfter3Months_CalculateFailure()
         {
             //assert
             var userId = Guid.NewGuid();
@@ -55,18 +55,17 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
             var tracker = CreateTrackerWithScale(userId, "Kg");
             var (events, _) =
                 CreateEventsWithCommentAndWithRatingInsideFromToTime(tracker.Id, userId, MinEventForCalculation,
-                    now.AddMonths(-6), now.AddMonths(-MonthsThreshold));
+                    now.AddMonths(-3), now.AddMonths(-MonthsThreshold));
             _eventRepository.AddRangeOfEvents(events);
             var allEvents = _eventRepository.LoadAllTrackerEvents(tracker.Id);
 
             //act 
             var actual = new BestRatingEventCalculator().Calculate(allEvents, tracker, _now)
-                .ConvertTo<BestRatingEventCalculator>();
+                .ConvertTo<BestRatingEventFact>();
 
             //arrange 
             Assert.IsTrue(actual.IsNone);
         }
-
 
 
         [Repeat(1000)]
@@ -82,6 +81,9 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
                     now.AddMonths(-MonthsThreshold),
                     now.AddDays(-DaysSinceBestEventThreshold));
             var eventsList = events.ToList();
+            var eventBefore3Month = CreateEventWithRatingWithCommentAndFixDate(tracker.Id, userId, MinRatingValue,
+                new Comment("Comment"), now.AddMonths(-MonthsThreshold).AddDays(-1));
+            eventsList.Add(eventBefore3Month);
             var worstRatingEventInfo
                 = events
                     .Where(@event => @event.CustomizationsParameters.Rating.IsSome)
@@ -93,14 +95,14 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
                     .OrderByDescending(x => x.Rating).First();
             var expectedDate = worstRatingEventInfo.Event.HappensDate;
             var expectedRating = worstRatingEventInfo.Rating;
-            var expectedPriority =  expectedRating;
+            var expectedPriority = expectedRating;
             var expectedText = worstRatingEventInfo.Event.CustomizationsParameters.Comment.ValueUnsafe().Text;
             _eventRepository.AddRangeOfEvents(eventsList);
             var allEvents = _eventRepository.LoadAllTrackerEvents(tracker.Id);
 
             //act 
             var fact = new BestRatingEventCalculator().Calculate(allEvents, tracker, _now)
-                .ConvertTo<BestEventTrackerFact>().ValueUnsafe();
+                .ConvertTo<BestRatingEventFact>().ValueUnsafe();
 
             //arrange 
             Assert.AreEqual("Лучшее событие", fact.FactName);

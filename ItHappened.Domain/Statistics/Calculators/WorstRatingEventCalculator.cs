@@ -1,4 +1,4 @@
-﻿﻿using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using LanguageExt;
@@ -12,39 +12,27 @@ namespace ItHappened.Domain.Statistics
         private const int MaxMonthThreshold = 3;
         private const int ThresholdEventsWithRating = 10;
         private const double MaxRating = 10.0;
+        private WorstRatingEventInfo _worstRatingEventInfo;
 
-        public Option<ISingleTrackerFact> Calculate(IReadOnlyCollection<Event> events, EventTracker tracker, DateTimeOffset now)
+
+        public Option<ISingleTrackerFact> Calculate(IReadOnlyCollection<Event> events, EventTracker tracker,
+            DateTimeOffset now)
         {
             if (!CanCalculate(events, now))
             {
                 return Option<ISingleTrackerFact>.None;
             }
 
-            var worstRatingEventInfo
-                = events
-                    .Where(@event => @event.CustomizationsParameters.Rating.IsSome)
-                    .Select(x => new
-                    {
-                        Event = x,
-                        Rating = x.CustomizationsParameters.Rating.ValueUnsafe()
-                    })
-                    .OrderBy(x => x.Rating).First();
-
-            if (worstRatingEventInfo.Event.HappensDate > now.AddDays(-MinDaysThreshold))
-            {
-                 return Option<ISingleTrackerFact>.None;
-            }
-
-            var worstRatingEvent = worstRatingEventInfo.Event;    
+            var worstRatingEvent = _worstRatingEventInfo.Event;
             var comment = worstRatingEvent.CustomizationsParameters.Comment;
-            var worstRating = worstRatingEventInfo.Rating;
+            var worstRating = _worstRatingEventInfo.Rating;
             var commentInfo = comment.IfNone(new Comment(string.Empty));
             var textComment = $" с комментарием {commentInfo.Text}";
             const string factName = "Худшее событие";
             var description = $"Событие {tracker.Name} с самым низким рейтингом {worstRating} " +
                               $"произошло {worstRatingEvent.HappensDate:d}{textComment}";
-            var priority = MaxRating -  worstRating;
-            var worstEventDate = worstRatingEventInfo.Event.HappensDate;
+            var priority = MaxRating - worstRating;
+            var worstEventDate = _worstRatingEventInfo.Event.HappensDate;
 
             return Option<ISingleTrackerFact>.Some(new WorstRatingEventFact(
                 factName,
@@ -56,7 +44,7 @@ namespace ItHappened.Domain.Statistics
                 worstRatingEvent.Id));
         }
 
-        private static bool CanCalculate(IReadOnlyCollection<Event> events, DateTimeOffset now)
+        private bool CanCalculate(IReadOnlyCollection<Event> events, DateTimeOffset now)
         {
             var eventEnough = CountEventWithRating(events);
             if (eventEnough <= ThresholdEventsWithRating)
@@ -64,12 +52,25 @@ namespace ItHappened.Domain.Statistics
                 return false;
             }
 
-            var isRatherEventHappenedMoreThanThreeMonthsAgo = EarliestEventDate(events);
-            if (now.AddMonths(-MaxMonthThreshold) > isRatherEventHappenedMoreThanThreeMonthsAgo)
+            var earliestEventDate = EarliestEventDate(events);
+            if (now.AddMonths(-MaxMonthThreshold) < earliestEventDate)
             {
                 return false;
             }
 
+            _worstRatingEventInfo = events
+                .Where(@event => @event.CustomizationsParameters.Rating.IsSome)
+                .Select(x => new WorstRatingEventInfo
+                {
+                    Event = x,
+                    Rating = x.CustomizationsParameters.Rating.ValueUnsafe()
+                })
+                .OrderBy(x => x.Rating).First();
+
+            if (_worstRatingEventInfo.Event.HappensDate > now.AddDays(-MinDaysThreshold))
+            {
+                return false;
+            }
             return true;
         }
 
@@ -89,6 +90,12 @@ namespace ItHappened.Domain.Statistics
                 .Somes()
                 .Count();
             return eventEnough;
+        }
+
+        private class WorstRatingEventInfo
+        {
+            public Event Event { get; set; }
+            public double Rating { get; set; }
         }
     }
 }

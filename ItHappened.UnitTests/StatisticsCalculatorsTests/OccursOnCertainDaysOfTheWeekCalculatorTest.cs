@@ -6,7 +6,7 @@ using ItHappened.Domain.Statistics;
 using ItHappened.Infrastructure.Repositories;
 using LanguageExt.UnsafeValueAccess;
 using NUnit.Framework;
-using static ItHappened.UnitTests.StatisticsCalculatorsTests.StatisticsCalculatorsTestingConsts;
+using static ItHappened.UnitTests.StatisticsCalculatorsTests.StatisticsCalculatorsTestingConstants;
 using static ItHappened.UnitTests.StatisticsCalculatorsTests.TestingMethods;
 
 namespace ItHappened.UnitTests.StatisticsCalculatorsTests

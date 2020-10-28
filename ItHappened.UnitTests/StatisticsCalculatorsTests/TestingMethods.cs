@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using ItHappened.Domain;
 using LanguageExt;
+using static ItHappened.UnitTests.StatisticsCalculatorsTests.StatisticsCalculatorsTestingConstants;
 
 namespace ItHappened.UnitTests.StatisticsCalculatorsTests
 {
@@ -124,7 +125,7 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
             var ratings = new List<double>();
             for (var i = 0; i < num; i++)
             {
-                ratings.Add(Rand.NextDouble());
+                ratings.Add(Rand.NextDouble() % MaxRatingValue);
             }
 
             return ratings;

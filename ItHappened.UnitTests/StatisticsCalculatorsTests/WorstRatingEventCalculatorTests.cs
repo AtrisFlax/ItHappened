@@ -7,6 +7,7 @@ using ItHappened.Infrastructure.Repositories;
 using LanguageExt.UnsafeValueAccess;
 using NUnit.Framework;
 using static ItHappened.UnitTests.StatisticsCalculatorsTests.TestingMethods;
+using static ItHappened.UnitTests.StatisticsCalculatorsTests.StatisticsCalculatorsTestingConstants;
 
 namespace ItHappened.UnitTests.StatisticsCalculatorsTests
 {
@@ -100,6 +101,9 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
                     now.AddMonths(-MonthsThreshold),
                     now.AddDays(-DaysSinceWorstEventThreshold));
             var eventsList = events.ToList();
+            var eventBefore3Month = CreateEventWithRatingWithCommentAndFixDate(tracker.Id, userId, MaxRatingValue,
+                new Comment("Comment"), now.AddMonths(-MonthsThreshold).AddDays(-1));
+            eventsList.Add(eventBefore3Month);
             var worstRatingEventInfo
                 = events
                     .Where(@event => @event.CustomizationsParameters.Rating.IsSome)
