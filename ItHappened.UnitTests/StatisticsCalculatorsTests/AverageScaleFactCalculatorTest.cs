@@ -1,19 +1,20 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using ItHappend.Domain.Statistics;
 using ItHappened.Domain;
 using ItHappened.Domain.Statistics;
 using ItHappened.Infrastructure.Repositories;
 using LanguageExt.UnsafeValueAccess;
 using NUnit.Framework;
-using static ItHappened.UnitTests.StatisticsCalculatorsTests.StatisticsCalculatorsTestingConsts;
+using static ItHappened.UnitTests.StatisticsCalculatorsTests.StatisticsCalculatorsTestingConstants;
+using static ItHappened.UnitTests.StatisticsCalculatorsTests.TestingMethods;
+
 namespace ItHappened.UnitTests.StatisticsCalculatorsTests
 {
     public class AverageScaleFactCalculatorTest
     {
         private IEventRepository _eventRepository;
         private static Random _rand;
+        private DateTimeOffset _now;
         private const int MinEventForCalculation = 2;
         private const string MeasurementUnit = "Kg";
 
@@ -22,146 +23,65 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
         {
             _eventRepository = new EventRepository();
             _rand = new Random();
+            _now = DateTimeOffset.UtcNow;
         }
 
         [Test]
-        public void EventsEnoughWithScaleEventsForCalc_CalculateSuccess()
+        public void EventsOnlyWithScale_CalculateSuccess()
         {
             //arrange 
-            var eventTracker = CreateTrackerWithScale(MeasurementUnit);
+            var userId = Guid.NewGuid();
+            var tracker = CreateTrackerWithScale(userId, MeasurementUnit);
             var (events, scaleValues) =
-                CreateEventsWithScale(eventTracker.Id, _rand.Next() % 2 + MinEventForCalculation);
+                CreateEventsWithScale(tracker.Id, _rand.Next() % 10 + MinEventForCalculation);
             _eventRepository.AddRangeOfEvents(events);
+            var allEvents = _eventRepository.LoadAllTrackerEvents(tracker.Id);
 
             //act 
-            var fact = new AverageScaleCalculator(_eventRepository).Calculate(eventTracker)
-                .ConvertTo<AverageScaleFact>().ValueUnsafe();
+            var fact = new AverageScaleCalculator().Calculate(allEvents, tracker, _now)
+                .ConvertTo<AverageScaleTrackerFact>().ValueUnsafe();
 
             //assert 
             Assert.AreEqual("Среднее значение шкалы", fact.FactName);
             Assert.AreEqual(3, fact.Priority, PriorityAccuracy);
             Assert.AreEqual(MeasurementUnit, fact.MeasurementUnit);
-            Assert.AreEqual(scaleValues.Average(), fact.AverageValue,AverageAccuracy);
+            Assert.AreEqual(scaleValues.Average(), fact.AverageValue, AverageAccuracy);
         }
 
         [Test]
         public void EventTrackerHasOneEvent_CalculateFailure()
         {
             //arrange 
-            var eventTracker = CreateTrackerWithScale(MeasurementUnit);
-            var (events, _) = CreateEventsWithScale(eventTracker.Id, 1);
+            var userId = Guid.NewGuid();
+            var tracker = CreateTrackerWithScale(userId, MeasurementUnit);
+            var (events, _) = CreateEventsWithScale(tracker.Id, 1);
             _eventRepository.AddRangeOfEvents(events);
-
+            var allEvents = _eventRepository.LoadAllTrackerEvents(tracker.Id);
+            
             //act 
-            var fact = new AverageScaleCalculator(_eventRepository).Calculate(eventTracker)
-                .ConvertTo<AverageScaleFact>();
+            var fact = new AverageScaleCalculator().Calculate(allEvents, tracker, _now)
+                .ConvertTo<AverageScaleTrackerFact>();
 
             //assert 
             Assert.True(fact.IsNone);
         }
-        
+
         [Test]
         public void EventTrackerHasZeroEvent_CalculateFailure()
         {
             //arrange 
-            var eventTracker = CreateTrackerWithScale(MeasurementUnit);
-            var (events, _) = CreateEventsWithScale(eventTracker.Id, 0);
+            var userId = Guid.NewGuid();
+            var tracker = CreateTrackerWithScale(userId, MeasurementUnit);
+            var (events, _) = CreateEventsWithScale(tracker.Id, 0);
             _eventRepository.AddRangeOfEvents(events);
+            var allEvents = _eventRepository.LoadAllTrackerEvents(tracker.Id);
 
             //act 
-            var fact = new AverageScaleCalculator(_eventRepository).Calculate(eventTracker)
-                .ConvertTo<AverageScaleFact>();
+            var fact = new AverageScaleCalculator().Calculate(allEvents, tracker, _now)
+                .ConvertTo<AverageScaleTrackerFact>();
 
             //assert 
             Assert.True(fact.IsNone);
-        }
-
-        [Test]
-        public void EventTrackerHasNoScaleCustomization_CalculateFailure()
-        {
-            //arrange 
-            var eventTracker = CreateTrackerWithoutScale(MeasurementUnit);
-            var (events, _) = CreateEventsWithScale(eventTracker.Id, _rand.Next() % 10 + MinEventForCalculation);
-            _eventRepository.AddRangeOfEvents(events);
-
-            //act 
-            var fact = new AverageScaleCalculator(_eventRepository).Calculate(eventTracker)
-                .ConvertTo<AverageScaleFact>();
-
-            //assert 
-            Assert.True(fact.IsNone);
-        }
-
-        [Test]
-        public void SomeEventHasNoCustomizationScale_CalculateFailed()
-        {
-            //arrange 
-            var eventTracker = CreateTrackerWithScale(MeasurementUnit);
-            var (events, _) = CreateAllEventsWithScaleButOneWithoutScale(eventTracker.Id, 1);
-            _eventRepository.AddRangeOfEvents(events);
-
-            //act 
-            var fact = new AverageScaleCalculator(_eventRepository).Calculate(eventTracker)
-                .ConvertTo<AverageScaleFact>();
-
-            //assert 
-            Assert.True(fact.IsNone);
-        }
-
-        private static (IEnumerable<Event> events, IEnumerable<double> scaleValues) CreateEventsWithScale(
-            Guid trackerId, int num)
-        {
-            var scaleValues = CreateRandomScale(num);
-            var events = scaleValues.Select(t => CreateEventWithScale(trackerId, t)).ToList();
-            return (events, scaleValues);
-        }
-
-        // ReSharper disable once UnusedTupleComponentInReturnValue
-        private static (IEnumerable<Event> events, IEnumerable<double> scaleValues)
-            CreateAllEventsWithScaleButOneWithoutScale(Guid trackerId, int num)
-        {
-            var scaleValues = CreateRandomScale(num);
-            var events = scaleValues.Select(t => CreateEventWithScale(trackerId, t)).ToList();
-            events.Add(EventBuilder
-                .Event(Guid.NewGuid(), Guid.NewGuid(), trackerId, DateTimeOffset.UtcNow, "Event No Scale")
-                .Build());
-            return (events, scaleValues);
-        }
-
-        private static List<double> CreateRandomScale(int num)
-        {
-            var ratings = new List<double>();
-            for (var i = 0; i < num; i++)
-            {
-                ratings.Add(_rand.NextDouble());
-            }
-
-            return ratings;
-        }
-
-        private static Event CreateEventWithScale(Guid trackerId, double scale)
-        {
-            return EventBuilder
-                .Event(Guid.NewGuid(), Guid.NewGuid(), trackerId, DateTimeOffset.UtcNow, $"Event with scale {scale}")
-                .WithScale(scale)
-                .Build();
-        }
-
-        private static EventTracker CreateTrackerWithScale(string measurementUnit)
-        {
-            var eventTracker = EventTrackerBuilder
-                .Tracker(Guid.NewGuid(), Guid.NewGuid(), $"Tracker with scale {measurementUnit}")
-                .WithScale(measurementUnit)
-                .Build();
-            return eventTracker;
-        }
-
-        private static EventTracker CreateTrackerWithoutScale(string measurementUnit)
-        {
-            var eventTracker = EventTrackerBuilder
-                .Tracker(Guid.NewGuid(), Guid.NewGuid(), $"Tracker with scale {measurementUnit}")
-                .Build();
-            return eventTracker;
         }
     }
 }

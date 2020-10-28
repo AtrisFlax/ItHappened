@@ -1,48 +1,37 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using LanguageExt;
-using LanguageExt.UnsafeValueAccess;
 using Serilog;
 
 namespace ItHappened.Domain.Statistics
 {
-    public class AverageRatingCalculator : ISpecificCalculator
+    public class AverageRatingCalculator : ISingleTrackerStatisticsCalculator
     {
-        private readonly IEventRepository _eventRepository;
-        
-        public AverageRatingCalculator(IEventRepository eventRepository)
+        public Option<ISingleTrackerFact> Calculate(IReadOnlyCollection<Event> events, EventTracker tracker, DateTimeOffset now)
         {
-            _eventRepository = eventRepository;
-        }
-        
-        public Option<ISpecificFact> Calculate(EventTracker eventTracker)
-        {
-            if (!CanCalculate(eventTracker)) return Option<ISpecificFact>.None;
-
-            var averageRating = _eventRepository.LoadAllTrackerEvents(eventTracker.Id).Average(x =>
+            if (!CanCalculate(events))
             {
-                return x.Rating.Match(
-                    r => r,
-                    () =>
-                    {
-                        Log.Warning("Calculate Empty Rating While Calculate AverageRatingCalculator");
-                        return 0;
-                    });
-            });
-            return Option<ISpecificFact>.Some(new AverageRatingFact(
-                "Среднее значение оценки",
-                $"Средний рейтинг для события {eventTracker.Name} равен {averageRating}",
-                Math.Sqrt(averageRating),
+                return Option<ISingleTrackerFact>.None;
+            }
+            
+            var averageRating = events.Select(e => e.CustomizationsParameters.Rating).Somes().Average();
+            
+            const string factName = "Среднее значение оценки";
+            var description = $"Средний рейтинг для события {tracker.Name} равен {averageRating}";
+            var priority = Math.Sqrt(averageRating);
+            
+            return Option<ISingleTrackerFact>.Some(new AverageRatingTrackerFact(
+                factName,
+                description,
+                priority,
                 averageRating
             ));
         }
 
-        private bool CanCalculate(EventTracker eventTracker)
-        {
-            if (!eventTracker.HasRating) return false;
-            var trackerEvents=_eventRepository.LoadAllTrackerEvents(eventTracker.Id);
-            if (trackerEvents.Any(@event => @event.Rating == Option<double>.None)) return false;
-            return trackerEvents.Count > 1;
+        private static bool CanCalculate(IReadOnlyCollection<Event> events) {
+            return events.Count > 1;
         }
+
     }
 }

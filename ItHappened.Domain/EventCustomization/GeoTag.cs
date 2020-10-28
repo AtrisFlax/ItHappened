@@ -13,6 +13,7 @@ namespace ItHappened.Domain
         // ReSharper disable once UnusedAutoPropertyAccessor.Global
         // ReSharper disable once MemberCanBePrivate.Global
         public double GpsLat { get; }
+
         // ReSharper disable once UnusedAutoPropertyAccessor.Global
         // ReSharper disable once MemberCanBePrivate.Global
         public double GpsLng { get; }

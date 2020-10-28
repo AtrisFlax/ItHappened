@@ -7,10 +7,15 @@ namespace ItHappened.Domain
 {
     public static class EventsFilter
     {
-        public static IReadOnlyList<Event> Filter(IReadOnlyCollection<Event> events,
-            IReadOnlyCollection<IEventsFilter> filters)
+        public static IReadOnlyCollection<Event> Filter(IEnumerable<Event> events,
+            IEnumerable<IEventsFilter> filters)
         {
-            return filters.Aggregate(events, (current, filter) => filter.Filter(current)).ToList();
+            IEnumerable<Event> result = events;
+            foreach (var filter in filters)
+            {
+                result = filter.Filter(result);
+            }
+            return result.ToList();
         }
     }
-}
+} 

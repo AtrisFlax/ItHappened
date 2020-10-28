@@ -9,25 +9,27 @@ namespace ItHappened.Domain
         public string Name { get; }
         public GeoTag LowerLeftCorner { get; }
         public GeoTag UpperRightCorner { get; }
+
         public GeoTagFilter(string name, GeoTag lowerLeftCorner, GeoTag upperRightCorner)
         {
             Name = name;
             LowerLeftCorner = lowerLeftCorner;
             UpperRightCorner = upperRightCorner;
         }
-        public IReadOnlyCollection<Event> Filter(IReadOnlyCollection<Event> events)
+
+        public IEnumerable<Event> Filter(IEnumerable<Event> events)
         {
             if (LowerLeftCorner.GpsLat > UpperRightCorner.GpsLat || LowerLeftCorner.GpsLng > UpperRightCorner.GpsLng)
             {
                 return new List<Event>();
             }
-            
-            return events.Where(@event => @event.GeoTag.IsSome)
+
+            return events.Where(@event => @event.CustomizationsParameters.GeoTag.IsSome)
                 .Where(eventItem =>
-                eventItem.GeoTag.ValueUnsafe().GpsLat >= LowerLeftCorner.GpsLat &&
-                eventItem.GeoTag.ValueUnsafe().GpsLat <= UpperRightCorner.GpsLat &&
-                eventItem.GeoTag.ValueUnsafe().GpsLng >= LowerLeftCorner.GpsLng &&
-                eventItem.GeoTag.ValueUnsafe().GpsLng <= UpperRightCorner.GpsLng).ToList();
+                    eventItem.CustomizationsParameters.GeoTag.ValueUnsafe().GpsLat >= LowerLeftCorner.GpsLat &&
+                    eventItem.CustomizationsParameters.GeoTag.ValueUnsafe().GpsLat <= UpperRightCorner.GpsLat &&
+                    eventItem.CustomizationsParameters.GeoTag.ValueUnsafe().GpsLng >= LowerLeftCorner.GpsLng &&
+                    eventItem.CustomizationsParameters.GeoTag.ValueUnsafe().GpsLng <= UpperRightCorner.GpsLng).ToList();
         }
     }
 }

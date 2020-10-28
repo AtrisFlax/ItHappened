@@ -1,5 +1,5 @@
-﻿using ItHappened.Application.Services.EventTrackerService;
-using ItHappened.Application.Services.StatisticService;
+﻿using ItHappened.Application.Services.StatisticService;
+using ItHappened.Application.Services.TrackerService;
 using ItHappened.Application.Services.UserService;
 using ItHappened.Domain.Statistics;
 using ItHappened.Infrastructure;
@@ -9,7 +9,7 @@ namespace Usage
 {
     public class CompositionRoot
     {
-        public IEventTrackerService EventTrackerService { get; private set; }
+        public ITrackerService TrackerService { get; private set; }
         public IUserService UserService { get; private set; }
 
         public IStatisticsService StatisticsService { get; private set; }
@@ -18,26 +18,23 @@ namespace Usage
         {
             var userRepository = new UserRepository();
             var eventRepository = new EventRepository();
-            var eventTrackerRepository = new EventTrackerRepository();
-            var generalFactsRepository = new GeneralFactsRepository();
-            var specificFactsRepository = new SpecificFactsRepository();
-            var generalFactProvider = new GeneralFactProvider();
-            generalFactProvider.Add(new MultipleTrackersEventsCountCalculator(eventRepository));
-            generalFactProvider.Add(new MostFrequentEventCalculator(eventRepository));
-            var specificFactProvider = new SpecificFactProvider();
+            var eventTrackerRepository = new TrackerRepository();
+            var generalFactProvider = new MultipleTrackersFactProvider();
+            generalFactProvider.Add(new MultipleTrackersStatisticsEventsCountCalculator(eventRepository));
+            generalFactProvider.Add(new MostFrequentEventStatisticsCalculator(eventRepository));
+            var specificFactProvider = new SingleTrackerFactProvider();
             specificFactProvider.Add( new BestEventCalculator(eventRepository));
             specificFactProvider.Add( new AverageRatingCalculator(eventRepository));
             specificFactProvider.Add( new LongestBreakCalculator(eventRepository));
             specificFactProvider.Add( new OccursOnCertainDaysOfTheWeekCalculator(eventRepository));
             specificFactProvider.Add( new SingleTrackerEventsCountCalculator(eventRepository));
-            specificFactProvider.Add( new SpecificDayTimeEventCalculator(eventRepository));
+            //specificFactProvider.Add( new SingleTrackerStatisticsDayTimeEventCalculator(eventRepository));
             specificFactProvider.Add( new WorstEventCalculator(eventRepository));
-            var statisticGenerator = new StatisticGenerator(generalFactsRepository, generalFactProvider, specificFactProvider, specificFactsRepository, eventTrackerRepository, userRepository);
             return new CompositionRoot
             {
                 UserService = new UserService(userRepository, new PasswordHasher()),
-                EventTrackerService = new EventTrackerService(eventTrackerRepository, eventRepository),
-                StatisticsService = new StatisticsService(generalFactsRepository, specificFactsRepository, statisticGenerator)
+                TrackerService = new TrackerService(eventTrackerRepository, eventRepository),
+                StatisticsService = new StatisticsService(eventTrackerRepository, generalFactProvider, specificFactProvider)
             };
         }
     }

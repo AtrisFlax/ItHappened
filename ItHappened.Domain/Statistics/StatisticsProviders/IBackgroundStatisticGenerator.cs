@@ -1,8 +1,9 @@
-﻿namespace ItHappened.Domain.Statistics
+﻿using System;
+
+namespace ItHappened.Domain.Statistics
 {
     public interface IBackgroundStatisticGenerator
     {
-        void UpdateAllUsersGeneralFacts();
-        void UpdateAllUsersSpecificFacts();
+        void UpdateUserFacts(Guid userId);
     }
 }

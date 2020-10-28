@@ -8,17 +8,19 @@ namespace ItHappened.Domain
         public string Name { get; }
         public double LowerLimit { get; }
         public double UpperLimit { get; }
-        
+
         public RatingFilter(string name, double lowerLimit, double upperLimit)
         {
             Name = name;
             LowerLimit = lowerLimit;
             UpperLimit = upperLimit;
         }
-        public IReadOnlyCollection<Event> Filter(IReadOnlyCollection<Event> events)
+
+        public IEnumerable<Event> Filter(IEnumerable<Event> events)
         {
             return events
-                .Where(@event => @event.Rating >= LowerLimit && @event.Rating <= UpperLimit).ToList();
+                .Where(@event => @event.CustomizationsParameters.Rating >= LowerLimit &&
+                                 @event.CustomizationsParameters.Rating <= UpperLimit).ToList();
         }
     }
 }

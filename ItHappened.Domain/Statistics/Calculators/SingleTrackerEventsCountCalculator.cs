@@ -1,34 +1,29 @@
-﻿using System;
+﻿﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using LanguageExt;
 
 namespace ItHappened.Domain.Statistics
 {
-    public class SingleTrackerEventsCountCalculator : ISpecificCalculator
+    public class SingleTrackerEventsCountCalculator : ISingleTrackerStatisticsCalculator
     {
-        private readonly IEventRepository _eventRepository;
-        
-        public SingleTrackerEventsCountCalculator(IEventRepository eventRepository)
+        public Option<ISingleTrackerFact> Calculate(IReadOnlyCollection<Event> events, EventTracker tracker, DateTimeOffset now)
         {
-            _eventRepository = eventRepository;
-        }
-        
-        public Option<ISpecificFact> Calculate(EventTracker eventTracker)
-        {
-            if (!CanCalculate(eventTracker))
-                return Option<ISpecificFact>.None;
+            if (!CanCalculate(events)) 
+                return Option<ISingleTrackerFact>.None;
 
             const string factName = "Количество событий";
-            var eventsCount = _eventRepository.LoadAllTrackerEvents(eventTracker.Id).Count;
-            var description = $"Событие {eventTracker.Name} произошло {eventsCount} раз";
+            var eventsCount = events.Count;
+            var description = $"Событие {tracker.Name} произошло {eventsCount} раз";
             var priority = Math.Log(eventsCount);
 
-            return Option<ISpecificFact>
+            return Option<ISingleTrackerFact>
                 .Some(new SingleTrackerEventsCountFact(factName, description, priority, eventsCount));
         }
 
-        private bool CanCalculate(EventTracker eventTracker)
+        private static bool CanCalculate(IEnumerable<Event> events)
         {
-            return _eventRepository.LoadAllTrackerEvents(eventTracker.Id).Count > 0;
+            return events.Any();
         }
     }
 }

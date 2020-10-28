@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Net;
+using ItHappened.Application.Errors;
 using ItHappened.Domain;
 using ItHappened.Domain.Statistics;
 
@@ -7,37 +9,45 @@ namespace ItHappened.Application.Services.StatisticService
 {
     public class StatisticsService : IStatisticsService
     {
-        private readonly IGeneralFactsRepository _generalFactsRepository;
-        private readonly ISpecificFactsRepository _specificFactsRepository;
-        private readonly IManualStatisticGenerator _manualStatisticGenerator;
-        public StatisticsService(IGeneralFactsRepository generalFactsRepository, 
-            ISpecificFactsRepository specificFactsRepository, IManualStatisticGenerator manualStatisticGenerator)
+        private readonly IMultipleFactsRepository _multipleFactsRepository;
+        private readonly ISingleFactsRepository _singleFactsRepository;
+        private readonly ITrackerRepository _trackerRepository;
+        public StatisticsService(IMultipleFactsRepository multipleFactsRepository, 
+            ISingleFactsRepository singleFactsRepository, ITrackerRepository trackerRepository)
         {
-            _generalFactsRepository = generalFactsRepository;
-            _specificFactsRepository = specificFactsRepository;
-            _manualStatisticGenerator = manualStatisticGenerator;
+            _multipleFactsRepository = multipleFactsRepository;
+            _singleFactsRepository = singleFactsRepository;
+            _trackerRepository = trackerRepository;
         }
 
-        public void UpdateTrackerSpecificFacts(Guid trackerId)
+        public IReadOnlyCollection<IMultipleTrackersFact> GetMultipleTrackersFacts(Guid userId)
         {
-            _manualStatisticGenerator.UpdateTrackerSpecificFacts(trackerId);
-        }
-        
-        public void UpdateUserGeneralFacts(Guid userId)
-        {
-            _manualStatisticGenerator.UpdateUserGeneralFacts(userId);
-        }
-        public IReadOnlyCollection<IGeneralFact> GetGeneralTrackersFacts(Guid userId)
-        {
-            //проверки на наличие фактов в репозитории, на то, свои ли факты запрашивает initiator
-            var statisticFacts = _generalFactsRepository.LoadUserGeneralFacts(userId);
+            if (!_multipleFactsRepository.IsContainFactsForUser(userId))
+            {
+                throw new RestException(HttpStatusCode.NotFound);
+            }
+            var statisticFacts = _multipleFactsRepository.LoadUserGeneralFacts(userId);
             return statisticFacts;
         }
 
-        public IReadOnlyCollection<ISpecificFact> GetSpecificTrackerFacts(Guid userId, Guid trackerId)
+        public IReadOnlyCollection<ISingleTrackerFact> GetSingleTrackerFacts(Guid trackerId, Guid userId)
         {
-            //проверки на наличие фактов в репозитории, на то, свои ли факты запрашивает initiator, принадлежит ли трекер инциатору 
-            var statisticFacts = _specificFactsRepository.LoadTrackerSpecificFacts(trackerId);
+            if (!_trackerRepository.IsContainTracker(trackerId))
+            {
+                throw new RestException(HttpStatusCode.NotFound);
+            }
+
+            var tracker = _trackerRepository.LoadTracker(trackerId);
+            if (userId != tracker.CreatorId)
+            {
+                throw new RestException(HttpStatusCode.BadRequest);
+            }
+
+            if (!_singleFactsRepository.IsContainFactForTracker(trackerId))
+            {
+                throw new RestException(HttpStatusCode.NotFound);
+            }
+            var statisticFacts = _singleFactsRepository.LoadTrackerSpecificFacts(trackerId);
             return statisticFacts;
         }
     }

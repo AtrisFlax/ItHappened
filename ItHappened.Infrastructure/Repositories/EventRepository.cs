@@ -9,19 +9,16 @@ namespace ItHappened.Infrastructure.Repositories
     {
         private readonly Dictionary<Guid, Event> _events = new Dictionary<Guid, Event>();
 
-        public void AddEvent(Event newEvent)
+        public void SaveEvent(Event newEvent)
         {
             _events.Add(newEvent.Id, newEvent);
         }
-        public bool IsContainEvent(Guid eventId)
-        {
-            return _events.ContainsKey(eventId);
-        }
+
         public void AddRangeOfEvents(IEnumerable<Event> events)
         {
             foreach (var @event in events)
             {
-                _events.Add(@event.Id, @event);
+                SaveEvent(@event);
             }
         }
 
@@ -30,14 +27,24 @@ namespace ItHappened.Infrastructure.Repositories
             return _events[eventId];
         }
 
-        public IReadOnlyList<Event> LoadAllTrackerEvents(Guid trackerId)
+        public IReadOnlyCollection<Event> LoadAllTrackerEvents(Guid trackerId)
         {
             return _events.Values.Where(@event => @event.TrackerId == trackerId).ToList();
+        }
+
+        public void UpdateEvent(Event @event)
+        {
+            _events[@event.Id] = @event;
         }
 
         public void DeleteEvent(Guid eventId)
         {
             _events.Remove(eventId);
+        }
+
+        public bool IsContainEvent(Guid eventId)
+        {
+            return _events.ContainsKey(eventId);
         }
     }
 }

@@ -1,46 +1,111 @@
 ﻿using System;
-using ItHappened.Api.Contracts;
-using ItHappened.Api.Contracts.Requests.Events;
-using ItHappened.Api.Contracts.Responses.Events;
+using System.Collections.Generic;
+using System.Security.Claims;
+using AutoMapper;
+using ItHappened.Api.Authentication;
+using ItHappened.Api.MappingProfiles;
+using ItHappened.Api.Models.Requests;
+using ItHappened.Api.Models.Responses;
+using ItHappened.Application.Services.EventService;
+using ItHappened.Domain;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ItHappened.Api.Controllers
 {
+    [ApiController]
+    [Authorize]
     public class EventsController : ControllerBase
     {
-        [HttpPost(ApiRoutes.Events.Create)]
-        [ProducesResponseType(200, Type = typeof(CreateEventResponse))]
-        public IActionResult CreateEvent([FromRoute]Guid trackerId, [FromBody]CreateEventRequest request)
+        private readonly IEventService _eventService;
+        private readonly IMapper _mapper;
+        private readonly IMyMapper _myMapper;
+
+
+        public EventsController(IEventService eventService, IMapper mapper, IMyMapper myMapper)
         {
-            return Ok(new CreateEventResponse());
+            _eventService = eventService;
+            _mapper = mapper;
+            _myMapper = myMapper;
         }
-        
-        [HttpGet(ApiRoutes.Events.Get)]
-        [ProducesResponseType(200, Type = typeof(GetEventResponse))]
-        public IActionResult GetEvent([FromRoute]Guid eventId, [FromBody]GetEventRequest request)
+
+        [HttpPost("/trackers/{trackerId}/events")]
+        [ProducesResponseType(200)]
+        public IActionResult AddEventToTracker([FromRoute] Guid trackerId,
+            [FromBody]EventRequest request)
         {
-            return Ok(new GetEventResponse());
+            var userId = Guid.Parse(User.FindFirstValue(JwtClaimTypes.Id));
+            var customParameters = _myMapper.GetEventCustomParametersFromRequest(request);
+            var eventId = _eventService.CreateEvent(userId, trackerId, request.HappensDate, customParameters);
+            return Ok(eventId);
         }
-        
-        [HttpGet(ApiRoutes.Events.GetAll)]
-        [ProducesResponseType(200, Type = typeof(GetAllEventsResponse[]))]
-        public IActionResult GetAllTrackers([FromBody]GetAllEventsRequest request)
+
+        [HttpGet("/trackers/{trackerId}/events/filters")]
+        public IActionResult GetFilteredEvents([FromRoute] Guid trackerId,
+            [FromQuery] EventFilterRequest eventFilterRequest)
         {
+            var userId = Guid.Parse(User.FindFirstValue(JwtClaimTypes.Id));
+            var filters = CreateFilters(eventFilterRequest);
+            var filteredEvents = _eventService.GetAllFilteredEvents(userId, trackerId, filters);
+            return Ok(_mapper.Map<EventResponse[]>(filteredEvents));
+        }
+
+        [HttpGet("/events/{eventId}")]
+        [ProducesResponseType(200, Type = typeof(EventResponse))]
+        public IActionResult GetEvent([FromRoute] Guid eventId)
+        {
+            var userId = Guid.Parse(User.FindFirstValue(JwtClaimTypes.Id));
+            var @event = _eventService.GetEvent(userId, eventId);
+            return Ok(_mapper.Map<EventResponse>(@event));
+        }
+
+        [HttpGet("/trackers/{trackerId}/events")]
+        [ProducesResponseType(200, Type = typeof(EventResponse[]))]
+        public IActionResult GetAllEvents([FromRoute] Guid trackerId)
+        {
+            var userId = Guid.Parse(User.FindFirstValue(JwtClaimTypes.Id));
+            var events = _eventService.GetAllTrackerEvents(userId, trackerId);
+            return Ok(_myMapper.EventsToJson(events));
+        }
+
+        [HttpPut("/events/{eventId}")]
+        [ProducesResponseType(200, Type = typeof(EventResponse))]
+        public IActionResult UpdateEvent([FromRoute] Guid eventId, [FromBody] EventRequest request)
+        {
+            var userId = Guid.Parse(User.FindFirstValue(JwtClaimTypes.Id));
+            var customParameters = _myMapper.GetEventCustomParametersFromRequest(request);
+            _eventService.EditEvent(userId, eventId, request.HappensDate, customParameters);
             return Ok();
         }
-        
-        [HttpPut(ApiRoutes.Events.Update)]
-        [ProducesResponseType(200, Type = typeof(UpdateEventResponse))]
-        public IActionResult UpdateEvent([FromRoute]Guid eventId, [FromBody]UpdateEventRequest request)
+
+        [HttpDelete("events/{eventId}")]
+        [ProducesResponseType(200, Type = typeof(EventResponse))]
+        public IActionResult DeleteEvent([FromRoute] Guid eventId)
         {
-            return Ok(new CreateEventResponse());
+            var userId = Guid.Parse(User.FindFirstValue(JwtClaimTypes.Id));
+            _eventService.DeleteEvent(userId, eventId);
+            return Ok();
         }
-        
-        [HttpDelete(ApiRoutes.Events.Delete)]
-        [ProducesResponseType(200, Type = typeof(CreateEventResponse))]
-        public IActionResult DeleteEvent([FromRoute]Guid eventId, [FromBody]DeleteEventRequest request)
+
+        private static IEnumerable<IEventsFilter> CreateFilters(EventFilterRequest eventFilterRequest)
         {
-            return Ok(new CreateEventResponse());
+            var filters = new List<IEventsFilter>();
+            if (eventFilterRequest.ToDateTime.HasValue && eventFilterRequest.FromDateTime.HasValue)
+                filters.Add(
+                    new DateTimeFilter(null, eventFilterRequest.FromDateTime.Value,
+                        eventFilterRequest.ToDateTime.Value));
+            if (!string.IsNullOrEmpty(eventFilterRequest.CommentRegexPattern))
+                filters.Add(new CommentFilter(null, eventFilterRequest.CommentRegexPattern));
+            if (eventFilterRequest.ScaleLowerLimit.HasValue && eventFilterRequest.ScaleUpperLimit.HasValue)
+                filters.Add(new ScaleFilter(null, eventFilterRequest.ScaleLowerLimit.Value,
+                    eventFilterRequest.ScaleUpperLimit.Value));
+            if (eventFilterRequest.LowerLimitRating.HasValue && eventFilterRequest.UpperLimitRating.HasValue)
+                filters.Add(new RatingFilter(null, eventFilterRequest.LowerLimitRating.Value,
+                    eventFilterRequest.UpperLimitRating.Value));
+            if (eventFilterRequest.ScaleLowerLimit.HasValue && eventFilterRequest.ScaleUpperLimit.HasValue)
+                filters.Add(new ScaleFilter(null, eventFilterRequest.ScaleLowerLimit.Value,
+                    eventFilterRequest.ScaleUpperLimit.Value));
+            return filters;
         }
     }
 }

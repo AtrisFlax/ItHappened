@@ -1,70 +1,68 @@
 ﻿using System;
-using System.Linq;
+using System.Collections.Generic;
 using ItHappened.Domain;
 using ItHappened.Domain.Statistics;
 using ItHappened.Infrastructure.Repositories;
+using LanguageExt.UnsafeValueAccess;
 using NUnit.Framework;
-
+using static ItHappened.UnitTests.StatisticsCalculatorsTests.TestingMethods;
+using static ItHappened.UnitTests.StatisticsCalculatorsTests.StatisticsCalculatorsTestingConstants;
 namespace ItHappened.UnitTests.StatisticsCalculatorsTests
 {
     public class SpecificDayTimeEventCalculatorTest
     {
         private IEventRepository _eventRepository;
-        
+        private DateTimeOffset _now;
+
         [SetUp]
         public void Init()
         {
             _eventRepository = new EventRepository();
+            _now = DateTimeOffset.UtcNow;
         }
-        
+
         [Test]
         public void CreateEventTrackerWithHeadacheAndSmokingEvents_CalculateSpecificDayTimeEventFact_CheckAProperties()
         {
+            //assert
             var userId = Guid.NewGuid();
-            var eventTracker = EventTrackerBuilder
-                .Tracker(userId, Guid.NewGuid(), "nameEmpty")
-                .Build();
-            var headacheEventMorning1 = CreateEventWithNameAndDateTime(userId, eventTracker.Id, "headache", "2020.10.8 01:05:00");
-            var headacheEventMorning2 = CreateEventWithNameAndDateTime(userId, eventTracker.Id,"headache", "2020.11.9 02:05:00");
-            var headacheEventMorning3 = CreateEventWithNameAndDateTime(userId, eventTracker.Id,"headache", "2020.12.9 03:07:00");
-            var headacheEventMorning4 = CreateEventWithNameAndDateTime(userId, eventTracker.Id,"headache", "2020.10.3 4:05:00");
-            var headacheEventMorning5 = CreateEventWithNameAndDateTime(userId, eventTracker.Id,"headache", "2021.10.9 05:05:00");
-            var headacheEventMorning6 = CreateEventWithNameAndDateTime(userId, eventTracker.Id,"headache", "2020.10.9 10:05:00");
-
-            var smokingEventMorning1 = CreateEventWithNameAndDateTime(userId, eventTracker.Id,"smoking", "2020.10.9 04:05:00");
-            var smokingEventMorning2 = CreateEventWithNameAndDateTime(userId, eventTracker.Id,"smoking", "2020.10.9 09:05:00");
-
-            _eventRepository.AddRangeOfEvents(new []
+            const string trackerName = "Tracker name";
+            var tracker = CreateTrackerWithDefaultCustomization(userId, trackerName);
+            var events = new List<Event>
             {
-                headacheEventMorning1, headacheEventMorning2, headacheEventMorning3,
-                headacheEventMorning4, headacheEventMorning5, headacheEventMorning6, 
-                smokingEventMorning1, smokingEventMorning2 
-            });
-            
-            var specificDayTimeEventFact = new SpecificDayTimeEventCalculator(_eventRepository)
-                .Calculate(eventTracker)
-                .ConvertTo<SpecificTimeOfDayEventFact>();
+                CreateEventWithNameAndDateTime(userId, tracker.Id, "2020.10.8 01:05:00"),
+                CreateEventWithNameAndDateTime(userId, tracker.Id, "2020.11.9 02:05:00"),
+                CreateEventWithNameAndDateTime(userId, tracker.Id, "2020.12.9 03:07:00"),
+                CreateEventWithNameAndDateTime(userId, tracker.Id, "2020.10.3 4:05:00"),
+                CreateEventWithNameAndDateTime(userId, tracker.Id, "2021.10.9 05:05:00"),
+                CreateEventWithNameAndDateTime(userId, tracker.Id, "2020.10.9 10:05:00"),
+                CreateEventWithNameAndDateTime(userId, tracker.Id, "2020.10.9 04:05:00"),
+                CreateEventWithNameAndDateTime(userId, tracker.Id, "2020.10.9 09:05:00")
+            };
+            _eventRepository.AddRangeOfEvents(events);
+            var allEvents = _eventRepository.LoadAllTrackerEvents(tracker.Id);
 
-            Assert.AreEqual(true, specificDayTimeEventFact.IsSome);
-            specificDayTimeEventFact.Do(e =>
-                {
-                    Assert.AreEqual("В 83% случаев событие \"headache\" происходит night", e.Description);
-                    Assert.AreEqual(11.66, e.Priority, 0.01);
-                    Assert.AreEqual("SpecificTimeOfDayEventFact", e.FactName);
-                    Assert.AreEqual("night", e.TimeOfTheDay);
-                    Assert.AreEqual(50, e.VisualizationData
-                        .First(q => q.Title == "smoking" && q.TimeOfTheDay == "morning")
-                        .Percentage);
-                    Assert.AreEqual(16.66, e.VisualizationData
-                        .First(q => q.Title == "headache" && q.TimeOfTheDay == "morning")
-                        .Percentage, 0.01);
-                }
-            );
+            
+            //act
+            var fact = new SpecificDayTimeCalculator().Calculate(allEvents, tracker, _now)
+                .ConvertTo<SpecificDayTimeFact>().ValueUnsafe();
+            
+            //arrange
+            Assert.AreEqual("Происходит в определённое время суток", fact.FactName);
+            Assert.AreEqual($"В 75% случаев событие {tracker.Name} происходит ночью", fact.Description);
+            Assert.AreEqual(10.5, fact.Priority, PriorityAccuracy);
+            Assert.AreEqual(75.0, fact.Percentage);
+            Assert.AreEqual("ночью", fact.TimeOfTheDay);
         }
 
-        private static Event CreateEventWithNameAndDateTime(Guid userId, Guid trackerId, string title, string dateTime)
+         
+        //TODO add test применимо, если событий в отслеживании больше семи (<=7)
+        
+        //TODO add test и если на одно из времён суток доля событий превышает 70% (70%)
+        
+        private static Event CreateEventWithNameAndDateTime(Guid userId, Guid trackerId, string dateTime)
         {
-            return EventBuilder.Event(Guid.NewGuid(), userId, trackerId, DateTime.Parse(dateTime), title).Build();
+            return new Event(Guid.NewGuid(), userId, trackerId, DateTime.Parse(dateTime), new EventCustomParameters());
         }
     }
 }

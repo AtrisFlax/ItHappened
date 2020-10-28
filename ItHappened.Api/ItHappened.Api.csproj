@@ -11,9 +11,22 @@
     </ItemGroup>
 
     <ItemGroup>
+      <PackageReference Include="AutoMapper" Version="10.1.1" />
+      <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="8.1.0" />
+      <PackageReference Include="FluentValidation" Version="9.2.2" />
+      <PackageReference Include="FluentValidation.AspNetCore" Version="9.2.0" />
+      <PackageReference Include="Hangfire.AspNetCore" Version="1.7.17" />
+      <PackageReference Include="Hangfire.Core" Version="1.7.17" />
+      <PackageReference Include="Hangfire.MemoryStorage.Core" Version="1.4.0" />
       <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="3.1.9" />
+      <PackageReference Include="Microsoft.Owin.Host.SystemWeb.ru" Version="4.1.1" />
       <PackageReference Include="Swashbuckle.AspNetCore" Version="5.6.3" />
       <PackageReference Include="Swashbuckle.AspNetCore.Swagger" Version="5.6.3" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Compile Remove="Models\Requests\PhotoRequest.cs" />
+      <Compile Remove="Models\Requests\Events.cs" />
     </ItemGroup>
 
 

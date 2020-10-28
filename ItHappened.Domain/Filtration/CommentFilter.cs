@@ -9,17 +9,20 @@ namespace ItHappened.Domain
     {
         public string Name { get; }
         public string RegexPattern { get; }
-        
+
         public CommentFilter(string name, string regexPattern)
         {
             Name = name;
             RegexPattern = regexPattern;
         }
-        public IReadOnlyCollection<Event> Filter(IReadOnlyCollection<Event> events)
+
+        //TODO заменить фильтрация с regexp на фильтрацию по подстроке
+        public IEnumerable<Event> Filter(IEnumerable<Event> events)
         {
-            return events.Where(@event => @event.Comment.IsSome)
+            return events.Where(@event => @event.CustomizationsParameters.Comment.IsSome)
                 .Where(@event =>
-                    Regex.IsMatch(@event.Comment.ValueUnsafe().Text, RegexPattern, RegexOptions.IgnoreCase)).ToList();
+                    Regex.IsMatch(@event.CustomizationsParameters.Comment.ValueUnsafe().Text, RegexPattern,
+                        RegexOptions.IgnoreCase)).ToList();
         }
     }
 }

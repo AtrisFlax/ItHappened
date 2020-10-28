@@ -1,65 +1,40 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using LanguageExt;
-using Serilog;
 
 namespace ItHappened.Domain
 {
     public class EventTracker
     {
         public Guid Id { get; }
-        public string Name { get; }
         public Guid CreatorId { get; }
-
-        public bool HasPhoto { get; }
-        public bool HasScale { get; }
-        public bool HasRating { get; }
-        public bool HasGeoTag { get; }
-        public bool HasComment { get; }
+        public string Name { get; }
+        public TrackerCustomizationSettings CustomizationSettings { get; }
         public bool IsUpdated { get; set; } = true;
 
-        public Option<string> ScaleMeasurementUnit;
-
-        public EventTracker(Guid creatorId,
-            Guid id,
-            string name,
-            bool hasPhoto,
-            bool hasScale,
-            bool hasRating,
-            bool hasGeoTag,
-            bool hasComment)
+        public EventTracker(Guid id, Guid creatorId, string name, TrackerCustomizationSettings customizationSettings)
         {
             Id = id;
-            Name = name;
             CreatorId = creatorId;
-            HasPhoto = hasPhoto;
-            HasScale = hasScale;
-            HasRating = hasRating;
-            HasGeoTag = hasGeoTag;
-            HasComment = hasComment;
+            Name = name;
+            CustomizationSettings = customizationSettings;
         }
 
-        public EventTracker(EventTrackerBuilder eventTrackerBuilder)
+        public bool IsTrackerCustomizationAndEventCustomizationMatch(Event @event)
         {
-            Id = eventTrackerBuilder.Id;
-            Name = eventTrackerBuilder.Name;
-            CreatorId = eventTrackerBuilder.CreatorId;
-            HasPhoto = eventTrackerBuilder.HasPhoto;
-            HasScale = eventTrackerBuilder.HasScale;
-            ScaleMeasurementUnit = eventTrackerBuilder.ScaleMeasurementUnit;
-            HasRating = eventTrackerBuilder.HasRating;
-            HasGeoTag = eventTrackerBuilder.HashGeoTag;
-            HasComment = eventTrackerBuilder.HasComment;
+            return IsCustomizationMatch(CustomizationSettings.IsPhotoRequired, @event.CustomizationsParameters.Photo.IsSome) &&
+                   IsCustomizationMatch(CustomizationSettings.IsCommentRequired, @event.CustomizationsParameters.Comment.IsSome) &&
+                   IsCustomizationMatch(CustomizationSettings.IsRatingRequired, @event.CustomizationsParameters.Rating.IsSome) &&
+                   IsCustomizationMatch(CustomizationSettings.IsGeoTagRequired, @event.CustomizationsParameters.GeoTag.IsSome) &&
+                   IsCustomizationMatch(CustomizationSettings.ScaleMeasurementUnit.IsSome, @event.CustomizationsParameters.Scale.IsSome);
         }
-        
-        public bool IsTrackerAndEventCustomizationsMatch(Event newEvent)
+
+
+        private bool IsCustomizationMatch(bool isTrackerRequired, bool isEventHas)
         {
-            if (HasPhoto != newEvent.Photo.IsSome) return false;
-            if (HasScale != newEvent.Scale.IsSome) return false;
-            if (HasRating != newEvent.Rating.IsSome) return false;
-            if (HasGeoTag != newEvent.GeoTag.IsSome) return false;
-            return HasComment == newEvent.Comment.IsSome;
+            if (CustomizationSettings.ForceCustomizations)
+            {
+                return isTrackerRequired == isEventHas;
+            }
+            return true;
         }
     }
 }

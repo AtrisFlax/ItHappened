@@ -6,27 +6,25 @@ using LanguageExt;
 
 namespace ItHappened.Domain.Statistics
 {
-    public class MostEventfulWeekCalculator : IGeneralCalculator
+    public class MostEventfulWeekCalculator : IMultipleTrackersStatisticsCalculator
     {
-        private readonly IEventRepository _eventRepository;
         private const int ThresholdEventAmount = 1;
         private const string CultureCode = "ru-RU"; //hardcoded culture code 
 
-        public MostEventfulWeekCalculator(IEventRepository eventRepository)
-        {
-            _eventRepository = eventRepository;
-        }
 
-        public Option<IGeneralFact> Calculate(IEnumerable<EventTracker> eventTrackers)
+        public Option<IMultipleTrackersFact> Calculate(
+            IReadOnlyCollection<TrackerWithItsEvents> trackerWithItsEvents, DateTimeOffset now)
         {
-            var trackers = eventTrackers.ToList();
-            if (!CanCalculate(trackers))
+            var allTrackersEvents = trackerWithItsEvents.SelectMany(info => info.Events).ToList();
+            if (!CanCalculate(allTrackersEvents))
             {
-                return Option<IGeneralFact>.None;
+                return Option<IMultipleTrackersFact>.None;
             }
-            var eventfulWeek = trackers
-                .SelectMany(tracker => _eventRepository.LoadAllTrackerEvents(tracker.Id))
-                .GroupBy(@event => new CultureInfo(CultureCode).Calendar.GetWeekOfYear(@event.HappensDate.Date, CalendarWeekRule.FirstDay, DayOfWeek.Monday), 
+
+            var eventfulWeek = allTrackersEvents
+                .GroupBy(
+                    @event => new CultureInfo(CultureCode).Calendar.GetWeekOfYear(@event.HappensDate.Date,
+                        CalendarWeekRule.FirstDay, DayOfWeek.Monday),
                     (date, g) =>
                     {
                         var events = g.ToList();
@@ -39,9 +37,9 @@ namespace ItHappened.Domain.Statistics
                     }).OrderByDescending(g => g.Count).First();
             var eventsCount = eventfulWeek.Count;
             var ruEventName = RuEventName(eventsCount, "событие", "события", "событий");
-            var firstDayOfWeek =   FirstDateOfWeek(eventfulWeek.Year, eventfulWeek.Date);
+            var firstDayOfWeek = FirstDateOfWeek(eventfulWeek.Year, eventfulWeek.Date);
             var lastDayOfWeek = firstDayOfWeek.AddDays(6);
-            return Option<IGeneralFact>.Some(new MostEventfulWeekFact(
+            return Option<IMultipleTrackersFact>.Some(new MostEventfulWeekTrackersFact(
                 "Самая насыщенная событиями неделя",
                 $"Самая насыщенная событиями неделя была с {firstDayOfWeek:d} до {lastDayOfWeek:d}. За её время произошло {eventsCount} {ruEventName}",
                 0.75 * eventsCount,
@@ -58,12 +56,11 @@ namespace ItHappened.Domain.Statistics
             return titles[number % 100 > 4 && number % 100 < 20 ? 2 : cases[number % 10 < 5 ? number % 10 : 5]];
         }
 
-        private bool CanCalculate(IEnumerable<EventTracker> eventTracker)
+        private static bool CanCalculate(IReadOnlyCollection<Event> events)
         {
-            return eventTracker.Any(tracker =>
-                _eventRepository.LoadAllTrackerEvents(tracker.Id).Count > ThresholdEventAmount);
+            return events.Count > ThresholdEventAmount;
         }
-        
+
         private static DateTimeOffset FirstDateOfWeek(int year, int weekOfYear)
         {
             var jan1 = new DateTime(year, 1, 1);

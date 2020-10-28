@@ -9,18 +9,20 @@ namespace ItHappened.Domain
         public string Name { get; }
         public DateTimeOffset From { get; }
         public DateTimeOffset To { get; }
+
         public DateTimeFilter(string name, DateTimeOffset @from, DateTimeOffset to)
         {
             Name = name;
             From = @from;
             To = to;
         }
-        public IReadOnlyCollection<Event> Filter(IReadOnlyCollection<Event> events)
+
+        public IEnumerable<Event> Filter(IEnumerable<Event> events)
         {
             return events
                 .Where(eventItem =>
-                eventItem.HappensDate.UtcDateTime >= From.UtcDateTime && 
-                eventItem.HappensDate.UtcDateTime <= To.UtcDateTime).ToList();
+                    eventItem.HappensDate.UtcDateTime >= From.UtcDateTime &&
+                    eventItem.HappensDate.UtcDateTime <= To.UtcDateTime).ToList();
         }
     }
 }

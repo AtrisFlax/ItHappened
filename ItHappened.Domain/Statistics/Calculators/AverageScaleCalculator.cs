@@ -1,48 +1,45 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
-using ItHappend.Domain.Statistics;
 using LanguageExt;
-using LanguageExt.UnsafeValueAccess;
+using Serilog;
 
 namespace ItHappened.Domain.Statistics
 {
-    public class AverageScaleCalculator : ISpecificCalculator
+    public class AverageScaleCalculator : ISingleTrackerStatisticsCalculator
     {
-        private readonly IEventRepository _eventRepository;
-
-        public AverageScaleCalculator(IEventRepository eventRepository)
+        public Option<ISingleTrackerFact> Calculate(IReadOnlyCollection<Event> events, EventTracker tracker, DateTimeOffset now)
         {
-            _eventRepository = eventRepository;
-        }
+            if (!CanCalculate(events))
+            {
+                return Option<ISingleTrackerFact>.None;
+            }
 
-        public Option<ISpecificFact> Calculate(EventTracker eventTracker)
-        {
-            var events = _eventRepository.LoadAllTrackerEvents(eventTracker.Id);
-            if (!CanCalculate(eventTracker, events)) return Option<ISpecificFact>.None;
-            var averageValue = events.Select(x=>x.Scale).Somes().Average();
-            var measurementUnit = eventTracker.ScaleMeasurementUnit.ValueUnsafe();
-            return Option<ISpecificFact>.Some(new AverageScaleFact(
-                "Среднее значение шкалы",
-                $"Сумма значений {measurementUnit} для события {eventTracker.Name} равно {averageValue}",
-                3.0, 
+            var averageValue = events.Select(x => x.CustomizationsParameters.Scale).Somes().Average();
+            var measurementUnit =
+                tracker.CustomizationSettings.ScaleMeasurementUnit.Match(x => x, () => string.Empty);
+            
+            const string factName = "Среднее значение шкалы";
+            var description = $"Сумма значений {measurementUnit} для события {tracker.Name} равно {averageValue}";
+            const double priority = 3.0;
+            
+            return Option<ISingleTrackerFact>.Some(new AverageScaleTrackerFact(
+                factName,
+                description,
+                priority,
                 averageValue,
                 measurementUnit
             ));
         }
 
-        private static bool CanCalculate(EventTracker eventTracker, IReadOnlyList<Event> loadAllTrackerEvents)
+        private static bool CanCalculate(IReadOnlyCollection<Event> events)
         {
-            if (eventTracker.ScaleMeasurementUnit.IsNone)
+            if (events.Any(@event => @event.CustomizationsParameters.Scale == Option<double>.None))
             {
                 return false;
             }
 
-            if (loadAllTrackerEvents.Any(@event => @event.Scale == Option<double>.None))
-            {
-                return false;
-            }
-
-            return loadAllTrackerEvents.Count > 1;
+            return events.Count > 1;
         }
     }
 }

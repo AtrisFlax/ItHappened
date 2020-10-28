@@ -1,28 +1,24 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using LanguageExt;
 
 namespace ItHappened.Domain.Statistics
 {
-    public class MostEventfulDayCalculator : IGeneralCalculator
+    public class MostEventfulDayCalculator : IMultipleTrackersStatisticsCalculator
     {
-        private readonly IEventRepository _eventRepository;
         private const int ThresholdEventAmount = 1;
 
-        public MostEventfulDayCalculator(IEventRepository eventRepository)
+        public Option<IMultipleTrackersFact> Calculate(
+            IReadOnlyCollection<TrackerWithItsEvents> trackerWithItsEvents, DateTimeOffset now)
         {
-            _eventRepository = eventRepository;
-        }
-
-        public Option<IGeneralFact> Calculate(IEnumerable<EventTracker> eventTrackers)
-        {
-            var trackers = eventTrackers.ToList();
-            if (!CanCalculate(trackers))
+            var allTrackersEvents = trackerWithItsEvents.SelectMany(info => info.Events).ToList();
+            if (!CanCalculate(allTrackersEvents))
             {
-                return Option<IGeneralFact>.None;
+                return Option<IMultipleTrackersFact>.None;
             }
-            var dayWithBiggestEventCount = trackers
-                .SelectMany(tracker => _eventRepository.LoadAllTrackerEvents(tracker.Id))
+
+            var dayWithBiggestEventCount = allTrackersEvents
                 .GroupBy(@event => @event.HappensDate,
                     (date, g) => new
                     {
@@ -32,7 +28,7 @@ namespace ItHappened.Domain.Statistics
             var dayWithLargestEventCount = dayWithBiggestEventCount.Date;
             var eventsCount = dayWithBiggestEventCount.Count;
             var ruEventName = RuEventName(eventsCount, "событие", "события", "событий");
-            return Option<IGeneralFact>.Some(new MostEventfulDayFact(
+            return Option<IMultipleTrackersFact>.Some(new MostEventfulDayTrackersFact(
                 "Самый насыщенный событиями день",
                 $"Самый насыщенный событиями день был {dayWithLargestEventCount:d}. Тогда произошло {eventsCount} {ruEventName}",
                 1.5 * eventsCount,
@@ -40,7 +36,7 @@ namespace ItHappened.Domain.Statistics
                 eventsCount
             ));
         }
-        
+
         private static string RuEventName(int number, string nominativ, string genetiv, string plural)
         {
             var titles = new[] {nominativ, genetiv, plural};
@@ -48,10 +44,9 @@ namespace ItHappened.Domain.Statistics
             return titles[number % 100 > 4 && number % 100 < 20 ? 2 : cases[number % 10 < 5 ? number % 10 : 5]];
         }
 
-        private bool CanCalculate(IEnumerable<EventTracker> eventTracker)
+        private static bool CanCalculate(IReadOnlyCollection<Event> events)
         {
-            return eventTracker.Any(tracker =>
-                _eventRepository.LoadAllTrackerEvents(tracker.Id).Count > ThresholdEventAmount);
+            return events.Count > ThresholdEventAmount;
         }
     }
 }

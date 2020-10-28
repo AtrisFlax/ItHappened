@@ -1,26 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-
-namespace ItHappened.Domain.Statistics
+﻿namespace ItHappened.Domain.Statistics
 {
-    public class SpecificTimeOfDayEventFact : ISpecificFact
+    public class SpecificDayTimeFact : ISingleTrackerFact
     {
-        public double Percentage { get; }
-        public string TimeOfTheDay { get; }
-        public IReadOnlyCollection<(string Title, string TimeOfTheDay, double Percentage)> VisualizationData { get; }
-        public string FactName { get; } = nameof(SpecificTimeOfDayEventFact);
+        public string FactName { get; }
         public string Description { get; }
         public double Priority { get; }
+        public double Percentage { get; }
+        public string TimeOfTheDay { get; }
 
-        internal SpecificTimeOfDayEventFact(double percentage, string eventName, string timeOfTheDay,
-            IEnumerable<(string title, string timeOfTheDay, double percentage)> visualizationData)
+        internal SpecificDayTimeFact(string factName, string description, double priority, double percentage,
+            string timeOfTheDay)
         {
-            Percentage = Math.Round(percentage);
+            FactName = factName;
+            Description = description;
+            Priority = priority;
+            Percentage = percentage;
             TimeOfTheDay = timeOfTheDay;
-            Description = $"В {Percentage}% случаев событие \"{eventName}\" происходит {timeOfTheDay}";
-            Priority = 0.14 * percentage;
-            VisualizationData = visualizationData.ToList();
         }
     }
 }

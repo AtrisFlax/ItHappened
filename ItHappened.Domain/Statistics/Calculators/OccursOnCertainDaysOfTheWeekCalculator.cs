@@ -2,33 +2,26 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using ItHappend.Domain.Statistics;
 using LanguageExt;
 
 namespace ItHappened.Domain.Statistics
 {
-    public class OccursOnCertainDaysOfTheWeekCalculator : ISpecificCalculator
+    public class OccursOnCertainDaysOfTheWeekCalculator : ISingleTrackerStatisticsCalculator
     {
         private const int MinEvents = 7;
         private const double PriorityCoefficient = 0.14;
         private const double LessNotPassPercent = 0.25;
 
-        private readonly IEventRepository _eventRepository;
-        
-        public OccursOnCertainDaysOfTheWeekCalculator(IEventRepository eventRepository)
+        public Option<ISingleTrackerFact> Calculate(IReadOnlyCollection<Event> events, EventTracker tracker, DateTimeOffset now)
         {
-            _eventRepository = eventRepository;
-        }
-        
-        public Option<ISpecificFact> Calculate(EventTracker eventTracker)
-        {
-            if (!CanCalculate(_eventRepository.LoadAllTrackerEvents(eventTracker.Id).ToList()))
+            if (!CanCalculate(events))
             {
-                return Option<ISpecificFact>.None;
+                return Option<ISingleTrackerFact>.None;
             }
-            var events = _eventRepository.LoadAllTrackerEvents(eventTracker.Id);
+
             var totalEvents = events.Count;
-            var daysOfTheWeek = events.GroupBy(@event => @event.HappensDate.DayOfWeek,
+            var daysOfTheWeek = events
+                .GroupBy(@event => @event.HappensDate.DayOfWeek,
                     (key, group) => new
                     {
                         DayTime = key,
@@ -40,16 +33,16 @@ namespace ItHappened.Domain.Statistics
             var ruDaysOfWeek = GetRuDaysOfWeek(daysOfTheWeek.Select(x => x.DayTime));
             var percentage = 100.0d * amountEventsMoreThenPassPercent / totalEvents;
 
-            return Option<ISpecificFact>.Some(new OccursOnCertainDaysOfTheWeekFact(
+            return Option<ISingleTrackerFact>.Some(new OccursOnCertainDaysOfTheWeekTrackerFact(
                 "Происходит в определённые дни недели",
-                $"В {percentage}% случаев событие {eventTracker.Name} происходит {ruDaysOfWeek}",
+                $"В {percentage}% случаев событие {tracker.Name} происходит {ruDaysOfWeek}",
                 percentage * PriorityCoefficient,
                 daysOfTheWeek.Select(x => x.DayTime),
                 percentage
             ));
         }
 
-        private static bool CanCalculate(IList<Event> events)
+        private static bool CanCalculate(IReadOnlyCollection<Event> events)
         {
             if (events.Count <= MinEvents) return false;
 

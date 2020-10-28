@@ -1,6 +1,6 @@
 using System;
-using System.Collections.Generic;
 using ItHappened.Domain;
+using LanguageExt;
 using NUnit.Framework;
 
 namespace ItHappened.UnitTests
@@ -14,9 +14,8 @@ namespace ItHappened.UnitTests
         private Photo _photo;
         private double _rating;
         private double _scale;
-        private string _textComment;
-        private string _title;
-        private EventTracker _eventTracker;
+        private Comment _textComment;
+        private EventTracker _tracker;
 
 
         [SetUp]
@@ -25,13 +24,13 @@ namespace ItHappened.UnitTests
             _eventId = Guid.NewGuid();
             _creatorId = Guid.NewGuid();
             _date = DateTimeOffset.Now;
-            _title = "Title";
-            _textComment = "Comment For Event";
+            _textComment = new Comment("Comment For Event");
             _scale = 15;
             _photo = new Photo(new byte[] {0x1, 0x2, 0x3});
             _rating = 299.0;
             _geoTag = new GeoTag(55.790514, 37.584822);
-            _eventTracker = CreateEventTracker(Guid.NewGuid(), Guid.NewGuid());
+            _tracker = new EventTracker(Guid.NewGuid(), Guid.NewGuid(), "Tracker name",
+                new TrackerCustomizationSettings());
         }
 
         [Test]
@@ -40,19 +39,18 @@ namespace ItHappened.UnitTests
             //arrange
 
             //act
-            var newEvent = EventBuilder.Event(_eventId, _creatorId, _eventTracker.Id,_date, _title).Build();
+            var @event = new Event(_eventId, _creatorId, _tracker.Id, _date, new EventCustomParameters());
 
             //assert
-            Assert.AreEqual(_eventId, newEvent.Id);
-            Assert.AreEqual(_creatorId, newEvent.CreatorId);
-            Assert.AreEqual(_date, newEvent.HappensDate);
-            Assert.AreEqual(_title, newEvent.Title);
+            Assert.AreEqual(_eventId, @event.Id);
+            Assert.AreEqual(_creatorId, @event.CreatorId);
+            Assert.AreEqual(_date, @event.HappensDate);
 
-            Assert.IsFalse(newEvent.Comment.IsSome);
-            Assert.IsFalse(newEvent.Scale.IsSome);
-            Assert.IsFalse(newEvent.Photo.IsSome);
-            Assert.IsFalse(newEvent.Rating.IsSome);
-            Assert.IsFalse(newEvent.GeoTag.IsSome);
+            Assert.IsTrue(@event.CustomizationsParameters.Comment.IsNone);
+            Assert.IsTrue(@event.CustomizationsParameters.Scale.IsNone);
+            Assert.IsTrue(@event.CustomizationsParameters.Photo.IsNone);
+            Assert.IsTrue(@event.CustomizationsParameters.Rating.IsNone);
+            Assert.IsTrue(@event.CustomizationsParameters.GeoTag.IsNone);
         }
 
         [Test]
@@ -61,81 +59,69 @@ namespace ItHappened.UnitTests
             //arrange
 
             //act
-            var @event = EventBuilder
-                .Event(_eventId, _creatorId, _eventTracker.Id,_date, _title)
-                .WithComment(_textComment)
-                .WithScale(_scale)
-                .WithPhoto(_photo)
-                .WithRating(_rating)
-                .WithGeoTag(_geoTag)
-                .Build();
+            var @event = new Event(_eventId,
+                _creatorId,
+                _tracker.Id,
+                _date,
+                new EventCustomParameters(
+                    Option<Photo>.Some(_photo),
+                    Option<double>.Some(_scale),
+                    Option<double>.Some(_rating),
+                    Option<GeoTag>.Some(_geoTag),
+                    Option<Comment>.Some(_textComment))
+            );
 
             //assert
             Assert.AreEqual(_eventId, @event.Id);
             Assert.AreEqual(_creatorId, @event.CreatorId);
             Assert.AreEqual(_date, @event.HappensDate);
-            Assert.AreEqual(_title, @event.Title);
 
-            Assert.IsTrue(@event.Comment.IsSome);
-            Assert.IsTrue(@event.Scale.IsSome);
-            Assert.IsTrue(@event.Photo.IsSome);
-            Assert.IsTrue(@event.Rating.IsSome);
-            Assert.IsTrue(@event.GeoTag.IsSome);
-            @event.Comment.Do(value => Assert.IsTrue(value.Text == _textComment));
-            @event.Scale.Do(value => Assert.IsTrue(value == _scale));
-            @event.Photo.Do(value => Assert.IsTrue(value == _photo));
-            @event.Rating.Do(value => Assert.IsTrue(value == _rating));
-            @event.GeoTag.Do(value => Assert.IsTrue(value == _geoTag));
+            Assert.IsTrue(@event.CustomizationsParameters.Comment.IsSome);
+            Assert.IsTrue(@event.CustomizationsParameters.Scale.IsSome);
+            Assert.IsTrue(@event.CustomizationsParameters.Photo.IsSome);
+            Assert.IsTrue(@event.CustomizationsParameters.Rating.IsSome);
+            Assert.IsTrue(@event.CustomizationsParameters.GeoTag.IsSome);
+
+            Assert.IsTrue(@event.CustomizationsParameters.Comment == _textComment);
+            Assert.IsTrue(@event.CustomizationsParameters.Scale == _scale);
+            Assert.IsTrue(@event.CustomizationsParameters.Photo == _photo);
+            Assert.IsTrue(@event.CustomizationsParameters.Rating == _rating);
+            Assert.IsTrue(@event.CustomizationsParameters.GeoTag == _geoTag);
         }
 
         [Test]
         public void CreationEventAllParametersButSkipPhotoParameter()
         {
             //arrange
-            var eventId = Guid.NewGuid();
-            var creatorId = Guid.NewGuid();
-            var date = DateTimeOffset.Now;
-            const string title = "Title";
-            const string textComment = "Comment For Event";
-            const double scale = 15;
-            const double rating = 299;
-            var geoTag = new GeoTag(55.790514, 37.584822);
-
 
             //act
-            var @event = EventBuilder
-                .Event(eventId, creatorId, _eventTracker.Id,date, title)
-                .WithComment(textComment)
-                .WithScale(scale)
-                .WithRating(rating)
-                .WithGeoTag(geoTag)
-                .Build();
+            var @event = new Event(_eventId,
+                _creatorId,
+                _tracker.Id,
+                _date,
+                new EventCustomParameters(
+                    Option<Photo>.None,
+                    Option<double>.Some(_scale),
+                    Option<double>.Some(_rating),
+                    Option<GeoTag>.Some(_geoTag),
+                    Option<Comment>.Some(_textComment))
+            );
 
             //assert
-            Assert.AreEqual(eventId, @event.Id);
-            Assert.AreEqual(creatorId, @event.CreatorId);
-            Assert.AreEqual(date, @event.HappensDate);
-            Assert.AreEqual(title, @event.Title);
+            Assert.AreEqual(_eventId, @event.Id);
+            Assert.AreEqual(_creatorId, @event.CreatorId);
+            Assert.AreEqual(_date, @event.HappensDate);
 
-            Assert.IsTrue(@event.Comment.IsSome);
-            Assert.IsTrue(@event.Scale.IsSome);
-            Assert.IsFalse(@event.Photo.IsSome);
-            Assert.IsTrue(@event.Rating.IsSome);
-            Assert.IsTrue(@event.GeoTag.IsSome);
+            Assert.IsTrue(@event.CustomizationsParameters.Comment.IsSome);
+            Assert.IsTrue(@event.CustomizationsParameters.Scale.IsSome);
+            Assert.IsTrue(@event.CustomizationsParameters.Photo.IsNone);
+            Assert.IsTrue(@event.CustomizationsParameters.Rating.IsSome);
+            Assert.IsTrue(@event.CustomizationsParameters.GeoTag.IsSome);
 
-            @event.Comment.Do(value => Assert.IsTrue(value.Text == _textComment));
-            @event.Scale.Do(value => Assert.IsTrue(value == _scale));
-            @event.Photo.Do(value => Assert.IsTrue(value == _photo));
-            @event.Rating.Do(value => Assert.IsTrue(value == _rating));
-            @event.GeoTag.Do(value => Assert.IsTrue(Equals(value, _geoTag)));
-        }
-        
-        private static EventTracker CreateEventTracker(Guid creatorId, Guid trackerId)
-        {
-            var tracker = EventTrackerBuilder
-                .Tracker(creatorId, creatorId, "tracker")
-                .Build();
-            return tracker;
+            Assert.IsTrue(@event.CustomizationsParameters.Comment == _textComment);
+            Assert.IsTrue(@event.CustomizationsParameters.Scale == _scale);
+            Assert.IsTrue(@event.CustomizationsParameters.Rating == _rating);
+            Assert.IsTrue(@event.CustomizationsParameters.GeoTag == _geoTag);
         }
     }
 }
