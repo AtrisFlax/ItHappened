@@ -20,7 +20,6 @@ namespace ItHappened.UnitTests.ServicesTests
         private IStatisticsService _statisticsService;
         private readonly EventTracker _tracker = TestingMethods.CreateTrackerWithDefaultCustomization(Guid.NewGuid());
         private List<Event> _events;
-        private IEventRepository _eventRepository;
 
         [SetUp]
         public void Init()

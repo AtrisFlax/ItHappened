@@ -4,9 +4,9 @@ using ItHappened.Domain.Statistics;
 
 namespace ItHappened.Domain
 {
-    public interface ISpecificFactsRepository
+    public interface  ISingleTrackerFactsRepository
     {
-        IReadOnlyCollection<ISpecificFact> LoadTrackerSpecificFacts(Guid trackerId);
-        void UpdateTrackerSpecificFacts(Guid guid, IReadOnlyCollection<ISpecificFact> trackerId);
+        IReadOnlyCollection<ISingleTrackerFact> LoadTrackerSpecificFacts(Guid trackerId);
+        void UpdateTrackerSpecificFacts(Guid guid, IReadOnlyCollection<ISingleTrackerFact> trackerId);
     }
 }
