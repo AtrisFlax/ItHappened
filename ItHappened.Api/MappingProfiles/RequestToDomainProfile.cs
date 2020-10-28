@@ -10,9 +10,9 @@ namespace ItHappened.Api.MappingProfiles
         public RequestToDomainProfile()
         {
             CreateMap<CustomizationSettingsRequest, TrackerCustomizationSettings>();
-            //CreateMap<EventCustomParametersRequest, EventCustomParameters>();
-            //CreateMap<PhotoRequest, Photo>();
-            //CreateMap<GeoTagRequest, GeoTag>();
+            CreateMap<TrackerCustomizationSettings, EventCustomParameters>();
+            //TODO CreateMap<PhotoRequest, Photo>();
+            CreateMap<GeoTagRequest, GeoTag>();
 
             CreateMap<EventRequest, EventCustomParameters>()
                 .ForMember(dest => dest.Comment, opt =>

@@ -1,6 +1,4 @@
-﻿using FluentValidation;
-
-namespace ItHappened.Api.Models.Requests
+﻿namespace ItHappened.Api.Models.Requests
 {
     public class CustomizationSettingsRequest
     {
@@ -13,11 +11,4 @@ namespace ItHappened.Api.Models.Requests
         public bool AreCustomizationsOptional { get; set; }
     }
     
-    public class CustomizationSettingsRequestValidator : AbstractValidator<CustomizationSettingsRequest>
-    {
-        public CustomizationSettingsRequestValidator()
-        {
-            //RuleFor(x => x.)
-        }
-    }
 }
