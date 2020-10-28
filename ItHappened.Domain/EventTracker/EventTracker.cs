@@ -17,9 +17,9 @@ namespace ItHappened.Domain
             CustomizationSettings = customizationSettings;
         }
 
-        public bool SettingsAndEventCustomizationsMatch(Event @event)
+        public bool TrackerCustomizationsAndEventCustomizationsMatch(Event @event)
         {
-            return /*CustomizationMatch(CustomizationSettings.IsPhotoRequired, @event.CustomizationsParameters.Photo.IsSome) &&*/ //TODO issue #148
+            return CustomizationMatch(CustomizationSettings.IsPhotoRequired, @event.CustomizationsParameters.Photo.IsSome) &&
                    CustomizationMatch(CustomizationSettings.IsCommentRequired, @event.CustomizationsParameters.Comment.IsSome) &&
                    CustomizationMatch(CustomizationSettings.IsRatingRequired, @event.CustomizationsParameters.Rating.IsSome) &&
                    CustomizationMatch(CustomizationSettings.IsGeoTagRequired, @event.CustomizationsParameters.GeoTag.IsSome) &&
@@ -27,9 +27,13 @@ namespace ItHappened.Domain
         }
 
 
-        private bool CustomizationMatch(bool isRequired, bool isEventSome)
+        private bool CustomizationMatch(bool isTrackerRequired, bool isEventHas)
         {
-            return isRequired && isEventSome || CustomizationSettings.AreCustomizationsOptional;
+            if (CustomizationSettings.ForceCustomizations)
+            {
+                return isTrackerRequired == isEventHas;
+            }
+            return true;
         }
     }
 }

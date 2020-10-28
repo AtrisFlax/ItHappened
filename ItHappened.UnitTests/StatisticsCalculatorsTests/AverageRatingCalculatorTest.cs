@@ -15,7 +15,6 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
         private const int MinEventForCalculation = 2;
         private IEventRepository _eventRepository;
         private static Random _rand;
-        private Random gen = new Random();
         private DateTime _now;
 
         

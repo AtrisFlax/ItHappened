@@ -19,14 +19,12 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
         public static EventTracker CreateTrackerWithScale(Guid userId, string scale)
         {
             return new EventTracker(userId, Guid.NewGuid(), "Tracker name",
-                new TrackerCustomizationSettings(
+                new TrackerCustomizationSettings(false,
+                    false,
                     scale,
                     false,
                     false,
-                    false,
-                    false,
-                    false,
-                    false));
+                    false, false));
         }
 
         public static (IReadOnlyCollection<Event> events, List<double> Rating) CreateEventsWithRating(Guid trackerId,
@@ -105,7 +103,7 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
             int num)
         {
             var scale = CreateRandomScale(num);
-            var events = scale.Select(t => CreateEventWithScale(trackerId, t)).ToList();
+            var events = scale.Select(t => CreateEventWithScale(trackerId, Guid.NewGuid(), t)).ToList();
             return (events, scale);
         }
 
@@ -147,6 +145,21 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
             );
         }
 
+        public static Event CreateEventWithRating(Guid trackerId, Guid userId, DateTimeOffset dateTime, double rating)
+        {
+            return new Event(Guid.NewGuid(),
+                userId,
+                trackerId,
+                dateTime,
+                new EventCustomParameters(
+                    Option<Photo>.None,
+                    Option<double>.None,
+                    Option<double>.Some(rating),
+                    Option<GeoTag>.None,
+                    Option<Comment>.None)
+            );
+        }
+
         public static Event CreateEventWithComment(Guid trackerId, Guid userId, string comment)
         {
             return new Event(Guid.NewGuid(),
@@ -159,6 +172,68 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
                     Option<double>.None,
                     Option<GeoTag>.None,
                     Option<Comment>.Some(new Comment(comment)))
+            );
+        }
+
+
+        public static Event CreateEventWithComment(Guid trackerId, Guid userId, DateTimeOffset dateTime, string comment)
+        {
+            return new Event(Guid.NewGuid(),
+                userId,
+                trackerId,
+                dateTime,
+                new EventCustomParameters(
+                    Option<Photo>.None,
+                    Option<double>.None,
+                    Option<double>.None,
+                    Option<GeoTag>.None,
+                    Option<Comment>.Some(new Comment(comment)))
+            );
+        }
+
+        public static Event CreateEventWithGeoTag(Guid trackerId, Guid userId, GeoTag geoTag)
+        {
+            return new Event(Guid.NewGuid(),
+                userId,
+                trackerId,
+                DateTimeOffset.UtcNow,
+                new EventCustomParameters(
+                    Option<Photo>.None,
+                    Option<double>.None,
+                    Option<double>.None,
+                    Option<GeoTag>.Some(geoTag),
+                    Option<Comment>.None)
+            );
+        }
+
+        public static Event CreateEventWithGeoTag(Guid trackerId, Guid userId, DateTimeOffset time, GeoTag geoTag)
+        {
+            return new Event(Guid.NewGuid(),
+                userId,
+                trackerId,
+                time,
+                new EventCustomParameters(
+                    Option<Photo>.None,
+                    Option<double>.None,
+                    Option<double>.None,
+                    Option<GeoTag>.Some(geoTag),
+                    Option<Comment>.None)
+            );
+        }
+
+        public static Event CreateEventWithAll(Guid trackerId, Guid userId, DateTimeOffset time,
+            Photo photo, double scale, double rating, GeoTag geoTag, Comment comment)
+        {
+            return new Event(Guid.NewGuid(),
+                userId,
+                trackerId,
+                time,
+                new EventCustomParameters(
+                    Option<Photo>.Some(photo),
+                    Option<double>.Some(scale),
+                    Option<double>.Some(rating),
+                    Option<GeoTag>.Some(geoTag),
+                    Option<Comment>.Some(comment))
             );
         }
 
@@ -271,12 +346,27 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
             return randomDay;
         }
 
-        public static Event CreateEventWithScale(Guid trackerId, double scale)
+        public static Event CreateEventWithScale(Guid trackerId, Guid creatorId, double scale)
         {
             return new Event(Guid.NewGuid(),
-                Guid.NewGuid(),
+                creatorId,
                 trackerId,
                 DateTimeOffset.UtcNow,
+                new EventCustomParameters(
+                    Option<Photo>.None,
+                    Option<double>.Some(scale),
+                    Option<double>.None,
+                    Option<GeoTag>.None,
+                    Option<Comment>.None)
+            );
+        }
+
+        public static Event CreateEventWithScale(Guid trackerId, Guid creatorId, DateTimeOffset dateTime, double scale)
+        {
+            return new Event(Guid.NewGuid(),
+                creatorId,
+                trackerId,
+                dateTime,
                 new EventCustomParameters(
                     Option<Photo>.None,
                     Option<double>.Some(scale),
@@ -292,6 +382,21 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
                 userId,
                 trackerId,
                 DateTimeOffset.UtcNow,
+                new EventCustomParameters(
+                    Option<Photo>.None,
+                    Option<double>.None,
+                    Option<double>.None,
+                    Option<GeoTag>.None,
+                    Option<Comment>.None)
+            );
+        }
+
+        public static Event CreateEvent(Guid trackerId, Guid userId, DateTimeOffset dateTime)
+        {
+            return new Event(Guid.NewGuid(),
+                userId,
+                trackerId,
+                dateTime,
                 new EventCustomParameters(
                     Option<Photo>.None,
                     Option<double>.None,
