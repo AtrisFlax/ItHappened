@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using ItHappened.Application.Errors;
 using ItHappened.Domain;
@@ -22,7 +23,7 @@ namespace ItHappened.Application.Services.EventService
         {
             var newEvent = new Event(Guid.NewGuid(), actorId, trackerId, eventHappensDate, customParameters);
             var tracker = _trackerRepository.LoadTracker(trackerId);
-            if (!tracker.SettingsAndEventCustomizationsMatch(newEvent))
+            if (!tracker.TrackerCustomizationsAndEventCustomizationsMatch(newEvent))
                 throw new RestException(HttpStatusCode.BadRequest);
 
             _eventRepository.AddEvent(newEvent);
@@ -36,7 +37,7 @@ namespace ItHappened.Application.Services.EventService
             {
                 var newEvent = new Event(Guid.NewGuid(), actorId, trackerId, eventInfo.HappensDate,
                     eventInfo.CustomParameters);
-                if (tracker.SettingsAndEventCustomizationsMatch(newEvent))
+                if (tracker.TrackerCustomizationsAndEventCustomizationsMatch(newEvent))
                 {
                     _eventRepository.AddEvent(newEvent);
                 } //if customization not match skip
@@ -54,7 +55,8 @@ namespace ItHappened.Application.Services.EventService
 
         public IReadOnlyCollection<Event> GetAllFilteredEvents(Guid actorId, Guid trackerId, IEnumerable<IEventsFilter> eventsFilters)
         {
-            return EventsFilter.Filter(GetAllEvents(actorId, trackerId), eventsFilters);
+            var filteredEvents = EventsFilter.Filter(GetAllEvents(actorId, trackerId), eventsFilters);
+            return filteredEvents.ToList();
         }
 
         public IReadOnlyCollection<Event> GetAllEvents(Guid actorId, Guid trackerId)

@@ -152,7 +152,7 @@ namespace ItHappened.Api
         {
             var statisticsProvider = new MultipleTrackersFactProvider();
             statisticsProvider.Add(new MostEventfulWeekCalculator());
-            statisticsProvider.Add(new MostEventfulDayStatisticsCalculator());
+            statisticsProvider.Add(new MostEventfulDayCalculator());
             statisticsProvider.Add(new MostFrequentEventStatisticsCalculator());
             statisticsProvider.Add(new MultipleTrackersEventsCountCalculator());
             services.AddSingleton<IMultipleTrackersFactProvider>(statisticsProvider);
@@ -168,7 +168,7 @@ namespace ItHappened.Api
             statisticsProvider.Add(new OccursOnCertainDaysOfTheWeekCalculator());
             statisticsProvider.Add(new SingleTrackerEventsCountCalculator());
             statisticsProvider.Add(new SumScaleCalculator());
-            statisticsProvider.Add(new WorstEventCalculator());
+            statisticsProvider.Add(new WorstRatingEventCalculator());
             services.AddSingleton<ISingleTrackerFactProvider>(statisticsProvider);
         }
     }

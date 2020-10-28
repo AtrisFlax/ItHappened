@@ -5,7 +5,7 @@ using ItHappened.Domain.Statistics;
 using ItHappened.Infrastructure.Repositories;
 using LanguageExt.UnsafeValueAccess;
 using NUnit.Framework;
-using static ItHappened.UnitTests.StatisticsCalculatorsTests.StatisticsCalculatorsTestingConsts;
+using static ItHappened.UnitTests.StatisticsCalculatorsTests.StatisticsCalculatorsTestingConstants;
 using static ItHappened.UnitTests.StatisticsCalculatorsTests.TestingMethods;
 
 namespace ItHappened.UnitTests.StatisticsCalculatorsTests
@@ -14,6 +14,7 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
     {
         private IEventRepository _eventRepository;
         private static Random _rand;
+        private DateTimeOffset _now;
         private const int MinEventForCalculation = 2;
         private const string MeasurementUnit = "Kg";
 
@@ -22,6 +23,7 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
         {
             _eventRepository = new EventRepository();
             _rand = new Random();
+            _now = DateTimeOffset.UtcNow;
         }
 
         [Test]
@@ -36,32 +38,7 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
             var allEvents = _eventRepository.LoadAllTrackerEvents(tracker.Id);
 
             //act 
-            var fact = new AverageScaleCalculator().Calculate(allEvents, tracker)
-                .ConvertTo<AverageScaleTrackerFact>().ValueUnsafe();
-
-            //assert 
-            Assert.AreEqual("Среднее значение шкалы", fact.FactName);
-            Assert.AreEqual(3, fact.Priority, PriorityAccuracy);
-            Assert.AreEqual(MeasurementUnit, fact.MeasurementUnit);
-            Assert.AreEqual(scaleValues.Average(), fact.AverageValue, AverageAccuracy);
-        }
-
-        [Test]
-        public void EventsWithScaleAndWithoutScaleCalculateSuccess()
-        {
-            //arrange 
-            var userId = Guid.NewGuid();
-            var tracker = CreateTrackerWithScale(userId, MeasurementUnit);
-            var (eventsWithScale, scaleValues) =
-                CreateEventsWithScale(tracker.Id, _rand.Next() % 10 + MinEventForCalculation);
-            var eventsWithoutScale =
-                CreateEventsWithoutCustomization(tracker.Id, userId, _rand.Next() % 10 + MinEventForCalculation);
-            _eventRepository.AddRangeOfEvents(eventsWithScale);
-            _eventRepository.AddRangeOfEvents(eventsWithoutScale);
-            var allEvents = _eventRepository.LoadAllTrackerEvents(tracker.Id);
-
-            //act 
-            var fact = new AverageScaleCalculator().Calculate(allEvents, tracker)
+            var fact = new AverageScaleCalculator().Calculate(allEvents, tracker, _now)
                 .ConvertTo<AverageScaleTrackerFact>().ValueUnsafe();
 
             //assert 
@@ -82,7 +59,7 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
             var allEvents = _eventRepository.LoadAllTrackerEvents(tracker.Id);
             
             //act 
-            var fact = new AverageScaleCalculator().Calculate(allEvents, tracker)
+            var fact = new AverageScaleCalculator().Calculate(allEvents, tracker, _now)
                 .ConvertTo<AverageScaleTrackerFact>();
 
             //assert 
@@ -100,7 +77,7 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
             var allEvents = _eventRepository.LoadAllTrackerEvents(tracker.Id);
 
             //act 
-            var fact = new AverageScaleCalculator().Calculate(allEvents, tracker)
+            var fact = new AverageScaleCalculator().Calculate(allEvents, tracker, _now)
                 .ConvertTo<AverageScaleTrackerFact>();
 
             //assert 

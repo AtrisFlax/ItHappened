@@ -6,12 +6,14 @@ using LanguageExt.UnsafeValueAccess;
 
 namespace ItHappened.Domain.Statistics
 {
-    public class BestRatingEventCalculator : ISingleTrackerStatisticsCalculator
+    public class WorstRatingEventCalculator : ISingleTrackerStatisticsCalculator
     {
         private const int MinDaysThreshold = 7;
         private const int MaxMonthThreshold = 3;
         private const int ThresholdEventsWithRating = 10;
-        private BestRatingEventInfo _bestRatingEventInfo;
+        private const double MaxRating = 10.0;
+        private WorstRatingEventInfo _worstRatingEventInfo;
+
 
         public Option<ISingleTrackerFact> Calculate(IReadOnlyCollection<Event> events, EventTracker tracker,
             DateTimeOffset now)
@@ -21,24 +23,25 @@ namespace ItHappened.Domain.Statistics
                 return Option<ISingleTrackerFact>.None;
             }
 
-            var bestRatingEvent = _bestRatingEventInfo.Event;
-            var comment = bestRatingEvent.CustomizationsParameters.Comment;
-            var bestRating = _bestRatingEventInfo.Rating;
+            var worstRatingEvent = _worstRatingEventInfo.Event;
+            var comment = worstRatingEvent.CustomizationsParameters.Comment;
+            var worstRating = _worstRatingEventInfo.Rating;
             var commentInfo = comment.IfNone(new Comment(string.Empty));
             var textComment = $" с комментарием {commentInfo.Text}";
-            const string factName = "Лучшее событие";
-            var description = $"Событие {tracker.Name} с самым высоким рейтингом {bestRating} " +
-                              $"произошло {bestRatingEvent.HappensDate:d}{textComment}";
-            var priority = bestRating;
-            var bestEventDate = _bestRatingEventInfo.Event.HappensDate;
+            const string factName = "Худшее событие";
+            var description = $"Событие {tracker.Name} с самым низким рейтингом {worstRating} " +
+                              $"произошло {worstRatingEvent.HappensDate:d}{textComment}";
+            var priority = MaxRating - worstRating;
+            var worstEventDate = _worstRatingEventInfo.Event.HappensDate;
 
-            return Option<ISingleTrackerFact>.Some(new BestRatingEventFact(
+            return Option<ISingleTrackerFact>.Some(new WorstRatingEventFact(
                 factName,
                 description,
                 priority,
-                bestRating,
-                bestEventDate,
-                comment));
+                worstRating,
+                worstEventDate,
+                commentInfo,
+                worstRatingEvent.Id));
         }
 
         private bool CanCalculate(IReadOnlyCollection<Event> events, DateTimeOffset now)
@@ -55,30 +58,29 @@ namespace ItHappened.Domain.Statistics
                 return false;
             }
 
-            _bestRatingEventInfo
-                = events
-                    .Where(@event => @event.CustomizationsParameters.Rating.IsSome)
-                    .Select(x => new BestRatingEventInfo
-                    {
-                        Event = x,
-                        Rating = x.CustomizationsParameters.Rating.ValueUnsafe()
-                    })
-                    .OrderByDescending(x => x.Rating).First();
+            _worstRatingEventInfo = events
+                .Where(@event => @event.CustomizationsParameters.Rating.IsSome)
+                .Select(x => new WorstRatingEventInfo
+                {
+                    Event = x,
+                    Rating = x.CustomizationsParameters.Rating.ValueUnsafe()
+                })
+                .OrderBy(x => x.Rating).First();
 
-            if (_bestRatingEventInfo.Event.HappensDate > now.AddDays(-MinDaysThreshold))
+            if (_worstRatingEventInfo.Event.HappensDate > now.AddDays(-MinDaysThreshold))
             {
                 return false;
             }
-
             return true;
         }
 
         private static DateTimeOffset EarliestEventDate(IReadOnlyCollection<Event> events)
         {
-            return events
+            var isRatherEventHappenedMoreThanThreeMonthsAgo = events
                 .OrderBy(eventItem => eventItem.HappensDate)
                 .First()
                 .HappensDate;
+            return isRatherEventHappenedMoreThanThreeMonthsAgo;
         }
 
         private static int CountEventWithRating(IReadOnlyCollection<Event> events)
@@ -90,7 +92,7 @@ namespace ItHappened.Domain.Statistics
             return eventEnough;
         }
 
-        private class BestRatingEventInfo
+        private class WorstRatingEventInfo
         {
             public Event Event { get; set; }
             public double Rating { get; set; }

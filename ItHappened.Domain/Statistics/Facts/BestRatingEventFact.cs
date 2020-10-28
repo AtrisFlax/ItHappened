@@ -3,7 +3,7 @@ using LanguageExt;
 
 namespace ItHappened.Domain.Statistics
 {
-    public class BestEventTrackerFact : ISingleTrackerFact
+    public class BestRatingEventFact : ISingleTrackerFact
     {
         public string FactName { get; }
         public string Description { get; }
@@ -12,7 +12,7 @@ namespace ItHappened.Domain.Statistics
         public DateTimeOffset BestEventDate { get; }
         public Option<Comment> BestEventComment { get; }
 
-        internal BestEventTrackerFact(string factName, string description, double priority, double bestRating, DateTimeOffset bestEventDate, Option<Comment> bestEventComment)
+        internal BestRatingEventFact(string factName, string description, double priority, double bestRating, DateTimeOffset bestEventDate, Option<Comment> bestEventComment)
         {
             FactName = factName;
             Description = description;

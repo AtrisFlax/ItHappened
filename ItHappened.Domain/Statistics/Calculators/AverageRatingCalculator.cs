@@ -8,7 +8,7 @@ namespace ItHappened.Domain.Statistics
 {
     public class AverageRatingCalculator : ISingleTrackerStatisticsCalculator
     {
-        public Option<ISingleTrackerFact> Calculate(IReadOnlyCollection<Event> events, EventTracker tracker)
+        public Option<ISingleTrackerFact> Calculate(IReadOnlyCollection<Event> events, EventTracker tracker, DateTimeOffset now)
         {
             if (!CanCalculate(events))
             {
@@ -32,5 +32,6 @@ namespace ItHappened.Domain.Statistics
         private static bool CanCalculate(IReadOnlyCollection<Event> events) {
             return events.Count > 1;
         }
+
     }
 }

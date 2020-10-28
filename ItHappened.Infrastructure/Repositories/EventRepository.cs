@@ -13,12 +13,12 @@ namespace ItHappened.Infrastructure.Repositories
         {
             _events.Add(newEvent.Id, newEvent);
         }
-        
+
         public void AddRangeOfEvents(IEnumerable<Event> events)
         {
             foreach (var @event in events)
             {
-                _events.Add(@event.Id, @event);
+                AddEvent(@event);
             }
         }
 

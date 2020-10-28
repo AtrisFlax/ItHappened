@@ -7,7 +7,7 @@ namespace ItHappened.Domain.Statistics
 {
     public class SingleTrackerEventsCountCalculator : ISingleTrackerStatisticsCalculator
     {
-        public Option<ISingleTrackerFact> Calculate(IReadOnlyCollection<Event> events, EventTracker tracker)
+        public Option<ISingleTrackerFact> Calculate(IReadOnlyCollection<Event> events, EventTracker tracker, DateTimeOffset now)
         {
             if (!CanCalculate(events)) 
                 return Option<ISingleTrackerFact>.None;

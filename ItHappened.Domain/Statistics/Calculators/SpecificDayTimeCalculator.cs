@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using LanguageExt;
 
@@ -10,7 +11,7 @@ namespace ItHappened.Domain.Statistics
         private const double CoefficientEventsPass = 0.70;
         private const double PercentageCoefficient = 0.14;
 
-        public Option<ISingleTrackerFact> Calculate(IReadOnlyCollection<Event> events, EventTracker tracker)
+        public Option<ISingleTrackerFact> Calculate(IReadOnlyCollection<Event> events, EventTracker tracker, DateTimeOffset now)
         {
             if (!CanCalculate(events))
             {

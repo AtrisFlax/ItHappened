@@ -12,7 +12,7 @@ namespace ItHappened.Domain.Statistics
         private const double PriorityCoefficient = 0.14;
         private const double LessNotPassPercent = 0.25;
 
-        public Option<ISingleTrackerFact> Calculate(IReadOnlyCollection<Event> events, EventTracker tracker)
+        public Option<ISingleTrackerFact> Calculate(IReadOnlyCollection<Event> events, EventTracker tracker, DateTimeOffset now)
         {
             if (!CanCalculate(events))
             {

@@ -1,14 +1,13 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using LanguageExt;
-using LanguageExt.UnsafeValueAccess;
-using Serilog;
 
 namespace ItHappened.Domain.Statistics
 {
     public class SumScaleCalculator : ISingleTrackerStatisticsCalculator
     {
-        public Option<ISingleTrackerFact> Calculate(IReadOnlyCollection<Event> events, EventTracker tracker)
+        public Option<ISingleTrackerFact> Calculate(IReadOnlyCollection<Event> events, EventTracker tracker, DateTimeOffset now)
         {
             if (!CanCalculate(events))
             {

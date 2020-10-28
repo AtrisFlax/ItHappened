@@ -6,17 +6,19 @@ using ItHappened.Infrastructure.Repositories;
 using LanguageExt.UnsafeValueAccess;
 using NUnit.Framework;
 using static ItHappened.UnitTests.StatisticsCalculatorsTests.TestingMethods;
-
+using static ItHappened.UnitTests.StatisticsCalculatorsTests.StatisticsCalculatorsTestingConstants;
 namespace ItHappened.UnitTests.StatisticsCalculatorsTests
 {
     public class SpecificDayTimeEventCalculatorTest
     {
         private IEventRepository _eventRepository;
+        private DateTimeOffset _now;
 
         [SetUp]
         public void Init()
         {
             _eventRepository = new EventRepository();
+            _now = DateTimeOffset.UtcNow;
         }
 
         [Test]
@@ -24,7 +26,7 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
         {
             //assert
             var userId = Guid.NewGuid();
-            var trackerName = "Tracker name";
+            const string trackerName = "Tracker name";
             var tracker = CreateTracker(userId, trackerName);
             var events = new List<Event>
             {
@@ -42,15 +44,15 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
 
             
             //act
-            var fact = new SpecificDayTimeCalculator().Calculate(allEvents, tracker)
+            var fact = new SpecificDayTimeCalculator().Calculate(allEvents, tracker, _now)
                 .ConvertTo<SpecificDayTimeFact>().ValueUnsafe();
             
             //arrange
             Assert.AreEqual("Происходит в определённое время суток", fact.FactName);
-            Assert.AreEqual($"В % случаев событие {tracker.Name} происходит ", fact.Description);
-            Assert.AreEqual(0, fact.Priority);
-            Assert.AreEqual(0, fact.Percentage);
-            Assert.AreEqual(0, fact.TimeOfTheDay);
+            Assert.AreEqual($"В 75% случаев событие {tracker.Name} происходит ночью", fact.Description);
+            Assert.AreEqual(10.5, fact.Priority, PriorityAccuracy);
+            Assert.AreEqual(75.0, fact.Percentage);
+            Assert.AreEqual("ночью", fact.TimeOfTheDay);
         }
 
          

@@ -10,7 +10,7 @@ namespace ItHappened.Domain.Statistics
         private const int EventsThreshold = 10;
         private const int DaysThreshold = 7;
 
-        public Option<ISingleTrackerFact> Calculate(IReadOnlyCollection<Event> events, EventTracker tracker)
+        public Option<ISingleTrackerFact> Calculate(IReadOnlyCollection<Event> events, EventTracker tracker, DateTimeOffset now)
         {
             if (!CanCalculate(events))
             {
@@ -30,8 +30,8 @@ namespace ItHappened.Domain.Statistics
                 description,
                 priority,
                 maxDurationInDays,
-                lastEventBeforeBreak,
-                firstEventAfterBreak));
+                lastEventBeforeBreak.HappensDate,
+                firstEventAfterBreak.HappensDate));
         }
 
         private static bool CanCalculate(IReadOnlyCollection<Event> events)

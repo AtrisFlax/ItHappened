@@ -4,42 +4,40 @@ namespace ItHappened.Domain
 {
     public class TrackerCustomizationSettings
     {
-        public Option<string> ScaleMeasurementUnit { get; }
         public bool IsPhotoRequired { get; }
+        public bool IsScaleRequired { get; }
+        public Option<string> ScaleMeasurementUnit { get; }
         public bool IsRatingRequired { get; }
         public bool IsGeoTagRequired { get; }
         public bool IsCommentRequired { get; }
-        public bool IsScaleRequired { get; }
+        public bool ForceCustomizations { get; }
 
-        public bool AreCustomizationsOptional { get; }
-
-        public TrackerCustomizationSettings(Option<string> scaleMeasurementUnit,
-            bool isPhotoRequired,
+        public TrackerCustomizationSettings(bool isPhotoRequired,
+            bool isScaleRequired,
+            Option<string> scaleMeasurementUnit,
             bool isRatingRequired,
             bool isGeoTagRequired,
             bool isCommentRequired,
-            bool isScaleRequired,
-            bool areCustomizationsOptional)
+            bool forceCustomizations)
         {
-            ScaleMeasurementUnit = scaleMeasurementUnit;
             IsPhotoRequired = isPhotoRequired;
+            IsScaleRequired = isScaleRequired;
+            ScaleMeasurementUnit = scaleMeasurementUnit;
             IsRatingRequired = isRatingRequired;
             IsGeoTagRequired = isGeoTagRequired;
             IsCommentRequired = isCommentRequired;
-            AreCustomizationsOptional = areCustomizationsOptional;
-            IsScaleRequired = isScaleRequired;
+            ForceCustomizations = forceCustomizations;
         }
 
         public TrackerCustomizationSettings()
         {
-            AreCustomizationsOptional = false;
+            IsPhotoRequired = false;
             IsScaleRequired = false;
             ScaleMeasurementUnit = Option<string>.None;
-            IsPhotoRequired = false;
             IsRatingRequired = false;
             IsGeoTagRequired = false;
             IsCommentRequired = false;
-            
+            ForceCustomizations = false;
         }
     }
 }

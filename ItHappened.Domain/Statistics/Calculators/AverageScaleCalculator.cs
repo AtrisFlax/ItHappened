@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using LanguageExt;
 using Serilog;
@@ -7,7 +8,7 @@ namespace ItHappened.Domain.Statistics
 {
     public class AverageScaleCalculator : ISingleTrackerStatisticsCalculator
     {
-        public Option<ISingleTrackerFact> Calculate(IReadOnlyCollection<Event> events, EventTracker tracker)
+        public Option<ISingleTrackerFact> Calculate(IReadOnlyCollection<Event> events, EventTracker tracker, DateTimeOffset now)
         {
             if (!CanCalculate(events))
             {

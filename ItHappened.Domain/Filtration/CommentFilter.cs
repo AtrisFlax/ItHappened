@@ -16,6 +16,7 @@ namespace ItHappened.Domain
             RegexPattern = regexPattern;
         }
 
+        //TODO заменить фильтрация с regexp на фильтрацию по подстроке
         public IEnumerable<Event> Filter(IEnumerable<Event> events)
         {
             return events.Where(@event => @event.CustomizationsParameters.Comment.IsSome)
