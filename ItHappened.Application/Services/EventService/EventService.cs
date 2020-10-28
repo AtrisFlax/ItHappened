@@ -17,19 +17,28 @@ namespace ItHappened.Application.Services.EventService
             _trackerRepository = trackerRepository;
         }
 
-        public Event AddEvent(Guid actorId, Guid trackerId, DateTimeOffset eventHappensDate,
+        public Guid CreateEvent(Guid actorId, Guid trackerId, DateTimeOffset eventHappensDate,
             EventCustomParameters customParameters)
         {
-            var newEvent = new Event(Guid.NewGuid(), actorId, trackerId, eventHappensDate, customParameters);
+            if (!_trackerRepository.IsContainTracker(trackerId))
+            {
+                throw new RestException(HttpStatusCode.NotFound);
+            }
             var tracker = _trackerRepository.LoadTracker(trackerId);
+            if (tracker.CreatorId != actorId)
+            {
+                throw new RestException(HttpStatusCode.BadRequest);
+            }
+            var newEvent = new Event(Guid.NewGuid(), actorId, trackerId, eventHappensDate, customParameters);
+            
             if (!tracker.IsSettingsAndEventCustomizationsMatch(newEvent))
             {
                 throw new RestException(HttpStatusCode.BadRequest);
             }
 
-            _eventRepository.AddEvent(newEvent);
+            _eventRepository.SaveEvent(newEvent);
             tracker.IsUpdated = true;
-            return newEvent;
+            return newEvent.Id;
         }
 
         public void AddRangeEvent(Guid actorId, Guid trackerId, IEnumerable<EventsInfoRange> eventsInfoRange)
@@ -41,7 +50,7 @@ namespace ItHappened.Application.Services.EventService
                     eventInfo.CustomParameters);
                 if (tracker.IsSettingsAndEventCustomizationsMatch(newEvent))
                 {
-                    _eventRepository.AddEvent(newEvent);
+                    _eventRepository.SaveEvent(newEvent);
                     tracker.IsUpdated = true;
                 } //if customization not match skip
             }

@@ -6,7 +6,7 @@ namespace ItHappened.Application.Services.EventService
 {
     public interface IEventService
     {
-        Event AddEvent(Guid actorId, Guid trackerId, DateTimeOffset eventHappensDate,
+        Guid CreateEvent(Guid actorId, Guid trackerId, DateTimeOffset eventHappensDate,
             EventCustomParameters customParameters);
 
         void AddRangeEvent(Guid actorId, Guid trackerId, IEnumerable<EventsInfoRange> eventsInfoRange);
