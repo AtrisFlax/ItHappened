@@ -24,7 +24,7 @@ namespace ItHappened.Infrastructure.Repositories
             return _eventTrackers.ContainsKey(trackerId);
         }
         
-        public IEnumerable<EventTracker> LoadAllUserTrackers(Guid userId)
+        public IReadOnlyCollection<EventTracker> LoadAllUserTrackers(Guid userId)
         {
             return _eventTrackers
                 .Values.Where(tracker => tracker.CreatorId == userId).ToList();
