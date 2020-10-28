@@ -1,4 +1,4 @@
-﻿using System;
+﻿﻿using System;
 using System.Collections.Generic;
 using System.Security.Claims;
 using AutoMapper;
@@ -60,8 +60,8 @@ namespace ItHappened.Api.Controllers
         {
             var userId = Guid.Parse(User.FindFirstValue(JwtClaimTypes.Id));
             var customizations = _mapper.Map<TrackerCustomizationSettings>(request.CustomizationSettings);
-            var tracker = _trackerService.EditEventTracker(userId, trackerId, request.Name, customizations);
-            return Ok(_mapper.Map<TrackerResponse>(tracker));
+            _trackerService.EditEventTracker(userId, trackerId, request.Name, customizations);
+            return Ok();
         }
 
         [HttpDelete("/trackers/{trackerId}")]
@@ -69,8 +69,8 @@ namespace ItHappened.Api.Controllers
         public IActionResult DeleteTracker([FromRoute]Guid trackerId)
         {
             var userId = Guid.Parse(User.FindFirstValue(JwtClaimTypes.Id));
-            var deletedTracker = _trackerService.DeleteEventTracker(userId, trackerId);
-            return Ok(_mapper.Map<TrackerResponse>(deletedTracker));
+            _trackerService.DeleteEventTracker(userId, trackerId);
+            return Ok();
         }
     }
 }
