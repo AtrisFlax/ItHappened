@@ -11,5 +11,6 @@ namespace ItHappened.Domain
         IReadOnlyCollection<Event> LoadAllTrackerEvents(Guid trackerId);
         void UpdateEvent(Event @event);
         void DeleteEvent(Guid eventId);
+        bool IsContainEvent(Guid eventId);
     }
 }

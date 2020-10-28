@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using ItHappened.Application.Errors;
 using ItHappened.Application.Services.EventService;
 using ItHappened.Application.Services.TrackerService;
@@ -13,16 +14,19 @@ namespace ItHappened.UnitTests.ServicesTests
     public class EventServiceTests
     {
         private EventTracker _tracker;
+        private Event _event;
         private ITrackerRepository _trackerRepository;
-        private readonly IEventRepository _eventRepository;
+        private IEventRepository _eventRepository;
         private IEventService _eventService;
         
         [SetUp]
         public void Init()
         {
             _trackerRepository = new TrackerRepository();
+            _eventRepository = new EventRepository();
             _eventService = new EventService(_eventRepository, _trackerRepository);
             _tracker = TestingMethods.CreateTrackerWithDefaultCustomization(Guid.NewGuid());
+            _event = TestingMethods.CreateEvent(_tracker.Id, _tracker.CreatorId);
         }
 
         [Test]
@@ -61,309 +65,173 @@ namespace ItHappened.UnitTests.ServicesTests
                 _eventService.CreateEvent(tracker.CreatorId, tracker.Id, DateTimeOffset.Now,
                     new EventCustomParameters()));
         }
-        
+
         [Test]
-        public void CreateEventGoodCase_CreatedEventSavedInRepository()
+        public void GetEventWhenNoRequiredEventInRepository_ThrowsRestException()
         {
-            
+            Assert.Throws<RestException>(() =>
+                _eventService.GetEvent(Guid.NewGuid(), Guid.NewGuid()));
         }
         
-        // [Test]
-        // public void AddEventToNonExistentTracker_TrackerDontExistStatus()
-        // {
-        //     var eventToAdd = CreateEvent(Guid.NewGuid());
-        //     const EventTrackerServiceStatusCodes expected = EventTrackerServiceStatusCodes.TrackerDontExist;
-        //
-        //     var actual = _trackerService
-        //         .AddEventToTracker(Guid.NewGuid(), Guid.NewGuid(), eventToAdd);
-        //     
-        //     Assert.AreEqual(expected, actual);
-        // }
-        //
-        // [Test]
-        // public void AddEventWhenEventAlreadyExistInRepository_EventAlreadyExistStatus()
-        // {
-        //     var eventToAdd = CreateEvent(Guid.NewGuid());
-        //     _eventRepository.CreateEvent(eventToAdd);
-        //     const EventTrackerServiceStatusCodes expected = EventTrackerServiceStatusCodes.EventAlreadyExist;
-        //
-        //     var actual = _trackerService
-        //         .AddEventToTracker(Guid.NewGuid(), Guid.NewGuid(), eventToAdd);
-        //     
-        //     Assert.AreEqual(expected, actual);
-        // }
-        //
-        // [Test]
-        // public void AddEventToTrackerNotByTrackerCreator_WrongInitiatorIdStatus()
-        // {
-        //     var wrongCreatorId = Guid.NewGuid();
-        //     var eventToAdd = CreateEvent(Guid.NewGuid());
-        //     _trackerRepository.SaveTracker(_tracker);
-        //     const EventTrackerServiceStatusCodes expected = EventTrackerServiceStatusCodes.WrongInitiatorId;
-        //
-        //     var actual = 
-        //         _trackerService.AddEventToTracker(wrongCreatorId, _tracker.Id, eventToAdd);
-        //     
-        //     Assert.AreEqual(expected, actual);
-        // }
-        //
-        // [Test]
-        // public void AddEventToTrackerWithDifferentEventCreator_WrongEventCreatorIdStatus()
-        // {
-        //     var userId = Guid.NewGuid();
-        //     var tracker = CreateEventTracker(userId);
-        //     _trackerRepository.SaveTracker(tracker);
-        //     var eventToAdd = CreateEvent(Guid.NewGuid());
-        //     const EventTrackerServiceStatusCodes expected = EventTrackerServiceStatusCodes.WrongEventCreatorId;
-        //
-        //     var actual = _trackerService.AddEventToTracker(userId, tracker.Id, eventToAdd);
-        //     
-        //     Assert.AreEqual(expected, actual);
-        // }
-        //
-        // [Test]
-        // public void AddEventToTrackerGoodCase_OkStatusAndTrackerEventsNumberIncreases()
-        // {
-        //     var userId = Guid.NewGuid();
-        //     var tracker = CreateEventTracker(userId);
-        //     _trackerRepository.SaveTracker(tracker);
-        //     var eventToAdd = CreateEvent(userId, tracker.Id);
-        //     const EventTrackerServiceStatusCodes expected = EventTrackerServiceStatusCodes.Ok;
-        //     const int expectedTrackerEventsNumber = 1;
-        //     
-        //     var actual = _trackerService.AddEventToTracker(userId, tracker.Id, eventToAdd);
-        //     var trackerEventsNumber =_eventRepository.LoadAllTrackerEvents(tracker.Id).Count;
-        //     Assert.AreEqual(expected, actual);
-        //     Assert.AreEqual(expectedTrackerEventsNumber, trackerEventsNumber);
-        // }
-        //
-        // [Test]
-        // public void AddEventToTrackerWhenEventCustomisationDontMatchTrackerCustomisation_WrongEventCustomisationStatus()
-        // {
-        //     var userId = Guid.NewGuid();
-        //     var tracker = CreateEventTracker(userId);
-        //     _trackerRepository.SaveTracker(tracker);
-        //     var eventToAdd = CreateEvent(userId, tracker.Id);
-        //     eventToAdd.Comment = new Comment("comment");
-        //     const EventTrackerServiceStatusCodes expected = EventTrackerServiceStatusCodes.WrongEventCustomisation;
-        //     
-        //     var actual = _trackerService.AddEventToTracker(userId, tracker.Id, eventToAdd);
-        //     
-        //     Assert.AreEqual(expected, actual);
-        //     Assert.AreNotEqual(tracker.HasComment, eventToAdd.Comment.IsSome);
-        //     Assert.AreEqual(tracker.HasPhoto, eventToAdd.Photo.IsSome);
-        //     Assert.AreEqual(tracker.HasGeoTag, eventToAdd.GeoTag.IsSome);
-        //     Assert.AreEqual(tracker.HasRating, eventToAdd.Rating.IsSome);
-        //     Assert.AreEqual(tracker.HasScale, eventToAdd.Scale.IsSome);
-        // }
-        //
-        // [Test]
-        // public void RemoveEventFromNonExistentTracker_TrackerDontExistStatus()
-        // {
-        //     const EventTrackerServiceStatusCodes expected = EventTrackerServiceStatusCodes.TrackerDontExist;
-        //
-        //     var actual = _trackerService
-        //         .RemoveEventFromTracker(Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid());
-        //     
-        //     Assert.AreEqual(expected, actual);
-        // }
-        //
-        // [Test]
-        // public void RemoveEventWhenEventDontExist_EventDontExistStatus()
-        // {
-        //     _trackerRepository.SaveTracker(_tracker);
-        //     const EventTrackerServiceStatusCodes expected = EventTrackerServiceStatusCodes.EventDontExist;
-        //
-        //     var actual = _trackerService
-        //         .RemoveEventFromTracker(Guid.NewGuid(), _tracker.Id, Guid.NewGuid());
-        //     
-        //     Assert.AreEqual(expected, actual);
-        // }
-        //
-        // [Test]
-        // public void RemoveEventFromTrackerNotByTrackerCreator_WrongInitiatorIdStatus()
-        // {
-        //     _trackerRepository.SaveTracker(_tracker);
-        //     var eventToRemove = CreateEvent(Guid.NewGuid());
-        //     _eventRepository.CreateEvent(eventToRemove);
-        //     const EventTrackerServiceStatusCodes expected = EventTrackerServiceStatusCodes.WrongInitiatorId;
-        //
-        //     var actual = 
-        //         _trackerService.RemoveEventFromTracker(Guid.NewGuid(), _tracker.Id, eventToRemove.Id);
-        //     
-        //     Assert.AreEqual(expected, actual);
-        // }
-        //
-        // [Test]
-        // public void RemoveEventFromTrackerWithDifferentEventCreator_WrongEventCreatorIdStatus()
-        // {
-        //     var userId = Guid.NewGuid();
-        //     var tracker = CreateEventTracker(userId);
-        //     _trackerRepository.SaveTracker(tracker);
-        //     var eventToRemove = CreateEvent(Guid.NewGuid());
-        //     _eventRepository.CreateEvent(eventToRemove);
-        //     const EventTrackerServiceStatusCodes expected = EventTrackerServiceStatusCodes.WrongEventCreatorId;
-        //
-        //     var actual = _trackerService.RemoveEventFromTracker(userId, tracker.Id, eventToRemove.Id);
-        //     
-        //     Assert.AreEqual(expected, actual);
-        // }
-        //
-        // [Test]
-        // public void RemoveEventFromTrackerGoodCase_OkStatusAndTrackerEventsNumberDecreases()
-        // {
-        //     var userId = Guid.NewGuid();
-        //     var tracker = CreateEventTracker(userId);
-        //     _trackerRepository.SaveTracker(tracker);
-        //     var event1 = CreateEvent(userId, tracker.Id);
-        //     var eventToRemove = CreateEvent(userId, tracker.Id);
-        //     _eventRepository.AddRangeOfEvents(new []{event1, eventToRemove});
-        //     const EventTrackerServiceStatusCodes expected = EventTrackerServiceStatusCodes.Ok;
-        //     const int expectedTrackerEventsNumber = 1;
-        //     
-        //     var actual = _trackerService.RemoveEventFromTracker(userId, tracker.Id, eventToRemove.Id);
-        //     var trackerEventsNumber =_eventRepository.LoadAllTrackerEvents(tracker.Id).Count;
-        //     
-        //     Assert.AreEqual(expected, actual);
-        //     Assert.AreEqual(expectedTrackerEventsNumber, trackerEventsNumber);
-        // }
-        //
-        // [Test]
-        // public void EditEventFromNonExistentTracker_TrackerDontExistStatus()
-        // {
-        //     var eventToEdit = CreateEvent(Guid.NewGuid());
-        //     const EventTrackerServiceStatusCodes expected = EventTrackerServiceStatusCodes.TrackerDontExist;
-        //
-        //     var actual = _trackerService
-        //         .EditEventInTracker(Guid.NewGuid(), Guid.NewGuid(), eventToEdit);
-        //     
-        //     Assert.AreEqual(expected, actual);
-        // }
-        //
-        // [Test]
-        // public void EditEventFromTrackerNotByTrackerCreator_WrongInitiatorIdStatus()
-        // {
-        //     var eventToEdit = CreateEvent(Guid.NewGuid());
-        //     _trackerRepository.SaveTracker(_tracker);
-        //     const EventTrackerServiceStatusCodes expected = EventTrackerServiceStatusCodes.WrongInitiatorId;
-        //
-        //     var actual = 
-        //         _trackerService.EditEventInTracker(Guid.NewGuid(), _tracker.Id, eventToEdit);
-        //     
-        //     Assert.AreEqual(expected, actual);
-        // }
-        //
-        // [Test]
-        // public void EditEventWhenEventDontExistInRepository_EventDontExistStatus()
-        // {
-        //     var eventToEdit = CreateEvent(_tracker.CreatorId);
-        //     _trackerRepository.SaveTracker(_tracker);
-        //     const EventTrackerServiceStatusCodes expected = EventTrackerServiceStatusCodes.EventDontExist;
-        //     
-        //     var actual = 
-        //         _trackerService.EditEventInTracker(_tracker.CreatorId, _tracker.Id, eventToEdit);
-        //     
-        //     Assert.AreEqual(expected, actual);
-        // }
-        //
-        // [Test]
-        // public void EditEventGoodCase_OkStatusAndEventDataChanges()
-        // {
-        //     _trackerRepository.SaveTracker(_tracker);
-        //     var eventInitial = CreateEvent(_tracker.CreatorId, _tracker.Id);
-        //     var eventEdited = EventBuilder
-        //         .Event(eventInitial.Id,
-        //             eventInitial.CreatorId,
-        //             _tracker.Id,
-        //             DateTimeOffset.Now - TimeSpan.FromDays(1),
-        //             "Edited event")
-        //         .WithRating(7)
-        //         .WithComment("Hello!")
-        //         .Build();
-        //     _eventRepository.CreateEvent(eventInitial);
-        //     const EventTrackerServiceStatusCodes expected = EventTrackerServiceStatusCodes.Ok;
-        //     
-        //     var actual = 
-        //         _trackerService.EditEventInTracker(_tracker.CreatorId, _tracker.Id, eventEdited);
-        //     
-        //     Assert.AreEqual(expected, actual);
-        //     Assert.True(eventInitial.Rating.IsNone);
-        //     Assert.True(eventInitial.Comment.IsNone);
-        //     Assert.AreEqual("Hello!", eventEdited.Comment.ValueUnsafe().Text);
-        //     Assert.AreEqual(7, eventEdited.Rating.ValueUnsafe());
-        // }
-        //
-        // [Test]
-        // public void GetAllEventsFromTrackerWhenTrackerDontExist_TrackerDontExistStatusAndEmptyCollection()
-        // {
-        //     const EventTrackerServiceStatusCodes expected = EventTrackerServiceStatusCodes.TrackerDontExist;
-        //     
-        //     var (collection, statusOfResult) = _trackerService
-        //         .GetAllEventsFromTracker(Guid.NewGuid(), Guid.NewGuid());
-        //     
-        //     Assert.AreEqual(expected, statusOfResult);
-        //     Assert.False(collection.Any());
-        // }
-        //
-        // [Test]
-        // public void GetAllEventsFromTrackerNotByTrackerCreator_WrongInitiatorIdStatusAndEmptyCollection()
-        // {
-        //     _trackerRepository.SaveTracker(_tracker);
-        //     const EventTrackerServiceStatusCodes expected = EventTrackerServiceStatusCodes.WrongInitiatorId;
-        //     
-        //     var (collection, statusOfResult) = _trackerService
-        //         .GetAllEventsFromTracker(_tracker.Id, Guid.NewGuid());
-        //     
-        //     Assert.AreEqual(expected, statusOfResult);
-        //     Assert.False(collection.Any());
-        // }
-        //
-        // [Test]
-        // public void GetAllEventsFromTrackerGoodCase_OkStatusAndCollectionWithEvents()
-        // {
-        //     _trackerRepository.SaveTracker(_tracker);
-        //     var event1 = CreateEvent(_tracker.CreatorId, _tracker.Id);
-        //     var event2 = CreateEvent(_tracker.CreatorId, _tracker.Id);
-        //     _eventRepository.AddRangeOfEvents(new []{event1, event2});
-        //     const EventTrackerServiceStatusCodes expected = EventTrackerServiceStatusCodes.Ok;
-        //     
-        //     var (collection, statusOfResult) = _trackerService
-        //         .GetAllEventsFromTracker(_tracker.Id, _tracker.CreatorId);
-        //     
-        //     Assert.AreEqual(expected, statusOfResult);
-        //     Assert.AreEqual(2, collection.Count);
-        // }
+        [Test]
+        public void GetEventWhenUserAskNotHisOwnEvent_ThrowsRestException()
+        {
+            var eventOfAnotherUser = TestingMethods.CreateEvent(Guid.NewGuid(), Guid.NewGuid());
+            _eventRepository.SaveEvent(eventOfAnotherUser);
+            
+            Assert.Throws<RestException>(() =>
+                _eventService.GetEvent(Guid.NewGuid(), eventOfAnotherUser.Id));
+        }
         
-        // private EventTracker CreateEventTracker()
+        [Test]
+        public void GetEventGoodCase_ReturnEvent()
+        {
+            _eventRepository.SaveEvent(_event);
+
+            var eventFromService = _eventService.GetEvent(_event.CreatorId, _event.Id);
+            
+            Assert.AreEqual(_event.GetHashCode(),eventFromService.GetHashCode());
+            Assert.True(_tracker.IsUpdated);
+        }
+
+        [Test]
+        public void GetAllTrackerEventsWhenNoRequiredTrackerInRepository_ThrowsRestException()
+        {
+            Assert.Throws<RestException>(() =>
+                _eventService.GetAllTrackerEvents(Guid.NewGuid(), Guid.NewGuid()));
+        }
+        
+        [Test]
+        public void GetAllTrackerEventsWhenUserAskNotHisTracker_ThrowsRestException()
+        {
+            _trackerRepository.SaveTracker(_tracker);
+            
+            Assert.Throws<RestException>(() =>
+                _eventService.GetAllTrackerEvents(Guid.NewGuid(), _tracker.Id));
+        }
+        
+        [Test]
+        public void GetAllTrackerEventsGoodCase_ReturnsCollectionOfEvents()
+        {
+            _trackerRepository.SaveTracker(_tracker);
+            var event2 = TestingMethods.CreateEvent(_tracker.Id, _tracker.CreatorId);
+            _eventRepository.AddRangeOfEvents(new []{_event, event2});
+            const int expected = 2;
+            
+            var events = _eventService.GetAllTrackerEvents(_tracker.CreatorId, _tracker.Id);
+            
+            Assert.AreEqual(expected, events.Count);
+            Assert.AreEqual(_event.GetHashCode(), events.First().GetHashCode());
+            Assert.AreEqual(event2.GetHashCode(), events.Last().GetHashCode());
+        }
+        
+        [Test]
+        public void GetAllTrackerEventsWhenTrackerHasNoEvents_ReturnsEmptyCollection()
+        {
+            var tracker = TestingMethods.CreateTrackerWithDefaultCustomization(Guid.NewGuid(), "Tracker");
+            _trackerRepository.SaveTracker(tracker);
+            const int expected = 0;
+            
+            var events = _eventService.GetAllTrackerEvents(tracker.CreatorId, tracker.Id);
+            
+            Assert.AreEqual(expected, events.Count);
+        }
+
+        [Test]
+        public void EditEventWhenNoRequiredEventInRepository_ThrowsRestException()
+        {
+            Assert.Throws<RestException>(() =>
+                _eventService.EditEvent(Guid.NewGuid(),
+                    Guid.NewGuid(),
+                    DateTimeOffset.Now,
+                    new EventCustomParameters()));
+        }
+        
+        [Test]
+        public void EditEventWhenUserAskNotHisEvent_ThrowsRestException()
+        {
+            _trackerRepository.SaveTracker(_tracker);
+            _eventRepository.SaveEvent(_event);
+            
+            Assert.Throws<RestException>(() =>
+                _eventService.EditEvent(Guid.NewGuid(),
+                    _event.Id,
+                    DateTimeOffset.Now,
+                    new EventCustomParameters()));
+        }
+        
+        [Test]
+        public void EditEventWhenNewCustomizationDontMatchTrackerCustomization_ThrowsRestException()
+        {
+            //TODO сделать после merge. Возможно нужно два вида. Где Customization is required and not
+        }
+        
+        [Test]
+        public void EditEventGoodCase_RequiredEventUpdatedInRepository()
+        {
+            //TODO сделать после merge
+        }
+
+        [Test]
+        public void DeleteEventWhenNoRequiredEventInRepository_ThrowsRestException()
+        {
+            Assert.Throws<RestException>(() =>
+                _eventService.DeleteEvent(Guid.NewGuid(),
+                    Guid.NewGuid()));
+        }
+        
+        [Test]
+        public void DeleteEventWhenUserAskNotHisEvent_ThrowsRestException()
+        {
+            _eventRepository.SaveEvent(_event);
+            
+            Assert.Throws<RestException>(() =>
+                _eventService.DeleteEvent(Guid.NewGuid(),
+                    _event.Id));
+        }
+        
+        [Test]
+        public void DeleteEventGoodCase_EventRemovedFromRepository()
+        {
+            _trackerRepository.SaveTracker(_tracker);
+            _eventRepository.SaveEvent(_event);
+            
+            _eventService.DeleteEvent(_event.CreatorId, _event.Id);
+            
+            Assert.False(_eventRepository.IsContainEvent(_event.Id));
+            Assert.True(_tracker.IsUpdated);
+        }
+        
+        //TODO проверить после merge, т.к. функция IsSettingsAndEventCustomizationsMatch написана в этой ветке с логическими ошибками
+        // [Test]
+        // public void CreateEventGoodCase_CreatedEventSavedInRepository()
         // {
-        //     var tracker = EventTrackerBuilder
-        //         .Tracker(Guid.NewGuid(), Guid.NewGuid(), "tracker")
-        //         .Build();
+        //     var tracker = TestingMethods.CreateTrackerWithRequiredCustomization(Guid.NewGuid(), "tracker",
+        //         new TrackerCustomizationSettings(
+        //             Option<string>.Some("meter"), 
+        //             true, 
+        //             false, 
+        //             true, 
+        //             false, 
+        //             true, 
+        //             false));
+        //     _trackerRepository.SaveTracker(tracker);
+        //     var happensDateOfNewEvent = DateTimeOffset.Now;
+        //     var newEventCustomization = new EventCustomParameters(
+        //         Option<Photo>.Some(new Photo(photoBytes: new byte[5])),
+        //         Option<double>.Some(1),
+        //         Option<double>.None,
+        //         Option<GeoTag>.Some(new GeoTag(10, 20)),
+        //         Option<Comment>.None);
+        //     var createdEventId = _eventService.CreateEvent(
+        //         tracker.CreatorId,
+        //         tracker.Id, happensDateOfNewEvent,
+        //         newEventCustomization);
         //
-        //     return tracker;
-        // }
+        //     var eventFromRepository = _eventRepository.LoadEvent(createdEventId);
         //
-        // private EventTracker CreateEventTracker(Guid creatorId)
-        // {
-        //     var tracker = EventTrackerBuilder
-        //         .Tracker(creatorId, Guid.NewGuid(), "tracker: " + $"{creatorId}")
-        //         .Build();
-        //
-        //     return tracker;
-        // }
-        //
-        // private Event CreateEvent(Guid creatorId)
-        // {
-        //     return EventBuilder
-        //         .Event(Guid.NewGuid(), creatorId, _tracker.Id, DateTimeOffset.Now, "event: " + $"{creatorId}")
-        //         .Build();
-        // }
-        //
-        // private Event CreateEvent(Guid creatorId, Guid trackerId)
-        // {
-        //     return EventBuilder
-        //         .Event(Guid.NewGuid(), creatorId, trackerId, DateTimeOffset.Now, "event: " + $"{creatorId}")
-        //         .Build();
+        //     Assert.AreEqual(newEventCustomization.GetHashCode(), eventFromRepository.CustomizationsParameters.GetHashCode());
+        //     Assert.AreEqual(happensDateOfNewEvent, eventFromRepository.HappensDate);
         // }
     }
 }

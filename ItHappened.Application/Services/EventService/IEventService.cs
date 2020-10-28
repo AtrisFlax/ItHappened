@@ -9,17 +9,15 @@ namespace ItHappened.Application.Services.EventService
         Guid CreateEvent(Guid actorId, Guid trackerId, DateTimeOffset eventHappensDate,
             EventCustomParameters customParameters);
 
-        void AddRangeEvent(Guid actorId, Guid trackerId, IEnumerable<EventsInfoRange> eventsInfoRange);
-
         Event GetEvent(Guid actorId, Guid eventId);
-        IReadOnlyCollection<Event> GetAllEvents(Guid actorId, Guid trackerId);
+        IReadOnlyCollection<Event> GetAllTrackerEvents(Guid actorId, Guid trackerId);
 
-        Event EditEvent(Guid actorId,
+        void EditEvent(Guid actorId,
             Guid eventId,
             DateTimeOffset timeStamp,
             EventCustomParameters customParameters);
 
-        Event DeleteEvent(Guid actorId, Guid eventId);
+        void DeleteEvent(Guid actorId, Guid eventId);
 
         public IReadOnlyCollection<Event> GetAllFilteredEvents(Guid actorId, Guid trackerId, IEnumerable<IEventsFilter> eventsFilters);
     }

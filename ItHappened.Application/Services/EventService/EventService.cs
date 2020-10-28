@@ -29,7 +29,14 @@ namespace ItHappened.Application.Services.EventService
             {
                 throw new RestException(HttpStatusCode.BadRequest);
             }
-            var newEvent = new Event(Guid.NewGuid(), actorId, trackerId, eventHappensDate, customParameters);
+            
+            var newEventId = Guid.NewGuid();
+            while (_eventRepository.IsContainEvent(newEventId))
+            {//if generated GUID already exist in repository -> regenerate
+                newEventId = Guid.NewGuid();
+            }
+            
+            var newEvent = new Event(newEventId, actorId, trackerId, eventHappensDate, customParameters);
             
             if (!tracker.IsSettingsAndEventCustomizationsMatch(newEvent))
             {
@@ -40,67 +47,77 @@ namespace ItHappened.Application.Services.EventService
             tracker.IsUpdated = true;
             return newEvent.Id;
         }
-
-        public void AddRangeEvent(Guid actorId, Guid trackerId, IEnumerable<EventsInfoRange> eventsInfoRange)
-        {
-            var tracker = _trackerRepository.LoadTracker(trackerId);
-            foreach (var eventInfo in eventsInfoRange)
-            {
-                var newEvent = new Event(Guid.NewGuid(), actorId, trackerId, eventInfo.HappensDate,
-                    eventInfo.CustomParameters);
-                if (tracker.IsSettingsAndEventCustomizationsMatch(newEvent))
-                {
-                    _eventRepository.SaveEvent(newEvent);
-                    tracker.IsUpdated = true;
-                } //if customization not match skip
-            }
-        }
-
-
+    
         public Event GetEvent(Guid actorId, Guid eventId)
         {
+            if (!_eventRepository.IsContainEvent(eventId))
+            {
+                throw new RestException(HttpStatusCode.NotFound);
+            }
+            
             var @event = _eventRepository.LoadEvent(eventId);
             if (actorId != @event.CreatorId)
             {
                 throw new RestException(HttpStatusCode.BadRequest);
             }
+            
             return @event;
         }
 
-        public IReadOnlyCollection<Event> GetAllFilteredEvents(Guid actorId, Guid trackerId, IEnumerable<IEventsFilter> eventsFilters)
+        public IReadOnlyCollection<Event> GetAllTrackerEvents(Guid actorId, Guid trackerId)
         {
-            return EventsFilter.Filter(GetAllEvents(actorId, trackerId), eventsFilters);
-        }
-
-        public IReadOnlyCollection<Event> GetAllEvents(Guid actorId, Guid trackerId)
-        {
+            if (!_trackerRepository.IsContainTracker(trackerId))
+            {
+                throw new RestException(HttpStatusCode.NotFound);
+            }
+            
             var tracker = _trackerRepository.LoadTracker(trackerId);
-            if (actorId != tracker.CreatorId) {
+            if (actorId != tracker.CreatorId) 
+            {
                 throw new RestException(HttpStatusCode.BadRequest);
             }
-            var events = _eventRepository.LoadAllTrackerEvents(trackerId);
-            return events;
+            
+            return _eventRepository.LoadAllTrackerEvents(trackerId);
         }
+        
+        public IReadOnlyCollection<Event> GetAllFilteredEvents(Guid actorId, Guid trackerId, IEnumerable<IEventsFilter> eventsFilters)
+        {
+            return EventsFilter.Filter(GetAllTrackerEvents(actorId, trackerId), eventsFilters);
+        }
+        
 
-        public Event EditEvent(Guid actorId,
+        public void EditEvent(Guid actorId,
             Guid eventId,
             DateTimeOffset timeStamp,
             EventCustomParameters customParameters)
         {
+            if (!_eventRepository.IsContainEvent(eventId))
+            {
+                throw new RestException(HttpStatusCode.NotFound);
+            }
+            
             var @event = _eventRepository.LoadEvent(eventId);
-            if (actorId != @event.CreatorId) 
+            if (actorId != @event.CreatorId)
             {
                 throw new RestException(HttpStatusCode.BadRequest);
             }
+            
             var tracker = _trackerRepository.LoadTracker(@event.TrackerId);
+            //TODO: тут проверить соответствие кастомизации трекера и редактируемого события
+            //оставляю до merge, т.к. там эти функции и поле трекера изменились
+            
             var updatedEvent = new Event(eventId, @event.CreatorId, @event.TrackerId, timeStamp, customParameters);
             _eventRepository.UpdateEvent(updatedEvent);
             tracker.IsUpdated = true;
-            return updatedEvent;
         }
 
-        public Event DeleteEvent(Guid actorId, Guid eventId)
+        public void DeleteEvent(Guid actorId, Guid eventId)
         {
+            if (!_eventRepository.IsContainEvent(eventId))
+            {
+                throw new RestException(HttpStatusCode.NotFound);
+            }
+            
             var @event = _eventRepository.LoadEvent(eventId);
             if (actorId != @event.CreatorId)
             {
@@ -110,7 +127,6 @@ namespace ItHappened.Application.Services.EventService
             var tracker = _trackerRepository.LoadTracker(@event.TrackerId);
             _eventRepository.DeleteEvent(eventId);
             tracker.IsUpdated = true;
-            return @event;
         }
     }
 }

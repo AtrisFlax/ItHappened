@@ -41,5 +41,10 @@ namespace ItHappened.Infrastructure.Repositories
         {
             _events.Remove(eventId);
         }
+
+        public bool IsContainEvent(Guid eventId)
+        {
+            return _events.ContainsKey(eventId);
+        }
     }
 }
