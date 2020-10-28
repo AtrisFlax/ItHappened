@@ -36,8 +36,8 @@ namespace ItHappened.Api.Controllers
         {
             var userId = Guid.Parse(User.FindFirstValue(JwtClaimTypes.Id));
             var customParameters = _myMapper.GetEventCustomParametersFromRequest(request);
-            var @event = _eventService.AddEvent(userId, trackerId, request.HappensDate, customParameters);
-            return Ok(_myMapper.EventToJson(@event));
+            var eventId = _eventService.CreateEvent(userId, trackerId, request.HappensDate, customParameters);
+            return Ok(eventId);
         }
 
         [HttpGet("/trackers/{trackerId}/events/filters")]
@@ -64,7 +64,7 @@ namespace ItHappened.Api.Controllers
         public IActionResult GetAllEvents([FromRoute] Guid trackerId)
         {
             var userId = Guid.Parse(User.FindFirstValue(JwtClaimTypes.Id));
-            var events = _eventService.GetAllEvents(userId, trackerId);
+            var events = _eventService.GetAllTrackerEvents(userId, trackerId);
             return Ok(_myMapper.EventsToJson(events));
         }
 
@@ -74,8 +74,8 @@ namespace ItHappened.Api.Controllers
         {
             var userId = Guid.Parse(User.FindFirstValue(JwtClaimTypes.Id));
             var customParameters = _myMapper.GetEventCustomParametersFromRequest(request);
-            var editedEvent = _eventService.EditEvent(userId, eventId, request.HappensDate, customParameters);
-            return Ok(_mapper.Map<EventResponse>(editedEvent));
+            _eventService.EditEvent(userId, eventId, request.HappensDate, customParameters);
+            return Ok();
         }
 
         [HttpDelete("events/{eventId}")]
@@ -83,8 +83,8 @@ namespace ItHappened.Api.Controllers
         public IActionResult DeleteEvent([FromRoute] Guid eventId)
         {
             var userId = Guid.Parse(User.FindFirstValue(JwtClaimTypes.Id));
-            var deletedTracker = _eventService.DeleteEvent(userId, eventId);
-            return Ok(_mapper.Map<EventResponse>(deletedTracker));
+            _eventService.DeleteEvent(userId, eventId);
+            return Ok();
         }
 
         private static IEnumerable<IEventsFilter> CreateFilters(EventFilterRequest eventFilterRequest)

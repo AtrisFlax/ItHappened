@@ -9,7 +9,7 @@ namespace ItHappened.Infrastructure.Repositories
     {
         private readonly Dictionary<Guid, Event> _events = new Dictionary<Guid, Event>();
 
-        public void AddEvent(Event newEvent)
+        public void SaveEvent(Event newEvent)
         {
             _events.Add(newEvent.Id, newEvent);
         }
@@ -40,6 +40,11 @@ namespace ItHappened.Infrastructure.Repositories
         public void DeleteEvent(Guid eventId)
         {
             _events.Remove(eventId);
+        }
+
+        public bool IsContainEvent(Guid eventId)
+        {
+            return _events.ContainsKey(eventId);
         }
     }
 }

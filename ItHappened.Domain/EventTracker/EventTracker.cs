@@ -8,6 +8,7 @@ namespace ItHappened.Domain
         public Guid CreatorId { get; }
         public string Name { get; }
         public TrackerCustomizationSettings CustomizationSettings { get; }
+        public bool IsUpdated { get; set; } = true;
 
         public EventTracker(Guid id, Guid creatorId, string name, TrackerCustomizationSettings customizationSettings)
         {
@@ -17,23 +18,19 @@ namespace ItHappened.Domain
             CustomizationSettings = customizationSettings;
         }
 
-        public bool TrackerCustomizationsAndEventCustomizationsMatch(Event @event)
+        public bool IsSettingsAndEventCustomizationsMatch(Event @event)
         {
-            return IsCustomizationMatch(CustomizationSettings.IsPhotoRequired, @event.CustomizationsParameters.Photo.IsSome) &&
-                   IsCustomizationMatch(CustomizationSettings.IsCommentRequired, @event.CustomizationsParameters.Comment.IsSome) &&
-                   IsCustomizationMatch(CustomizationSettings.IsRatingRequired, @event.CustomizationsParameters.Rating.IsSome) &&
-                   IsCustomizationMatch(CustomizationSettings.IsGeoTagRequired, @event.CustomizationsParameters.GeoTag.IsSome) &&
-                   IsCustomizationMatch(CustomizationSettings.ScaleMeasurementUnit.IsSome, @event.CustomizationsParameters.Scale.IsSome);
+            return /*CustomizationMatch(CustomizationSettings.IsPhotoRequired, @event.CustomizationsParameters.Photo.IsSome) &&*/ //TODO issue #148
+                   CustomizationMatch(CustomizationSettings.IsCommentRequired, @event.CustomizationsParameters.Comment.IsSome) &&
+                   CustomizationMatch(CustomizationSettings.IsRatingRequired, @event.CustomizationsParameters.Rating.IsSome) &&
+                   CustomizationMatch(CustomizationSettings.IsGeoTagRequired, @event.CustomizationsParameters.GeoTag.IsSome) &&
+                   CustomizationMatch(CustomizationSettings.ScaleMeasurementUnit.IsSome, @event.CustomizationsParameters.Scale.IsSome);
         }
 
 
-        private bool IsCustomizationMatch(bool isTrackerRequired, bool isEventHas)
+        private bool CustomizationMatch(bool isRequired, bool isEventSome)
         {
-            if (CustomizationSettings.ForceCustomizations)
-            {
-                return isTrackerRequired == isEventHas;
-            }
-            return true;
+            return isRequired && isEventSome || CustomizationSettings.AreCustomizationsOptional;
         }
     }
 }

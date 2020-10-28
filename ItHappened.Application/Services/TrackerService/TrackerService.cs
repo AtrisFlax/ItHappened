@@ -10,26 +10,29 @@ namespace ItHappened.Application.Services.TrackerService
     public class TrackerService : ITrackerService
     {
         private readonly ITrackerRepository _trackerRepository;
-        private readonly IEventRepository _eventRepository;
-        public TrackerService(ITrackerRepository trackerRepository, IEventRepository eventRepository)
+        public TrackerService(ITrackerRepository trackerRepository)
         {
             _trackerRepository = trackerRepository;
-            _eventRepository = eventRepository;
         }
         
-        public EventTracker CreateEventTracker(Guid creatorId, string name, TrackerCustomizationSettings customizationSettings)
+        public Guid CreateEventTracker(Guid creatorId, string name, TrackerCustomizationSettings customizationSettings)
         {
-            var id = Guid.NewGuid();
-            var tracker = new EventTracker(id, creatorId, name, customizationSettings);
+            var tracker = new EventTracker(Guid.NewGuid(), creatorId, name, customizationSettings);
             _trackerRepository.SaveTracker(tracker);
-            return tracker;
+            return tracker.Id;
         }
 
         public EventTracker GetEventTracker(Guid actorId, Guid trackerId)
         {
+            if (!_trackerRepository.IsContainTracker(trackerId))
+            {
+                throw new RestException(HttpStatusCode.NotFound);
+            }
             var tracker = _trackerRepository.LoadTracker(trackerId);
             if (actorId != tracker.CreatorId)
+            {
                 throw new RestException(HttpStatusCode.BadRequest);
+            }
             return tracker;
         }
         
@@ -39,28 +42,38 @@ namespace ItHappened.Application.Services.TrackerService
             return trackers.ToList();
         }
         
-        public EventTracker EditEventTracker(Guid actorId,
+        public void EditEventTracker(Guid actorId,
             Guid trackerId,
             string name,
             TrackerCustomizationSettings customizationSettings)
         {
+            if (!_trackerRepository.IsContainTracker(trackerId))
+            {
+                throw new RestException(HttpStatusCode.NotFound);
+            }
             var tracker = _trackerRepository.LoadTracker(trackerId);
             if (actorId != tracker.CreatorId)
+            {
                 throw new RestException(HttpStatusCode.BadRequest);
-            
+            }
+
             var updatedTracker = new EventTracker(tracker.Id, tracker.CreatorId, name, customizationSettings);
             _trackerRepository.UpdateTracker(updatedTracker);
-            return updatedTracker;
         }
 
-        public EventTracker DeleteEventTracker(Guid actorId, Guid trackerId)
+        public void DeleteEventTracker(Guid actorId, Guid trackerId)
         {
+            if (!_trackerRepository.IsContainTracker(trackerId))
+            {
+                throw new RestException(HttpStatusCode.NotFound);
+            }
             var tracker = _trackerRepository.LoadTracker(trackerId);
             if (actorId != tracker.CreatorId)
+            {
                 throw new RestException(HttpStatusCode.BadRequest);
+            }
 
             _trackerRepository.DeleteTracker(trackerId);
-            return tracker;
         }
     }
 }

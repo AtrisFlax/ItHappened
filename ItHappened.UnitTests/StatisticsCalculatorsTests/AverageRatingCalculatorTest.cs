@@ -15,15 +15,12 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
         private const int MinEventForCalculation = 2;
         private IEventRepository _eventRepository;
         private static Random _rand;
-        private DateTime _now;
 
-        
         [SetUp]
         public void Init()
         {
             _eventRepository = new EventRepository();
             _rand = new Random();
-            _now = DateTime.UtcNow;
         }
 
         [Test]
@@ -31,14 +28,13 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
         {
             //arrange 
             var userId = Guid.NewGuid();
-            var tracker = CreateTracker(userId);
-            var (events, ratings) =
-                CreateEventsWithRating(tracker.Id, userId, _rand.Next() % 10 + MinEventForCalculation);
+            var tracker = CreateTrackerWithDefaultCustomization(userId);
+            var (events, ratings) = CreateEventsWithRating(tracker.Id, userId, _rand.Next() % 10 + MinEventForCalculation);
             _eventRepository.AddRangeOfEvents(events);
             var allEvents = _eventRepository.LoadAllTrackerEvents(tracker.Id);
 
             //act 
-            var fact = new AverageRatingCalculator().Calculate(allEvents, tracker, _now)
+            var fact = new AverageRatingCalculator().Calculate(allEvents, tracker)
                 .ConvertTo<AverageRatingTrackerFact>().ValueUnsafe();
 
             //assert 
@@ -51,17 +47,15 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
         {
             //arrange 
             var userId = Guid.NewGuid();
-            var tracker = CreateTracker(userId);
-            var (events, ratings) =
-                CreateEventsWithRating(tracker.Id, userId, _rand.Next() % 10 + MinEventForCalculation);
-            var eventsWithoutRating =
-                CreateEventsWithoutCustomization(tracker.Id, userId, _rand.Next() % 10 + MinEventForCalculation);
+            var tracker = CreateTrackerWithDefaultCustomization(userId);
+            var (events, ratings) = CreateEventsWithRating(tracker.Id, userId,_rand.Next() % 10 + MinEventForCalculation);
+            var eventsWithoutRating = CreateEventsWithoutCustomization(tracker.Id, userId,_rand.Next() % 10 + MinEventForCalculation);
             _eventRepository.AddRangeOfEvents(events);
             _eventRepository.AddRangeOfEvents(eventsWithoutRating);
             var allEvents = _eventRepository.LoadAllTrackerEvents(tracker.Id);
 
             //act 
-            var fact = new AverageRatingCalculator().Calculate(allEvents, tracker, _now)
+            var fact = new AverageRatingCalculator().Calculate(allEvents, tracker)
                 .ConvertTo<AverageRatingTrackerFact>().ValueUnsafe();
 
             //assert 
@@ -82,7 +76,7 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
             var allEvents = _eventRepository.LoadAllTrackerEvents(tracker.Id);
 
             //act 
-            var fact = new AverageRatingCalculator().Calculate(allEvents, tracker, _now)
+            var fact = new AverageRatingCalculator().Calculate(allEvents, tracker)
                 .ConvertTo<AverageRatingTrackerFact>();
 
             //assert 
@@ -96,16 +90,36 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
             var userId = Guid.NewGuid();
             var tracker = new EventTracker(Guid.NewGuid(), Guid.NewGuid(), "Tracker name",
                 new TrackerCustomizationSettings());
-            var (events, _) = CreateEventsWithRating(tracker.Id, userId, 0);
-            _eventRepository.AddRangeOfEvents(events);
+            var (events, _) = CreateEventsWithRating(tracker.Id, userId,0);
             var allEvents = _eventRepository.LoadAllTrackerEvents(tracker.Id);
 
             //act 
-            var fact = new AverageRatingCalculator().Calculate(allEvents, tracker, _now)
+            var fact = new AverageRatingCalculator().Calculate(allEvents, tracker)
                 .ConvertTo<AverageRatingTrackerFact>();
 
             //assert 
             Assert.True(fact.IsNone);
+        }
+        
+        
+        [Test]
+        void AllEvents()
+        {
+
+
+            for (var i = 0; i <100; i++)
+            {
+                Console.WriteLine(RandomDay());
+            }
+        }
+        
+        
+        private Random gen = new Random();
+        DateTime RandomDay()
+        {
+            DateTime start = new DateTime(1995, 1, 1);
+            int range = (DateTime.Today - start).Days;           
+            return start.AddDays(gen.Next(range));
         }
     }
 }

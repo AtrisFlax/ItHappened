@@ -7,8 +7,9 @@ namespace ItHappened.Domain
     {
         void SaveTracker(EventTracker newTracker);
         EventTracker LoadTracker(Guid eventTrackerId);
-        IEnumerable<EventTracker> LoadAllUserTrackers(Guid userId);
+        IReadOnlyCollection<EventTracker> LoadAllUserTrackers(Guid userId);
         void UpdateTracker(EventTracker eventTracker);
         void DeleteTracker(Guid eventTrackerId);
+        bool IsContainTracker(Guid trackerId);
     }
 }

@@ -6,15 +6,15 @@ namespace ItHappened.Application.Services.TrackerService
 {
     public interface ITrackerService
     {
-        EventTracker CreateEventTracker(Guid creatorId, string name, TrackerCustomizationSettings customizationSettings);
+        Guid CreateEventTracker(Guid creatorId, string name, TrackerCustomizationSettings customizationSettings);
         EventTracker GetEventTracker(Guid actorId, Guid trackerId);
         IReadOnlyCollection<EventTracker> GetEventTrackers(Guid actorId);
 
-        EventTracker EditEventTracker(Guid actorId,
+        void EditEventTracker(Guid actorId,
             Guid trackerId,
             string name,
             TrackerCustomizationSettings customizationSettings);
 
-        EventTracker DeleteEventTracker(Guid actorId, Guid trackerId);
+        void DeleteEventTracker(Guid actorId, Guid trackerId);
     }
 }

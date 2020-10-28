@@ -1,6 +1,8 @@
 using System.Text;
 using AutoMapper;
 using FluentValidation.AspNetCore;
+using Hangfire;
+using Hangfire.MemoryStorage;
 using ItHappened.Api.Authentication;
 using ItHappened.Api.MappingProfiles;
 using ItHappened.Api.Middleware;
@@ -43,19 +45,25 @@ namespace ItHappened.Api
                 {
                     cfg.RegisterValidatorsFromAssemblyContaining<TrackerRequest>();
                 });
-            
-            //app services
-            services.AddSingleton<IUserService, UserService>();
-            services.AddSingleton<IEventService, EventService>();
-            services.AddSingleton<ITrackerService, TrackerService>();
-            services.AddSingleton<IStatisticsService, StatisticsService>();
-            AddMultipleTrackersStatisticsProvider(services);
-            AddSingleTrackerStatisticsProvider(services);
-
             //repos
             services.AddSingleton<IUserRepository, UserRepository>();
             services.AddSingleton<ITrackerRepository, TrackerRepository>();
             services.AddSingleton<IEventRepository, EventRepository>();
+            services.AddSingleton<ISingleFactsRepository, SingleFactsRepository>();
+            services.AddSingleton<IMultipleFactsRepository, MultipleFactsRepository>();
+            
+            //app services
+            
+            services.AddSingleton<IEventService, EventService>();
+            services.AddSingleton<ITrackerService, TrackerService>();
+            
+            AddMultipleTrackersStatisticsProvider(services);
+            AddSingleTrackerStatisticsProvider(services);
+
+            services.AddSingleton<IBackgroundStatisticGenerator, StatisticGenerator>();
+
+            services.AddSingleton<IUserService, UserService>();
+            services.AddSingleton<IStatisticsService, StatisticsService>();
             
             //mappers
             services.AddAutoMapper(typeof(Startup));
@@ -113,7 +121,8 @@ namespace ItHappened.Api
                 swaggerGenOptions.AddSecurityRequirement(securityRequirements);
             });
 
-        
+            services.AddHangfire(configuration => configuration.UseMemoryStorage());
+            services.AddHangfireServer();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -141,10 +150,14 @@ namespace ItHappened.Api
 
             app.UseAuthentication();
             app.UseAuthorization();
+
+            app.UseHangfireDashboard();
+            
             
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+                endpoints.MapHangfireDashboard();
             });
         }
 

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
+using System.Net;
+using ItHappened.Application.Errors;
 using ItHappened.Domain;
 using ItHappened.Domain.Statistics;
 
@@ -8,38 +9,46 @@ namespace ItHappened.Application.Services.StatisticService
 {
     public class StatisticsService : IStatisticsService
     {
+        private readonly IMultipleFactsRepository _multipleFactsRepository;
+        private readonly ISingleFactsRepository _singleFactsRepository;
         private readonly ITrackerRepository _trackerRepository;
-        private readonly IEventRepository _eventRepository;
-        private readonly IMultipleTrackersFactProvider _multipleTrackersFactProvider;
-        private readonly ISingleTrackerFactProvider _singleTrackerFactProvider;
-
-        public StatisticsService(IEventRepository eventRepository, ITrackerRepository trackerRepository,
-            ISingleTrackerFactProvider singleTrackerFactProvider,
-            IMultipleTrackersFactProvider multipleTrackersFactProvider)
+        public StatisticsService(IMultipleFactsRepository multipleFactsRepository, 
+            ISingleFactsRepository singleFactsRepository, ITrackerRepository trackerRepository)
         {
+            _multipleFactsRepository = multipleFactsRepository;
+            _singleFactsRepository = singleFactsRepository;
             _trackerRepository = trackerRepository;
-            _eventRepository = eventRepository;
-            _multipleTrackersFactProvider = multipleTrackersFactProvider;
-            _singleTrackerFactProvider = singleTrackerFactProvider;
         }
 
-        public IReadOnlyCollection<IMultipleTrackersFact> GetStatisticsFactsForAllTrackers(Guid userId)
+        public IReadOnlyCollection<IMultipleTrackersFact> GetMultipleTrackersFacts(Guid userId)
         {
-            var trackers = _trackerRepository.LoadAllUserTrackers(userId);
-            var infoForCalculation  = trackers.Select(x =>
+            if (!_multipleFactsRepository.IsContainFactsForUser(userId))
             {
-                var tracker = _trackerRepository.LoadTracker(x.Id);
-                var events = _eventRepository.LoadAllTrackerEvents(x.Id);
-                return new TrackerWithItsEvents(tracker, events);
-            }).ToList();
-            return _multipleTrackersFactProvider.GetFacts(infoForCalculation.AsReadOnly());
+                throw new RestException(HttpStatusCode.NotFound);
+            }
+            var statisticFacts = _multipleFactsRepository.LoadUserGeneralFacts(userId);
+            return statisticFacts;
         }
 
-        public IReadOnlyCollection<ISingleTrackerFact> GetStatisticsFactsForTracker(Guid trackerId, Guid userId)
+        public IReadOnlyCollection<ISingleTrackerFact> GetSingleTrackerFacts(Guid trackerId, Guid userId)
         {
+            if (!_trackerRepository.IsContainTracker(trackerId))
+            {
+                throw new RestException(HttpStatusCode.NotFound);
+            }
+
             var tracker = _trackerRepository.LoadTracker(trackerId);
-            var events = _eventRepository.LoadAllTrackerEvents(trackerId);
-            return _singleTrackerFactProvider.GetFacts(events, tracker);
+            if (userId != tracker.CreatorId)
+            {
+                throw new RestException(HttpStatusCode.BadRequest);
+            }
+
+            if (!_singleFactsRepository.IsContainFactForTracker(trackerId))
+            {
+                throw new RestException(HttpStatusCode.NotFound);
+            }
+            var statisticFacts = _singleFactsRepository.LoadTrackerSpecificFacts(trackerId);
+            return statisticFacts;
         }
     }
 }

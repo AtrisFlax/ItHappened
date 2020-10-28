@@ -5,11 +5,12 @@ namespace ItHappened.Domain
 {
     public interface IEventRepository
     {
-        void AddEvent(Event newEvent);
+        void SaveEvent(Event newEvent);
         void AddRangeOfEvents(IEnumerable<Event> events);
         Event LoadEvent(Guid eventId);
         IReadOnlyCollection<Event> LoadAllTrackerEvents(Guid trackerId);
         void UpdateEvent(Event @event);
         void DeleteEvent(Guid eventId);
+        bool IsContainEvent(Guid eventId);
     }
 }
