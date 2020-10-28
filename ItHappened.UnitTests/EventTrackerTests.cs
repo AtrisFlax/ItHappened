@@ -8,11 +8,6 @@ namespace ItHappened.UnitTests
 {
     public class EventTrackerTests
     {
-        [SetUp]
-        public void Init()
-        {
-        }
-
         [Test]
         public void CreateTrackerAllCustomizations()
         {
