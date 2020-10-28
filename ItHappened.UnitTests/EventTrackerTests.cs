@@ -102,7 +102,7 @@ namespace ItHappened.UnitTests
             Assert.IsFalse(tracker.CustomizationSettings.IsGeoTagRequired);
             Assert.IsTrue(tracker.CustomizationSettings.IsCommentRequired);
             Assert.IsFalse(tracker.CustomizationSettings.IsScaleRequired);
-            Assert.IsTrue(tracker.CustomizationSettings.ForceCustomizations);
+            Assert.IsTrue(tracker.CustomizationSettings.IsCustomizationRequired);
         }
 
         [Test]
