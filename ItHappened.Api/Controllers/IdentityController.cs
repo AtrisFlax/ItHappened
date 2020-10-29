@@ -24,7 +24,7 @@ namespace ItHappened.Api.Controllers
         [ProducesResponseType(200, Type = typeof(UserResponse))]
         public IActionResult Register([FromBody] UserRequest request)
         {
-            var userWithToken = _userService.Register(request.UserName, request.Password);
+            var userWithToken = _userService.Register(request.UserName, request.Password); 
             return Ok(new UserResponse(userWithToken.User.Id, userWithToken.User.Name, userWithToken.Token));
         }
 

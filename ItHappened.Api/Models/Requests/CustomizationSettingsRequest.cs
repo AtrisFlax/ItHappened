@@ -10,5 +10,4 @@
         public bool IsCommentRequired { get; set; }
         public bool AreCustomizationsOptional { get; set; }
     }
-    
 }

@@ -29,7 +29,7 @@ namespace ItHappened.Api.Controllers
         [ProducesResponseType(200, Type = typeof(ITrackerFact))]
         public IActionResult GetStatisticsForSingleTracker([FromRoute]Guid trackerId)
         {
-            var userId = Guid.Parse(User.FindFirstValue(JwtClaimTypes.Id));
+            var userId = Guid.Parse(User.FindFirstValue(JwtClaimTypes.Id));  //TODO issue  #169
             var facts = _statisticsService.GetSingleTrackerFacts(trackerId, userId);
             return Ok(_myMapper.SingleFactsToJson(facts));
         }
@@ -38,7 +38,7 @@ namespace ItHappened.Api.Controllers
         [ProducesResponseType(200, Type = typeof(List<ITrackerFact>))]
         public IActionResult GetStatisticsForAllTrackers()
         {
-            var userId = Guid.Parse(User.FindFirstValue(JwtClaimTypes.Id));
+            var userId = Guid.Parse(User.FindFirstValue(JwtClaimTypes.Id));  //TODO issue  #169
             var facts = _statisticsService.GetMultipleTrackersFacts(userId);
             return Ok(_myMapper.MultipleFactsToJson(facts));
         }

@@ -46,7 +46,7 @@ namespace ItHappened.Api
             });
             IMapper mapper = mapperConfig.CreateMapper();
             services.AddSingleton(mapper);
-            services.AddMvc();
+            
             //newton 
             services.AddSingleton<IMyMapper, MyMapper>(); //TODO delete
 
@@ -124,6 +124,8 @@ namespace ItHappened.Api
 
             services.AddHangfire(configuration => configuration.UseMemoryStorage());
             services.AddHangfireServer();
+            
+            services.AddControllers();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

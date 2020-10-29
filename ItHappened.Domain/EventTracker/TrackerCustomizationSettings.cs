@@ -1,4 +1,5 @@
-﻿using LanguageExt;
+﻿using System;
+using LanguageExt;
 
 namespace ItHappened.Domain
 {
@@ -10,7 +11,7 @@ namespace ItHappened.Domain
         public bool IsRatingRequired { get; }
         public bool IsGeoTagRequired { get; }
         public bool IsCommentRequired { get; }
-        public bool ForceCustomizations { get; }
+        public bool IsForceCustomizations { get; }
 
         public TrackerCustomizationSettings(bool isPhotoRequired,
             bool isScaleRequired,
@@ -18,7 +19,7 @@ namespace ItHappened.Domain
             bool isRatingRequired,
             bool isGeoTagRequired,
             bool isCommentRequired,
-            bool forceCustomizations)
+            bool isForceCustomizations)
         {
             IsPhotoRequired = isPhotoRequired;
             IsScaleRequired = isScaleRequired;
@@ -26,7 +27,7 @@ namespace ItHappened.Domain
             IsRatingRequired = isRatingRequired;
             IsGeoTagRequired = isGeoTagRequired;
             IsCommentRequired = isCommentRequired;
-            ForceCustomizations = forceCustomizations;
+            IsForceCustomizations = isForceCustomizations;
         }
 
         public TrackerCustomizationSettings()
@@ -37,7 +38,29 @@ namespace ItHappened.Domain
             IsRatingRequired = false;
             IsGeoTagRequired = false;
             IsCommentRequired = false;
-            ForceCustomizations = false;
+            IsForceCustomizations = false;
+        }
+
+        protected bool Equals(TrackerCustomizationSettings other)
+        {
+            return IsPhotoRequired == other.IsPhotoRequired && IsScaleRequired == other.IsScaleRequired &&
+                   ScaleMeasurementUnit.Equals(other.ScaleMeasurementUnit) &&
+                   IsRatingRequired == other.IsRatingRequired && IsGeoTagRequired == other.IsGeoTagRequired &&
+                   IsCommentRequired == other.IsCommentRequired && IsForceCustomizations == other.IsForceCustomizations;
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            if (obj.GetType() != this.GetType()) return false;
+            return Equals((TrackerCustomizationSettings) obj);
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(IsPhotoRequired, IsScaleRequired, ScaleMeasurementUnit, IsRatingRequired,
+                IsGeoTagRequired, IsCommentRequired, IsForceCustomizations);
         }
     }
 }
