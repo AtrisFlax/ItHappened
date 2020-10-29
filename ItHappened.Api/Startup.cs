@@ -3,7 +3,7 @@ using AutoMapper;
 using Hangfire;
 using Hangfire.MemoryStorage;
 using ItHappened.Api.Authentication;
-using ItHappened.Api.MappingProfiles;
+using ItHappened.Api.Mapping;
 using ItHappened.Api.Middleware;
 using ItHappened.Api.Options;
 using ItHappened.Application.Authentication;
@@ -17,6 +17,7 @@ using ItHappened.Infrastructure;
 using ItHappened.Infrastructure.Repositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -47,9 +48,6 @@ namespace ItHappened.Api
             IMapper mapper = mapperConfig.CreateMapper();
             services.AddSingleton(mapper);
             
-            //newton 
-            services.AddSingleton<IMyMapper, MyMapper>(); //TODO delete
-
             //service repos
             services.AddSingleton<IUserRepository, UserRepository>();
             services.AddSingleton<ITrackerRepository, TrackerRepository>();
@@ -122,6 +120,7 @@ namespace ItHappened.Api
                 swaggerGenOptions.AddSecurityRequirement(securityRequirements);
             });
 
+            //hangfire
             services.AddHangfire(configuration => configuration.UseMemoryStorage());
             services.AddHangfireServer();
             

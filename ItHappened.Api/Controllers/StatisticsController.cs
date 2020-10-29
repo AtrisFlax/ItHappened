@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Security.Claims;
+using AutoMapper;
 using ItHappened.Api.Authentication;
-using ItHappened.Api.MappingProfiles;
+using ItHappened.Api.Mapping;
 using ItHappened.Application.Services.StatisticService;
 using ItHappened.Domain.Statistics;
 using Microsoft.AspNetCore.Authorization;
@@ -16,31 +17,30 @@ namespace ItHappened.Api.Controllers
     public class StatisticsController : ControllerBase
     {
         private readonly IStatisticsService _statisticsService;
-        
-        private readonly IMyMapper _myMapper;
-        
-        public StatisticsController(IStatisticsService statisticsService, IMyMapper myMapper)
+        private readonly IMapper _mapper;
+
+        public StatisticsController(IStatisticsService statisticsService, IMapper mapper)
         {
             _statisticsService = statisticsService;
-            _myMapper = myMapper;
+            _mapper = mapper;
         }
 
         [HttpGet("statistics/{trackerId}")]
         [ProducesResponseType(200, Type = typeof(ITrackerFact))]
-        public IActionResult GetStatisticsForSingleTracker([FromRoute]Guid trackerId)
+        public IActionResult GetStatisticsForSingleTracker([FromRoute] Guid trackerId)
         {
-            var userId = Guid.Parse(User.FindFirstValue(JwtClaimTypes.Id));  //TODO issue  #169
+            var userId = Guid.Parse(User.FindFirstValue(JwtClaimTypes.Id)); //TODO issue  #169
             var facts = _statisticsService.GetSingleTrackerFacts(trackerId, userId);
-            return Ok(_myMapper.SingleFactsToJson(facts));
+            return Ok(_mapper.Map<ISingleTrackerFact>(facts));
         }
-        
+
         [HttpGet("statistics")]
         [ProducesResponseType(200, Type = typeof(List<ITrackerFact>))]
         public IActionResult GetStatisticsForAllTrackers()
         {
-            var userId = Guid.Parse(User.FindFirstValue(JwtClaimTypes.Id));  //TODO issue  #169
+            var userId = Guid.Parse(User.FindFirstValue(JwtClaimTypes.Id)); //TODO issue  #169
             var facts = _statisticsService.GetMultipleTrackersFacts(userId);
-            return Ok(_myMapper.MultipleFactsToJson(facts));
+            return Ok(_mapper.Map<IMultipleTrackersFact>(facts));
         }
     }
 }

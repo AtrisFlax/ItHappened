@@ -1,14 +1,20 @@
-﻿namespace ItHappened.Domain
+﻿using System.Text;
+
+namespace ItHappened.Domain
 {
     public class Photo
     {
+        public byte[] PhotoBytes { get; }
+        
         public Photo(byte[] photoBytes)
         {
             PhotoBytes = photoBytes;
         }
 
-        // ReSharper disable once UnusedAutoPropertyAccessor.Global
-        // ReSharper disable once MemberCanBePrivate.Global
-        public byte[] PhotoBytes { get; }
+        public static Photo Create(string photoString)
+        {
+            var photoBytes = Encoding.UTF8.GetBytes(photoString);
+            return new Photo(photoBytes);
+        }
     }
 }

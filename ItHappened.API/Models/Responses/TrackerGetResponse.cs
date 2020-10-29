@@ -1,9 +1,8 @@
 ﻿using System;
-using LanguageExt;
 
 namespace ItHappened.Api.Models.Responses
 {
-    public class TrackerResponse
+    public class TrackerGetResponse
     {
         public Guid Id { get; set; }
         public string Name { get; set; }

@@ -5,7 +5,7 @@ using NUnit.Framework;
 
 namespace ItHappened.UnitTests
 {
-    public class Mapping
+    public class RequestToDomain
     {
         [Test]
         public void RequestToDomain_TrackerRequestToTrackerCustomizationSettings()
