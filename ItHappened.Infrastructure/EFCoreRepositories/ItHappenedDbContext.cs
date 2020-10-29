@@ -5,8 +5,16 @@ namespace ItHappened.Infrastructure.EFCoreRepositories
 {
     public class ItHappenedDbContext : DbContext
     {
+        
         public ItHappenedDbContext(DbContextOptions<ItHappenedDbContext> options) : base(options) { }
         
-        public DbSet<Event> Events { get; set; }
+        public DbSet<Comment> Comments { get; set; }
+        public DbSet<GeoTag> GeoTags { get; set; }
+        public DbSet<Photo> Photos { get; set; }
+        //public DbSet<EventCustomParameters> CustomParameters { get; set; }
+        //public DbSet<Event> Events { get; set; }
+        //public DbSet<EventCustomParameters> CustomParameters { get; set; }
+
+
     }
 }

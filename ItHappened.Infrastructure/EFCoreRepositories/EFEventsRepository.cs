@@ -29,12 +29,14 @@ namespace ItHappened.Infrastructure.EFCoreRepositories
 
         public Event LoadEvent(Guid eventId)
         {
-            return _context.Events.Find(eventId);
+            throw new NotImplementedException();
+            //return _context.Events.Find(eventId);
         }
 
         public IReadOnlyCollection<Event> LoadAllTrackerEvents(Guid trackerId)
         {
-            return _context.Events.Where(@event => @event.TrackerId == trackerId).ToList();
+            throw new NotImplementedException();
+            //return _context.Events.Where(@event => @event.TrackerId == trackerId).ToList();
         }
 
         public void UpdateEvent(Event @event)
@@ -51,8 +53,9 @@ namespace ItHappened.Infrastructure.EFCoreRepositories
 
         public bool IsContainEvent(Guid eventId)
         {
-            var @event = _context.Events.Find(eventId);
-            return !@event.IsNull();
+            throw new NotImplementedException();
+            //var @event = _context.Events.Find(eventId);
+            //return !@event.IsNull();
         }
     }
 }
