@@ -16,10 +16,12 @@ using ItHappened.Application.Services.UserService;
 using ItHappened.Domain;
 using ItHappened.Domain.Statistics;
 using ItHappened.Infrastructure;
+using ItHappened.Infrastructure.EFCoreRepositories;
 using ItHappened.Infrastructure.Repositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -45,10 +47,16 @@ namespace ItHappened.Api
                 {
                     cfg.RegisterValidatorsFromAssemblyContaining<TrackerRequest>();
                 });
+            
+            services.AddDbContext<ItHappenedDbContext>(options =>
+                options.UseSqlServer(Configuration["ConnectionStrings:ItHappenedConnection"]));
+
+            services.AddScoped<IEventRepository, EFEventsRepository>();
+            
             //repos
             services.AddSingleton<IUserRepository, UserRepository>();
             services.AddSingleton<ITrackerRepository, TrackerRepository>();
-            services.AddSingleton<IEventRepository, EventRepository>();
+            //services.AddSingleton<IEventRepository, EventRepository>();
             services.AddSingleton<ISingleFactsRepository, SingleFactsRepository>();
             services.AddSingleton<IMultipleFactsRepository, MultipleFactsRepository>();
             
