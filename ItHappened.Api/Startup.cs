@@ -1,3 +1,4 @@
+using System;
 using System.Text;
 using AutoMapper;
 using FluentValidation.AspNetCore;
@@ -49,29 +50,36 @@ namespace ItHappened.Api
                 });
             
             services.AddDbContext<ItHappenedDbContext>(options =>
-                options.UseSqlServer(Configuration["ConnectionStrings:ItHappenedConnection"]));
+                options.UseSqlServer(Configuration["ConnectionStrings:ItHappenedConnection"]));//,
+              //      x => x.MigrationsAssembly("Migrations"))
+            //);
 
-            services.AddScoped<IEventRepository, EFEventsRepository>();
-            
             //repos
-            services.AddSingleton<IUserRepository, UserRepository>();
-            services.AddSingleton<ITrackerRepository, TrackerRepository>();
-            //services.AddSingleton<IEventRepository, EventRepository>();
-            services.AddSingleton<ISingleFactsRepository, SingleFactsRepository>();
-            services.AddSingleton<IMultipleFactsRepository, MultipleFactsRepository>();
+            services.AddScoped<IUserRepository, EFUserRepository>();
+            services.AddScoped<ITrackerRepository, EFTrackerRepository>();
+            services.AddScoped<IEventRepository, EFEventsRepository>();
+            services.AddScoped<ISingleFactsRepository, EFSingleFactsRepository>();
+            services.AddScoped<IMultipleFactsRepository, EFMultipleFactsRepository>();
+            
+            
+            // services.AddSingleton<IUserRepository, UserRepository>();
+            // services.AddSingleton<ITrackerRepository, TrackerRepository>();
+            // services.AddSingleton<IEventRepository, EventRepository>();
+            // services.AddSingleton<ISingleFactsRepository, SingleFactsRepository>();
+            // services.AddSingleton<IMultipleFactsRepository, MultipleFactsRepository>();
             
             //app services
             
-            services.AddSingleton<IEventService, EventService>();
-            services.AddSingleton<ITrackerService, TrackerService>();
+            services.AddScoped<IEventService, EventService>();
+            services.AddScoped<ITrackerService, TrackerService>();
             
             AddMultipleTrackersStatisticsProvider(services);
             AddSingleTrackerStatisticsProvider(services);
 
-            services.AddSingleton<IBackgroundStatisticGenerator, StatisticGenerator>();
+            services.AddScoped<IBackgroundStatisticGenerator, StatisticGenerator>();
 
-            services.AddSingleton<IUserService, UserService>();
-            services.AddSingleton<IStatisticsService, StatisticsService>();
+            services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IStatisticsService, StatisticsService>();
             
             //mappers
             services.AddAutoMapper(typeof(Startup));
