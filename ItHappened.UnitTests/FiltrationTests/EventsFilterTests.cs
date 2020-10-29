@@ -24,7 +24,7 @@ namespace ItHappened.UnitTests.FiltrationTests
         {
             _from = new DateTimeOffset(2020, 10, 14, 18, 00, 00, TimeSpan.Zero);
             _to = new DateTimeOffset(2020, 10, 14, 18, 01, 00, TimeSpan.Zero);
-            _commentFilter = new CommentFilter("regex", @"\A[з]");
+            _commentFilter = new CommentFilter("substringFilter", "Вст");
             _geoTagFilter = new GeoTagFilter("geotag", new GeoTag(10, 15), new GeoTag(20, 25));
             _ratingFilter = new RatingFilter("rating", 5.5, 8.6);
             _dateTimeFilter = new DateTimeFilter("DateTime", _from, _to);
@@ -33,7 +33,7 @@ namespace ItHappened.UnitTests.FiltrationTests
         }
 
         [Test]
-        public void FilterAllEvents_ReturnEmptyCollection()
+        public void FilterAllEventsNotPass_ReturnEmptyCollection()
         {
             //arrange
             var time = new DateTimeOffset(2020, 10, 14, 18, 00, 00, TimeSpan.Zero);
@@ -56,30 +56,39 @@ namespace ItHappened.UnitTests.FiltrationTests
         }
 
         [Test]
-        public void AllPassTroughFilters_ReturnAllCollection()
+        public void FilterAllEventsPass_ReturnAllCollection()
         {
             //arrange
-            var time = new DateTimeOffset(2020, 10, 14, 18, 00, 00, TimeSpan.Zero);
+            var happensDate = new DateTimeOffset(2020, 10, 14, 18, 00, 00, TimeSpan.Zero);
             var trackerId = Guid.NewGuid();
             var userId = Guid.NewGuid();
             var events = new List<Event>
             {
-                CreateEventWithComment(trackerId, userId, time, "привет!"),
-                CreateEventWithScale(trackerId, userId, time, 1.0),
-                CreateEventWithFixTime(trackerId, userId, DateTimeOffset.Now),
-                CreateEventWithRating(trackerId, userId, time, 1.0),
-                CreateEventWithGeoTag(trackerId, userId, time, new GeoTag(0, 0)),
-                CreateEventWithAll(trackerId, userId, time, new Photo(new byte[] {0x1}), 8, 5.6, new GeoTag(11.0, 16.0),
+                //filter out by scale
+                CreateEventWithAll(trackerId, userId, happensDate, new Photo(new byte[] {0x1}), 1, 5.6, new GeoTag(11.0, 16.0),
                     new Comment("здравствуй!")),
-                CreateEventWithAll(trackerId, userId, time, new Photo(new byte[] {0x2}), 8.5, 6.6,
-                    new GeoTag(15.0, 15.0), new Comment("здай!")),
+                //filter out by happensDate
+                CreateEventWithAll(trackerId, userId, DateTimeOffset.Now, new Photo(new byte[] {0x1}), 8, 5.6, new GeoTag(11.0, 16.0),
+                    new Comment("здравствуй!")),
+                //filter out by comment content
+                CreateEventWithAll(trackerId, userId, happensDate, new Photo(new byte[] {0x1}), 8, 5.6, new GeoTag(11.0, 16.0),
+                    new Comment("Привет!")),
+                //filter out by GeoTag
+                CreateEventWithAll(trackerId, userId, happensDate, new Photo(new byte[] {0x1}), 8, 5.6, new GeoTag(0, 0),
+                    new Comment("здравствуй!")),
+                //filter out by rating
+                CreateEventWithAll(trackerId, userId, happensDate, new Photo(new byte[] {0x1}), 8, 1, new GeoTag(11.0, 16.0),
+                    new Comment("здравствуй!")),
+                //will pass filter
+                CreateEventWithAll(trackerId, userId, happensDate, new Photo(new byte[] {0x1}), 8, 7, new GeoTag(11.0, 16.0),
+                    new Comment("здравствуй!")),
             };
 
             //act
             var filteredEvents = EventsFilter.Filter(events, _filters).ToList();
 
             //assert
-            Assert.AreEqual(2, filteredEvents.Count);
+            Assert.AreEqual(1, filteredEvents.Count);
         }
 
         [Test]

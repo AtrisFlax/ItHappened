@@ -14,11 +14,11 @@ namespace ItHappened.UnitTests.FiltrationTests
         [SetUp]
         public void Init()
         {
-            _commentFilter = new CommentFilter("regex", @"\A[з]");
+            _commentFilter = new CommentFilter("фильтр", "дрА");
         }
 
         [Test]
-        public void FilterEventsWhichCommentStartsWithTheSameLetter_ReturnCollectionOfEvents()
+        public void FilterEventsWithRussianComment_ReturnCollectionOfEvents()
         {
             //arrange
             var events = new List<Event>
@@ -36,7 +36,30 @@ namespace ItHappened.UnitTests.FiltrationTests
             var filteredEvents = _commentFilter.Filter(events);
 
             //assert
-            Assert.AreEqual(3, filteredEvents.Count());
+            Assert.AreEqual(2, filteredEvents.Count());
+        }
+        
+        [Test]
+        public void FilterEventsWithEnglishComment_ReturnCollectionOfEvents()
+        {
+            var commentFilter= new CommentFilter("фильтр", "oL");
+            //arrange
+            var events = new List<Event>
+            {
+                CreateEventWithComment(Guid.NewGuid(), Guid.NewGuid(), "Was cool"),
+                CreateEventWithComment(Guid.NewGuid(), Guid.NewGuid(), "Was cool"),
+                CreateEventWithComment(Guid.NewGuid(), Guid.NewGuid(), "Было Was cool"),
+                CreateEventWithComment(Guid.NewGuid(), Guid.NewGuid(), "Hello! Was cool"),
+                CreateEventWithComment(Guid.NewGuid(), Guid.NewGuid(), "здорово! "),
+                CreateEventWithComment(Guid.NewGuid(), Guid.NewGuid(), "ЗдоровО! "),
+                CreateEventWithComment(Guid.NewGuid(), Guid.NewGuid(), "hello! ззз З ")
+            };
+            
+            //act
+            var filteredEvents = commentFilter.Filter(events);
+
+            //assert
+            Assert.AreEqual(4, filteredEvents.Count());
         }
     }
 }
