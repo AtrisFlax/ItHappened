@@ -40,7 +40,7 @@ namespace ItHappened.Infrastructure.EFCoreRepositories
         }
 
         public void UpdateEvent(Event @event)
-        {
+        {//TODO протестить
             _context.Update(@event);
             _context.SaveChanges();
         }
