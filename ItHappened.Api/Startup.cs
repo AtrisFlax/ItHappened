@@ -4,6 +4,7 @@ using Hangfire;
 using Hangfire.MemoryStorage;
 using ItHappened.Api.Authentication;
 using ItHappened.Api.Mapping;
+using ItHappened.Api.Mapping.ItHappened.Api.MappingProfiles;
 using ItHappened.Api.Middleware;
 using ItHappened.Api.Options;
 using ItHappened.Application.Authentication;
@@ -47,6 +48,8 @@ namespace ItHappened.Api
             });
             IMapper mapper = mapperConfig.CreateMapper();
             services.AddSingleton(mapper);
+
+            services.AddSingleton<IFactsToJsonMapper, FactsToNewtonJsonMapper>();
 
             //service repos
             services.AddSingleton<IUserRepository, UserRepository>();
