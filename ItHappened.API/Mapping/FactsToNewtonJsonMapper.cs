@@ -1,7 +1,13 @@
-﻿using ItHappened.Domain.Statistics;
+﻿using System;
+using ItHappened.Domain.Statistics;
 using System.Collections.Generic;
+using System.Globalization;
+using System.IO;
+using System.Text;
+using System.Text.Json;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
+using JsonSerializer = Newtonsoft.Json.JsonSerializer;
 
 
 namespace ItHappened.Api.Mapping
@@ -10,22 +16,50 @@ namespace ItHappened.Api.Mapping
     {
         public class FactsToNewtonJsonMapper : IFactsToJsonMapper
         {
-            private readonly JsonSerializerSettings _jsonSerializerSettings = new JsonSerializerSettings
-            {
-                NullValueHandling = NullValueHandling.Ignore,
-                DefaultValueHandling = DefaultValueHandling.Ignore,
-                ContractResolver = new CamelCasePropertyNamesContractResolver(),
-                TypeNameHandling = TypeNameHandling.None
-            };
+            // private static readonly JsonSerializerSettings JsonSerializerSettings = new JsonSerializerSettings
+            // {
+            //     NullValueHandling = NullValueHandling.Ignore,
+            //     ContractResolver = new CamelCasePropertyNamesContractResolver(),
+            //     Formatting = Formatting.Indented,
+            // };
 
             public string SingleFactsToJson(IReadOnlyCollection<ISingleTrackerFact> facts)
             {
-                return JsonConvert.SerializeObject(facts, Formatting.Indented, _jsonSerializerSettings);
+                return JsonConverterEx.SerializeObject(new
+                {
+                    SpecificFacts = facts
+                });
             }
 
             public string MultipleFactsToJson(IReadOnlyCollection<IMultipleTrackersFact> facts)
             {
-                return JsonConvert.SerializeObject(facts, Formatting.Indented, _jsonSerializerSettings);
+                return JsonConverterEx.SerializeObject(new
+                {
+                    GeneralFacts = facts
+                });
+            }
+
+            
+            private static class JsonConverterEx
+            {
+                public static string SerializeObject<T>(T value)
+                {
+                    var sb = new StringBuilder(256);
+                    var sw = new StringWriter(sb, CultureInfo.InvariantCulture);
+                    var jsonSerializer = JsonSerializer.Create(new JsonSerializerSettings
+                    {
+                        NullValueHandling = NullValueHandling.Ignore,
+                        ContractResolver = new CamelCasePropertyNamesContractResolver(),
+                        Formatting = Formatting.Indented,
+                    });
+                    using var jsonWrite = new JsonTextWriter(sw)
+                    {
+                        Indentation = 4
+                    };
+                    jsonSerializer.Serialize(jsonWrite, value, typeof(T));
+
+                    return sw.ToString();
+                }
             }
         }
     }
