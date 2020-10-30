@@ -30,13 +30,7 @@ namespace ItHappened.Api.Controllers
         public IActionResult GetStatisticsForSingleTracker([FromRoute] Guid trackerId)
         {
             var userId = Guid.Parse(User.FindFirstValue(JwtClaimTypes.Id)); //TODO issue  #169
-            // var facts = _statisticsService.GetSingleTrackerFacts(trackerId, userId);
-
-            var facts = new ISingleTrackerFact[]
-            {
-                new AverageScaleTrackerFact("Scale", "description1", 1.0, 1.1, "unit1"),
-                new AverageRatingTrackerFact("Rating", "description2", 2.1, 2.2)
-            };
+            var facts = _statisticsService.GetSingleTrackerFacts(trackerId, userId);
             return Ok(_mapper.SingleFactsToJson(facts));
         }
 
@@ -45,13 +39,7 @@ namespace ItHappened.Api.Controllers
         public IActionResult GetStatisticsForAllTrackers()
         {
             var userId = Guid.Parse(User.FindFirstValue(JwtClaimTypes.Id)); //TODO issue  #169
-            // var facts = _statisticsService.GetMultipleTrackersFacts(userId);
-            var facts = new IMultipleTrackersFact[]
-            {
-                new EventsCountTrackersFact("Scale", "description1", 1.0, 1),
-                new MostEventfulDayTrackersFact("Rating", "description2", 2.1, DateTimeOffset.UtcNow, 10)
-            };
-
+            var facts = _statisticsService.GetMultipleTrackersFacts(userId);
             return Ok(_mapper.MultipleFactsToJson(facts));
         }
     }
