@@ -23,7 +23,7 @@ namespace ItHappened.Domain
         {
             IsPhotoRequired = isPhotoRequired;
             IsScaleRequired = isScaleRequired;
-            ScaleMeasurementUnit = scaleMeasurementUnit;
+            ScaleMeasurementUnit = IsScaleRequired ? scaleMeasurementUnit : Option<string>.None;
             IsRatingRequired = isRatingRequired;
             IsGeoTagRequired = isGeoTagRequired;
             IsCommentRequired = isCommentRequired;

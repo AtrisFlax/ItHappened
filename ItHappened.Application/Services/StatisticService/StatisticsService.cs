@@ -12,7 +12,8 @@ namespace ItHappened.Application.Services.StatisticService
         private readonly IMultipleFactsRepository _multipleFactsRepository;
         private readonly ISingleFactsRepository _singleFactsRepository;
         private readonly ITrackerRepository _trackerRepository;
-        public StatisticsService(IMultipleFactsRepository multipleFactsRepository, 
+
+        public StatisticsService(IMultipleFactsRepository multipleFactsRepository,
             ISingleFactsRepository singleFactsRepository, ITrackerRepository trackerRepository)
         {
             _multipleFactsRepository = multipleFactsRepository;
@@ -26,6 +27,7 @@ namespace ItHappened.Application.Services.StatisticService
             {
                 throw new RestException(HttpStatusCode.NotFound);
             }
+
             var statisticFacts = _multipleFactsRepository.LoadUserGeneralFacts(userId);
             return statisticFacts;
         }
@@ -47,6 +49,8 @@ namespace ItHappened.Application.Services.StatisticService
             {
                 throw new RestException(HttpStatusCode.NotFound);
             }
+
+
             var statisticFacts = _singleFactsRepository.LoadTrackerSpecificFacts(trackerId);
             return statisticFacts;
         }

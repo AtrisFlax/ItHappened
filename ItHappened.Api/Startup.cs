@@ -47,7 +47,7 @@ namespace ItHappened.Api
             });
             IMapper mapper = mapperConfig.CreateMapper();
             services.AddSingleton(mapper);
-            
+
             //service repos
             services.AddSingleton<IUserRepository, UserRepository>();
             services.AddSingleton<ITrackerRepository, TrackerRepository>();
@@ -58,10 +58,10 @@ namespace ItHappened.Api
             //app services
             services.AddSingleton<IEventService, EventService>();
             services.AddSingleton<ITrackerService, TrackerService>();
-            
+
             AddMultipleTrackersStatisticsProvider(services);
             AddSingleTrackerStatisticsProvider(services);
-            
+
             services.AddSingleton<IBackgroundStatisticGenerator, StatisticGenerator>();
 
             services.AddSingleton<IUserService, UserService>();
@@ -124,6 +124,9 @@ namespace ItHappened.Api
             services.AddHangfire(configuration => configuration.UseMemoryStorage());
             services.AddHangfireServer();
             
+            //skip null in json 
+            services.AddMvc().AddJsonOptions(options => { options.JsonSerializerOptions.IgnoreNullValues = true; });
+
             services.AddControllers();
         }
 

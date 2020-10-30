@@ -10,29 +10,39 @@ namespace ItHappened.Api.Mapping
     {
         public RequestToDomainProfile()
         {
-            //CustomizationSettingsRequest map to => TrackerCustomizationSettings
             CreateMap<CustomizationSettingsRequest, TrackerCustomizationSettings>()
-                .ConstructUsing(trackerRequest => new TrackerCustomizationSettings(
-                        trackerRequest.IsPhotoRequired,
-                        trackerRequest.IsScaleRequired,
-                        trackerRequest.ScaleMeasurementUnit,
-                        trackerRequest.IsRatingRequired,
-                        trackerRequest.IsGeotagRequired,
-                        trackerRequest.IsCommentRequired,
-                        trackerRequest.AreCustomizationsOptional
+                .ConstructUsing(request => new TrackerCustomizationSettings(
+                        request.IsPhotoRequired,
+                        request.IsScaleRequired,
+                        request.ScaleMeasurementUnit,
+                        request.IsRatingRequired,
+                        request.IsGeotagRequired,
+                        request.IsCommentRequired,
+                        request.AreCustomizationsOptional
                     )
                 );
+            //CustomizationSettingsRequest map to => TrackerCustomizationSettings
 
-            //EventRequest map to => EventCustomParameters
             CreateMap<EventRequest, EventCustomParameters>()
-                .ConvertUsing(trackerRequest => new EventCustomParameters(
-                        Photo.Create(Base64Converter.Decode(trackerRequest.Photo)),
-                        trackerRequest.Scale.Value,
-                        trackerRequest.Rating.Value,
-                        new GeoTag(trackerRequest.GeoTag.GpsLat, trackerRequest.GeoTag.GpsLng),
-                        new Comment(trackerRequest.Comment)
-                    )
-                );
+                .ConvertUsing(request => EventCustomParameters(request));
+        }
+
+        private static EventCustomParameters EventCustomParameters(EventRequest request)
+        {
+            var photo = request.Photo == null
+                ? Option<Photo>.None
+                : Option<Photo>.Some(Photo.Create(Base64Converter.Decode(request.Photo)));
+            var scale = request.Scale == null ? Option<double>.None : Option<double>.Some(request.Scale.Value);
+            var rating = request.Rating == null
+                ? Option<double>.None
+                : Option<double>.Some(request.Rating.Value);
+            var geoTag = request.GeoTag == null
+                ? Option<GeoTag>.None
+                : Option<GeoTag>.Some(new GeoTag(request.GeoTag.GpsLat, request.GeoTag.GpsLng));
+            var comment = request.Comment == null
+                ? Option<Comment>.None
+                : Option<Comment>.Some(new Comment(request.Comment));
+            return new EventCustomParameters( photo, scale, rating, geoTag, comment);
         }
     }
 }

@@ -64,7 +64,8 @@ namespace ItHappened.Api.Controllers
         {
             var userId = Guid.Parse(User.FindFirstValue(JwtClaimTypes.Id));
             var events = _eventService.GetAllTrackerEvents(userId, trackerId);
-            return Ok(_mapper.Map<EventGetResponse[]>(events));
+            var eventGetResponses = _mapper.Map<EventGetResponse[]>(events);
+            return Ok(eventGetResponses);
         }
 
         [HttpPut("/events/{eventId}")]

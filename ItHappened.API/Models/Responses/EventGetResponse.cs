@@ -13,9 +13,4 @@ namespace ItHappened.Api.Models.Responses
         public GeoTag GeoTag { get; set; }
         public string Comment { get; set; }
     }
-    
-    public class EventPostResponse
-    {
-        public Guid Id { get; set; }
-    }
 }
