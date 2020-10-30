@@ -1,13 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Security.Claims;
-using ItHappened.Api.Authentication;
 using ItHappened.Api.MappingProfiles;
 using ItHappened.Application.Services.StatisticService;
 using ItHappened.Domain.Statistics;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
 
 namespace ItHappened.Api.Controllers
 {
@@ -16,7 +13,6 @@ namespace ItHappened.Api.Controllers
     public class StatisticsController : ControllerBase
     {
         private readonly IStatisticsService _statisticsService;
-        
         private readonly IMyMapper _myMapper;
         
         public StatisticsController(IStatisticsService statisticsService, IMyMapper myMapper)
@@ -29,7 +25,7 @@ namespace ItHappened.Api.Controllers
         [ProducesResponseType(200, Type = typeof(ITrackerFact))]
         public IActionResult GetStatisticsForSingleTracker([FromRoute]Guid trackerId)
         {
-            var userId = Guid.Parse(User.FindFirstValue(JwtClaimTypes.Id));
+            var userId = User.GetUserId();
             var facts = _statisticsService.GetSingleTrackerFacts(trackerId, userId);
             return Ok(_myMapper.SingleFactsToJson(facts));
         }
@@ -38,7 +34,7 @@ namespace ItHappened.Api.Controllers
         [ProducesResponseType(200, Type = typeof(List<ITrackerFact>))]
         public IActionResult GetStatisticsForAllTrackers()
         {
-            var userId = Guid.Parse(User.FindFirstValue(JwtClaimTypes.Id));
+            var userId = User.GetUserId();
             var facts = _statisticsService.GetMultipleTrackersFacts(userId);
             return Ok(_myMapper.MultipleFactsToJson(facts));
         }

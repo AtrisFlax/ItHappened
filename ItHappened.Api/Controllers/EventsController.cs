@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Security.Claims;
 using AutoMapper;
-using ItHappened.Api.Authentication;
 using ItHappened.Api.MappingProfiles;
 using ItHappened.Api.Models.Requests;
 using ItHappened.Api.Models.Responses;
@@ -20,8 +18,7 @@ namespace ItHappened.Api.Controllers
         private readonly IEventService _eventService;
         private readonly IMapper _mapper;
         private readonly IMyMapper _myMapper;
-
-
+        
         public EventsController(IEventService eventService, IMapper mapper, IMyMapper myMapper)
         {
             _eventService = eventService;
@@ -34,7 +31,7 @@ namespace ItHappened.Api.Controllers
         public IActionResult AddEventToTracker([FromRoute] Guid trackerId,
             [FromBody]EventRequest request)
         {
-            var userId = Guid.Parse(User.FindFirstValue(JwtClaimTypes.Id));
+            var userId = User.GetUserId();
             var customParameters = _myMapper.GetEventCustomParametersFromRequest(request);
             var eventId = _eventService.CreateEvent(userId, trackerId, request.HappensDate, customParameters);
             return Ok(eventId);
@@ -44,7 +41,7 @@ namespace ItHappened.Api.Controllers
         public IActionResult GetFilteredEvents([FromRoute] Guid trackerId,
             [FromQuery] EventFilterRequest eventFilterRequest)
         {
-            var userId = Guid.Parse(User.FindFirstValue(JwtClaimTypes.Id));
+            var userId = User.GetUserId();
             var filters = CreateFilters(eventFilterRequest);
             var filteredEvents = _eventService.GetAllFilteredEvents(userId, trackerId, filters);
             return Ok(_mapper.Map<EventResponse[]>(filteredEvents));
@@ -54,7 +51,7 @@ namespace ItHappened.Api.Controllers
         [ProducesResponseType(200, Type = typeof(EventResponse))]
         public IActionResult GetEvent([FromRoute] Guid eventId)
         {
-            var userId = Guid.Parse(User.FindFirstValue(JwtClaimTypes.Id));
+            var userId = User.GetUserId();
             var @event = _eventService.GetEvent(userId, eventId);
             return Ok(_mapper.Map<EventResponse>(@event));
         }
@@ -63,7 +60,7 @@ namespace ItHappened.Api.Controllers
         [ProducesResponseType(200, Type = typeof(EventResponse[]))]
         public IActionResult GetAllEvents([FromRoute] Guid trackerId)
         {
-            var userId = Guid.Parse(User.FindFirstValue(JwtClaimTypes.Id));
+            var userId = User.GetUserId();
             var events = _eventService.GetAllTrackerEvents(userId, trackerId);
             return Ok(_myMapper.EventsToJson(events));
         }
@@ -72,7 +69,7 @@ namespace ItHappened.Api.Controllers
         [ProducesResponseType(200, Type = typeof(EventResponse))]
         public IActionResult UpdateEvent([FromRoute] Guid eventId, [FromBody] EventRequest request)
         {
-            var userId = Guid.Parse(User.FindFirstValue(JwtClaimTypes.Id));
+            var userId = User.GetUserId();
             var customParameters = _myMapper.GetEventCustomParametersFromRequest(request);
             _eventService.EditEvent(userId, eventId, request.HappensDate, customParameters);
             return Ok();
@@ -82,7 +79,7 @@ namespace ItHappened.Api.Controllers
         [ProducesResponseType(200, Type = typeof(EventResponse))]
         public IActionResult DeleteEvent([FromRoute] Guid eventId)
         {
-            var userId = Guid.Parse(User.FindFirstValue(JwtClaimTypes.Id));
+            var userId = User.GetUserId();
             _eventService.DeleteEvent(userId, eventId);
             return Ok();
         }
