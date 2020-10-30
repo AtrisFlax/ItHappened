@@ -26,7 +26,7 @@ namespace ItHappened.Api.Controllers
         }
 
         [HttpGet("statistics/{trackerId}")]
-        [ProducesResponseType(200, Type = typeof(ITrackerFact))]
+        [ProducesResponseType(200)]
         public IActionResult GetStatisticsForSingleTracker([FromRoute] Guid trackerId)
         {
             var userId = Guid.Parse(User.FindFirstValue(JwtClaimTypes.Id)); //TODO issue  #169
@@ -41,11 +41,17 @@ namespace ItHappened.Api.Controllers
         }
 
         [HttpGet("statistics")]
-        [ProducesResponseType(200, Type = typeof(List<ITrackerFact>))]
+        [ProducesResponseType(200)]
         public IActionResult GetStatisticsForAllTrackers()
         {
             var userId = Guid.Parse(User.FindFirstValue(JwtClaimTypes.Id)); //TODO issue  #169
-            var facts = _statisticsService.GetMultipleTrackersFacts(userId);
+            // var facts = _statisticsService.GetMultipleTrackersFacts(userId);
+            var facts = new IMultipleTrackersFact[]
+            {
+                new EventsCountTrackersFact("Scale", "description1", 1.0, 1),
+                new MostEventfulDayTrackersFact("Rating", "description2", 2.1, DateTimeOffset.UtcNow, 10)
+            };
+
             return Ok(_mapper.MultipleFactsToJson(facts));
         }
     }

@@ -48,7 +48,7 @@ namespace ItHappened.Api
             });
             IMapper mapper = mapperConfig.CreateMapper();
             services.AddSingleton(mapper);
-
+            //FactsToJsonMapper
             services.AddSingleton<IFactsToJsonMapper, FactsToNewtonJsonMapper>();
 
             //service repos
