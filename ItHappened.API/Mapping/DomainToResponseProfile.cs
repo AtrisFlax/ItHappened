@@ -45,7 +45,7 @@ namespace ItHappened.Api.Mapping
                 .ForMember(dest => dest.ScaleMeasurementUnit, opt =>
                     opt.MapFrom(src => src.ScaleMeasurementUnit.ValueUnsafe()))
                 .ForMember(dest => dest.AreCustomizationsOptional, opt =>
-                    opt.MapFrom(src => src.IsForceCustomizations));
+                    opt.MapFrom(src => src.IsCustomizationRequired));
         }
     }
 }
