@@ -30,7 +30,7 @@ namespace ItHappened.Domain
 
         private bool IsCustomizationMatch(bool isTrackerRequired, bool isEventHas)
         {
-            if (CustomizationSettings.IsForceCustomizations)
+            if (CustomizationSettings.IsCustomizationRequired)
             {
                 return isTrackerRequired == isEventHas;
             }

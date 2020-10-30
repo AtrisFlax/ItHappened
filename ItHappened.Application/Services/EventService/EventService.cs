@@ -37,8 +37,9 @@ namespace ItHappened.Application.Services.EventService
             }
             
             var newEvent = new Event(newEventId, actorId, trackerId, eventHappensDate, customParameters);
-            
-            if (!tracker.IsTrackerCustomizationAndEventCustomizationMatch(newEvent))
+
+            if (tracker.CustomizationSettings.IsCustomizationRequired &&
+                !tracker.IsTrackerCustomizationAndEventCustomizationMatch(newEvent))
             {
                 throw new RestException(HttpStatusCode.BadRequest);
             }
@@ -103,10 +104,13 @@ namespace ItHappened.Application.Services.EventService
             }
             
             var tracker = _trackerRepository.LoadTracker(@event.TrackerId);
-            //TODO: тут проверить соответствие кастомизации трекера и редактируемого события
-            //оставляю до merge, т.к. там эти функции и поле трекера изменились
-            
             var updatedEvent = new Event(eventId, @event.CreatorId, @event.TrackerId, timeStamp, customParameters);
+            if (tracker.CustomizationSettings.IsCustomizationRequired &&
+                !tracker.IsTrackerCustomizationAndEventCustomizationMatch(updatedEvent))
+            {
+                throw new RestException(HttpStatusCode.BadRequest);
+            }
+            
             _eventRepository.UpdateEvent(updatedEvent);
             tracker.IsUpdated = true;
         }
