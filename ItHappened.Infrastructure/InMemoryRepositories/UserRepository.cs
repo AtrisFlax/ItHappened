@@ -9,7 +9,7 @@ namespace ItHappened.Infrastructure.Repositories
     {
         private readonly Dictionary<Guid, User> _users = new Dictionary<Guid, User>();
 
-        public void SaveUser(User newUser)
+        public void CreateUser(User newUser)
         {
             _users.Add(newUser.Id, newUser);
         }

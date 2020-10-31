@@ -20,7 +20,7 @@ namespace ItHappened.Api.Controllers
         }
 
         [HttpPost]
-        [Route("registration")]
+        [Route("users")]
         [ProducesResponseType(200, Type = typeof(UserResponse))]
         public IActionResult Register([FromBody] UserRequest request)
         {
