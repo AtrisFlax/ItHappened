@@ -30,13 +30,8 @@ namespace ItHappened.Application.Services.EventService
                 throw new RestException(HttpStatusCode.BadRequest);
             }
             
-            var newEventId = Guid.NewGuid();
-            while (_eventRepository.IsContainEvent(newEventId))
-            {//if generated GUID already exist in repository -> regenerate
-                newEventId = Guid.NewGuid();
-            }
             
-            var newEvent = new Event(newEventId, actorId, trackerId, eventHappensDate, customParameters);
+            var newEvent = new Event(Guid.NewGuid(), actorId, trackerId, eventHappensDate, customParameters);
 
             if (tracker.CustomizationSettings.IsCustomizationRequired &&
                 !tracker.IsTrackerCustomizationAndEventCustomizationMatch(newEvent))

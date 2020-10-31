@@ -7,6 +7,8 @@ namespace ItHappened.Infrastructure.EFCoreRepositories
     public class ItHappenedDbContext : DbContext
     {
         public DbSet<UserDto> Users { get; set; }
+        public DbSet<EventTrackerDto> EventTrackers { get; set; }
+        public DbSet<EventDto> Events { get; set; }
 
         public ItHappenedDbContext(DbContextOptions<ItHappenedDbContext> options) : base(options)
         {
@@ -14,7 +16,11 @@ namespace ItHappened.Infrastructure.EFCoreRepositories
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            #region map order
             modelBuilder.Entity<UserDto>().ToTable("Users", "ItHappenedDB");
+            modelBuilder.Entity<EventTrackerDto>().ToTable("EventTrackers", "ItHappenedDB");
+            modelBuilder.Entity<EventDto>().ToTable("Events", "ItHappenedDB");
+            #endregion
         }
     }
 }

@@ -50,7 +50,7 @@ namespace ItHappened.UnitTests.ServicesTests
             Assert.AreEqual("meter", actualMeasurementUnit);
             Assert.True(trackerFromRepository.CustomizationSettings.IsPhotoRequired);
             Assert.False(trackerFromRepository.CustomizationSettings.IsRatingRequired);
-            Assert.True(trackerFromRepository.CustomizationSettings.IsGeoTagRequired);
+            Assert.True(trackerFromRepository.CustomizationSettings.IsGeotagRequired);
             Assert.False(trackerFromRepository.CustomizationSettings.IsCommentRequired);
             Assert.True(trackerFromRepository.CustomizationSettings.IsScaleRequired);
         }

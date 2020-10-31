@@ -9,7 +9,7 @@ namespace ItHappened.Domain
         public bool IsScaleRequired { get; }
         public Option<string> ScaleMeasurementUnit { get; }
         public bool IsRatingRequired { get; }
-        public bool IsGeoTagRequired { get; }
+        public bool IsGeotagRequired { get; }
         public bool IsCommentRequired { get; }
         public bool IsCustomizationRequired { get; }
 
@@ -17,7 +17,7 @@ namespace ItHappened.Domain
             bool isScaleRequired,
             Option<string> scaleMeasurementUnit,
             bool isRatingRequired,
-            bool isGeoTagRequired,
+            bool isGeotagRequired,
             bool isCommentRequired,
             bool isCustomizationRequired)
         {
@@ -25,7 +25,7 @@ namespace ItHappened.Domain
             IsScaleRequired = isScaleRequired;
             ScaleMeasurementUnit = scaleMeasurementUnit;
             IsRatingRequired = isRatingRequired;
-            IsGeoTagRequired = isGeoTagRequired;
+            IsGeotagRequired = isGeotagRequired;
             IsCommentRequired = isCommentRequired;
             IsCustomizationRequired = isCustomizationRequired;
         }
@@ -36,7 +36,7 @@ namespace ItHappened.Domain
             IsScaleRequired = false;
             ScaleMeasurementUnit = Option<string>.None;
             IsRatingRequired = false;
-            IsGeoTagRequired = false;
+            IsGeotagRequired = false;
             IsCommentRequired = false;
             IsCustomizationRequired = false;
         }
@@ -45,7 +45,7 @@ namespace ItHappened.Domain
         {
             return IsPhotoRequired == other.IsPhotoRequired && IsScaleRequired == other.IsScaleRequired &&
                    ScaleMeasurementUnit.Equals(other.ScaleMeasurementUnit) &&
-                   IsRatingRequired == other.IsRatingRequired && IsGeoTagRequired == other.IsGeoTagRequired &&
+                   IsRatingRequired == other.IsRatingRequired && IsGeotagRequired == other.IsGeotagRequired &&
                    IsCommentRequired == other.IsCommentRequired && IsCustomizationRequired == other.IsCustomizationRequired;
         }
 
@@ -60,7 +60,7 @@ namespace ItHappened.Domain
         public override int GetHashCode()
         {
             return HashCode.Combine(IsPhotoRequired, IsScaleRequired, ScaleMeasurementUnit, IsRatingRequired,
-                IsGeoTagRequired, IsCommentRequired, IsCustomizationRequired);
+                IsGeotagRequired, IsCommentRequired, IsCustomizationRequired);
         }
         
         
