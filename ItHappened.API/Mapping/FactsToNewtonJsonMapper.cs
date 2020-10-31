@@ -16,13 +16,6 @@ namespace ItHappened.Api.Mapping
     {
         public class FactsToNewtonJsonMapper : IFactsToJsonMapper
         {
-            // private static readonly JsonSerializerSettings JsonSerializerSettings = new JsonSerializerSettings
-            // {
-            //     NullValueHandling = NullValueHandling.Ignore,
-            //     ContractResolver = new CamelCasePropertyNamesContractResolver(),
-            //     Formatting = Formatting.Indented,
-            // };
-
             public string SingleFactsToJson(IReadOnlyCollection<ISingleTrackerFact> facts)
             {
                 return JsonConverterEx.SerializeObject(new
