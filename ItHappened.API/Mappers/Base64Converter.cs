@@ -1,4 +1,4 @@
-﻿namespace ItHappened.Api.Mapping
+﻿namespace ItHappened.Api.Mappers
 {
     public static class Base64Converter
     {

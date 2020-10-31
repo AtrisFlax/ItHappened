@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Security.Claims;
 using ItHappened.Api.Authentication;
-using ItHappened.Api.Mapping;
+using ItHappened.Api.Mappers;
 using ItHappened.Application.Services.StatisticService;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

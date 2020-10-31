@@ -3,7 +3,7 @@ using ItHappened.Api.Models.Requests;
 using ItHappened.Domain;
 using LanguageExt;
 
-namespace ItHappened.Api.Mapping
+namespace ItHappened.Api.Mappers
 {
     public class RequestToDomainProfile : Profile
     {

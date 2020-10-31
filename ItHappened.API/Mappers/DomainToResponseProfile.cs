@@ -4,7 +4,7 @@ using ItHappened.Api.Models.Responses;
 using ItHappened.Domain;
 using LanguageExt.UnsafeValueAccess;
 
-namespace ItHappened.Api.Mapping
+namespace ItHappened.Api.Mappers
 {
     public class DomainToResponseProfile : Profile
     {

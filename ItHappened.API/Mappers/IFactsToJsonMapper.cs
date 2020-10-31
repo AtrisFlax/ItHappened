@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using ItHappened.Domain.Statistics;
 
-namespace ItHappened.Api.Mapping
+namespace ItHappened.Api.Mappers
 {
     public interface IFactsToJsonMapper
     {
