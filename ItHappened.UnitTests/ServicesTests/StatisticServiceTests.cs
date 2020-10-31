@@ -37,7 +37,7 @@ namespace ItHappened.UnitTests.ServicesTests
         [Test]
         public void GetSingleTrackerFactsWhenTrackerDontExistInRepository_ThrowsRestException()
         {
-            Assert.Throws<RestException>(() => 
+            Assert.Throws<BusinessException>(() => 
                 _statisticsService.GetSingleTrackerFacts(_tracker.Id, _tracker.CreatorId));
         }
         
@@ -46,7 +46,7 @@ namespace ItHappened.UnitTests.ServicesTests
         {
             _trackerRepository.SaveTracker(_tracker);
             
-            Assert.Throws<RestException>(() => 
+            Assert.Throws<BusinessException>(() => 
                 _statisticsService.GetSingleTrackerFacts(_tracker.Id, Guid.NewGuid()));
         }
         
@@ -55,7 +55,7 @@ namespace ItHappened.UnitTests.ServicesTests
         {
             _trackerRepository.SaveTracker(_tracker);
             
-            Assert.Throws<RestException>(() => 
+            Assert.Throws<BusinessException>(() => 
                 _statisticsService.GetSingleTrackerFacts(_tracker.Id, _tracker.CreatorId));
         }    
         
@@ -74,7 +74,7 @@ namespace ItHappened.UnitTests.ServicesTests
         [Test]
         public void GetMultipleTrackersFactsWhenNoFactsInRepositoryForTheUser_ThrowsRestException()
         {
-            Assert.Throws<RestException>(() => 
+            Assert.Throws<BusinessException>(() => 
                 _statisticsService.GetMultipleTrackersFacts(Guid.NewGuid()));
         }
         

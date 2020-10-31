@@ -59,7 +59,7 @@ namespace ItHappened.UnitTests.ServicesTests
         [Test]
         public void GetTrackerWhenNoSuchTrackerInRepository_ThrowsRestException()
         {
-            Assert.Throws<RestException>(() => _trackerService.GetEventTracker(Guid.NewGuid(), Guid.NewGuid()));
+            Assert.Throws<BusinessException>(() => _trackerService.GetEventTracker(Guid.NewGuid(), Guid.NewGuid()));
         }
         
         [Test]
@@ -67,7 +67,7 @@ namespace ItHappened.UnitTests.ServicesTests
         {
             _trackerRepository.SaveTracker(_tracker);
             
-            Assert.Throws<RestException>(() => _trackerService.GetEventTracker(Guid.NewGuid(), _tracker.Id));
+            Assert.Throws<BusinessException>(() => _trackerService.GetEventTracker(Guid.NewGuid(), _tracker.Id));
         }
         
         [Test]
@@ -108,7 +108,7 @@ namespace ItHappened.UnitTests.ServicesTests
         [Test]
         public void EditEventTrackerWhenNoSuchTrackerInRepository_ThrowsRestException()
         {
-            Assert.Throws<RestException>(() => _trackerService.EditEventTracker(
+            Assert.Throws<BusinessException>(() => _trackerService.EditEventTracker(
                 Guid.NewGuid(), 
                 Guid.NewGuid(), 
                 "EditedTracker", 
@@ -119,7 +119,7 @@ namespace ItHappened.UnitTests.ServicesTests
         public void EditEventTrackerWhenUserAsksNotHisTracker_ThrowsRestException()
         {
             _trackerRepository.SaveTracker(_tracker);
-            Assert.Throws<RestException>(() => _trackerService.EditEventTracker(
+            Assert.Throws<BusinessException>(() => _trackerService.EditEventTracker(
                 Guid.NewGuid(), 
                 _tracker.Id, 
                 "EditedTracker", 
@@ -146,7 +146,7 @@ namespace ItHappened.UnitTests.ServicesTests
         [Test]
         public void DeleteTrackerWhenNoSuchTrackerInRepository_ThrowsRestException()
         {
-            Assert.Throws<RestException>(() => _trackerService.DeleteEventTracker(Guid.NewGuid(), Guid.NewGuid()));
+            Assert.Throws<BusinessException>(() => _trackerService.DeleteEventTracker(Guid.NewGuid(), Guid.NewGuid()));
         }
         
         [Test]
@@ -154,7 +154,7 @@ namespace ItHappened.UnitTests.ServicesTests
         {
             _trackerRepository.SaveTracker(_tracker);
             
-            Assert.Throws<RestException>(() => _trackerService.DeleteEventTracker(Guid.NewGuid(), _tracker.CreatorId));
+            Assert.Throws<BusinessException>(() => _trackerService.DeleteEventTracker(Guid.NewGuid(), _tracker.CreatorId));
         }
         
         [Test]

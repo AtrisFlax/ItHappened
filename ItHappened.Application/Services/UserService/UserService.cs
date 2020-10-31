@@ -34,10 +34,12 @@ namespace ItHappened.Application.Services.UserService
         {
             var user = _userRepository.TryFindByLogin(loginName);
             if (user != null)
-                throw new RestException(HttpStatusCode.BadRequest, new { Username = "Username already exists" });
+                throw new UsernameAlreadyInUseException(loginName);
+            
             var (hashedPassword, salt) = _passwordHasher.HashWithRandomSalt(password);
             user = new User(Guid.NewGuid(), loginName, new Password(hashedPassword, salt));
             _userRepository.SaveUser(user);
+            
             RecurringJob.AddOrUpdate($"{user.Id}",() => 
                 _backgroundStatisticGenerator.UpdateUserFacts(user.Id), 
                 _configuration.GetValue<string>("RecalculateStatisticPeriod"));
@@ -49,11 +51,11 @@ namespace ItHappened.Application.Services.UserService
         {
             var user = _userRepository.TryFindByLogin(loginName);
             if (user == null)
-                throw new RestException(HttpStatusCode.BadRequest, new { User = "User with provided credentials not found" });
+                throw new UserNotFoundException(loginName, password);
             
             var passwordHashedWithSalt = _passwordHasher.HashWithSalt(password, user.Password.Salt);
             if (passwordHashedWithSalt != user.Password.Hash)
-                throw new RestException(HttpStatusCode.NotFound, new { User = "User with provided credentials not found", });
+                throw new UserNotFoundException(loginName, password);
 
             return new UserWithToken(user, _jwtIssuer.GenerateToken(user));
         }

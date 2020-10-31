@@ -32,30 +32,26 @@ namespace ItHappened.Api.Middleware
 
         private async Task HandleExceptionAsync(HttpContext context, Exception ex, ILogger<ErrorHandlingMiddleware> logger)
         {
-            object errors = null;
+            object response = null;
 
             switch (ex)
             {
-                case RestException re:
-                    logger.LogError(ex, "REST ERROR");
-                    errors = re.Errors;
-                    context.Response.StatusCode = (int)re.Code;
+                case BusinessException businessException:
+                    logger.LogError(ex, "Business exception");
+                    response = new {message = businessException.Message, payload = businessException.Payload};
+                    context.Response.StatusCode = (int)businessException.HttpErrorCode;
                     break;
                 case Exception e:
-                    logger.LogError(ex, "SERVER ERROR");
-                    errors = string.IsNullOrWhiteSpace(e.Message) ? "Error" : e.Message;
+                    logger.LogError(ex, "Application exception");
+                    response = new {message = string.IsNullOrWhiteSpace(e.Message) ? "Error" : e.Message};
                     context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
                     break;
             }
 
             context.Response.ContentType = "application/json";
-            if (errors != null)
+            if (response != null)
             {
-                var result = JsonSerializer.Serialize(new 
-                {
-                    errors
-                });
-
+                var result = JsonSerializer.Serialize(response);
                 await context.Response.WriteAsync(result);
             }
         }

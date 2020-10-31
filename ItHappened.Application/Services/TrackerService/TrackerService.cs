@@ -26,12 +26,12 @@ namespace ItHappened.Application.Services.TrackerService
         {
             if (!_trackerRepository.IsContainTracker(trackerId))
             {
-                throw new RestException(HttpStatusCode.NotFound);
+                throw new TrackerNotFoundException(trackerId);
             }
             var tracker = _trackerRepository.LoadTracker(trackerId);
             if (actorId != tracker.CreatorId)
             {
-                throw new RestException(HttpStatusCode.BadRequest);
+                throw new NoPermissionsForTrackerException(actorId, trackerId);
             }
             return tracker;
         }
@@ -49,12 +49,12 @@ namespace ItHappened.Application.Services.TrackerService
         {
             if (!_trackerRepository.IsContainTracker(trackerId))
             {
-                throw new RestException(HttpStatusCode.NotFound);
+                throw new TrackerNotFoundException(trackerId);
             }
             var tracker = _trackerRepository.LoadTracker(trackerId);
             if (actorId != tracker.CreatorId)
             {
-                throw new RestException(HttpStatusCode.BadRequest);
+                throw new NoPermissionsForTrackerException(actorId, trackerId);
             }
 
             var updatedTracker = new EventTracker(tracker.Id, tracker.CreatorId, name, customizationSettings);
@@ -65,12 +65,12 @@ namespace ItHappened.Application.Services.TrackerService
         {
             if (!_trackerRepository.IsContainTracker(trackerId))
             {
-                throw new RestException(HttpStatusCode.NotFound);
+                throw new TrackerNotFoundException(trackerId);
             }
             var tracker = _trackerRepository.LoadTracker(trackerId);
             if (actorId != tracker.CreatorId)
             {
-                throw new RestException(HttpStatusCode.BadRequest);
+                throw new NoPermissionsForTrackerException(actorId, trackerId);
             }
 
             _trackerRepository.DeleteTracker(trackerId);

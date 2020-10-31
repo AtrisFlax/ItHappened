@@ -32,7 +32,7 @@ namespace ItHappened.UnitTests.ServicesTests
         [Test]
         public void CreateEventWhenNoRequiredTrackerInRepository_ThrowsRestException()
         {
-            Assert.Throws<RestException>(() =>
+            Assert.Throws<BusinessException>(() =>
                 _eventService.CreateEvent(Guid.NewGuid(), _tracker.Id, DateTimeOffset.Now,
                     new EventCustomParameters()));
         }
@@ -43,7 +43,7 @@ namespace ItHappened.UnitTests.ServicesTests
         {
             _trackerRepository.SaveTracker(_tracker);
             
-            Assert.Throws<RestException>(() =>
+            Assert.Throws<BusinessException>(() =>
                 _eventService.CreateEvent(Guid.NewGuid(), _tracker.Id, DateTimeOffset.Now,
                     new EventCustomParameters()));
         }
@@ -62,7 +62,7 @@ namespace ItHappened.UnitTests.ServicesTests
                     true));
             _trackerRepository.SaveTracker(tracker);
             
-            Assert.Throws<RestException>(() =>
+            Assert.Throws<BusinessException>(() =>
                 _eventService.CreateEvent(tracker.CreatorId, tracker.Id, DateTimeOffset.Now,
                     new EventCustomParameters()));
         }
@@ -123,7 +123,7 @@ namespace ItHappened.UnitTests.ServicesTests
         [Test]
         public void GetEventWhenNoRequiredEventInRepository_ThrowsRestException()
         {
-            Assert.Throws<RestException>(() =>
+            Assert.Throws<BusinessException>(() =>
                 _eventService.GetEvent(Guid.NewGuid(), Guid.NewGuid()));
         }
         
@@ -133,7 +133,7 @@ namespace ItHappened.UnitTests.ServicesTests
             var eventOfAnotherUser = TestingMethods.CreateEvent(Guid.NewGuid(), Guid.NewGuid());
             _eventRepository.SaveEvent(eventOfAnotherUser);
             
-            Assert.Throws<RestException>(() =>
+            Assert.Throws<BusinessException>(() =>
                 _eventService.GetEvent(Guid.NewGuid(), eventOfAnotherUser.Id));
         }
         
@@ -151,7 +151,7 @@ namespace ItHappened.UnitTests.ServicesTests
         [Test]
         public void GetAllTrackerEventsWhenNoRequiredTrackerInRepository_ThrowsRestException()
         {
-            Assert.Throws<RestException>(() =>
+            Assert.Throws<BusinessException>(() =>
                 _eventService.GetAllTrackerEvents(Guid.NewGuid(), Guid.NewGuid()));
         }
         
@@ -160,7 +160,7 @@ namespace ItHappened.UnitTests.ServicesTests
         {
             _trackerRepository.SaveTracker(_tracker);
             
-            Assert.Throws<RestException>(() =>
+            Assert.Throws<BusinessException>(() =>
                 _eventService.GetAllTrackerEvents(Guid.NewGuid(), _tracker.Id));
         }
         
@@ -194,7 +194,7 @@ namespace ItHappened.UnitTests.ServicesTests
         [Test]
         public void EditEventWhenNoRequiredEventInRepository_ThrowsRestException()
         {
-            Assert.Throws<RestException>(() =>
+            Assert.Throws<BusinessException>(() =>
                 _eventService.EditEvent(Guid.NewGuid(),
                     Guid.NewGuid(),
                     DateTimeOffset.Now,
@@ -207,7 +207,7 @@ namespace ItHappened.UnitTests.ServicesTests
             _trackerRepository.SaveTracker(_tracker);
             _eventRepository.SaveEvent(_event);
             
-            Assert.Throws<RestException>(() =>
+            Assert.Throws<BusinessException>(() =>
                 _eventService.EditEvent(Guid.NewGuid(),
                     _event.Id,
                     DateTimeOffset.Now,
@@ -230,7 +230,7 @@ namespace ItHappened.UnitTests.ServicesTests
             var oldEvent = TestingMethods.CreateEvent(tracker.Id, tracker.CreatorId);
             _eventRepository.SaveEvent(oldEvent);
             
-            Assert.Throws<RestException>(() =>
+            Assert.Throws<BusinessException>(() =>
                 _eventService.EditEvent(tracker.CreatorId, oldEvent.Id, DateTimeOffset.Now,
                     new EventCustomParameters()));
         }
@@ -300,7 +300,7 @@ namespace ItHappened.UnitTests.ServicesTests
         [Test]
         public void DeleteEventWhenNoRequiredEventInRepository_ThrowsRestException()
         {
-            Assert.Throws<RestException>(() =>
+            Assert.Throws<BusinessException>(() =>
                 _eventService.DeleteEvent(Guid.NewGuid(),
                     Guid.NewGuid()));
         }
@@ -310,7 +310,7 @@ namespace ItHappened.UnitTests.ServicesTests
         {
             _eventRepository.SaveEvent(_event);
             
-            Assert.Throws<RestException>(() =>
+            Assert.Throws<BusinessException>(() =>
                 _eventService.DeleteEvent(Guid.NewGuid(),
                     _event.Id));
         }
