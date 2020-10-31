@@ -48,12 +48,18 @@ namespace ItHappened.Application.Services.UserService
         {
             var user = _userRepository.TryFindByLogin(loginName);
             if (user == null)
+            {
                 throw new RestException(HttpStatusCode.BadRequest,
                     new {User = "User with provided credentials not found"});
+            }
 
-            if (_passwordHasher.Verify(password, user.PasswordHash))
+
+            if (!_passwordHasher.Verify(password, user.PasswordHash))
+            {
                 throw new RestException(HttpStatusCode.NotFound,
-                    new {User = "User with provided credentials not found",});
+                    new {User = "User with provided credentials not found"});
+            }
+
 
             return new UserWithToken(user, _jwtIssuer.GenerateToken(user));
         }

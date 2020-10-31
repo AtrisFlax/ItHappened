@@ -48,8 +48,10 @@ namespace ItHappened.Api
                 cfg.AddProfile(new RequestToDomainProfile());
                 cfg.AddProfile(new DomainToResponseProfile());
                 cfg.AddProfile(new DomainToDBMappingProfiles());
-                cfg.AddProfile(new DBToDomainMappingProfiles());
+                cfg.AddProfile(new DbToDomainProfile());
+                cfg.AddProfile(new DomainToDbProfile());
             });
+
             IMapper mapper = mapperConfig.CreateMapper();
             services.AddSingleton(mapper);
 
@@ -59,7 +61,7 @@ namespace ItHappened.Api
             RegisterEfCoreRepository(services);
 
             //service repos
-          
+
             services.AddSingleton<ITrackerRepository, TrackerRepository>();
             services.AddSingleton<IEventRepository, EventRepository>();
             services.AddSingleton<ISingleFactsRepository, SingleFactsRepository>();
@@ -71,14 +73,14 @@ namespace ItHappened.Api
             services.AddScoped<IBackgroundStatisticGenerator, StatisticGenerator>();
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IStatisticsService, StatisticsService>();
-            
+
             //add calculators to statistic services 
             AddMultipleTrackersStatisticsProvider(services);
             AddSingleTrackerStatisticsProvider(services);
 
             //password hasher 
             services.AddSingleton<IPasswordHasher, PasswordHasher>();
-            
+
             //jwt
             var jwtOptions = new JwtOptions();
             Configuration.GetSection(nameof(JwtOptions)).Bind(jwtOptions);
