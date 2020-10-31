@@ -126,9 +126,6 @@ namespace ItHappened.Api
             services.AddHangfire(configuration => configuration.UseMemoryStorage());
             services.AddHangfireServer();
             
-            //skip null in json 
-            services.AddMvc().AddJsonOptions(options => { options.JsonSerializerOptions.IgnoreNullValues = true; });
-
             services.AddControllers();
         }
 
