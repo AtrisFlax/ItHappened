@@ -1,4 +1,5 @@
 using System.Text;
+using System.Text.Encodings.Web;
 using AutoMapper;
 using Hangfire;
 using Hangfire.MemoryStorage;
@@ -128,9 +129,15 @@ namespace ItHappened.Api
             services.AddHangfireServer();
             
             //skip null in json 
-            services.AddMvc().AddJsonOptions(options => { options.JsonSerializerOptions.IgnoreNullValues = true; });
+            // services.AddMvc().AddJsonOptions(options =>
+            // {
+            //     options.JsonSerializerOptions.IgnoreNullValues = true;
+            // });вфы
 
-            services.AddControllers();
+            services.AddControllers().AddJsonOptions(options =>
+            {
+                options.JsonSerializerOptions.IgnoreNullValues = true;
+            });;
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
