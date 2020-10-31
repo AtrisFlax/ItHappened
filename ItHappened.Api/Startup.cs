@@ -1,8 +1,8 @@
 using System.Text;
-using System.Text.Encodings.Web;
 using AutoMapper;
 using Hangfire;
 using Hangfire.MemoryStorage;
+using ItHappend.Infrastructure;
 using ItHappened.Api.Authentication;
 using ItHappened.Api.Mapping;
 using ItHappened.Api.Mapping.ItHappened.Api.MappingProfiles;
@@ -15,7 +15,8 @@ using ItHappened.Application.Services.TrackerService;
 using ItHappened.Application.Services.UserService;
 using ItHappened.Domain;
 using ItHappened.Domain.Statistics;
-using ItHappened.Infrastructure;
+using ItHappened.Infrastructure.EFCoreRepositories;
+using ItHappened.Infrastructure.Mappers;
 using ItHappened.Infrastructure.Repositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
@@ -45,6 +46,8 @@ namespace ItHappened.Api
             {
                 cfg.AddProfile(new RequestToDomainProfile());
                 cfg.AddProfile(new DomainToResponseProfile());
+                cfg.AddProfile(new DomainToDBMappingProfiles());
+                cfg.AddProfile(new DBToDomainMappingProfiles());
             });
             IMapper mapper = mapperConfig.CreateMapper();
             services.AddSingleton(mapper);
@@ -52,7 +55,7 @@ namespace ItHappened.Api
             services.AddSingleton<IFactsToJsonMapper, FactsToNewtonJsonMapper>();
 
             //service repos
-            services.AddSingleton<IUserRepository, UserRepository>();
+            services.AddSingleton<IUserRepository, EFUserRepository>();
             services.AddSingleton<ITrackerRepository, TrackerRepository>();
             services.AddSingleton<IEventRepository, EventRepository>();
             services.AddSingleton<ISingleFactsRepository, SingleFactsRepository>();
@@ -126,17 +129,11 @@ namespace ItHappened.Api
             //hangfire
             services.AddHangfire(configuration => configuration.UseMemoryStorage());
             services.AddHangfireServer();
-            
-            //skip null in json 
-            // services.AddMvc().AddJsonOptions(options =>
-            // {
-            //     options.JsonSerializerOptions.IgnoreNullValues = true;
-            // });вфы
 
             services.AddControllers().AddJsonOptions(options =>
             {
                 options.JsonSerializerOptions.IgnoreNullValues = true;
-            });;
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

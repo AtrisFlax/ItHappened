@@ -16,9 +16,7 @@ namespace ItHappened.Infrastructure.Repositories
         
         public User TryFindByLogin(string login)
         {
-            return _users
-                .FirstOrDefault(x => x.Value.Name == login)
-                .Value;
+            return _users.FirstOrDefault(x => x.Value.Name == login).Value;
         }
 
         public IEnumerable<Guid> LoadAllUsersIds()

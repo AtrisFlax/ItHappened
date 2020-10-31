@@ -6,7 +6,6 @@ using ItHappened.Application.Errors;
 using ItHappened.Domain;
 using ItHappened.Domain.Statistics;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Configuration.Json;
 
 namespace ItHappened.Application.Services.UserService
 {
@@ -33,18 +32,17 @@ namespace ItHappened.Application.Services.UserService
 
         public UserWithToken Register(string loginName, string password)
         {
-            // var user = _userRepository.TryFindByLogin(loginName);
-            // if (user != null)
-            //     throw new RestException(HttpStatusCode.BadRequest, new {Username = "Username already exists"});
-            var (hashedPassword, salt) = _passwordHasher.HashWithRandomSalt(password);
-            // user = new User(Guid.NewGuid(), loginName, new Password(hashedPassword, salt));
-            // _userRepository.CreateUser(user);
-            // RecurringJob.AddOrUpdate($"{user.Id}", () =>
-            //         _backgroundStatisticGenerator.UpdateUserFacts(user.Id),
-            //     _configuration.GetValue<string>("CronCronRecalculateStatisticPeriod"));
-            //
-            // return new UserWithToken(user, _jwtIssuer.GenerateToken(user));
-            return null;
+            var user = _userRepository.TryFindByLogin(loginName);
+            if (user != null)
+                throw new RestException(HttpStatusCode.BadRequest, new {Username = "Username already exists"});
+            var hashedPassword = _passwordHasher.Hash(password);
+            user = new User(Guid.NewGuid(), loginName, hashedPassword);
+            _userRepository.CreateUser(user);
+            RecurringJob.AddOrUpdate($"{user.Id}", () =>
+                    _backgroundStatisticGenerator.UpdateUserFacts(user.Id),
+                _configuration.GetValue<string>("CronCronRecalculateStatisticPeriod"));
+            
+            return new UserWithToken(user, _jwtIssuer.GenerateToken(user));
         }
 
         public UserWithToken Authenticate(string loginName, string password)
@@ -54,8 +52,7 @@ namespace ItHappened.Application.Services.UserService
                 throw new RestException(HttpStatusCode.BadRequest,
                     new {User = "User with provided credentials not found"});
 
-            var passwordHashedWithSalt = _passwordHasher.HashWithSalt(password, user.Password.Salt);
-            if (passwordHashedWithSalt != user.Password.Hash)
+            if ( _passwordHasher.Verify(password, user.PasswordHash))
                 throw new RestException(HttpStatusCode.NotFound,
                     new {User = "User with provided credentials not found",});
 

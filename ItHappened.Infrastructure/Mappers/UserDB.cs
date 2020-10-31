@@ -2,7 +2,7 @@
 
 namespace ItHappened.Infrastructure.Mappers
 {
-    public class UserDbEntity
+    public class UserDB
     {
         public Guid Id { get; }
         public string Name { get; }

@@ -1,11 +1,12 @@
 ﻿using ItHappened.Domain;
+using ItHappened.Infrastructure.Mappers;
 using Microsoft.EntityFrameworkCore;
 
 namespace ItHappened.Infrastructure.EFCoreRepositories
 {
     public class ItHappenedDbContext : DbContext
     {
-        public DbSet<User> Users { get; set; }
+        public DbSet<UserDB> Users { get; set; }
         
         public DbSet<Comment> Comments { get; set; }
         public DbSet<GeoTag> GeoTags { get; set; }
@@ -24,7 +25,7 @@ namespace ItHappened.Infrastructure.EFCoreRepositories
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<User>().ToTable("Users", "ItHappenedDB");
+            modelBuilder.Entity<UserDB>().ToTable("Users", "ItHappenedDB");
         }
     }
 }
