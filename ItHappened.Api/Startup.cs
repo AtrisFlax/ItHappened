@@ -43,6 +43,15 @@ namespace ItHappened.Api
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            //auto mapper
+            var mapperConfig = new MapperConfiguration(cfg =>
+            {
+                cfg.AddProfile(new RequestToDomainProfile());
+                cfg.AddProfile(new DomainToResponseProfile());
+                cfg.AddProfile(new Infrastructure.EFCoreRepositories.Mapping.MappingProfiles());
+            });
+            IMapper mapper = mapperConfig.CreateMapper();
+            
             services.AddControllers()
                 .AddFluentValidation(cfg =>
                 {
