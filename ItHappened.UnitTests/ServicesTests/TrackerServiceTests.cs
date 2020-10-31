@@ -33,19 +33,19 @@ namespace ItHappened.UnitTests.ServicesTests
             var trackerId = _trackerService.CreateEventTracker(creatorId, "tracker",
                 new TrackerCustomizationSettings(
                     true,
-                    true, 
-                    Option<string>.Some("meter"), 
+                    true,
+                    Option<string>.Some("meter"),
                     false,
-                    true, 
-                    false, 
+                    true,
+                    false,
                     false));
-            
+
             var trackerFromRepository = _trackerRepository.LoadTracker(trackerId);
-            
+
             var actualMeasurementUnit = trackerFromRepository.CustomizationSettings.ScaleMeasurementUnit.Match(
                 Some: value => value,
                 None: string.Empty);
-            
+
             Assert.AreEqual(creatorId, trackerFromRepository.CreatorId);
             Assert.AreEqual("meter", actualMeasurementUnit);
             Assert.True(trackerFromRepository.CustomizationSettings.IsPhotoRequired);
@@ -53,43 +53,41 @@ namespace ItHappened.UnitTests.ServicesTests
             Assert.True(trackerFromRepository.CustomizationSettings.IsGeoTagRequired);
             Assert.False(trackerFromRepository.CustomizationSettings.IsCommentRequired);
             Assert.True(trackerFromRepository.CustomizationSettings.IsScaleRequired);
-            Assert.False(trackerFromRepository.CustomizationSettings.IsCommentRequired);
         }
-        
+
         [Test]
         public void GetTrackerWhenNoSuchTrackerInRepository_ThrowsRestException()
         {
             Assert.Throws<RestException>(() => _trackerService.GetEventTracker(Guid.NewGuid(), Guid.NewGuid()));
         }
-        
+
         [Test]
         public void GetTrackerWhenUserAsksNotHisTracker_ThrowsRestException()
         {
             _trackerRepository.SaveTracker(_tracker);
-            
+
             Assert.Throws<RestException>(() => _trackerService.GetEventTracker(Guid.NewGuid(), _tracker.Id));
         }
-        
+
         [Test]
         public void GetTrackerGoodCase_ReturnsRequiredTracker()
         {
             _trackerRepository.SaveTracker(_tracker);
-            
             var tracker = _trackerService.GetEventTracker(_tracker.CreatorId, _tracker.Id);
-            
+
             Assert.AreEqual(tracker.GetHashCode(), _tracker.GetHashCode());
         }
-        
+
         [Test]
         public void GetAllUserTrackersWhenUserHasNoTrackers_ReturnsEmptyCollection()
         {
             const int expected = 0;
-        
+
             var actual = _trackerRepository.LoadAllUserTrackers(Guid.NewGuid()).Count();
-            
+
             Assert.AreEqual(expected, actual);
         }
-        
+
         [Test]
         public void GetAllUserTrackers_ReturnsUserTrackers()
         {
@@ -99,9 +97,9 @@ namespace ItHappened.UnitTests.ServicesTests
             _trackerRepository.SaveTracker(tracker1);
             _trackerRepository.SaveTracker(tracker2);
             const int expected = 2;
-            
+
             var actual = _trackerRepository.LoadAllUserTrackers(userId).Count();
-            
+
             Assert.AreEqual(expected, actual);
         }
 
@@ -109,20 +107,20 @@ namespace ItHappened.UnitTests.ServicesTests
         public void EditEventTrackerWhenNoSuchTrackerInRepository_ThrowsRestException()
         {
             Assert.Throws<RestException>(() => _trackerService.EditEventTracker(
-                Guid.NewGuid(), 
-                Guid.NewGuid(), 
-                "EditedTracker", 
+                Guid.NewGuid(),
+                Guid.NewGuid(),
+                "EditedTracker",
                 new TrackerCustomizationSettings()));
         }
-        
+
         [Test]
         public void EditEventTrackerWhenUserAsksNotHisTracker_ThrowsRestException()
         {
             _trackerRepository.SaveTracker(_tracker);
             Assert.Throws<RestException>(() => _trackerService.EditEventTracker(
-                Guid.NewGuid(), 
-                _tracker.Id, 
-                "EditedTracker", 
+                Guid.NewGuid(),
+                _tracker.Id,
+                "EditedTracker",
                 new TrackerCustomizationSettings()));
         }
 
@@ -137,9 +135,9 @@ namespace ItHappened.UnitTests.ServicesTests
                 editedCustomization);
 
             var editedTrackerFromRepository = _trackerRepository.LoadTracker(_tracker.Id);
-            
+
             Assert.AreEqual(newName, editedTrackerFromRepository.Name);
-            Assert.AreEqual(editedCustomization.GetHashCode(), 
+            Assert.AreEqual(editedCustomization.GetHashCode(),
                 editedTrackerFromRepository.CustomizationSettings.GetHashCode());
         }
 
@@ -148,22 +146,22 @@ namespace ItHappened.UnitTests.ServicesTests
         {
             Assert.Throws<RestException>(() => _trackerService.DeleteEventTracker(Guid.NewGuid(), Guid.NewGuid()));
         }
-        
+
         [Test]
         public void DeleteTrackerWhenUserAsksNotHisTracker_ThrowsRestException()
         {
             _trackerRepository.SaveTracker(_tracker);
-            
+
             Assert.Throws<RestException>(() => _trackerService.DeleteEventTracker(Guid.NewGuid(), _tracker.CreatorId));
         }
-        
+
         [Test]
         public void DeleteTrackerGoodCase_TrackerRemovedFromRepository()
         {
             _trackerRepository.SaveTracker(_tracker);
 
             _trackerService.DeleteEventTracker(_tracker.CreatorId, _tracker.Id);
-            
+
             Assert.False(_trackerRepository.IsContainTracker(_tracker.Id));
         }
     }

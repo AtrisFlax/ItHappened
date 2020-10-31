@@ -30,7 +30,12 @@ namespace ItHappened.Api.Controllers
         public IActionResult GetStatisticsForSingleTracker([FromRoute] Guid trackerId)
         {
             var userId = Guid.Parse(User.FindFirstValue(JwtClaimTypes.Id)); //TODO issue  #169
-            var facts = _statisticsService.GetSingleTrackerFacts(trackerId, userId);
+            // var facts = _statisticsService.GetSingleTrackerFacts(trackerId, userId);
+
+            var facts = new ISingleTrackerFact[]
+            {
+                new AverageScaleTrackerFact("name", "name", 1.0, 1.0, "kg")
+            };
             return Ok(_mapper.SingleFactsToJson(facts));
         }
 
