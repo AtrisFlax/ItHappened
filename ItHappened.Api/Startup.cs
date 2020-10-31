@@ -66,11 +66,11 @@ namespace ItHappened.Api
             services.AddSingleton<IMultipleFactsRepository, MultipleFactsRepository>();
 
             //app services
-            services.AddSingleton<IEventService, EventService>();
-            services.AddSingleton<ITrackerService, TrackerService>();
-            services.AddSingleton<IBackgroundStatisticGenerator, StatisticGenerator>();
+            services.AddScoped<IEventService, EventService>();
+            services.AddScoped<ITrackerService, TrackerService>();
+            services.AddScoped<IBackgroundStatisticGenerator, StatisticGenerator>();
             services.AddScoped<IUserService, UserService>();
-            services.AddSingleton<IStatisticsService, StatisticsService>();
+            services.AddScoped<IStatisticsService, StatisticsService>();
             
             //add calculators to statistic services 
             AddMultipleTrackersStatisticsProvider(services);
