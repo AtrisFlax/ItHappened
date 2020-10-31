@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Security.Claims;
 using AutoMapper;
 using ItHappened.Api.Authentication;
-using ItHappened.Api.Mapping;
 using ItHappened.Api.Models.Requests;
 using ItHappened.Api.Models.Responses;
 using ItHappened.Application.Services.EventService;

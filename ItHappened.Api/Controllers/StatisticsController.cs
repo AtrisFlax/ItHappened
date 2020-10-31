@@ -1,14 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Security.Claims;
-using AutoMapper;
 using ItHappened.Api.Authentication;
 using ItHappened.Api.Mapping;
 using ItHappened.Application.Services.StatisticService;
 using ItHappened.Domain.Statistics;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
 
 namespace ItHappened.Api.Controllers
 {
