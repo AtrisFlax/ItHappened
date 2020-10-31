@@ -5,7 +5,7 @@ namespace ItHappened.Domain
 {
     public interface IUserRepository
     {
-        void SaveUser(User user);
+        void CreateUser(User user);
         User TryFindByLogin(string login);
         IEnumerable<Guid> LoadAllUsersIds();
     }

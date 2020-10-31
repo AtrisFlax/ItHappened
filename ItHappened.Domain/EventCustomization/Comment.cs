@@ -1,8 +1,11 @@
-﻿namespace ItHappened.Domain
+﻿using System;
+
+namespace ItHappened.Domain
 {
     public class Comment
     {
-        public string Text { get; }
+        public Guid Id { get; private set; }
+        public string Text { get; private set; }
 
         public Comment(string text)
         {
