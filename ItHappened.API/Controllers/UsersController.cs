@@ -10,11 +10,11 @@ using Microsoft.AspNetCore.Mvc;
 namespace ItHappened.Api.Controllers
 {
     [ApiController]
-    public class IdentityController : ControllerBase
+    public class UsersController : ControllerBase
     {
         private readonly IUserService _userService;
 
-        public IdentityController(IUserService userService)
+        public UsersController(IUserService userService)
         {
             _userService = userService;
         }
