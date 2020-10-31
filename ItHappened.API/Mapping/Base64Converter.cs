@@ -1,6 +1,6 @@
 ﻿namespace ItHappened.Api.Mapping
 {
-    public class Base64Converter
+    public static class Base64Converter
     {
         public static string Encode(string plainText) {
             var plainTextBytes = System.Text.Encoding.UTF8.GetBytes(plainText);
