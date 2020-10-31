@@ -3,8 +3,7 @@ using AutoMapper;
 using Hangfire;
 using Hangfire.MemoryStorage;
 using ItHappened.Api.Authentication;
-using ItHappened.Api.Mappers;
-using ItHappened.Api.Mappers.ItHappened.Api.MappingProfiles;
+// using ItHappened.Api.Mappers;
 using ItHappened.Api.Middleware;
 using ItHappened.Api.Options;
 using ItHappened.Application.Authentication;
@@ -40,15 +39,15 @@ namespace ItHappened.Api
         public void ConfigureServices(IServiceCollection services)
         {
             //auto mapper
-            var mapperConfig = new MapperConfiguration(cfg =>
-            {
-                cfg.AddProfile(new RequestToDomainProfile());
-                cfg.AddProfile(new DomainToResponseProfile());
-            });
-            IMapper mapper = mapperConfig.CreateMapper();
-            services.AddSingleton(mapper);
+            // var mapperConfig = new MapperConfiguration(cfg =>
+            // {
+            //     cfg.AddProfile(new RequestToDomainProfile());
+            //     cfg.AddProfile(new DomainToResponseProfile());
+            // });
+            // IMapper mapper = mapperConfig.CreateMapper();
+            // services.AddSingleton(mapper);
             //FactsToJsonMapper
-            services.AddSingleton<IFactsToJsonMapper, FactsToNewtonJsonMapper>();
+            // services.AddSingleton<IFactsToJsonMapper, FactsToNewtonJsonMapper>();
 
             //service repos
             services.AddSingleton<IUserRepository, UserRepository>();

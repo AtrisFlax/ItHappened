@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Security.Claims;
 using ItHappened.Api.Authentication;
-using ItHappened.Api.Mappers;
+// using ItHappened.Api.Mappers;
 using ItHappened.Application.Services.StatisticService;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -13,12 +13,12 @@ namespace ItHappened.Api.Controllers
     public class StatisticsController : ControllerBase
     {
         private readonly IStatisticsService _statisticsService;
-        private readonly IFactsToJsonMapper _mapper;
+        // private readonly IFactsToJsonMapper _mapper;
 
-        public StatisticsController(IStatisticsService statisticsService, IFactsToJsonMapper mapper)
+        public StatisticsController(IStatisticsService statisticsService/*, IFactsToJsonMapper mapper*/)
         {
             _statisticsService = statisticsService;
-            _mapper = mapper;
+            //_mapper = mapper;
         }
 
         [HttpGet("statistics/{trackerId}")]
@@ -27,7 +27,8 @@ namespace ItHappened.Api.Controllers
         {
             var userId = Guid.Parse(User.FindFirstValue(JwtClaimTypes.Id)); //TODO issue  #169
             var facts = _statisticsService.GetSingleTrackerFacts(trackerId, userId);
-            return Ok(_mapper.SingleFactsToJson(facts));
+            //return Ok(_mapper.SingleFactsToJson(facts));
+            return Ok();
         }
 
         [HttpGet("statistics")]
@@ -36,7 +37,8 @@ namespace ItHappened.Api.Controllers
         {
             var userId = Guid.Parse(User.FindFirstValue(JwtClaimTypes.Id)); //TODO issue  #169
             var facts = _statisticsService.GetMultipleTrackersFacts(userId);
-            return Ok(_mapper.MultipleFactsToJson(facts));
+            // return Ok(_mapper.MultipleFactsToJson(facts));
+            return Ok();
         }
     }
 }
