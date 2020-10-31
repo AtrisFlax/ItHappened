@@ -3,7 +3,6 @@ using ItHappened.Api.Models.Requests;
 using ItHappened.Domain;
 using LanguageExt;
 
-
 namespace ItHappened.Api.Mapping
 {
     public class RequestToDomainProfile : Profile
@@ -40,7 +39,7 @@ namespace ItHappened.Api.Mapping
             var comment = request.Comment == null
                 ? Option<Comment>.None
                 : Option<Comment>.Some(new Comment(request.Comment));
-            return new EventCustomParameters( photo, scale, rating, geoTag, comment);
+            return new EventCustomParameters(photo, scale, rating, geoTag, comment);
         }
     }
 }

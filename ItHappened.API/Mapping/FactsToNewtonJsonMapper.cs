@@ -7,7 +7,6 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using JsonSerializer = Newtonsoft.Json.JsonSerializer;
 
-
 namespace ItHappened.Api.Mapping
 {
     namespace ItHappened.Api.MappingProfiles
