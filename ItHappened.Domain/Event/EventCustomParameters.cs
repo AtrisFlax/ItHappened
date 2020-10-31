@@ -10,7 +10,8 @@ namespace ItHappened.Domain
         public Option<GeoTag> GeoTag { get; private set;}
         public Option<Comment> Comment { get; private set;}
 
-        public EventCustomParameters(Option<Photo> photo,
+        public EventCustomParameters(
+            Option<Photo> photo,
             Option<double> scale,
             Option<double> rating,
             Option<GeoTag> geoTag,
@@ -22,7 +23,8 @@ namespace ItHappened.Domain
             GeoTag = geoTag;
             Comment = comment;
         }
-        
+
+        //TODO delete this constructor. Replace fabric method in ItHappened.UnitTests.StatisticsCalculatorsTests.TestMethods
         public EventCustomParameters()
         {
             Photo = Option<Photo>.None;

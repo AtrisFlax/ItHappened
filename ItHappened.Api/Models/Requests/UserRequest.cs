@@ -1,5 +1,3 @@
-using FluentValidation;
-
 namespace ItHappened.Api.Models.Requests
 {
     public class UserRequest
@@ -8,12 +6,4 @@ namespace ItHappened.Api.Models.Requests
         public string Password { get; set; }
     }
     
-    public class UserRequestValidator : AbstractValidator<UserRequest>
-    {
-        public UserRequestValidator()
-        {
-            RuleFor(x => x.UserName).NotEmpty();
-            RuleFor(x => x.Password).Password();
-        }
-    }
 }

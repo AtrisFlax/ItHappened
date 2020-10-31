@@ -20,7 +20,7 @@ namespace ItHappened.Api.Controllers
         }
 
         [HttpPost]
-        [Route("users")]
+        [Route("/users")]
         [ProducesResponseType(200, Type = typeof(UserResponse))]
         public IActionResult Register([FromBody] UserRequest request)
         {
@@ -29,7 +29,7 @@ namespace ItHappened.Api.Controllers
         }
 
         [HttpPost]
-        [Route("login")]
+        [Route("/login")]
         [ProducesResponseType(200, Type = typeof(UserWithToken))]
         public IActionResult Authenticate([FromBody] UserRequest request)
         {
@@ -38,7 +38,7 @@ namespace ItHappened.Api.Controllers
         }
 
         [HttpGet]
-        [Route("self")]
+        [Route("/self")]
         [Authorize]
         public IActionResult GetSelf()
         {
