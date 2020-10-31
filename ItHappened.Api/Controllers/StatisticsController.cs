@@ -3,7 +3,6 @@ using System.Security.Claims;
 using ItHappened.Api.Authentication;
 using ItHappened.Api.Mapping;
 using ItHappened.Application.Services.StatisticService;
-using ItHappened.Domain.Statistics;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
