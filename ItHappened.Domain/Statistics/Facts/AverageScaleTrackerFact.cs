@@ -8,7 +8,7 @@
         public double AverageValue { get; }
         public string MeasurementUnit { get; }
 
-        internal AverageScaleTrackerFact(string factName, string description, double priority, double averageValue,
+        public AverageScaleTrackerFact(string factName, string description, double priority, double averageValue,
             string measurementUnit)
         {
             FactName = factName;

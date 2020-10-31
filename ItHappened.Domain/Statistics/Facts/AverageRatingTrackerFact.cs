@@ -7,7 +7,7 @@
         public string Description { get; }
         public double Priority { get; }
 
-        internal AverageRatingTrackerFact(string factName, string description, double priority, double averageRating)
+        public AverageRatingTrackerFact(string factName, string description, double priority, double averageRating)
         {
             FactName = factName;
             Description = description;
