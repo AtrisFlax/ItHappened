@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using AutoMapper;
+using AutoMapper.Mappers;
 using ItHappened.Domain;
 using LanguageExt;
 
@@ -9,15 +11,18 @@ namespace ItHappened.Infrastructure.EFCoreRepositories
     public class EFEventsRepository : IEventRepository
     {
         private readonly ItHappenedDbContext _context;
+        private IMapper _mapper;
         
-        public EFEventsRepository(ItHappenedDbContext context)
+        public EFEventsRepository(ItHappenedDbContext context, IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
 
         public void SaveEvent(Event newEvent)
         {
-            _context.Add(newEvent);
+            var eventDto = _mapper.Map<EventDto>(newEvent);
+            _context.Add(eventDto);
             _context.SaveChanges();
         }
 
@@ -29,8 +34,8 @@ namespace ItHappened.Infrastructure.EFCoreRepositories
 
         public Event LoadEvent(Guid eventId)
         {
-            throw new NotImplementedException();
-            //return _context.Events.Find(eventId);
+            var eventDbo = _context.Events.Find(eventId);
+            return _mapper.Map<Event>(eventDbo);
         }
 
         public IReadOnlyCollection<Event> LoadAllTrackerEvents(Guid trackerId)

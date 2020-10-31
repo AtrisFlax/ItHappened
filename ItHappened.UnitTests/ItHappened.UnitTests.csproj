@@ -25,4 +25,8 @@
       <ProjectReference Include="..\ItHappened.Infrastructure\ItHappened.Infrastructure.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="InfrastructureTests" />
+    </ItemGroup>
+
 </Project>

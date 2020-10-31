@@ -20,32 +20,32 @@ namespace ItHappened.Application.Services.EventService
         public Guid CreateEvent(Guid actorId, Guid trackerId, DateTimeOffset eventHappensDate,
             EventCustomParameters customParameters)
         {
-            if (!_trackerRepository.IsContainTracker(trackerId))
-            {
-                throw new RestException(HttpStatusCode.NotFound);
-            }
-            var tracker = _trackerRepository.LoadTracker(trackerId);
-            if (tracker.CreatorId != actorId)
-            {
-                throw new RestException(HttpStatusCode.BadRequest);
-            }
+            // if (!_trackerRepository.IsContainTracker(trackerId))
+            // {
+            //     throw new RestException(HttpStatusCode.NotFound);
+            // }
+            // var tracker = _trackerRepository.LoadTracker(trackerId);
+            // if (tracker.CreatorId != actorId)
+            // {
+            //     throw new RestException(HttpStatusCode.BadRequest);
+            // }
             
             var newEventId = Guid.NewGuid();
-            while (_eventRepository.IsContainEvent(newEventId))
-            {//if generated GUID already exist in repository -> regenerate
-                newEventId = Guid.NewGuid();
-            }
+            // while (_eventRepository.IsContainEvent(newEventId))
+            // {//if generated GUID already exist in repository -> regenerate
+            //     newEventId = Guid.NewGuid();
+            // }
             
             var newEvent = new Event(newEventId, actorId, trackerId, eventHappensDate, customParameters);
 
-            if (tracker.CustomizationSettings.IsCustomizationRequired &&
-                !tracker.IsTrackerCustomizationAndEventCustomizationMatch(newEvent))
-            {
-                throw new RestException(HttpStatusCode.BadRequest);
-            }
+            // if (tracker.CustomizationSettings.IsCustomizationRequired &&
+            //     !tracker.IsTrackerCustomizationAndEventCustomizationMatch(newEvent))
+            // {
+            //     throw new RestException(HttpStatusCode.BadRequest);
+            // }
 
             _eventRepository.SaveEvent(newEvent);
-            tracker.IsUpdated = true;
+            //tracker.IsUpdated = true;
             return newEvent.Id;
         }
     
