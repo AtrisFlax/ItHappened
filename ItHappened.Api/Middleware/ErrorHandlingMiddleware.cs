@@ -38,12 +38,12 @@ namespace ItHappened.Api.Middleware
             {
                 case BusinessException businessException:
                     logger.LogError(ex, "Business exception");
-                    response = new {message = businessException.Message, payload = businessException.Payload};
+                    response = new ExceptionResponse(businessException.ErrorMessage, businessException.Payload);
                     context.Response.StatusCode = (int)businessException.HttpErrorCode;
                     break;
                 case Exception e:
                     logger.LogError(ex, "Application exception");
-                    response = new {message = string.IsNullOrWhiteSpace(e.Message) ? "Error" : e.Message};
+                    response = new ExceptionResponse(ex.Message);
                     context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
                     break;
             }
