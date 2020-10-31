@@ -36,23 +36,23 @@ namespace ItHappened.Api.Controllers
         }
 
 
-        [HttpGet("/trackers")]
-        [ProducesResponseType(200, Type = typeof(List<TrackerGetResponse>))]
-        public IActionResult GetAllTrackers()
-        {
-            var userId = Guid.Parse(User.FindFirstValue(JwtClaimTypes.Id)); //TODO issue  #169
-            var trackers = _trackerService.GetEventTrackers(userId);
-            return Ok(_mapper.Map<List<TrackerGetResponse>>(trackers));
-        }
-
-        [HttpGet("/trackers/{trackerId}")]
-        [ProducesResponseType(200, Type = typeof(TrackerGetResponse))]
-        public IActionResult GetTracker([FromRoute] Guid trackerId)
-        {
-            var userId = Guid.Parse(User.FindFirstValue(JwtClaimTypes.Id)); //TODO issue  #169
-            var tracker = _trackerService.GetEventTracker(userId, trackerId);
-            return Ok(_mapper.Map<TrackerGetResponse>(tracker));
-        }
+        // [HttpGet("/trackers")]
+        // [ProducesResponseType(200, Type = typeof(List<TrackerGetResponse>))]
+        // public IActionResult GetAllTrackers()
+        // {
+        //     var userId = Guid.Parse(User.FindFirstValue(JwtClaimTypes.Id)); //TODO issue  #169
+        //     var trackers = _trackerService.GetEventTrackers(userId);
+        //     return Ok(_mapper.Map<List<TrackerGetResponse>>(trackers));
+        // }
+        //
+        // [HttpGet("/trackers/{trackerId}")]
+        // [ProducesResponseType(200, Type = typeof(TrackerGetResponse))]
+        // public IActionResult GetTracker([FromRoute] Guid trackerId)
+        // {
+        //     var userId = Guid.Parse(User.FindFirstValue(JwtClaimTypes.Id)); //TODO issue  #169
+        //     var tracker = _trackerService.GetEventTracker(userId, trackerId);
+        //     return Ok(_mapper.Map<TrackerGetResponse>(tracker));
+        // }
 
         [HttpPut("/trackers/{trackerId}")]
         [ProducesResponseType(200)]
@@ -64,13 +64,13 @@ namespace ItHappened.Api.Controllers
             return Ok();
         }
 
-        [HttpDelete("/trackers/{trackerId}")]
-        [ProducesResponseType(200, Type = typeof(TrackerGetResponse))]
-        public IActionResult DeleteTracker([FromRoute] Guid trackerId)
-        {
-            var userId = Guid.Parse(User.FindFirstValue(JwtClaimTypes.Id)); //TODO issue  #169
-            _trackerService.DeleteEventTracker(userId, trackerId);
-            return Ok();
-        }
+        // [HttpDelete("/trackers/{trackerId}")]
+        // [ProducesResponseType(200, Type = typeof(TrackerGetResponse))]
+        // public IActionResult DeleteTracker([FromRoute] Guid trackerId)
+        // {
+        //     var userId = Guid.Parse(User.FindFirstValue(JwtClaimTypes.Id)); //TODO issue  #169
+        //     _trackerService.DeleteEventTracker(userId, trackerId);
+        //     return Ok();
+        // }
     }
 }
