@@ -1,12 +1,12 @@
 using System.Text;
+using System.Text.Encodings.Web;
 using AutoMapper;
-using FluentValidation.AspNetCore;
 using Hangfire;
 using Hangfire.MemoryStorage;
 using ItHappened.Api.Authentication;
-using ItHappened.Api.MappingProfiles;
+using ItHappened.Api.Mapping;
+using ItHappened.Api.Mapping.ItHappened.Api.MappingProfiles;
 using ItHappened.Api.Middleware;
-using ItHappened.Api.Models.Requests;
 using ItHappened.Api.Options;
 using ItHappened.Application.Authentication;
 using ItHappened.Application.Services.EventService;
@@ -35,28 +35,33 @@ namespace ItHappened.Api
             Configuration = configuration;
         }
 
-        public IConfiguration Configuration { get; }
+        private IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers()
-                .AddFluentValidation(cfg =>
-                {
-                    cfg.RegisterValidatorsFromAssemblyContaining<TrackerRequest>();
-                });
-            //repos
+            //auto mapper
+            var mapperConfig = new MapperConfiguration(cfg =>
+            {
+                cfg.AddProfile(new RequestToDomainProfile());
+                cfg.AddProfile(new DomainToResponseProfile());
+            });
+            IMapper mapper = mapperConfig.CreateMapper();
+            services.AddSingleton(mapper);
+            //FactsToJsonMapper
+            services.AddSingleton<IFactsToJsonMapper, FactsToNewtonJsonMapper>();
+
+            //service repos
             services.AddSingleton<IUserRepository, UserRepository>();
             services.AddSingleton<ITrackerRepository, TrackerRepository>();
             services.AddSingleton<IEventRepository, EventRepository>();
             services.AddSingleton<ISingleFactsRepository, SingleFactsRepository>();
             services.AddSingleton<IMultipleFactsRepository, MultipleFactsRepository>();
-            
+
             //app services
-            
             services.AddSingleton<IEventService, EventService>();
             services.AddSingleton<ITrackerService, TrackerService>();
-            
+
             AddMultipleTrackersStatisticsProvider(services);
             AddSingleTrackerStatisticsProvider(services);
 
@@ -64,11 +69,8 @@ namespace ItHappened.Api
 
             services.AddSingleton<IUserService, UserService>();
             services.AddSingleton<IStatisticsService, StatisticsService>();
-            
-            //mappers
-            services.AddAutoMapper(typeof(Startup));
-            services.AddSingleton<IMyMapper, MyMapper>();
-            
+
+
             //jwt
             var jwtOptions = new JwtOptions();
             Configuration.GetSection(nameof(JwtOptions)).Bind(jwtOptions);
@@ -121,15 +123,27 @@ namespace ItHappened.Api
                 swaggerGenOptions.AddSecurityRequirement(securityRequirements);
             });
 
+            //hangfire
             services.AddHangfire(configuration => configuration.UseMemoryStorage());
             services.AddHangfireServer();
+            
+            //skip null in json 
+            // services.AddMvc().AddJsonOptions(options =>
+            // {
+            //     options.JsonSerializerOptions.IgnoreNullValues = true;
+            // });вфы
+
+            services.AddControllers().AddJsonOptions(options =>
+            {
+                options.JsonSerializerOptions.IgnoreNullValues = true;
+            });;
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             app.UseMiddleware<ErrorHandlingMiddleware>();
-            
+
             if (env.IsDevelopment())
             {
                 //app.UseDeveloperExceptionPage();
@@ -140,7 +154,7 @@ namespace ItHappened.Api
             app.UseSwagger(options => options.RouteTemplate = swaggerOptions.JsonRoute);
             app.UseSwaggerUI(options => options.SwaggerEndpoint(swaggerOptions.UiEndpoint,
                 swaggerOptions.ApiDescription));
-            
+
             var jwtOptions = new JwtOptions();
             Configuration.GetSection(nameof(JwtOptions)).Bind(jwtOptions);
 
@@ -152,8 +166,8 @@ namespace ItHappened.Api
             app.UseAuthorization();
 
             app.UseHangfireDashboard();
-            
-            
+
+
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
@@ -170,7 +184,7 @@ namespace ItHappened.Api
             statisticsProvider.Add(new MultipleTrackersEventsCountCalculator());
             services.AddSingleton<IMultipleTrackersFactProvider>(statisticsProvider);
         }
-        
+
         private void AddSingleTrackerStatisticsProvider(IServiceCollection services)
         {
             var statisticsProvider = new SingleTrackerFactProvider();

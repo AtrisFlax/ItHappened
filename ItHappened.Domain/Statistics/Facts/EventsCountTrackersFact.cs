@@ -7,7 +7,7 @@
         public string Description { get; }
         public double Priority { get; }
 
-        internal EventsCountTrackersFact(string factName, string description, double priority, int eventsCount)
+        public EventsCountTrackersFact(string factName, string description, double priority, int eventsCount)
         {
             FactName = factName;
             Description = description;
