@@ -17,12 +17,21 @@ namespace ItHappened.Infrastructure.EFCoreRepositories
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             #region map order
-            //TODO add relation 1 : N - Events -> Tracker 
-            //TODO add relation 1 : N - User-> Trackers 
-            modelBuilder.Entity<UserDto>().ToTable("Users", "ItHappenedDB");
-            modelBuilder.Entity<EventTrackerDto>().ToTable("EventTrackers", "ItHappenedDB");
-            modelBuilder.Entity<EventDto>().ToTable("Events", "ItHappenedDB");
+            //TODO test 
+            modelBuilder.Entity<EventTrackerDto>(builder =>
+            {
+                builder.ToTable("EventTrackers", "ItHappenedDB");
+                builder.HasMany<EventDto>().WithOne(@event => @event.EventTrackerDto).HasForeignKey("TrackerId");
+            });
+            
+            modelBuilder.Entity<UserDto>(builder =>
+            {
+                builder.ToTable("Users", "ItHappenedDB");
+                builder.HasMany<EventTrackerDto>().WithOne(tracker => tracker.UserDto).HasForeignKey("CreatorId");
+            });
+            
             #endregion
+            
         }
     }
 }

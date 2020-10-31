@@ -46,7 +46,7 @@ namespace ItHappened.Infrastructure.EFCoreRepositories
 
         public void DeleteTracker(Guid eventTrackerId)
         {
-            //TODO cascade events delete
+            //TODO test cascade delete 
             //Deleting without loading from the database
             var toDelete = new EventDto {Id = eventTrackerId};
             _context.Entry(toDelete).State = EntityState.Deleted;
