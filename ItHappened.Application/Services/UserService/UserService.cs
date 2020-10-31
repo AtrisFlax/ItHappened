@@ -41,7 +41,6 @@ namespace ItHappened.Application.Services.UserService
             RecurringJob.AddOrUpdate($"{user.Id}", () =>
                     _backgroundStatisticGenerator.UpdateUserFacts(user.Id),
                 _configuration.GetValue<string>("CronCronRecalculateStatisticPeriod"));
-            
             return new UserWithToken(user, _jwtIssuer.GenerateToken(user));
         }
 
@@ -52,7 +51,7 @@ namespace ItHappened.Application.Services.UserService
                 throw new RestException(HttpStatusCode.BadRequest,
                     new {User = "User with provided credentials not found"});
 
-            if ( _passwordHasher.Verify(password, user.PasswordHash))
+            if (_passwordHasher.Verify(password, user.PasswordHash))
                 throw new RestException(HttpStatusCode.NotFound,
                     new {User = "User with provided credentials not found",});
 

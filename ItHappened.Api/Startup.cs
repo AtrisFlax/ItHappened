@@ -21,6 +21,7 @@ using ItHappened.Infrastructure.Repositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -51,11 +52,14 @@ namespace ItHappened.Api
             });
             IMapper mapper = mapperConfig.CreateMapper();
             services.AddSingleton(mapper);
+
             //FactsToJsonMapper
             services.AddSingleton<IFactsToJsonMapper, FactsToNewtonJsonMapper>();
 
+            RegisterEfCoreRepository(services);
+
             //service repos
-            services.AddSingleton<IUserRepository, EFUserRepository>();
+          
             services.AddSingleton<ITrackerRepository, TrackerRepository>();
             services.AddSingleton<IEventRepository, EventRepository>();
             services.AddSingleton<ISingleFactsRepository, SingleFactsRepository>();
@@ -64,22 +68,22 @@ namespace ItHappened.Api
             //app services
             services.AddSingleton<IEventService, EventService>();
             services.AddSingleton<ITrackerService, TrackerService>();
-
+            services.AddSingleton<IBackgroundStatisticGenerator, StatisticGenerator>();
+            services.AddScoped<IUserService, UserService>();
+            services.AddSingleton<IStatisticsService, StatisticsService>();
+            
+            //add calculators to statistic services 
             AddMultipleTrackersStatisticsProvider(services);
             AddSingleTrackerStatisticsProvider(services);
 
-            services.AddSingleton<IBackgroundStatisticGenerator, StatisticGenerator>();
-
-            services.AddSingleton<IUserService, UserService>();
-            services.AddSingleton<IStatisticsService, StatisticsService>();
-
-
+            //password hasher 
+            services.AddSingleton<IPasswordHasher, PasswordHasher>();
+            
             //jwt
             var jwtOptions = new JwtOptions();
             Configuration.GetSection(nameof(JwtOptions)).Bind(jwtOptions);
             services.AddSingleton(jwtOptions);
             services.AddSingleton<IJwtIssuer, JwtIssuer>();
-            services.AddSingleton<IPasswordHasher, PasswordHasher>();
             services
                 .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>
@@ -129,11 +133,6 @@ namespace ItHappened.Api
             //hangfire
             services.AddHangfire(configuration => configuration.UseMemoryStorage());
             services.AddHangfireServer();
-
-            services.AddControllers().AddJsonOptions(options =>
-            {
-                options.JsonSerializerOptions.IgnoreNullValues = true;
-            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -194,6 +193,19 @@ namespace ItHappened.Api
             statisticsProvider.Add(new SumScaleCalculator());
             statisticsProvider.Add(new WorstRatingEventCalculator());
             services.AddSingleton<ISingleTrackerFactProvider>(statisticsProvider);
+        }
+
+        private void RegisterEfCoreRepository(IServiceCollection serviceCollection)
+        {
+            serviceCollection.AddDbContext<ItHappenedDbContext>(builder => builder.UseSqlServer(GetConnectionString()));
+            serviceCollection.AddScoped<IUserRepository, EfUserRepository>();
+            serviceCollection.AddScoped<SaveChangesFilter>();
+            serviceCollection.AddControllers(options => { options.Filters.AddService<SaveChangesFilter>(); });
+        }
+
+        private string GetConnectionString()
+        {
+            return Configuration.GetValue<string>("ItHappenedConnection");
         }
     }
 }
