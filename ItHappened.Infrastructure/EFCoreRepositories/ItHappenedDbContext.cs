@@ -6,7 +6,7 @@ namespace ItHappened.Infrastructure.EFCoreRepositories
 {
     public class ItHappenedDbContext : DbContext
     {
-        public DbSet<User> Users { get; set; }
+        public DbSet<UserDto> Users { get; set; }
 
         public ItHappenedDbContext(DbContextOptions<ItHappenedDbContext> options) : base(options)
         {
@@ -14,7 +14,7 @@ namespace ItHappened.Infrastructure.EFCoreRepositories
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<User>().ToTable("Users", "ItHappenedDB");
+            modelBuilder.Entity<UserDto>().ToTable("Users", "ItHappenedDB");
         }
     }
 }

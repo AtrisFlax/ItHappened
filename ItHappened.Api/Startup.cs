@@ -47,8 +47,8 @@ namespace ItHappened.Api
             {
                 cfg.AddProfile(new RequestToDomainProfile());
                 cfg.AddProfile(new DomainToResponseProfile());
-                cfg.AddProfile(new DomainToDBMappingProfiles());
-                cfg.AddProfile(new DBToDomainMappingProfiles());
+                cfg.AddProfile(new DomainToDbMappingProfiles());
+                cfg.AddProfile(new DbToDomainMappingProfiles());
             });
             IMapper mapper = mapperConfig.CreateMapper();
             services.AddSingleton(mapper);

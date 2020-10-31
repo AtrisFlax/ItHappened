@@ -3,11 +3,11 @@ using ItHappened.Domain;
 
 namespace ItHappened.Infrastructure.Mappers
 {
-    public class DBToDomainMappingProfiles : Profile
+    public class DbToDomainMappingProfiles : Profile
     {
-        public DBToDomainMappingProfiles()
+        public DbToDomainMappingProfiles()
         {
-         
+            CreateMap<UserDto, User>();
         }
     }
 }

@@ -1,29 +1,35 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using AutoMapper;
 using ItHappened.Domain;
+using ItHappened.Infrastructure.Mappers;
 
 namespace ItHappened.Infrastructure.EFCoreRepositories
 {
     public class EfUserRepository : IUserRepository
     {
         private readonly ItHappenedDbContext _context;
+        private readonly IMapper _mapper;
 
-        public EfUserRepository(ItHappenedDbContext context)
+        public EfUserRepository(ItHappenedDbContext context, IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
 
         public void CreateUser(User user)
         {
-            _context.Users.Add(user);
+            var dtoUser = _mapper.Map<UserDto>(user);
+            _context.Users.Add(dtoUser);
         }
 
         public User TryFindByLogin(string login)
         {
-            return _context.Users.FirstOrDefault(user => user.Name == login);
+            var dtoUser = _context.Users.SingleOrDefault(user => user.Name == login);
+            return _mapper.Map<User>(dtoUser);
         }
-
+        
         public IEnumerable<Guid> LoadAllUsersIds()
         {
             throw new NotImplementedException();

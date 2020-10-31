@@ -1,12 +1,13 @@
 ﻿using AutoMapper;
+using ItHappened.Domain;
 
 namespace ItHappened.Infrastructure.Mappers
 {
-    public class DomainToDBMappingProfiles : Profile
+    public class DomainToDbMappingProfiles : Profile
     {
-        public DomainToDBMappingProfiles()
+        public DomainToDbMappingProfiles()
         {
-         
+            CreateMap<User, UserDto>();
         }
     }
 }
