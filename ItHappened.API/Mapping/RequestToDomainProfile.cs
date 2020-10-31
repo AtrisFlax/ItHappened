@@ -21,8 +21,6 @@ namespace ItHappened.Api.Mapping
                         request.AreCustomizationsOptional
                     )
                 );
-            //CustomizationSettingsRequest map to => TrackerCustomizationSettings
-
             CreateMap<EventRequest, EventCustomParameters>()
                 .ConvertUsing(request => EventCustomParameters(request));
         }

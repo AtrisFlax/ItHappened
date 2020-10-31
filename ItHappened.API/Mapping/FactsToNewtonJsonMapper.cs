@@ -1,10 +1,8 @@
-﻿using System;
-using ItHappened.Domain.Statistics;
+﻿using ItHappened.Domain.Statistics;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Text;
-using System.Text.Json;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using JsonSerializer = Newtonsoft.Json.JsonSerializer;
@@ -16,13 +14,6 @@ namespace ItHappened.Api.Mapping
     {
         public class FactsToNewtonJsonMapper : IFactsToJsonMapper
         {
-            // private static readonly JsonSerializerSettings JsonSerializerSettings = new JsonSerializerSettings
-            // {
-            //     NullValueHandling = NullValueHandling.Ignore,
-            //     ContractResolver = new CamelCasePropertyNamesContractResolver(),
-            //     Formatting = Formatting.Indented,
-            // };
-
             public string SingleFactsToJson(IReadOnlyCollection<ISingleTrackerFact> facts)
             {
                 return JsonConverterEx.SerializeObject(new
