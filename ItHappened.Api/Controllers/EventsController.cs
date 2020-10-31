@@ -10,6 +10,7 @@ using ItHappened.Domain;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
+
 namespace ItHappened.Api.Controllers
 {
     [ApiController]

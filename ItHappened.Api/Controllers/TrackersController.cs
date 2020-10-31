@@ -9,7 +9,7 @@ using ItHappened.Application.Services.TrackerService;
 using ItHappened.Domain;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-
+//TODO delete
 namespace ItHappened.Api.Controllers
 {
     [Authorize]
