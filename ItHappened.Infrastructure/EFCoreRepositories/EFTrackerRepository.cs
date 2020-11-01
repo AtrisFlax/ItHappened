@@ -29,7 +29,6 @@ namespace ItHappened.Infrastructure.EFCoreRepositories
         public EventTracker LoadTracker(Guid eventTrackerId)
         {
             var trackerDto = _context.EventTrackers.Find(eventTrackerId);
-            //TODO продумать обработку ошибок. Если элемент не найден, то Find вернет null
             return _mapper.Map<EventTracker>(trackerDto);
         }
 
