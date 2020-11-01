@@ -17,7 +17,7 @@ namespace ItHappened.Api.Mapping
                         request.IsRatingRequired,
                         request.IsGeotagRequired,
                         request.IsCommentRequired,
-                        request.AreCustomizationsOptional
+                        request.IsCustomizationRequired
                     )
                 );
             CreateMap<EventRequest, EventCustomParameters>()

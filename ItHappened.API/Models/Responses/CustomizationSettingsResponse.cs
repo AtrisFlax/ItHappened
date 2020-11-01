@@ -8,6 +8,6 @@
         public bool? IsRatingRequired { get; set; }
         public bool? IsGeotagRequired { get; set; }
         public bool? IsCommentRequired { get; set; }
-        public bool? AreCustomizationsOptional { get; set; }
+        public bool? IsCustomizationRequired { get; set; }
     }
 }

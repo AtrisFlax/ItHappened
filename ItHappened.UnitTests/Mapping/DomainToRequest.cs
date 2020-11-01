@@ -32,7 +32,7 @@
 //                                 x.CustomizationSettings.IsRatingRequired,
 //                                 x.CustomizationSettings.IsGeotagRequired,
 //                                 x.CustomizationSettings.IsCommentRequired,
-//                                 x.CustomizationSettings.AreCustomizationsOptional
+//                                 x.CustomizationSettings.IsCustomizationRequired
 //                             ));
 //                 });
 //             //act
