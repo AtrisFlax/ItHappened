@@ -4,7 +4,6 @@ namespace ItHappened.Domain
 {
     public class GeoTag
     {
-        public Guid Id { get; private set; }
         public GeoTag(double gpsLat, double gpsLng)
         {
             GpsLat = gpsLat;
@@ -13,11 +12,11 @@ namespace ItHappened.Domain
 
         // ReSharper disable once UnusedAutoPropertyAccessor.Global
         // ReSharper disable once MemberCanBePrivate.Global
-        public double GpsLat { get; private set; }
+        public double GpsLat { get; }
 
         // ReSharper disable once UnusedAutoPropertyAccessor.Global
         // ReSharper disable once MemberCanBePrivate.Global
-        public double GpsLng { get; private set; }
+        public double GpsLng { get; }
 
         protected bool Equals(GeoTag other)
         {
