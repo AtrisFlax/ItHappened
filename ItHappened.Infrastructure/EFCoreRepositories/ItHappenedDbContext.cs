@@ -21,7 +21,7 @@ namespace ItHappened.Infrastructure.EFCoreRepositories
             modelBuilder.Entity<EventTrackerDto>(builder =>
             {
                 builder.ToTable("EventTrackers", "ItHappenedDB");
-                builder.HasMany<EventDto>().WithOne(@event => @event.EventTrackerDto).HasForeignKey("TrackerId");
+                //builder.HasMany<EventDto>().WithOne(@event => @event.EventTrackerDto).HasForeignKey("TrackerId");
             });
             
             modelBuilder.Entity<UserDto>(builder =>
@@ -30,6 +30,11 @@ namespace ItHappened.Infrastructure.EFCoreRepositories
                 builder.HasMany<EventTrackerDto>().WithOne(tracker => tracker.UserDto).HasForeignKey("CreatorId");
             });
             
+            modelBuilder.Entity<EventDto>(builder =>
+            {
+                builder.ToTable("Events", "ItHappenedDB");
+                //builder.HasMany<EventDto>().WithOne(@event => @event.EventTrackerDto).HasForeignKey("TrackerId");
+            });
             #endregion
             
         }
