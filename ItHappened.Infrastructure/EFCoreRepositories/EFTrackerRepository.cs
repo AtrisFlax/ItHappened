@@ -4,7 +4,7 @@ using System.Linq;
 using AutoMapper;
 using ItHappened.Domain;
 using ItHappened.Infrastructure.Mappers;
-using Microsoft.EntityFrameworkCore;
+using LanguageExt.UnsafeValueAccess;
 
 namespace ItHappened.Infrastructure.EFCoreRepositories
 {
@@ -40,17 +40,28 @@ namespace ItHappened.Infrastructure.EFCoreRepositories
 
         public void UpdateTracker(EventTracker eventTracker)
         {
-            var eventTrackerDto = _mapper.Map<EventTrackerDto>(eventTracker);
-            _context.EventTrackers.Update(eventTrackerDto);
+            var oldTrackerDto = _context.EventTrackers.Find(eventTracker.Id);
+            oldTrackerDto.IsUpdated = true;
+            oldTrackerDto.Name = eventTracker.Name;
+            oldTrackerDto.IsCommentRequired = eventTracker.CustomizationSettings.IsCommentRequired;
+            oldTrackerDto.IsGeotagRequired = eventTracker.CustomizationSettings.IsGeotagRequired;
+            oldTrackerDto.IsRatingRequired = eventTracker.CustomizationSettings.IsRatingRequired;
+            oldTrackerDto.IsPhotoRequired = eventTracker.CustomizationSettings.IsPhotoRequired;
+            oldTrackerDto.IsScaleRequired = eventTracker.CustomizationSettings.IsScaleRequired;
+            oldTrackerDto.IsCustomizationRequired = eventTracker.CustomizationSettings.IsCustomizationRequired;
+            oldTrackerDto.ScaleMeasurementUnit = eventTracker.CustomizationSettings.ScaleMeasurementUnit.ValueUnsafe();
         }
 
         public void DeleteTracker(Guid eventTrackerId)
         {
             //TODO test cascade delete 
+            var trackerToDeleteDto = _context.EventTrackers.Find(eventTrackerId);
+            _context.EventTrackers.Remove(trackerToDeleteDto);
+            //TODO issue #180
             //Deleting without loading from the database
-            var toDelete = new EventDto {Id = eventTrackerId};
-            _context.Entry(toDelete).State = EntityState.Deleted;
-            _context.SaveChanges();
+            // var toDelete = new EventDto {Id = eventTrackerId};
+            // _context.Entry(toDelete).State = EntityState.Deleted;
+            // _context.SaveChanges();
         }
 
         public bool IsContainTracker(Guid trackerId)

@@ -4,7 +4,7 @@ using System.Linq;
 using AutoMapper;
 using ItHappened.Domain;
 using ItHappened.Infrastructure.Mappers;
-using Microsoft.EntityFrameworkCore;
+using LanguageExt.UnsafeValueAccess;
 
 namespace ItHappened.Infrastructure.EFCoreRepositories
 {
@@ -39,22 +39,31 @@ namespace ItHappened.Infrastructure.EFCoreRepositories
 
         public IReadOnlyCollection<Event> LoadAllTrackerEvents(Guid trackerId)
         {
-            var eventsDto = _context.Events.Where(@event => @event.TrackerId == trackerId).ToList();
-            return _mapper.Map<Event[]>(eventsDto);
+            var eventsDto = _context.Events.Where(@event => @event.TrackerId == trackerId);
+            return _mapper.Map<IQueryable <EventDto>, List <Event>>(eventsDto);
         }
 
         public void UpdateEvent(Event @event)
         {
-            var eventDto = _mapper.Map<EventDto>(@event);
-            _context.Events.Update(eventDto);
+            var odlEventDto = _context.Events.Find(@event.Id);
+            odlEventDto.HappensDate = @event.HappensDate;
+            odlEventDto.Comment = @event.CustomizationsParameters.Comment.ValueUnsafe().Text;//.MatchUnsafe(value => value.Text, () => null);
+            odlEventDto.Rating = @event.CustomizationsParameters.Rating.ValueUnsafe();//MatchUnsafe<double?>(value => value, () => null);
+            odlEventDto.Scale = @event.CustomizationsParameters.Scale.ValueUnsafe();//MatchUnsafe<double?>(value => value, () => null);
+            odlEventDto.LatitudeGeo = @event.CustomizationsParameters.GeoTag.ValueUnsafe().GpsLat;//MatchUnsafe<double?>(value => value.GpsLat, () => null);
+            odlEventDto.LongitudeGeo = @event.CustomizationsParameters.GeoTag.ValueUnsafe().GpsLng;// MatchUnsafe<double?>(value => value.GpsLng, () => null);
+            odlEventDto.Photo = @event.CustomizationsParameters.Photo.ValueUnsafe().PhotoBytes;// MatchUnsafe(value => value.PhotoBytes, () => null);
         }
 
         public void DeleteEvent(Guid eventId)
         {
+            //TODO issue#180
+            var eventToDeleteDto = _context.Events.Find(eventId);
+            _context.Events.Remove(eventToDeleteDto);
             //Deleting without loading from the database
-            var toDelete = new EventDto {Id = eventId};
-            _context.Entry(toDelete).State = EntityState.Deleted;
-            _context.SaveChanges();
+            // var toDelete = new EventDto {Id = eventId};
+            // _context.Entry(toDelete).State = EntityState.Deleted;
+            // _context.SaveChanges();
         }
 
         public bool IsContainEvent(Guid eventId)
