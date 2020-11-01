@@ -17,7 +17,7 @@ namespace ItHappened.Infrastructure.Mappers
         public bool IsGeotagRequired { get; set; }
         public bool IsCommentRequired { get; set; }
         public bool IsCustomizationRequired { get; set; } 
-        
+        public bool IsUpdated { get; set; }
         public UserDto UserDto { get; set; }
     }
 }
