@@ -28,7 +28,7 @@ namespace ItHappened.Infrastructure.EFCoreRepositories
 
         public EventTracker LoadTracker(Guid eventTrackerId)
         {
-            var trackerDto = _context.Events.Find(eventTrackerId);
+            var trackerDto = _context.EventTrackers.Find(eventTrackerId);
             return _mapper.Map<EventTracker>(trackerDto);
         }
 

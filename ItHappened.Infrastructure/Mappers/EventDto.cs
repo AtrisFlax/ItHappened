@@ -17,6 +17,6 @@ namespace ItHappened.Infrastructure.Mappers
         public double LongitudeGeo { get; set; }
         public string Comment { get; set; }
         
-        public EventTrackerDto EventTrackerDto { get; set; }
+        //public EventTrackerDto EventTrackerDto { get; set; }
     }
 }
