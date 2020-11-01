@@ -1,7 +1,7 @@
 ﻿using ItHappened.Domain.Statistics;
 using LanguageExt;
 
-namespace ItHappened.UnitTests.StatisticsCalculatorsTests
+namespace ItHappened.Infrastructure
 {
     public static class FromIFactToFactConverterExtensions
     {
@@ -13,6 +13,16 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
         public static Option<T> ConvertTo<T>(this Option<IMultipleTrackersFact> fact)
         {
             return fact.Map(f => (T) f);
+        }
+        
+        public static T ConvertTo<T>(this ISingleTrackerFact fact)
+        {
+            return (T) fact;
+        }
+        
+        public static T ConvertTo<T>(this IMultipleTrackersFact fact)
+        {
+            return (T) fact;
         }
     }
 }

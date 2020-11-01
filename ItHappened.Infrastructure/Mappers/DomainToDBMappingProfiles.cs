@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
 using ItHappened.Domain;
+using ItHappened.Domain.Statistics;
+using ItHappened.Infrastructure.Dto;
 using LanguageExt.UnsafeValueAccess;
 
 namespace ItHappened.Infrastructure.Mappers
@@ -12,7 +14,7 @@ namespace ItHappened.Infrastructure.Mappers
 
             CreateMap<Event, EventDto>()
                 .ForMember(dest => dest.Comment, opt => opt.MapFrom(
-                        src => src.CustomizationsParameters.Comment.Match(c => c.Text, () => null)))
+                    src => src.CustomizationsParameters.Comment.Match(c => c.Text, () => null)))
                 .ForMember(dest => dest.Photo, opt =>
                     opt.MapFrom(src => src.CustomizationsParameters.Photo.ValueUnsafe()))
                 .ForMember(dest => dest.Rating, opt =>
@@ -41,6 +43,25 @@ namespace ItHappened.Infrastructure.Mappers
                     src => src.CustomizationSettings.IsScaleRequired))
                 .ForMember(dest => dest.IsCustomizationRequired, opt => opt.MapFrom(
                     src => src.CustomizationSettings.IsCustomizationRequired));
-        }
+
+
+            CreateMap<AverageRatingTrackerFact, AverageRatingTrackerFactDto>();
+            CreateMap<AverageScaleTrackerFact, AverageScaleTrackerFactDto>();
+            CreateMap<BestRatingEventFact, BestRatingEventFactDto>()
+                .ForMember(dest => dest.BestEventComment, 
+                    opt => opt.MapFrom(src => src.BestEventComment.ValueUnsafe().Text));
+            CreateMap<EventsCountTrackersFact, EventsCountTrackersFactDto>();
+            CreateMap<LongestBreakTrackerFact, LongestBreakTrackerFactDto>();
+            CreateMap<MostEventfulDayTrackersFact, MostEventfulDayTrackersFactDto>();
+            CreateMap<MostEventfulWeekTrackersFact, MostEventfulWeekTrackersFactDto>();
+            CreateMap<MostFrequentEventTrackersFact, MostFrequentEventTrackersFactDto>();
+            CreateMap<OccursOnCertainDaysOfTheWeekTrackerFact, OccursOnCertainDaysOfTheWeekTrackerFactDto>();
+            CreateMap<SingleTrackerEventsCountFact, SingleTrackerEventsCountFactDto>();
+            CreateMap<SpecificDayTimeFact, SpecificDayTimeEventFactDto>();
+            CreateMap<SumScaleTrackerFact, SumScaleTrackerFactDto>();
+            CreateMap<WorstRatingEventFact, WorstRatingEventFactDto>()
+                .ForMember(dest => dest.WorstEventComment, 
+                    opt => opt.MapFrom(src => src.WorstEventComment.ValueUnsafe().Text));;
+        } 
     }
 }
