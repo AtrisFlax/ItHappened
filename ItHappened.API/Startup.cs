@@ -2,7 +2,7 @@ using System.Text;
 using AutoMapper;
 using Hangfire;
 using Hangfire.MemoryStorage;
-using ItHappend.Infrastructure;
+using ItHappened.Infrastructure;
 using ItHappened.Api.Authentication;
 using ItHappened.Api.Mapping;
 using ItHappened.Api.Mapping.ItHappened.Api.MappingProfiles;
@@ -42,6 +42,8 @@ namespace ItHappened.Api
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddCors();
+
             //auto mapper
             var mapperConfig = new MapperConfiguration(cfg =>
             {
@@ -151,6 +153,12 @@ namespace ItHappened.Api
             app.UseHttpsRedirection();
 
             app.UseRouting();
+
+            app.UseCors(
+                options => options.WithOrigins("http://localhost:3000")
+                    .AllowAnyMethod()
+                    .AllowAnyHeader()
+            );
 
             app.UseAuthentication();
             app.UseAuthorization();
