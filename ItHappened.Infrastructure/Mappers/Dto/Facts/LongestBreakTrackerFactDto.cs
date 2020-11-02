@@ -5,8 +5,8 @@ namespace ItHappened.Infrastructure.Dto
 {
     public class LongestBreakTrackerFactDto : FactDto
     {
-        public int DurationInDays { get; }
-        public DateTimeOffset LastEventBeforeBreakDate { get; }
-        public DateTimeOffset FirstEventAfterBreakDate { get; }
+        public int DurationInDays { get; set; }
+        public DateTimeOffset LastEventBeforeBreakDate { get; set; }
+        public DateTimeOffset FirstEventAfterBreakDate { get; set; }
     }
 }

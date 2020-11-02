@@ -28,7 +28,7 @@ namespace ItHappened.Application.Services.StatisticService
                 throw new RestException(HttpStatusCode.NotFound);
             }
 
-            var statisticFacts = _multipleFactsRepository.LoadUserGeneralFacts(userId);
+            var statisticFacts = _multipleFactsRepository.ReadUserGeneralFacts(userId);
             return statisticFacts;
         }
 
@@ -45,13 +45,13 @@ namespace ItHappened.Application.Services.StatisticService
                 throw new RestException(HttpStatusCode.BadRequest);
             }
 
-            if (!_singleFactsRepository.IsContainFactForTracker(trackerId))
+            if (!_singleFactsRepository.IsContainFactForTracker(trackerId, userId))
             {
                 throw new RestException(HttpStatusCode.NotFound);
             }
 
 
-            var statisticFacts = _singleFactsRepository.LoadTrackerSpecificFacts(trackerId);
+            var statisticFacts = _singleFactsRepository.ReadTrackerSpecificFacts(userId, trackerId);
             return statisticFacts;
         }
     }

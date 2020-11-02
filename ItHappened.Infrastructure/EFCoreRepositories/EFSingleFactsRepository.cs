@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using AutoMapper;
 using ItHappened.Domain;
 using ItHappened.Domain.Statistics;
 
@@ -9,24 +10,25 @@ namespace ItHappened.Infrastructure.EFCoreRepositories
     {
         private readonly EFFactsRepository _factsRepository;
 
-        public EFSingleFactsRepository(EFFactsRepository factsRepository)
+        public EFSingleFactsRepository(IMapper mapper, ItHappenedDbContext context)
         {
-            _factsRepository = factsRepository;
+            _factsRepository = new EFFactsRepository(context, mapper); 
         }
 
-        public IReadOnlyCollection<ISingleTrackerFact> LoadTrackerSpecificFacts(Guid trackerId)
+        public IReadOnlyCollection<ISingleTrackerFact> ReadTrackerSpecificFacts(Guid userId, Guid trackerId)
         {
-            return _factsRepository.LoadTrackerSpecificFacts(trackerId);
+            return _factsRepository.ReadTrackerSpecificFacts(userId, trackerId);
         }
 
-        public void UpdateTrackerSpecificFacts(Guid trackerId, IReadOnlyCollection<ISingleTrackerFact> facts)
+        public void CreateTrackerSpecificFacts(Guid trackerId, Guid userId,
+            IReadOnlyCollection<ISingleTrackerFact> facts)
         {
-            _factsRepository.LoadTrackerSpecificFacts(trackerId, facts);
+            _factsRepository.CreateTrackerSpecificFacts(userId, trackerId, facts);
         }
 
-        public bool IsContainFactForTracker(Guid trackerId)
+        public bool IsContainFactForTracker(Guid trackerId, Guid userId)
         {
-            return _factsRepository.IsContainFactForTracker(trackerId);
+            return _factsRepository.IsContainFactForTracker(trackerId, userId);
         }
     }
 }

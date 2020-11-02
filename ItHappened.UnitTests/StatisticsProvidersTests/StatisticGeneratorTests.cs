@@ -28,7 +28,7 @@ namespace ItHappened.UnitTests.StatisticsProvidersTests
             _eventRepository.AddRangeOfEvents(_events);
             _trackerRepository.SaveTracker(_tracker);
         }
-        
+
         [Test]
         public void UpdateUserFactsWhenUserHasNoTrackers_UserHasNoFactsInRepos()
         {
@@ -40,44 +40,45 @@ namespace ItHappened.UnitTests.StatisticsProvidersTests
 
         private void PutInitialFactsInFactsRepositories()
         {
-            
         }
-        
+
         [Test]
         public void UpdateUserFactsWhenUserHasNoUpdatedTrackers_FactsInRepositoryNotUpdated()
         {
             var generalFact = CreateGeneralFact();
-            _multipleFactsRepository.UpdateUserGeneralFacts(_tracker.CreatorId, new []{generalFact});
+            _multipleFactsRepository.CreateUserGeneralFacts(_tracker.CreatorId, new[] {generalFact});
             var specificFact = CreateSpecificFact();
-            _singleFactsRepository.UpdateTrackerSpecificFacts(_tracker.Id, new []{specificFact});
+            _singleFactsRepository.CreateTrackerSpecificFacts(_tracker.Id, _tracker.CreatorId, new[] {specificFact});
             _tracker.IsUpdated = false;
             _trackerRepository.UpdateTracker(_tracker);
-            
+
             _statisticGenerator.UpdateUserFacts(_tracker.CreatorId);
-            var loadedGeneralFact = _multipleFactsRepository.LoadUserGeneralFacts(_tracker.CreatorId);
-            var loadedSpecificFact = _singleFactsRepository.LoadTrackerSpecificFacts(_tracker.Id);
-            
+            var loadedGeneralFact = _multipleFactsRepository.ReadUserGeneralFacts(_tracker.CreatorId);
+            var loadedSpecificFact = _singleFactsRepository.ReadTrackerSpecificFacts(_tracker.CreatorId, _tracker.Id);
+
             Assert.AreEqual(generalFact.GetHashCode(), loadedGeneralFact.First().GetHashCode());
             Assert.AreEqual(specificFact.GetHashCode(), loadedSpecificFact.First().GetHashCode());
         }
-        
+
         [Test]
         public void UpdateUserFactsWhenTrackerWasUpdated_FactsInRepositoryUpdated()
         {
-            var newEvent = TestingMethods.CreateEventFixDate(_tracker.Id, _tracker.CreatorId, DateTimeOffset.Now - TimeSpan.FromDays(2));
-            var newEvent2 = TestingMethods.CreateEventFixDate(_tracker.Id, _tracker.CreatorId, DateTimeOffset.Now - TimeSpan.FromDays(2));
-            _eventRepository.AddRangeOfEvents(new []{newEvent, newEvent2});
+            var newEvent = TestingMethods.CreateEventFixDate(_tracker.Id, _tracker.CreatorId,
+                DateTimeOffset.Now - TimeSpan.FromDays(2));
+            var newEvent2 = TestingMethods.CreateEventFixDate(_tracker.Id, _tracker.CreatorId,
+                DateTimeOffset.Now - TimeSpan.FromDays(2));
+            _eventRepository.AddRangeOfEvents(new[] {newEvent, newEvent2});
             var generalFact = CreateGeneralFact();
-            _multipleFactsRepository.UpdateUserGeneralFacts(_tracker.CreatorId, new []{generalFact});
+            _multipleFactsRepository.CreateUserGeneralFacts(_tracker.CreatorId, new[] {generalFact});
             var specificFact = CreateSpecificFact();
-            _singleFactsRepository.UpdateTrackerSpecificFacts(_tracker.Id, new []{specificFact});
+            _singleFactsRepository.CreateTrackerSpecificFacts(_tracker.Id, _tracker.CreatorId, new[] {specificFact});
             _tracker.IsUpdated = true;
             _trackerRepository.UpdateTracker(_tracker);
-            
+
             _statisticGenerator.UpdateUserFacts(_tracker.CreatorId);
-            var loadedGeneralFact = _multipleFactsRepository.LoadUserGeneralFacts(_tracker.CreatorId);
-            var loadedSpecificFact = _singleFactsRepository.LoadTrackerSpecificFacts(_tracker.Id);
-            
+            var loadedGeneralFact = _multipleFactsRepository.ReadUserGeneralFacts(_tracker.CreatorId);
+            var loadedSpecificFact = _singleFactsRepository.ReadTrackerSpecificFacts(_tracker.CreatorId, _tracker.Id);
+
             Assert.AreNotEqual(generalFact.GetHashCode(), loadedGeneralFact.First().GetHashCode());
             Assert.AreNotEqual(specificFact.GetHashCode(), loadedSpecificFact.First().GetHashCode());
         }
@@ -88,27 +89,28 @@ namespace ItHappened.UnitTests.StatisticsProvidersTests
             var event2 = TestingMethods.CreateEvent(_tracker.Id, _tracker.CreatorId);
             return new List<Event>() {event1, event2};
         }
+
         private IMultipleTrackersFact CreateGeneralFact()
         {
             var calculator = new MostEventfulDayCalculator();
             var fact = calculator.Calculate(new[] {new TrackerWithItsEvents(_tracker, _events)}, DateTimeOffset.Now);
             return fact.ValueUnsafe();
         }
-        
+
         private ISingleTrackerFact CreateSpecificFact()
         {
             var calculator = new SingleTrackerEventsCountCalculator();
             var fact = calculator.Calculate(_events, _tracker, DateTimeOffset.Now);
             return fact.ValueUnsafe();
         }
-        
+
         private StatisticGenerator InitializeStatisticGeneratorWithTwoCalculators()
         {
             var generalFactProvider = new MultipleTrackersFactProvider();
             generalFactProvider.Add(new MostEventfulDayCalculator());
             var specificFactProvider = new SingleTrackerFactProvider();
             specificFactProvider.Add(new SingleTrackerEventsCountCalculator());
-            
+
             _singleFactsRepository = new SingleFactsRepository();
             _multipleFactsRepository = new MultipleFactsRepository();
             _trackerRepository = new TrackerRepository();

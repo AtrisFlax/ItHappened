@@ -6,8 +6,8 @@ namespace ItHappened.Infrastructure.Dto
 {
     public class BestRatingEventFactDto : FactDto
     {
-        public double BestRating { get; }
-        public DateTimeOffset BestEventDate { get; }
-        public Comment BestEventComment { get; }
+        public double BestRating { get; set; }
+        public DateTimeOffset BestEventDate { get; set; }
+        public Comment BestEventComment { get; set; }
     }
 }

@@ -4,14 +4,16 @@ using ItHappened.Infrastructure.EFCoreRepositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace ItHappened.Infrastructure.Migrations
 {
     [DbContext(typeof(ItHappenedDbContext))]
-    partial class ItHappenedDbContextModelSnapshot : ModelSnapshot
+    [Migration("20201101223503_FactsMigration")]
+    partial class FactsMigration
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

@@ -5,8 +5,8 @@ namespace ItHappened.Infrastructure.Dto
 {
     public class MostEventfulWeekTrackersFactDto : FactDto
     {
-        public DateTimeOffset WeekWithLargestEventCountFirstDay { get; }
-        public DateTimeOffset WeekWithLargestEventCountLastDay { get; }
-        public int EventsCount { get; }
+        public DateTimeOffset WeekWithLargestEventCountFirstDay { get; set; }
+        public DateTimeOffset WeekWithLargestEventCountLastDay { get; set; }
+        public int EventsCount { get; set; }
     }
 }

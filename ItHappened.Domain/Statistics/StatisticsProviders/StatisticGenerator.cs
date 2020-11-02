@@ -33,7 +33,7 @@ namespace ItHappened.Domain.Statistics
             var userTrackers = _trackerRepository.LoadAllUserTrackers(userId);
             if (userTrackers.All(tracker => tracker.IsUpdated == false)) return;
             UpdateUserGeneralFacts(userId, userTrackers);
-            UpdateUserSpecificFacts(userTrackers);
+            UpdateUserSpecificFacts(userId, userTrackers);
         }
         
         private void UpdateUserGeneralFacts(Guid userId, IEnumerable<EventTracker> userTrackers)
@@ -46,17 +46,17 @@ namespace ItHappened.Domain.Statistics
             }
             
             var updatedFacts = _generalFactProvider.GetFacts(trackersWithEvents);
-            _multipleFactsRepository.UpdateUserGeneralFacts(userId, updatedFacts);
+            _multipleFactsRepository.CreateUserGeneralFacts(userId, updatedFacts);
         }
         
-        private void UpdateUserSpecificFacts(IEnumerable<EventTracker> userTrackers)
+        private void UpdateUserSpecificFacts(Guid userId, IEnumerable<EventTracker> userTrackers)
         {
             var updatedTrackers = userTrackers.Where(tracker => tracker.IsUpdated);
             foreach (var tracker in updatedTrackers)
             {
                 var trackerEvents = _eventRepository.LoadAllTrackerEvents(tracker.Id);
                 var updatedFacts = _specificFactProvider.GetFacts(trackerEvents, tracker);
-                _singleFactsRepository.UpdateTrackerSpecificFacts(tracker.Id, updatedFacts);
+                _singleFactsRepository.CreateTrackerSpecificFacts(tracker.Id, userId, updatedFacts);
                 tracker.IsUpdated = false;
             }
         }

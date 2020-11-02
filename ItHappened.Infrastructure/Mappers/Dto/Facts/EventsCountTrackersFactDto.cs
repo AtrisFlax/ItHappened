@@ -4,6 +4,6 @@ namespace ItHappened.Infrastructure.Dto
 {
     public class EventsCountTrackersFactDto : FactDto
     {
-        public int EventsCount { get; }
+        public int EventsCount { get; set; }
     }
 }

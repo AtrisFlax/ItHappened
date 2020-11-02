@@ -64,7 +64,7 @@ namespace ItHappened.UnitTests.ServicesTests
         {
             var singleTrackerFact = CreateSpecificFact();
             _trackerRepository.SaveTracker(_tracker);
-            _singleFactsRepository.UpdateTrackerSpecificFacts(_tracker.Id, new []{singleTrackerFact});
+            _singleFactsRepository.CreateTrackerSpecificFacts(_tracker.Id, _tracker.CreatorId, new []{singleTrackerFact});
 
             var facts = _statisticsService.GetSingleTrackerFacts(_tracker.Id, _tracker.CreatorId);
             
@@ -83,7 +83,7 @@ namespace ItHappened.UnitTests.ServicesTests
         {
             var multipleTrackerFact = CreateGeneralFact();
             _trackerRepository.SaveTracker(_tracker);
-            _multipleFactsRepository.UpdateUserGeneralFacts(_tracker.CreatorId, new []{multipleTrackerFact});
+            _multipleFactsRepository.CreateUserGeneralFacts(_tracker.CreatorId, new []{multipleTrackerFact});
 
             var facts = _statisticsService.GetMultipleTrackersFacts(_tracker.CreatorId);
             

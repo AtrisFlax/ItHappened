@@ -57,7 +57,7 @@ namespace ItHappened.Infrastructure.Mappers
             CreateMap<MostFrequentEventTrackersFact, MostFrequentEventTrackersFactDto>();
             CreateMap<OccursOnCertainDaysOfTheWeekTrackerFact, OccursOnCertainDaysOfTheWeekTrackerFactDto>();
             CreateMap<SingleTrackerEventsCountFact, SingleTrackerEventsCountFactDto>();
-            CreateMap<SpecificDayTimeFact, SpecificDayTimeEventFactDto>();
+            CreateMap<SpecificDayTimeFact, SpecificDayTimeFactDto>();
             CreateMap<SumScaleTrackerFact, SumScaleTrackerFactDto>();
             CreateMap<WorstRatingEventFact, WorstRatingEventFactDto>()
                 .ForMember(dest => dest.WorstEventComment, 

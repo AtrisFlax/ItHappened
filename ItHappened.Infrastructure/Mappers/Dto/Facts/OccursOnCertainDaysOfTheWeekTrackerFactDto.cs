@@ -6,7 +6,7 @@ namespace ItHappened.Infrastructure.Dto
 {
     public class OccursOnCertainDaysOfTheWeekTrackerFactDto : FactDto
     {
-        public IEnumerable<DayOfWeek> DaysOfTheWeek { get; }
-        public double Percentage { get; }
+        public string DaysOfTheWeek { get; set; }
+        public double Percentage { get; set; }
     }
 }

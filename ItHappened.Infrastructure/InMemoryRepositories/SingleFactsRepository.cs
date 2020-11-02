@@ -9,17 +9,19 @@ namespace ItHappened.Infrastructure.Repositories
     public class SingleFactsRepository : ISingleFactsRepository
     {
         private readonly Dictionary<Guid, IEnumerable<ISingleTrackerFact>> _specificFacts = new Dictionary<Guid, IEnumerable<ISingleTrackerFact>>();
-        public IReadOnlyCollection<ISingleTrackerFact> LoadTrackerSpecificFacts(Guid trackerId)
+        public IReadOnlyCollection<ISingleTrackerFact> ReadTrackerSpecificFacts(Guid userId, Guid trackerId)
         {
             return _specificFacts[trackerId].ToList();
         }
 
-        public void UpdateTrackerSpecificFacts(Guid trackerId, IReadOnlyCollection<ISingleTrackerFact> updatedFacts)
+        public void CreateTrackerSpecificFacts(Guid trackerId,
+            Guid guid,
+            IReadOnlyCollection<ISingleTrackerFact> updatedFacts)
         {
             _specificFacts[trackerId] = updatedFacts;
         }
 
-        public bool IsContainFactForTracker(Guid trackerId)
+        public bool IsContainFactForTracker(Guid trackerId, Guid userId)
         {
             return _specificFacts.ContainsKey(trackerId);
         }

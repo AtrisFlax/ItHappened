@@ -4,7 +4,7 @@ namespace ItHappened.Infrastructure.Dto
 {
     public class SumScaleTrackerFactDto : FactDto
     {
-        public double SumValue { get; }
-        public string MeasurementUnit { get; }
+        public double SumValue { get; set;}
+        public string MeasurementUnit { get; set;}
     }
 }

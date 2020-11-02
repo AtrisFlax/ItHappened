@@ -7,9 +7,9 @@ namespace ItHappened.Infrastructure.Dto
 {
     public class WorstRatingEventFactDto : FactDto
     {
-        public double WorstRating { get; }
-        public DateTimeOffset WorstEventDate { get; }
-        public Comment WorstEventComment { get; }
-        public Guid WorstEventId { get; } 
+        public double WorstRating { get; set; }
+        public DateTimeOffset WorstEventDate { get; set; }
+        public Comment WorstEventComment { get; set; }
+        public Guid WorstEventId { get; set; } 
     }
 }
