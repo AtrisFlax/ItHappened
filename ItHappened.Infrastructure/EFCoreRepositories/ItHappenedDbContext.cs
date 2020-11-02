@@ -7,7 +7,7 @@ namespace ItHappened.Infrastructure.EFCoreRepositories
 {
     public class ItHappenedDbContext : DbContext
     {
-        private const string Schema = "ItHappenedDB"; //TODO hardcoded 
+        private const string Schema = "ItHappenedDB"; //TODO hardcoded  
         public DbSet<UserDto> Users { get; set; }
         public DbSet<EventTrackerDto> EventTrackers { get; set; }
         public DbSet<EventDto> Events { get; set; }

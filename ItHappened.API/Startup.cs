@@ -27,6 +27,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Newtonsoft.Json;
 
 namespace ItHappened.Api
 {
@@ -57,7 +58,7 @@ namespace ItHappened.Api
             services.AddSingleton<IFactsToJsonMapper, FactsToNewtonJsonMapper>();
 
             RegisterEfCoreRepository(services);
-            
+
 
             //app services
             services.AddScoped<IEventService, EventService>();
@@ -65,14 +66,14 @@ namespace ItHappened.Api
             services.AddScoped<IBackgroundStatisticGenerator, StatisticGenerator>();
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IStatisticsService, StatisticsService>();
-            
+
             //add calculators to statistic services 
             AddMultipleTrackersStatisticsProvider(services);
             AddSingleTrackerStatisticsProvider(services);
 
             //password hasher 
             services.AddSingleton<IPasswordHasher, PasswordHasher>();
-            
+
             //jwt
             var jwtOptions = new JwtOptions();
             Configuration.GetSection(nameof(JwtOptions)).Bind(jwtOptions);
@@ -123,6 +124,9 @@ namespace ItHappened.Api
                 };
                 swaggerGenOptions.AddSecurityRequirement(securityRequirements);
             });
+
+            //remove nullable from returning json 
+            services.AddControllers().AddJsonOptions(options => { options.JsonSerializerOptions.IgnoreNullValues = true; });
 
             //hangfire
             services.AddHangfire(configuration => configuration.UseMemoryStorage());
@@ -191,9 +195,9 @@ namespace ItHappened.Api
 
         private void RegisterEfCoreRepository(IServiceCollection serviceCollection)
         {
-            serviceCollection.AddSingleton<ISingleFactsRepository, SingleFactsRepository>();  //TODO to EF
-            serviceCollection.AddSingleton<IMultipleFactsRepository, MultipleFactsRepository>();  //TODO to EF
-            
+            serviceCollection.AddSingleton<ISingleFactsRepository, SingleFactsRepository>(); //TODO to EF
+            serviceCollection.AddSingleton<IMultipleFactsRepository, MultipleFactsRepository>(); //TODO to EF
+
             serviceCollection.AddDbContext<ItHappenedDbContext>(builder => builder.UseSqlServer(GetConnectionString()));
             serviceCollection.AddScoped<ITrackerRepository, EFTrackerRepository>();
             serviceCollection.AddScoped<IEventRepository, EFEventsRepository>();

@@ -20,18 +20,15 @@ namespace ItHappened.Api.Mapping
 
             //To Event
             CreateMap<Event, EventGetResponse>()
-                .ForMember(
-                    dest => dest.Comment,
+                .ForMember(dest => dest.Comment,
                     opt => opt.MapFrom(
-                        src => src.CustomizationsParameters.Comment.Match(c => c.Text, () => null)
-                    )
-                )
+                        src => src.CustomizationsParameters.Comment.ValueUnsafe().Text))
                 .ForMember(dest => dest.Photo, opt =>
-                    opt.MapFrom(src => src.CustomizationsParameters.Photo.ValueUnsafe()))
+                    opt.MapFrom(src => src.CustomizationsParameters.Photo.IsSome? src.CustomizationsParameters.Photo.ValueUnsafe() :  null ))
                 .ForMember(dest => dest.Rating, opt =>
-                    opt.MapFrom(src => src.CustomizationsParameters.Rating.ValueUnsafe()))
+                    opt.MapFrom(src => (double?) src.CustomizationsParameters.Rating.IfNone(null)))
                 .ForMember(dest => dest.Scale, opt =>
-                    opt.MapFrom(src => src.CustomizationsParameters.Scale.ValueUnsafe()))
+                    opt.MapFrom(src => (double?) src.CustomizationsParameters.Scale.IfNone(null)))
                 .ForMember(dest => dest.GeoTag, opt =>
                     opt.MapFrom(src => src.CustomizationsParameters.GeoTag.ValueUnsafe()));
 

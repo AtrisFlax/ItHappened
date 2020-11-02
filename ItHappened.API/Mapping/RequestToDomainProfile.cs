@@ -28,7 +28,7 @@ namespace ItHappened.Api.Mapping
         {
             var photo = request.Photo == null
                 ? Option<Photo>.None
-                : Option<Photo>.Some(Photo.Create(Base64Converter.Decode(request.Photo)));
+                : Option<Photo>.Some(Photo.Create(request.Photo));
             var scale = request.Scale == null ? Option<double>.None : Option<double>.Some(request.Scale.Value);
             var rating = request.Rating == null
                 ? Option<double>.None
