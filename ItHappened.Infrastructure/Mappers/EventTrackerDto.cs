@@ -15,5 +15,6 @@ namespace ItHappened.Infrastructure.Mappers
         public bool IsCommentRequired { get; set; }
         public bool IsCustomizationRequired { get; set; }
         public UserDto UserDto { get; set; }
+        public bool IsUpdated { get; set; }
     }
 }
