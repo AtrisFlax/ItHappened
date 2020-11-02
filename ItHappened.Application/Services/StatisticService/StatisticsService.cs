@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using ItHappened.Application.Errors;
 using ItHappened.Domain;
 using ItHappened.Domain.Statistics;
+using Microsoft.AspNetCore.Mvc;
 
 namespace ItHappened.Application.Services.StatisticService
 {
@@ -19,7 +20,7 @@ namespace ItHappened.Application.Services.StatisticService
             _singleFactsRepository = singleFactsRepository;
             _trackerRepository = trackerRepository;
         }
-        
+
         [Produces("application/json")]
         public IReadOnlyCollection<IMultipleTrackersFact> GetMultipleTrackersFacts(Guid userId)
         {
@@ -31,7 +32,7 @@ namespace ItHappened.Application.Services.StatisticService
             var statisticFacts = _multipleFactsRepository.ReadUserGeneralFacts(userId);
             return statisticFacts;
         }
-        
+
         [Produces("application/json")]
         public IReadOnlyCollection<ISingleTrackerFact> GetSingleTrackerFacts(Guid trackerId, Guid userId)
         {
@@ -50,7 +51,7 @@ namespace ItHappened.Application.Services.StatisticService
             {
                 throw new TrackerStatisticsNotFoundException(trackerId);
             }
-            
+
             var statisticFacts = _singleFactsRepository.ReadTrackerSpecificFacts(userId, trackerId);
             return statisticFacts;
         }

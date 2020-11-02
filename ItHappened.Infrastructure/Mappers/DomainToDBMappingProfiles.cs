@@ -10,23 +10,24 @@ namespace ItHappened.Infrastructure.Mappers
     {
         public DomainToDbMappingProfiles()
         {
+            //user
             CreateMap<User, UserDto>();
-
+            //event
             CreateMap<Event, EventDto>()
                 .ForMember(dest => dest.Comment, opt => opt.MapFrom(
                     src => src.CustomizationsParameters.Comment.ValueUnsafe().Text))
                 .ForMember(dest => dest.Photo, opt =>
                     opt.MapFrom(src => src.CustomizationsParameters.Photo.ValueUnsafe()))
                 .ForMember(dest => dest.Rating, opt =>
-                    opt.MapFrom(src => src.CustomizationsParameters.Rating.ValueUnsafe()))
+                    opt.MapFrom(src => (double?)src.CustomizationsParameters.Rating.IfNone(null) ))
                 .ForMember(dest => dest.Scale, opt =>
-                    opt.MapFrom(src => src.CustomizationsParameters.Scale.ValueUnsafe()))
+                    opt.MapFrom(src =>  (double?)src.CustomizationsParameters.Scale.IfNone(null)))
                 .ForMember(dest => dest.LatitudeGeo, opt =>
                     opt.MapFrom(src => src.CustomizationsParameters.GeoTag.ValueUnsafe().GpsLat))
                 .ForMember(dest => dest.LongitudeGeo, opt =>
                     opt.MapFrom(src => src.CustomizationsParameters.GeoTag.ValueUnsafe().GpsLng));
 
-
+            //tracker
             CreateMap<EventTracker, EventTrackerDto>()
                 .ForMember(dest => dest.ScaleMeasurementUnit, opt =>
                     opt.MapFrom(src => src.CustomizationSettings.ScaleMeasurementUnit.ValueUnsafe()))
@@ -43,7 +44,7 @@ namespace ItHappened.Infrastructure.Mappers
                 .ForMember(dest => dest.IsCustomizationRequired, opt => opt.MapFrom(
                     src => src.CustomizationSettings.IsCustomizationRequired));
 
-
+            //facts
             CreateMap<AverageRatingTrackerFact, AverageRatingTrackerFactDto>();
             CreateMap<AverageScaleTrackerFact, AverageScaleTrackerFactDto>();
             CreateMap<BestRatingEventFact, BestRatingEventFactDto>()

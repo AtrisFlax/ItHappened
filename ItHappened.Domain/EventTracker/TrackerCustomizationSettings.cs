@@ -43,9 +43,11 @@ namespace ItHappened.Domain
 
         protected bool Equals(TrackerCustomizationSettings other)
         {
-            return IsPhotoRequired == other.IsPhotoRequired && IsScaleRequired == other.IsScaleRequired &&
+            return IsPhotoRequired == other.IsPhotoRequired && 
+                   IsScaleRequired == other.IsScaleRequired &&
                    ScaleMeasurementUnit.Equals(other.ScaleMeasurementUnit) &&
-                   IsRatingRequired == other.IsRatingRequired && IsGeotagRequired == other.IsGeotagRequired &&
+                   IsRatingRequired == other.IsRatingRequired && 
+                   IsGeotagRequired == other.IsGeotagRequired &&
                    IsCommentRequired == other.IsCommentRequired &&
                    IsCustomizationRequired == other.IsCustomizationRequired;
         }
