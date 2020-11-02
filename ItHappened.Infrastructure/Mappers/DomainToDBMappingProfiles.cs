@@ -14,7 +14,7 @@ namespace ItHappened.Infrastructure.Mappers
 
             CreateMap<Event, EventDto>()
                 .ForMember(dest => dest.Comment, opt => opt.MapFrom(
-                    src => src.CustomizationsParameters.Comment.Match(c => c.Text, () => null)))
+                    src => src.CustomizationsParameters.Comment.ValueUnsafe().Text))
                 .ForMember(dest => dest.Photo, opt =>
                     opt.MapFrom(src => src.CustomizationsParameters.Photo.ValueUnsafe()))
                 .ForMember(dest => dest.Rating, opt =>
@@ -47,7 +47,7 @@ namespace ItHappened.Infrastructure.Mappers
             CreateMap<AverageRatingTrackerFact, AverageRatingTrackerFactDto>();
             CreateMap<AverageScaleTrackerFact, AverageScaleTrackerFactDto>();
             CreateMap<BestRatingEventFact, BestRatingEventFactDto>()
-                .ForMember(dest => dest.BestEventComment, 
+                .ForMember(dest => dest.BestEventComment,
                     opt => opt.MapFrom(src => src.BestEventComment.ValueUnsafe().Text));
             CreateMap<EventsCountTrackersFact, EventsCountTrackersFactDto>();
             CreateMap<LongestBreakTrackerFact, LongestBreakTrackerFactDto>();
@@ -59,8 +59,9 @@ namespace ItHappened.Infrastructure.Mappers
             CreateMap<SpecificDayTimeFact, SpecificDayTimeFactDto>();
             CreateMap<SumScaleTrackerFact, SumScaleTrackerFactDto>();
             CreateMap<WorstRatingEventFact, WorstRatingEventFactDto>()
-                .ForMember(dest => dest.WorstEventComment, 
-                    opt => opt.MapFrom(src => src.WorstEventComment.ValueUnsafe().Text));;
-        } 
+                .ForMember(dest => dest.WorstEventComment,
+                    opt => opt.MapFrom(src => src.WorstEventComment.ValueUnsafe().Text));
+            ;
+        }
     }
 }

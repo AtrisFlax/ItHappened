@@ -22,7 +22,7 @@ namespace ItHappened.Infrastructure.EFCoreRepositories
 
         public void SaveEvent(Event newEvent)
         {
-            var eventDto = _mapper.Map<EventDto>(@newEvent);
+            var eventDto = _mapper.Map<EventDto>(newEvent);
             _context.Events.Add(eventDto);
         }
 
