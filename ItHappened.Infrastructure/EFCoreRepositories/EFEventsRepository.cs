@@ -52,9 +52,8 @@ namespace ItHappened.Infrastructure.EFCoreRepositories
         public void DeleteEvent(Guid eventId)
         {
             //Deleting without loading from the database
-            var toDelete = new EventDto {Id = eventId};
-            _context.Entry(toDelete).State = EntityState.Deleted;
-            _context.SaveChanges();
+            var @event = _context.Events.First(eventDto => eventDto.Id == eventId);
+            _context.Events.Remove(@event);
         }
 
         public bool IsContainEvent(Guid eventId)

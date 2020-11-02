@@ -44,13 +44,12 @@ namespace ItHappened.Infrastructure.EFCoreRepositories
             _context.EventTrackers.Update(eventTrackerDto);
         }
 
-        public void DeleteTracker(Guid eventTrackerId)
+        public void DeleteTracker(Guid trackerId)
         {
             //TODO test cascade delete 
-            //Deleting without loading from the database
-            var toDelete = new EventDto {Id = eventTrackerId};
-            _context.Entry(toDelete).State = EntityState.Deleted;
-            _context.SaveChanges();
+            //Deleting without loading from the database has not worked (attach, remove) 
+            var tracker = _context.EventTrackers.First(trackerDto => trackerDto.Id == trackerId);
+            _context.EventTrackers.Remove(tracker);
         }
 
         public bool IsContainTracker(Guid trackerId)

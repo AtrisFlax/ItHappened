@@ -35,9 +35,9 @@ namespace ItHappened.Infrastructure.Repositories
             _eventTrackers[eventTracker.Id] = eventTracker;
         }
 
-        void ITrackerRepository.DeleteTracker(Guid eventTrackerId)
+        void ITrackerRepository.DeleteTracker(Guid trackerId)
         {
-            _eventTrackers.Remove(eventTrackerId);
+            _eventTrackers.Remove(trackerId);
         }
 
         public IEnumerable<EventTracker> LoadAllTrackers()
