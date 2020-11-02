@@ -197,7 +197,9 @@ namespace ItHappened.Api
             serviceCollection.AddDbContext<ItHappenedDbContext>(builder => builder.UseSqlServer(GetConnectionString()));
             serviceCollection.AddScoped<ITrackerRepository, EFTrackerRepository>();
             serviceCollection.AddScoped<IEventRepository, EFEventsRepository>();
-            serviceCollection.AddScoped<IUserRepository, EfUserRepository>();
+            serviceCollection.AddScoped<IUserRepository, EFUserRepository>();
+            serviceCollection.AddScoped<ISingleFactsRepository, EFSingleFactsRepository>();
+            serviceCollection.AddScoped<IMultipleFactsRepository, EFMultipleFactsRepository>();
             serviceCollection.AddScoped<SaveChangesFilter>();
             serviceCollection.AddControllers(options => { options.Filters.AddService<SaveChangesFilter>(); });
         }
