@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using ItHappened.Domain;
 using ItHappened.Domain.Statistics;
+using ItHappened.Infrastructure;
 using ItHappened.Infrastructure.Repositories;
 using LanguageExt.UnsafeValueAccess;
 using NUnit.Framework;
@@ -33,7 +34,7 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
             _eventRepository.AddRangeOfEvents(events);
 
             //act 
-            var fact = new Domain.Statistics.OccursOnCertainDaysOfTheWeekCalculator()
+            var fact = new OccursOnCertainDaysOfTheWeekCalculator()
                 .Calculate(events, tracker, _now).ConvertTo<OccursOnCertainDaysOfTheWeekTrackerFact>().ValueUnsafe();
 
             //assert 
@@ -41,7 +42,7 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
             Assert.AreEqual($"В 90% случаев событие {tracker.Name} происходит в понедельник, в среду",
                 fact.Description);
             Assert.AreEqual(12.6, fact.Priority, PriorityAccuracy);
-            Assert.AreEqual(new[] {DayOfWeek.Monday, DayOfWeek.Wednesday}, fact.DaysOfTheWeek);
+            Assert.AreEqual("в понедельник, в среду", fact.DaysOfTheWeek);
             Assert.AreEqual(90.0, fact.Percentage, Percentage);
         }
 

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Net;
 using ItHappened.Application.Errors;
 using ItHappened.Domain;
 
@@ -22,26 +21,21 @@ namespace ItHappened.Application.Services.EventService
         {
             if (!_trackerRepository.IsContainTracker(trackerId))
             {
-                throw new RestException(HttpStatusCode.NotFound);
+                throw new TrackerNotFoundException(trackerId);
             }
             var tracker = _trackerRepository.LoadTracker(trackerId);
             if (tracker.CreatorId != actorId)
             {
-                throw new RestException(HttpStatusCode.BadRequest);
+                throw new NoPermissionsForTrackerException(actorId, trackerId);
             }
             
-            var newEventId = Guid.NewGuid();
-            while (_eventRepository.IsContainEvent(newEventId))
-            {//if generated GUID already exist in repository -> regenerate
-                newEventId = Guid.NewGuid();
-            }
             
-            var newEvent = new Event(newEventId, actorId, trackerId, eventHappensDate, customParameters);
+            var newEvent = new Event(Guid.NewGuid(), actorId, trackerId, eventHappensDate, customParameters);
 
             if (tracker.CustomizationSettings.IsCustomizationRequired &&
                 !tracker.IsTrackerCustomizationAndEventCustomizationMatch(newEvent))
             {
-                throw new RestException(HttpStatusCode.BadRequest);
+                throw new InvalidEventForTrackerException(trackerId);
             }
 
             _eventRepository.SaveEvent(newEvent);
@@ -53,13 +47,13 @@ namespace ItHappened.Application.Services.EventService
         {
             if (!_eventRepository.IsContainEvent(eventId))
             {
-                throw new RestException(HttpStatusCode.NotFound);
+                throw new EventNotFoundException(eventId);
             }
             
             var @event = _eventRepository.LoadEvent(eventId);
             if (actorId != @event.CreatorId)
             {
-                throw new RestException(HttpStatusCode.BadRequest);
+                throw new NoPermissionsForEventException(actorId, eventId);
             }
             
             return @event;
@@ -69,13 +63,13 @@ namespace ItHappened.Application.Services.EventService
         {
             if (!_trackerRepository.IsContainTracker(trackerId))
             {
-                throw new RestException(HttpStatusCode.NotFound);
+                throw new TrackerNotFoundException(trackerId);
             }
             
             var tracker = _trackerRepository.LoadTracker(trackerId);
             if (actorId != tracker.CreatorId) 
             {
-                throw new RestException(HttpStatusCode.BadRequest);
+                throw new NoPermissionsForTrackerException(actorId, trackerId);
             }
             
             return _eventRepository.LoadAllTrackerEvents(trackerId);
@@ -94,13 +88,13 @@ namespace ItHappened.Application.Services.EventService
         {
             if (!_eventRepository.IsContainEvent(eventId))
             {
-                throw new RestException(HttpStatusCode.NotFound);
+                throw new EventNotFoundException(eventId);
             }
             
             var @event = _eventRepository.LoadEvent(eventId);
             if (actorId != @event.CreatorId)
             {
-                throw new RestException(HttpStatusCode.BadRequest);
+                throw new NoPermissionsForEventException(actorId, eventId);
             }
             
             var tracker = _trackerRepository.LoadTracker(@event.TrackerId);
@@ -108,7 +102,7 @@ namespace ItHappened.Application.Services.EventService
             if (tracker.CustomizationSettings.IsCustomizationRequired &&
                 !tracker.IsTrackerCustomizationAndEventCustomizationMatch(updatedEvent))
             {
-                throw new RestException(HttpStatusCode.BadRequest);
+                throw new InvalidEventForTrackerException(tracker.Id);
             }
             
             _eventRepository.UpdateEvent(updatedEvent);
@@ -119,13 +113,13 @@ namespace ItHappened.Application.Services.EventService
         {
             if (!_eventRepository.IsContainEvent(eventId))
             {
-                throw new RestException(HttpStatusCode.NotFound);
+                throw new EventNotFoundException(eventId);
             }
             
             var @event = _eventRepository.LoadEvent(eventId);
             if (actorId != @event.CreatorId)
             {
-                throw new RestException(HttpStatusCode.BadRequest);   
+                throw new NoPermissionsForEventException(actorId, eventId);
             }
 
             var tracker = _trackerRepository.LoadTracker(@event.TrackerId);

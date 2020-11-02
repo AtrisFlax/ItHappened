@@ -9,7 +9,7 @@ namespace ItHappened.Domain
         EventTracker LoadTracker(Guid eventTrackerId);
         IReadOnlyCollection<EventTracker> LoadAllUserTrackers(Guid userId);
         void UpdateTracker(EventTracker eventTracker);
-        void DeleteTracker(Guid eventTrackerId);
+        void DeleteTracker(Guid trackerId);
         bool IsContainTracker(Guid trackerId);
     }
 }

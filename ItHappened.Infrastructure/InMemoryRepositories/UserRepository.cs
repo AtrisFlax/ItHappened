@@ -9,16 +9,14 @@ namespace ItHappened.Infrastructure.Repositories
     {
         private readonly Dictionary<Guid, User> _users = new Dictionary<Guid, User>();
 
-        public void SaveUser(User newUser)
+        public void CreateUser(User newUser)
         {
             _users.Add(newUser.Id, newUser);
         }
         
         public User TryFindByLogin(string login)
         {
-            return _users
-                .FirstOrDefault(x => x.Value.Name == login)
-                .Value;
+            return _users.FirstOrDefault(x => x.Value.Name == login).Value;
         }
 
         public IEnumerable<Guid> LoadAllUsersIds()

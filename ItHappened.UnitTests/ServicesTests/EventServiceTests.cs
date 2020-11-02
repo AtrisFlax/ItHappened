@@ -2,7 +2,6 @@
 using System.Linq;
 using ItHappened.Application.Errors;
 using ItHappened.Application.Services.EventService;
-using ItHappened.Application.Services.TrackerService;
 using ItHappened.Domain;
 using ItHappened.Infrastructure.Repositories;
 using ItHappened.UnitTests.StatisticsCalculatorsTests;
@@ -30,26 +29,26 @@ namespace ItHappened.UnitTests.ServicesTests
         }
 
         [Test]
-        public void CreateEventWhenNoRequiredTrackerInRepository_ThrowsRestException()
+        public void CreateEventWhenNoRequiredTrackerInRepository_ThrowsException()
         {
-            Assert.Throws<RestException>(() =>
+            Assert.Throws<TrackerNotFoundException>(() =>
                 _eventService.CreateEvent(Guid.NewGuid(), _tracker.Id, DateTimeOffset.Now,
                     new EventCustomParameters()));
         }
         
         
         [Test]
-        public void CreateEventWhenUserCreateEventForNotHisOwnTracker_ThrowsRestException()
+        public void CreateEventWhenUserCreateEventForNotHisOwnTracker_ThrowsException()
         {
             _trackerRepository.SaveTracker(_tracker);
             
-            Assert.Throws<RestException>(() =>
+            Assert.Throws<NoPermissionsForTrackerException>(() =>
                 _eventService.CreateEvent(Guid.NewGuid(), _tracker.Id, DateTimeOffset.Now,
                     new EventCustomParameters()));
         }
         
         [Test]
-        public void CreateEventWhenEventAndTrackerCustomizationDiffersAndCustomizationIsRequired_ThrowsRestException()
+        public void CreateEventWhenEventAndTrackerCustomizationDiffersAndCustomizationIsRequired_ThrowsException()
         {
             var tracker = TestingMethods.CreateTrackerWithRequiredCustomization(Guid.NewGuid(), "tracker",
                 new TrackerCustomizationSettings(
@@ -62,7 +61,7 @@ namespace ItHappened.UnitTests.ServicesTests
                     true));
             _trackerRepository.SaveTracker(tracker);
             
-            Assert.Throws<RestException>(() =>
+            Assert.Throws<InvalidEventForTrackerException>(() =>
                 _eventService.CreateEvent(tracker.CreatorId, tracker.Id, DateTimeOffset.Now,
                     new EventCustomParameters()));
         }
@@ -121,19 +120,19 @@ namespace ItHappened.UnitTests.ServicesTests
         }
         
         [Test]
-        public void GetEventWhenNoRequiredEventInRepository_ThrowsRestException()
+        public void GetEventWhenNoRequiredEventInRepository_ThrowsException()
         {
-            Assert.Throws<RestException>(() =>
+            Assert.Throws<EventNotFoundException>(() =>
                 _eventService.GetEvent(Guid.NewGuid(), Guid.NewGuid()));
         }
         
         [Test]
-        public void GetEventWhenUserAskNotHisOwnEvent_ThrowsRestException()
+        public void GetEventWhenUserAskNotHisOwnEvent_ThrowsException()
         {
             var eventOfAnotherUser = TestingMethods.CreateEvent(Guid.NewGuid(), Guid.NewGuid());
             _eventRepository.SaveEvent(eventOfAnotherUser);
             
-            Assert.Throws<RestException>(() =>
+            Assert.Throws<NoPermissionsForEventException>(() =>
                 _eventService.GetEvent(Guid.NewGuid(), eventOfAnotherUser.Id));
         }
         
@@ -149,9 +148,9 @@ namespace ItHappened.UnitTests.ServicesTests
         }
 
         [Test]
-        public void GetAllTrackerEventsWhenNoRequiredTrackerInRepository_ThrowsRestException()
+        public void GetAllTrackerEventsWhenNoRequiredTrackerInRepository_ThrowsException()
         {
-            Assert.Throws<RestException>(() =>
+            Assert.Throws<TrackerNotFoundException>(() =>
                 _eventService.GetAllTrackerEvents(Guid.NewGuid(), Guid.NewGuid()));
         }
         
@@ -160,7 +159,7 @@ namespace ItHappened.UnitTests.ServicesTests
         {
             _trackerRepository.SaveTracker(_tracker);
             
-            Assert.Throws<RestException>(() =>
+            Assert.Throws<NoPermissionsForTrackerException>(() =>
                 _eventService.GetAllTrackerEvents(Guid.NewGuid(), _tracker.Id));
         }
         
@@ -192,9 +191,9 @@ namespace ItHappened.UnitTests.ServicesTests
         }
 
         [Test]
-        public void EditEventWhenNoRequiredEventInRepository_ThrowsRestException()
+        public void EditEventWhenNoRequiredEventInRepository_ThrowsException()
         {
-            Assert.Throws<RestException>(() =>
+            Assert.Throws<EventNotFoundException>(() =>
                 _eventService.EditEvent(Guid.NewGuid(),
                     Guid.NewGuid(),
                     DateTimeOffset.Now,
@@ -202,12 +201,12 @@ namespace ItHappened.UnitTests.ServicesTests
         }
         
         [Test]
-        public void EditEventWhenUserAskNotHisEvent_ThrowsRestException()
+        public void EditEventWhenUserAskNotHisEvent_ThrowsException()
         {
             _trackerRepository.SaveTracker(_tracker);
             _eventRepository.SaveEvent(_event);
             
-            Assert.Throws<RestException>(() =>
+            Assert.Throws<NoPermissionsForEventException>(() =>
                 _eventService.EditEvent(Guid.NewGuid(),
                     _event.Id,
                     DateTimeOffset.Now,
@@ -215,7 +214,7 @@ namespace ItHappened.UnitTests.ServicesTests
         }
         
         [Test]
-        public void EditEventWhenNewCustomizationDontMatchTrackerCustomizationAndCustomizationIsRequired_ThrowsRestException()
+        public void EditEventWhenNewCustomizationDontMatchTrackerCustomizationAndCustomizationIsRequired_ThrowsException()
         {
             var tracker = TestingMethods.CreateTrackerWithRequiredCustomization(Guid.NewGuid(), "tracker",
                 new TrackerCustomizationSettings(
@@ -230,7 +229,7 @@ namespace ItHappened.UnitTests.ServicesTests
             var oldEvent = TestingMethods.CreateEvent(tracker.Id, tracker.CreatorId);
             _eventRepository.SaveEvent(oldEvent);
             
-            Assert.Throws<RestException>(() =>
+            Assert.Throws<InvalidEventForTrackerException>(() =>
                 _eventService.EditEvent(tracker.CreatorId, oldEvent.Id, DateTimeOffset.Now,
                     new EventCustomParameters()));
         }
@@ -300,7 +299,7 @@ namespace ItHappened.UnitTests.ServicesTests
         [Test]
         public void DeleteEventWhenNoRequiredEventInRepository_ThrowsRestException()
         {
-            Assert.Throws<RestException>(() =>
+            Assert.Throws<EventNotFoundException>(() =>
                 _eventService.DeleteEvent(Guid.NewGuid(),
                     Guid.NewGuid()));
         }
@@ -310,7 +309,7 @@ namespace ItHappened.UnitTests.ServicesTests
         {
             _eventRepository.SaveEvent(_event);
             
-            Assert.Throws<RestException>(() =>
+            Assert.Throws<NoPermissionsForEventException>(() =>
                 _eventService.DeleteEvent(Guid.NewGuid(),
                     _event.Id));
         }

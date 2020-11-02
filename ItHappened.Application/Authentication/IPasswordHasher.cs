@@ -2,7 +2,7 @@
 {
     public interface IPasswordHasher
     {
-        (string hashedPassword, byte[] salt) HashWithRandomSalt(string password);
-        string HashWithSalt(string password, byte[] salt);
+        string Hash(string password);
+        bool Verify(string passwordToVerify, string hashedPassword);
     }
 }

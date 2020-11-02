@@ -37,7 +37,7 @@ namespace ItHappened.UnitTests
             Assert.AreEqual(scaleUnit, tracker.CustomizationSettings.ScaleMeasurementUnit.ValueUnsafe());
             Assert.AreEqual(true, tracker.CustomizationSettings.IsPhotoRequired);
             Assert.AreEqual(true, tracker.CustomizationSettings.IsRatingRequired);
-            Assert.AreEqual(true, tracker.CustomizationSettings.IsGeoTagRequired);
+            Assert.AreEqual(true, tracker.CustomizationSettings.IsGeotagRequired);
             Assert.AreEqual(true, tracker.CustomizationSettings.IsCommentRequired);
             Assert.AreEqual(true, tracker.CustomizationSettings.IsScaleRequired);
         }
@@ -64,7 +64,7 @@ namespace ItHappened.UnitTests
             Assert.IsTrue(tracker.CustomizationSettings.ScaleMeasurementUnit.IsNone);
             Assert.IsFalse(tracker.CustomizationSettings.IsPhotoRequired);
             Assert.IsFalse(tracker.CustomizationSettings.IsRatingRequired);
-            Assert.IsFalse(tracker.CustomizationSettings.IsGeoTagRequired);
+            Assert.IsFalse(tracker.CustomizationSettings.IsGeotagRequired);
             Assert.IsFalse(tracker.CustomizationSettings.IsCommentRequired);
             Assert.IsFalse(tracker.CustomizationSettings.IsScaleRequired);
         }
@@ -84,7 +84,7 @@ namespace ItHappened.UnitTests
                 userId,
                 trackerName,
                 new TrackerCustomizationSettings(true,
-                    false,
+                    true,
                     scaleUnit,
                     false,
                     false,
@@ -99,9 +99,9 @@ namespace ItHappened.UnitTests
             Assert.AreEqual(scaleUnit, tracker.CustomizationSettings.ScaleMeasurementUnit.ValueUnsafe());
             Assert.IsTrue(tracker.CustomizationSettings.IsPhotoRequired);
             Assert.IsFalse(tracker.CustomizationSettings.IsRatingRequired);
-            Assert.IsFalse(tracker.CustomizationSettings.IsGeoTagRequired);
+            Assert.IsFalse(tracker.CustomizationSettings.IsGeotagRequired);
             Assert.IsTrue(tracker.CustomizationSettings.IsCommentRequired);
-            Assert.IsFalse(tracker.CustomizationSettings.IsScaleRequired);
+            Assert.IsTrue(tracker.CustomizationSettings.IsScaleRequired);
             Assert.IsTrue(tracker.CustomizationSettings.IsCustomizationRequired);
         }
 

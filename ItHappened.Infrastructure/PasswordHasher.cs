@@ -1,36 +1,64 @@
 ﻿using System;
 using System.Security.Cryptography;
 using ItHappened.Application.Authentication;
-using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 
-namespace ItHappened.Infrastructure
+namespace ItHappend.Infrastructure
 {
     public class PasswordHasher : IPasswordHasher
     {
-        public (string, byte[]) HashWithRandomSalt(string password)
+        private const int SaltSize = 16;
+        private const int HashSize = 20;
+        private const int HashIterationsNumber = 10000;
+
+        public string Hash(string password)
         {
-            // generate a 128-bit salt using a secure PRNG
-            var salt = new byte[128 / 8];
-            using (var rng = RandomNumberGenerator.Create())
-            {
-                rng.GetBytes(salt);
-            }
-            
-            // derive a 256-bit subkey (use HMACSHA1 with 10,000 iterations)
-            var hashedPassword = HashWithSalt(password, salt);
-            return (hashedPassword, salt);
+            var saltBytes = GenerateSalt();
+            var passwordHashBytes = HashPasswordUsingSalt(password, saltBytes);
+            var completePasswordHashBytes = CombinePasswordWithSaltHashes(passwordHashBytes, saltBytes);
+            return Convert.ToBase64String(completePasswordHashBytes);
         }
 
-        public string HashWithSalt(string password, byte[] salt)
-        { 
-            // derive a 256-bit subkey (use HMACSHA1 with 10,000 iterations)
-            var hashedPassword =  Convert.ToBase64String(KeyDerivation.Pbkdf2(
-                password: password,
-                salt: salt,
-                prf: KeyDerivationPrf.HMACSHA1,
-                iterationCount: 10000,
-                numBytesRequested: 256 / 8));
-            return hashedPassword;
+        public bool Verify(string passwordToVerify, string hashedPassword)
+        {
+            var hashBytes = Convert.FromBase64String(hashedPassword);
+            var salt = GetSaltFromHash(hashBytes);
+            var passwordToVerifyWithSalt = HashPasswordUsingSalt(passwordToVerify, salt);
+            for (var i = 0; i < HashSize; i++)
+            {
+                if (hashBytes[i + SaltSize] != passwordToVerifyWithSalt[i])
+                    return false;
+            }
+
+            return true;
+        }
+
+        private static byte[] GetSaltFromHash(byte[] hashBytes)
+        {
+            var salt = new byte[SaltSize];
+            Array.Copy(hashBytes, 0, salt, 0, SaltSize);
+            return salt;
+        }
+
+        private byte[] GenerateSalt()
+        {
+            byte[] salt;
+            new RNGCryptoServiceProvider().GetBytes(salt = new byte[SaltSize]);
+            return salt;
+        }
+
+        private byte[] HashPasswordUsingSalt(string password, byte[] saltBytes)
+        {
+            var pbkdf2Cypher = new Rfc2898DeriveBytes(password, saltBytes, HashIterationsNumber);
+            var passwordSaltedHash = pbkdf2Cypher.GetBytes(HashSize);
+            return passwordSaltedHash;
+        }
+
+        private byte[] CombinePasswordWithSaltHashes(byte[] passwordSaltHash, byte[] salt)
+        {
+            var hashBytes = new byte[SaltSize + HashSize];
+            Array.Copy(salt, 0, hashBytes, 0, SaltSize);
+            Array.Copy(passwordSaltHash, 0, hashBytes, SaltSize, HashSize);
+            return hashBytes;
         }
     }
 }

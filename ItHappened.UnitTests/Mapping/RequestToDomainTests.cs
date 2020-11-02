@@ -23,7 +23,7 @@ namespace ItHappened.UnitTests
                     IsRatingRequired = true,
                     IsGeotagRequired = true,
                     IsCommentRequired = true,
-                    AreCustomizationsOptional = true
+                    IsCustomizationRequired = true
                 }
             };
             var config = new MapperConfiguration(
@@ -39,7 +39,7 @@ namespace ItHappened.UnitTests
                                 x.CustomizationSettings.IsRatingRequired,
                                 x.CustomizationSettings.IsGeotagRequired,
                                 x.CustomizationSettings.IsCommentRequired,
-                                x.CustomizationSettings.AreCustomizationsOptional
+                                x.CustomizationSettings.IsCustomizationRequired
                             ));
                 });
             var mapper = new Mapper(config);

@@ -6,8 +6,6 @@ using ItHappened.Domain;
 using ItHappened.Infrastructure.Repositories;
 using ItHappened.UnitTests.StatisticsCalculatorsTests;
 using LanguageExt;
-using LanguageExt.Common;
-using LanguageExt.UnsafeValueAccess;
 using NUnit.Framework;
 
 namespace ItHappened.UnitTests.ServicesTests
@@ -50,23 +48,23 @@ namespace ItHappened.UnitTests.ServicesTests
             Assert.AreEqual("meter", actualMeasurementUnit);
             Assert.True(trackerFromRepository.CustomizationSettings.IsPhotoRequired);
             Assert.False(trackerFromRepository.CustomizationSettings.IsRatingRequired);
-            Assert.True(trackerFromRepository.CustomizationSettings.IsGeoTagRequired);
+            Assert.True(trackerFromRepository.CustomizationSettings.IsGeotagRequired);
             Assert.False(trackerFromRepository.CustomizationSettings.IsCommentRequired);
             Assert.True(trackerFromRepository.CustomizationSettings.IsScaleRequired);
         }
 
         [Test]
-        public void GetTrackerWhenNoSuchTrackerInRepository_ThrowsRestException()
+        public void GetTrackerWhenNoSuchTrackerInRepository_ThrowsException()
         {
-            Assert.Throws<RestException>(() => _trackerService.GetEventTracker(Guid.NewGuid(), Guid.NewGuid()));
+            Assert.Throws<TrackerNotFoundException>(() => _trackerService.GetEventTracker(Guid.NewGuid(), Guid.NewGuid()));
         }
 
         [Test]
-        public void GetTrackerWhenUserAsksNotHisTracker_ThrowsRestException()
+        public void GetTrackerWhenUserAsksNotHisTracker_ThrowsException()
         {
             _trackerRepository.SaveTracker(_tracker);
 
-            Assert.Throws<RestException>(() => _trackerService.GetEventTracker(Guid.NewGuid(), _tracker.Id));
+            Assert.Throws<NoPermissionsForTrackerException>(() => _trackerService.GetEventTracker(Guid.NewGuid(), _tracker.Id));
         }
 
         [Test]
@@ -104,9 +102,9 @@ namespace ItHappened.UnitTests.ServicesTests
         }
 
         [Test]
-        public void EditEventTrackerWhenNoSuchTrackerInRepository_ThrowsRestException()
+        public void EditEventTrackerWhenNoSuchTrackerInRepository_ThrowsException()
         {
-            Assert.Throws<RestException>(() => _trackerService.EditEventTracker(
+            Assert.Throws<TrackerNotFoundException>(() => _trackerService.EditEventTracker(
                 Guid.NewGuid(),
                 Guid.NewGuid(),
                 "EditedTracker",
@@ -114,10 +112,10 @@ namespace ItHappened.UnitTests.ServicesTests
         }
 
         [Test]
-        public void EditEventTrackerWhenUserAsksNotHisTracker_ThrowsRestException()
+        public void EditEventTrackerWhenUserAsksNotHisTracker_ThrowsException()
         {
             _trackerRepository.SaveTracker(_tracker);
-            Assert.Throws<RestException>(() => _trackerService.EditEventTracker(
+            Assert.Throws<NoPermissionsForTrackerException>(() => _trackerService.EditEventTracker(
                 Guid.NewGuid(),
                 _tracker.Id,
                 "EditedTracker",
@@ -142,17 +140,21 @@ namespace ItHappened.UnitTests.ServicesTests
         }
 
         [Test]
-        public void DeleteTrackerWhenNoSuchTrackerInRepository_ThrowsRestException()
+        public void DeleteTrackerWhenNoSuchTrackerInRepository_ThrowsException()
         {
-            Assert.Throws<RestException>(() => _trackerService.DeleteEventTracker(Guid.NewGuid(), Guid.NewGuid()));
+            Assert.Throws<TrackerNotFoundException>(() => _trackerService.DeleteEventTracker(Guid.NewGuid(), Guid.NewGuid()));
         }
 
         [Test]
-        public void DeleteTrackerWhenUserAsksNotHisTracker_ThrowsRestException()
+        public void DeleteTrackerWhenUserAsksNotHisTracker_ThrowsException()
         {
             _trackerRepository.SaveTracker(_tracker);
 
-            Assert.Throws<RestException>(() => _trackerService.DeleteEventTracker(Guid.NewGuid(), _tracker.CreatorId));
+            Assert.Throws<NoPermissionsForTrackerException>(() =>
+            {
+                var randomCreatorId = Guid.NewGuid();
+                _trackerService.DeleteEventTracker(randomCreatorId, _tracker.Id);
+            });
         }
 
         [Test]
