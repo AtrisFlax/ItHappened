@@ -150,7 +150,11 @@ namespace ItHappened.UnitTests.ServicesTests
         {
             _trackerRepository.SaveTracker(_tracker);
 
-            Assert.Throws<NoPermissionsForTrackerException>(() => _trackerService.DeleteEventTracker(Guid.NewGuid(), _tracker.CreatorId));
+            Assert.Throws<NoPermissionsForTrackerException>(() =>
+            {
+                var randomCreatorId = Guid.NewGuid();
+                _trackerService.DeleteEventTracker(randomCreatorId, _tracker.Id);
+            });
         }
 
         [Test]

@@ -27,7 +27,7 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
         {
             return new EventTracker(userId, Guid.NewGuid(), "Tracker name",
                 new TrackerCustomizationSettings(false,
-                    false,
+                    true,
                     scale,
                     false,
                     false,
