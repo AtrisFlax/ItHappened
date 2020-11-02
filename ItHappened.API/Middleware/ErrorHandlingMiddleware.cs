@@ -30,24 +30,27 @@ namespace ItHappened.Api.Middleware
             }
         }
 
-        private async Task HandleExceptionAsync(HttpContext context, Exception ex, ILogger<ErrorHandlingMiddleware> logger)
+        private async Task HandleExceptionAsync(HttpContext context, Exception ex,
+            ILogger<ErrorHandlingMiddleware> logger)
         {
-            var response = ex.Message;
+            ExceptionResponse response;
 
             if (ex is BusinessException businessException)
             {
                 logger.LogError(ex, "Business exception");
-                response = JsonConvert.SerializeObject(businessException);
+                response = new ExceptionResponse(businessException.ErrorMessage, businessException.GetType().Name,
+                    businessException.Payload);
                 context.Response.StatusCode = (int) businessException.HttpErrorCode;
             }
             else
             {
                 logger.LogError(ex, "Unexpected exception");
+                response = new ExceptionResponse(ex.Message, ex.GetType().Name);
                 context.Response.StatusCode = (int) HttpStatusCode.InternalServerError;
             }
 
             context.Response.ContentType = "application/json";
-            await context.Response.WriteAsync(response);
+            await context.Response.WriteAsync(JsonConvert.SerializeObject(response));
         }
     }
 }
