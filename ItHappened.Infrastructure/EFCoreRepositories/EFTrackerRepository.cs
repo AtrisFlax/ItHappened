@@ -35,7 +35,7 @@ namespace ItHappened.Infrastructure.EFCoreRepositories
         public IReadOnlyCollection<EventTracker> LoadAllUserTrackers(Guid userId)
         {
            var trackersDto = _context.EventTrackers.Where(tracker => tracker.CreatorId == userId);
-           return _mapper.Map<EventTracker[]>(trackersDto);
+           return _mapper.Map<EventTracker[]>(trackersDto.ToList());
         }
 
         public void UpdateTracker(EventTracker eventTracker)

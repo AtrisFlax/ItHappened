@@ -28,9 +28,8 @@ namespace ItHappened.Infrastructure.Mappers
 
 
             CreateMap<EventTracker, EventTrackerDto>()
-                .ForMember(dest => dest.ScaleMeasurementUnit, opt => opt.MapFrom(
-                    src => src.CustomizationSettings.ScaleMeasurementUnit.Match(measuringUnit => measuringUnit,
-                        () => null)))
+                .ForMember(dest => dest.ScaleMeasurementUnit, opt =>
+                    opt.MapFrom(src => src.CustomizationSettings.ScaleMeasurementUnit.ValueUnsafe()))
                 .ForMember(dest => dest.IsCommentRequired, opt => opt.MapFrom(
                     src => src.CustomizationSettings.IsCommentRequired))
                 .ForMember(dest => dest.IsGeotagRequired, opt => opt.MapFrom(

@@ -40,7 +40,7 @@ namespace ItHappened.Infrastructure.EFCoreRepositories
         public IReadOnlyCollection<Event> LoadAllTrackerEvents(Guid trackerId)
         {
             var eventsDto = _context.Events.Where(@event => @event.TrackerId == trackerId).ToList();
-            return _mapper.Map<Event[]>(eventsDto);
+            return _mapper.Map<Event[]>(eventsDto.ToList());
         }
 
         public void UpdateEvent(Event @event)
