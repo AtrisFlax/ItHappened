@@ -17,7 +17,7 @@ namespace ItHappened.Infrastructure.Mappers
                 .ForMember(dest => dest.Comment, opt => opt.MapFrom(
                     src => src.CustomizationsParameters.Comment.ValueUnsafe().Text))
                 .ForMember(dest => dest.Photo, opt =>
-                    opt.MapFrom(src => src.CustomizationsParameters.Photo.ValueUnsafe()))
+                    opt.MapFrom(src => src.CustomizationsParameters.Photo.MatchUnsafe(value => value.PhotoBytes, () => null)))
                 .ForMember(dest => dest.Rating, opt =>
                     opt.MapFrom(src => (double?)src.CustomizationsParameters.Rating.IfNone(null) ))
                 .ForMember(dest => dest.Scale, opt =>
