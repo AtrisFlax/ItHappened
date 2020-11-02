@@ -7,12 +7,12 @@ using ItHappened.Infrastructure.Mappers;
 
 namespace ItHappened.Infrastructure.EFCoreRepositories
 {
-    public class EfUserRepository : IUserRepository
+    public class EFUserRepository : IUserRepository
     {
         private readonly ItHappenedDbContext _context;
         private readonly IMapper _mapper;
 
-        public EfUserRepository(ItHappenedDbContext context, IMapper mapper)
+        public EFUserRepository(ItHappenedDbContext context, IMapper mapper)
         {
             _context = context;
             _mapper = mapper;

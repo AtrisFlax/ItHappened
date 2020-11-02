@@ -57,13 +57,7 @@ namespace ItHappened.Api
             services.AddSingleton<IFactsToJsonMapper, FactsToNewtonJsonMapper>();
 
             RegisterEfCoreRepository(services);
-
-            //service repos
-          
-            services.AddSingleton<ITrackerRepository, TrackerRepository>();
-            services.AddSingleton<IEventRepository, EventRepository>();
-            services.AddSingleton<ISingleFactsRepository, SingleFactsRepository>();
-            services.AddSingleton<IMultipleFactsRepository, MultipleFactsRepository>();
+            
 
             //app services
             services.AddScoped<IEventService, EventService>();
@@ -197,8 +191,15 @@ namespace ItHappened.Api
 
         private void RegisterEfCoreRepository(IServiceCollection serviceCollection)
         {
+            serviceCollection.AddSingleton<ISingleFactsRepository, SingleFactsRepository>();  //TODO to EF
+            serviceCollection.AddSingleton<IMultipleFactsRepository, MultipleFactsRepository>();  //TODO to EF
+            
             serviceCollection.AddDbContext<ItHappenedDbContext>(builder => builder.UseSqlServer(GetConnectionString()));
-            serviceCollection.AddScoped<IUserRepository, EfUserRepository>();
+            serviceCollection.AddScoped<ITrackerRepository, EFTrackerRepository>();
+            serviceCollection.AddScoped<IEventRepository, EFEventsRepository>();
+            serviceCollection.AddScoped<IUserRepository, EFUserRepository>();
+            serviceCollection.AddScoped<ISingleFactsRepository, EFSingleFactsRepository>();
+            serviceCollection.AddScoped<IMultipleFactsRepository, EFMultipleFactsRepository>();
             serviceCollection.AddScoped<SaveChangesFilter>();
             serviceCollection.AddControllers(options => { options.Filters.AddService<SaveChangesFilter>(); });
         }

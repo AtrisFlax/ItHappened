@@ -1,25 +1,33 @@
 ﻿using System;
 using System.Collections.Generic;
+using AutoMapper;
 using ItHappened.Domain;
 using ItHappened.Domain.Statistics;
 
 namespace ItHappened.Infrastructure.EFCoreRepositories
 {
+    // ReSharper disable once InconsistentNaming
     public class EFMultipleFactsRepository : IMultipleFactsRepository
     {
-        public IReadOnlyCollection<IMultipleTrackersFact> LoadUserGeneralFacts(Guid userId)
+        private readonly EFFactsRepository _factsRepository;
+
+        public EFMultipleFactsRepository(IMapper mapper, ItHappenedDbContext context)
         {
-            throw new NotImplementedException();
+            _factsRepository = new EFFactsRepository(context, mapper);
+        }
+        public IReadOnlyCollection<IMultipleTrackersFact> ReadUserGeneralFacts(Guid userId)
+        {
+            return _factsRepository.LoadUserGeneralFacts(userId);
         }
 
-        public void UpdateUserGeneralFacts(Guid userId, IReadOnlyCollection<IMultipleTrackersFact> facts)
+        public void CreateUserGeneralFacts(Guid userId, IReadOnlyCollection<IMultipleTrackersFact> facts)
         {
-            throw new NotImplementedException();
+            _factsRepository.CreateTrackerSpecificFacts(userId, facts);
         }
 
         public bool IsContainFactsForUser(Guid userId)
         {
-            throw new NotImplementedException();
+            return _factsRepository.IsContainFactsForUser(userId);
         }
     }
 }

@@ -44,7 +44,7 @@ namespace ItHappened.Api.Mapping
             CreateMap<TrackerCustomizationSettings, CustomizationSettingsResponse>()
                 .ForMember(dest => dest.ScaleMeasurementUnit, opt =>
                     opt.MapFrom(src => src.ScaleMeasurementUnit.ValueUnsafe()))
-                .ForMember(dest => dest.AreCustomizationsOptional, opt =>
+                .ForMember(dest => dest.IsCustomizationRequired, opt =>
                     opt.MapFrom(src => src.IsCustomizationRequired));
         }
     }

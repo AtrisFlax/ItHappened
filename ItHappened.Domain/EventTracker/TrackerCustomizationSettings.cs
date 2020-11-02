@@ -9,7 +9,7 @@ namespace ItHappened.Domain
         public bool IsScaleRequired { get; }
         public Option<string> ScaleMeasurementUnit { get; }
         public bool IsRatingRequired { get; }
-        public bool IsGeoTagRequired { get; }
+        public bool IsGeotagRequired { get; }
         public bool IsCommentRequired { get; }
         public bool IsCustomizationRequired { get; }
 
@@ -17,15 +17,15 @@ namespace ItHappened.Domain
             bool isScaleRequired,
             Option<string> scaleMeasurementUnit,
             bool isRatingRequired,
-            bool isGeoTagRequired,
+            bool isGeotagRequired,
             bool isCommentRequired,
             bool isCustomizationRequired)
         {
             IsPhotoRequired = isPhotoRequired;
             IsScaleRequired = isScaleRequired;
-            ScaleMeasurementUnit = scaleMeasurementUnit;
+            ScaleMeasurementUnit = isScaleRequired ? scaleMeasurementUnit : Option<string>.None;
             IsRatingRequired = isRatingRequired;
-            IsGeoTagRequired = isGeoTagRequired;
+            IsGeotagRequired = isGeotagRequired;
             IsCommentRequired = isCommentRequired;
             IsCustomizationRequired = isCustomizationRequired;
         }
@@ -36,17 +36,20 @@ namespace ItHappened.Domain
             IsScaleRequired = false;
             ScaleMeasurementUnit = Option<string>.None;
             IsRatingRequired = false;
-            IsGeoTagRequired = false;
+            IsGeotagRequired = false;
             IsCommentRequired = false;
             IsCustomizationRequired = false;
         }
-        
+
         protected bool Equals(TrackerCustomizationSettings other)
         {
-            return IsPhotoRequired == other.IsPhotoRequired && IsScaleRequired == other.IsScaleRequired &&
+            return IsPhotoRequired == other.IsPhotoRequired && 
+                   IsScaleRequired == other.IsScaleRequired &&
                    ScaleMeasurementUnit.Equals(other.ScaleMeasurementUnit) &&
-                   IsRatingRequired == other.IsRatingRequired && IsGeoTagRequired == other.IsGeoTagRequired &&
-                   IsCommentRequired == other.IsCommentRequired && IsCustomizationRequired == other.IsCustomizationRequired;
+                   IsRatingRequired == other.IsRatingRequired && 
+                   IsGeotagRequired == other.IsGeotagRequired &&
+                   IsCommentRequired == other.IsCommentRequired &&
+                   IsCustomizationRequired == other.IsCustomizationRequired;
         }
 
         public override bool Equals(object obj)
@@ -60,9 +63,7 @@ namespace ItHappened.Domain
         public override int GetHashCode()
         {
             return HashCode.Combine(IsPhotoRequired, IsScaleRequired, ScaleMeasurementUnit, IsRatingRequired,
-                IsGeoTagRequired, IsCommentRequired, IsCustomizationRequired);
+                IsGeotagRequired, IsCommentRequired, IsCustomizationRequired);
         }
-        
-        
     }
 }
