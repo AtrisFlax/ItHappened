@@ -13,7 +13,7 @@ namespace ItHappened.Api.Models.Requests
         public UserRequestValidator()
         {
             RuleFor(x => x.UserName).NotEmpty();
-            RuleFor(x => x.Password).Password();
+            RuleFor(x => x.Password).NotEmpty();
         }
     }
 }
