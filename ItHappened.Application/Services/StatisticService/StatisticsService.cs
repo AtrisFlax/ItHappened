@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Net;
 using ItHappened.Application.Errors;
 using ItHappened.Domain;
 using ItHappened.Domain.Statistics;
-using Microsoft.AspNetCore.Mvc;
 
 namespace ItHappened.Application.Services.StatisticService
 {
@@ -27,8 +25,9 @@ namespace ItHappened.Application.Services.StatisticService
         {
             if (!_multipleFactsRepository.IsContainFactsForUser(userId))
             {
-                throw new RestException(HttpStatusCode.NotFound);
+                throw new UserTrackersStatisticsNotFoundException(userId);
             }
+
             var statisticFacts = _multipleFactsRepository.ReadUserGeneralFacts(userId);
             return statisticFacts;
         }
@@ -38,17 +37,20 @@ namespace ItHappened.Application.Services.StatisticService
         {
             if (!_trackerRepository.IsContainTracker(trackerId))
             {
-                throw new RestException(HttpStatusCode.NotFound);
+                throw new TrackerNotFoundException(trackerId);
             }
+
             var tracker = _trackerRepository.LoadTracker(trackerId);
             if (userId != tracker.CreatorId)
             {
-                throw new RestException(HttpStatusCode.BadRequest);
+                throw new NoPermissionsForTrackerException(userId, trackerId);
             }
+
             if (!_singleFactsRepository.IsContainFactForTracker(trackerId, userId))
             {
-                throw new RestException(HttpStatusCode.NotFound);
+                throw new TrackerStatisticsNotFoundException(trackerId);
             }
+            
             var statisticFacts = _singleFactsRepository.ReadTrackerSpecificFacts(userId, trackerId);
             return statisticFacts;
         }
