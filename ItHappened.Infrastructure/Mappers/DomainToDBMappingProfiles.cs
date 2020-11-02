@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
 using ItHappened.Domain;
+using ItHappened.Domain.Statistics;
+using ItHappened.Infrastructure.Dto;
 using LanguageExt.UnsafeValueAccess;
 
 namespace ItHappened.Infrastructure.Mappers
@@ -8,27 +10,27 @@ namespace ItHappened.Infrastructure.Mappers
     {
         public DomainToDbMappingProfiles()
         {
+            //user
             CreateMap<User, UserDto>();
-
+            //event
             CreateMap<Event, EventDto>()
                 .ForMember(dest => dest.Comment, opt => opt.MapFrom(
-                        src => src.CustomizationsParameters.Comment.Match(c => c.Text, () => null)))
+                    src => src.CustomizationsParameters.Comment.ValueUnsafe().Text))
                 .ForMember(dest => dest.Photo, opt =>
                     opt.MapFrom(src => src.CustomizationsParameters.Photo.MatchUnsafe(value => value.PhotoBytes, () => null)))
                 .ForMember(dest => dest.Rating, opt =>
-                    opt.MapFrom(src => src.CustomizationsParameters.Rating.ValueUnsafe()))
+                    opt.MapFrom(src => (double?)src.CustomizationsParameters.Rating.IfNone(null) ))
                 .ForMember(dest => dest.Scale, opt =>
-                    opt.MapFrom(src => src.CustomizationsParameters.Scale.ValueUnsafe()))
+                    opt.MapFrom(src =>  (double?)src.CustomizationsParameters.Scale.IfNone(null)))
                 .ForMember(dest => dest.LatitudeGeo, opt =>
                     opt.MapFrom(src => src.CustomizationsParameters.GeoTag.ValueUnsafe().GpsLat))
                 .ForMember(dest => dest.LongitudeGeo, opt =>
                     opt.MapFrom(src => src.CustomizationsParameters.GeoTag.ValueUnsafe().GpsLng));
 
-
+            //tracker
             CreateMap<EventTracker, EventTrackerDto>()
-                .ForMember(dest => dest.ScaleMeasurementUnit, opt => opt.MapFrom(
-                    src => src.CustomizationSettings.ScaleMeasurementUnit.Match(measuringUnit => measuringUnit,
-                        () => null)))
+                .ForMember(dest => dest.ScaleMeasurementUnit, opt =>
+                    opt.MapFrom(src => src.CustomizationSettings.ScaleMeasurementUnit.ValueUnsafe()))
                 .ForMember(dest => dest.IsCommentRequired, opt => opt.MapFrom(
                     src => src.CustomizationSettings.IsCommentRequired))
                 .ForMember(dest => dest.IsGeotagRequired, opt => opt.MapFrom(
@@ -41,6 +43,26 @@ namespace ItHappened.Infrastructure.Mappers
                     src => src.CustomizationSettings.IsScaleRequired))
                 .ForMember(dest => dest.IsCustomizationRequired, opt => opt.MapFrom(
                     src => src.CustomizationSettings.IsCustomizationRequired));
+
+            //facts
+            CreateMap<AverageRatingTrackerFact, AverageRatingTrackerFactDto>();
+            CreateMap<AverageScaleTrackerFact, AverageScaleTrackerFactDto>();
+            CreateMap<BestRatingEventFact, BestRatingEventFactDto>()
+                .ForMember(dest => dest.BestEventComment,
+                    opt => opt.MapFrom(src => src.BestEventComment.ValueUnsafe().Text));
+            CreateMap<EventsCountTrackersFact, EventsCountTrackersFactDto>();
+            CreateMap<LongestBreakTrackerFact, LongestBreakTrackerFactDto>();
+            CreateMap<MostEventfulDayTrackersFact, MostEventfulDayTrackersFactDto>();
+            CreateMap<MostEventfulWeekTrackersFact, MostEventfulWeekTrackersFactDto>();
+            CreateMap<MostFrequentEventTrackersFact, MostFrequentEventTrackersFactDto>();
+            CreateMap<OccursOnCertainDaysOfTheWeekTrackerFact, OccursOnCertainDaysOfTheWeekTrackerFactDto>();
+            CreateMap<SingleTrackerEventsCountFact, SingleTrackerEventsCountFactDto>();
+            CreateMap<SpecificDayTimeFact, SpecificDayTimeFactDto>();
+            CreateMap<SumScaleTrackerFact, SumScaleTrackerFactDto>();
+            CreateMap<WorstRatingEventFact, WorstRatingEventFactDto>()
+                .ForMember(dest => dest.WorstEventComment,
+                    opt => opt.MapFrom(src => src.WorstEventComment.ValueUnsafe().Text));
+            ;
         }
     }
 }

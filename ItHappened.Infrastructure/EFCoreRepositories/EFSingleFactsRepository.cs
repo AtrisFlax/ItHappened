@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using AutoMapper;
 using ItHappened.Domain;
 using ItHappened.Domain.Statistics;
 
@@ -7,19 +8,27 @@ namespace ItHappened.Infrastructure.EFCoreRepositories
 {
     public class EFSingleFactsRepository : ISingleFactsRepository
     {
-        public IReadOnlyCollection<ISingleTrackerFact> LoadTrackerSpecificFacts(Guid trackerId)
+        private readonly EFFactsRepository _factsRepository;
+
+        public EFSingleFactsRepository(IMapper mapper, ItHappenedDbContext context)
         {
-            throw new NotImplementedException();
+            _factsRepository = new EFFactsRepository(context, mapper); 
         }
 
-        public void UpdateTrackerSpecificFacts(Guid trackerId, IReadOnlyCollection<ISingleTrackerFact> facts)
+        public IReadOnlyCollection<ISingleTrackerFact> ReadTrackerSpecificFacts(Guid userId, Guid trackerId)
         {
-            throw new NotImplementedException();
+            return _factsRepository.ReadTrackerSpecificFacts(userId, trackerId);
         }
 
-        public bool IsContainFactForTracker(Guid trackerId)
+        public void CreateTrackerSpecificFacts(Guid trackerId, Guid userId,
+            IReadOnlyCollection<ISingleTrackerFact> facts)
         {
-            throw new NotImplementedException();
+            _factsRepository.CreateTrackerSpecificFacts(userId, trackerId, facts);
+        }
+
+        public bool IsContainFactForTracker(Guid trackerId, Guid userId)
+        {
+            return _factsRepository.IsContainFactForTracker(trackerId, userId);
         }
     }
 }

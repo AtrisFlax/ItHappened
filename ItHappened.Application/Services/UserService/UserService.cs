@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Net;
 using Hangfire;
 using ItHappened.Application.Authentication;
 using ItHappened.Application.Errors;
@@ -34,7 +33,8 @@ namespace ItHappened.Application.Services.UserService
         {
             var user = _userRepository.TryFindByLogin(loginName);
             if (user != null)
-                throw new RestException(HttpStatusCode.BadRequest, new {Username = "Username already exists"});
+                throw new UsernameAlreadyInUseException(loginName);
+            
             var hashedPassword = _passwordHasher.Hash(password);
             user = new User(Guid.NewGuid(), loginName, hashedPassword);
             _userRepository.CreateUser(user);
@@ -48,12 +48,10 @@ namespace ItHappened.Application.Services.UserService
         {
             var user = _userRepository.TryFindByLogin(loginName);
             if (user == null)
-                throw new RestException(HttpStatusCode.BadRequest,
-                    new {User = "User with provided credentials not found"});
+                throw new UserNotFoundException(loginName, password);
 
             if (!_passwordHasher.Verify(password, user.PasswordHash))
-                throw new RestException(HttpStatusCode.NotFound,
-                    new {User = "User with provided credentials not found",});
+                throw new UserNotFoundException(loginName, password);
 
             return new UserWithToken(user, _jwtIssuer.GenerateToken(user));
         }

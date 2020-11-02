@@ -23,7 +23,7 @@ namespace ItHappened.Domain
         {
             IsPhotoRequired = isPhotoRequired;
             IsScaleRequired = isScaleRequired;
-            ScaleMeasurementUnit = scaleMeasurementUnit;
+            ScaleMeasurementUnit = isScaleRequired ? scaleMeasurementUnit : Option<string>.None;
             IsRatingRequired = isRatingRequired;
             IsGeotagRequired = isGeotagRequired;
             IsCommentRequired = isCommentRequired;
@@ -40,13 +40,16 @@ namespace ItHappened.Domain
             IsCommentRequired = false;
             IsCustomizationRequired = false;
         }
-        
+
         protected bool Equals(TrackerCustomizationSettings other)
         {
-            return IsPhotoRequired == other.IsPhotoRequired && IsScaleRequired == other.IsScaleRequired &&
+            return IsPhotoRequired == other.IsPhotoRequired && 
+                   IsScaleRequired == other.IsScaleRequired &&
                    ScaleMeasurementUnit.Equals(other.ScaleMeasurementUnit) &&
-                   IsRatingRequired == other.IsRatingRequired && IsGeotagRequired == other.IsGeotagRequired &&
-                   IsCommentRequired == other.IsCommentRequired && IsCustomizationRequired == other.IsCustomizationRequired;
+                   IsRatingRequired == other.IsRatingRequired && 
+                   IsGeotagRequired == other.IsGeotagRequired &&
+                   IsCommentRequired == other.IsCommentRequired &&
+                   IsCustomizationRequired == other.IsCustomizationRequired;
         }
 
         public override bool Equals(object obj)
@@ -62,7 +65,5 @@ namespace ItHappened.Domain
             return HashCode.Combine(IsPhotoRequired, IsScaleRequired, ScaleMeasurementUnit, IsRatingRequired,
                 IsGeotagRequired, IsCommentRequired, IsCustomizationRequired);
         }
-        
-        
     }
 }

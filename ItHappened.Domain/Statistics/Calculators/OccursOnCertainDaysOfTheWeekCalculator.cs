@@ -37,7 +37,7 @@ namespace ItHappened.Domain.Statistics
                 "Происходит в определённые дни недели",
                 $"В {percentage}% случаев событие {tracker.Name} происходит {ruDaysOfWeek}",
                 percentage * PriorityCoefficient,
-                daysOfTheWeek.Select(x => x.DayTime),
+                ruDaysOfWeek,
                 percentage
             ));
         }

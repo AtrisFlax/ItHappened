@@ -9,12 +9,12 @@ namespace ItHappened.Infrastructure.Repositories
     public class MultipleFactsRepository : IMultipleFactsRepository
     {
         private readonly Dictionary<Guid, IEnumerable<IMultipleTrackersFact>> _generalFacts = new Dictionary<Guid, IEnumerable<IMultipleTrackersFact>>();
-        public IReadOnlyCollection<IMultipleTrackersFact> LoadUserGeneralFacts(Guid userId)
+        public IReadOnlyCollection<IMultipleTrackersFact> ReadUserGeneralFacts(Guid userId)
         {
             return _generalFacts[userId].ToList();
         }
 
-        public void UpdateUserGeneralFacts(Guid userId, IReadOnlyCollection<IMultipleTrackersFact> facts)
+        public void CreateUserGeneralFacts(Guid userId, IReadOnlyCollection<IMultipleTrackersFact> facts)
         {
             _generalFacts[userId] = facts;
         }
