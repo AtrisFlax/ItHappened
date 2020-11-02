@@ -28,8 +28,8 @@ namespace ItHappened.Api.Controllers
             return Ok(new UserResponse(userWithToken.User.Id, userWithToken.User.Name, userWithToken.Token));
         }
 
-        [HttpPost]
-        [Route("/login")]
+        [HttpGet]
+        [Route("/users")]
         [ProducesResponseType(200, Type = typeof(UserWithToken))]
         public IActionResult Authenticate([FromBody] UserRequest request)
         {

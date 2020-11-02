@@ -29,7 +29,7 @@ namespace ItHappened.Api.Controllers
         [ProducesResponseType(200)]
         public IActionResult CreateTracker([FromBody] TrackerRequest request)
         {
-            var userId = Guid.Parse(User.FindFirstValue(JwtClaimTypes.Id)); //TODO issue  #169
+            var userId = User.GetUserId();
             var customizationSettings = _mapper.Map<TrackerCustomizationSettings>(request.CustomizationSettings);
             var trackerId = _trackerService.CreateEventTracker(userId, request.Name, customizationSettings);
             return Ok(_mapper.Map<TrackerPostResponse>(trackerId));
@@ -40,7 +40,7 @@ namespace ItHappened.Api.Controllers
         [ProducesResponseType(200, Type = typeof(List<TrackerGetResponse>))]
         public IActionResult GetAllTrackers()
         {
-            var userId = Guid.Parse(User.FindFirstValue(JwtClaimTypes.Id)); //TODO issue  #169
+            var userId = User.GetUserId();
             var trackers = _trackerService.GetEventTrackers(userId);
             return Ok(_mapper.Map<List<TrackerGetResponse>>(trackers));
         }
@@ -49,7 +49,7 @@ namespace ItHappened.Api.Controllers
         [ProducesResponseType(200, Type = typeof(TrackerGetResponse))]
         public IActionResult GetTracker([FromRoute] Guid trackerId)
         {
-            var userId = Guid.Parse(User.FindFirstValue(JwtClaimTypes.Id)); //TODO issue  #169
+            var userId = User.GetUserId();
             var tracker = _trackerService.GetEventTracker(userId, trackerId);
             return Ok(_mapper.Map<TrackerGetResponse>(tracker));
         }
@@ -58,7 +58,7 @@ namespace ItHappened.Api.Controllers
         [ProducesResponseType(200)]
         public IActionResult UpdateTracker([FromRoute] Guid trackerId, [FromBody] TrackerRequest request)
         {
-            var userId = Guid.Parse(User.FindFirstValue(JwtClaimTypes.Id)); //TODO issue  #169
+            var userId = User.GetUserId();
             var customizations = _mapper.Map<TrackerCustomizationSettings>(request.CustomizationSettings);
             _trackerService.EditEventTracker(userId, trackerId, request.Name, customizations);
             return Ok();
@@ -68,7 +68,7 @@ namespace ItHappened.Api.Controllers
         [ProducesResponseType(200, Type = typeof(TrackerGetResponse))]
         public IActionResult DeleteTracker([FromRoute] Guid trackerId)
         {
-            var userId = Guid.Parse(User.FindFirstValue(JwtClaimTypes.Id)); //TODO issue  #169
+            var userId = User.GetUserId();
             _trackerService.DeleteEventTracker(userId, trackerId);
             return Ok();
         }
