@@ -25,7 +25,7 @@ namespace ItHappened.Api.Controllers
         [ProducesResponseType(200)]
         public IActionResult GetStatisticsForSingleTracker([FromRoute] Guid trackerId)
         {
-            var userId = Guid.Parse(User.FindFirstValue(JwtClaimTypes.Id)); //TODO issue  #169
+            var userId = User.GetUserId();
             var facts = _statisticsService.GetSingleTrackerFacts(trackerId, userId);
             return Ok(_mapper.SingleFactsToJson(facts));
         }
@@ -34,7 +34,7 @@ namespace ItHappened.Api.Controllers
         [ProducesResponseType(200)]
         public IActionResult GetStatisticsForAllTrackers()
         {
-            var userId = Guid.Parse(User.FindFirstValue(JwtClaimTypes.Id)); //TODO issue  #169
+            var userId = User.GetUserId();
             var facts = _statisticsService.GetMultipleTrackersFacts(userId);
             return Ok(_mapper.MultipleFactsToJson(facts));
         }

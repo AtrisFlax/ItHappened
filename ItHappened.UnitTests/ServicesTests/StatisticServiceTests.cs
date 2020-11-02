@@ -35,27 +35,27 @@ namespace ItHappened.UnitTests.ServicesTests
         }
         
         [Test]
-        public void GetSingleTrackerFactsWhenTrackerDontExistInRepository_ThrowsRestException()
+        public void GetSingleTrackerFactsWhenTrackerDontExistInRepository_ThrowsException()
         {
-            Assert.Throws<RestException>(() => 
+            Assert.Throws<TrackerNotFoundException>(() =>
                 _statisticsService.GetSingleTrackerFacts(_tracker.Id, _tracker.CreatorId));
         }
         
         [Test]
-        public void GetSingleTrackerFactsWhenUserAsksSomeoneElseTracker_ThrowsRestException()
+        public void GetSingleTrackerFactsWhenUserAsksSomeoneElseTracker_ThrowsException()
         {
             _trackerRepository.SaveTracker(_tracker);
             
-            Assert.Throws<RestException>(() => 
+            Assert.Throws<NoPermissionsForTrackerException>(() => 
                 _statisticsService.GetSingleTrackerFacts(_tracker.Id, Guid.NewGuid()));
         }
         
         [Test]
-        public void GetSingleTrackerFactsWhenNoFactsInRepositoryForTheTracker_ThrowsRestException()
+        public void GetSingleTrackerFactsWhenNoFactsInRepositoryForTheTracker_ThrowsException()
         {
             _trackerRepository.SaveTracker(_tracker);
             
-            Assert.Throws<RestException>(() => 
+            Assert.Throws<TrackerStatisticsNotFoundException>(() => 
                 _statisticsService.GetSingleTrackerFacts(_tracker.Id, _tracker.CreatorId));
         }    
         
@@ -72,9 +72,9 @@ namespace ItHappened.UnitTests.ServicesTests
         }
 
         [Test]
-        public void GetMultipleTrackersFactsWhenNoFactsInRepositoryForTheUser_ThrowsRestException()
+        public void GetMultipleTrackersFactsWhenNoFactsInRepositoryForTheUser_ThrowsException()
         {
-            Assert.Throws<RestException>(() => 
+            Assert.Throws<UserTrackersStatisticsNotFoundException>(() => 
                 _statisticsService.GetMultipleTrackersFacts(Guid.NewGuid()));
         }
         
