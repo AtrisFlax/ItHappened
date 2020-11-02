@@ -29,7 +29,7 @@ namespace ItHappened.Api.Controllers
         }
 
         [HttpGet]
-        [Route("/users")]
+        [Route("/login")]
         [ProducesResponseType(200, Type = typeof(UserWithToken))]
         public IActionResult Authenticate([FromBody] UserRequest request)
         {
