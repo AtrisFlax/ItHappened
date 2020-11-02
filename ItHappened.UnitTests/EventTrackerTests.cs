@@ -84,7 +84,7 @@ namespace ItHappened.UnitTests
                 userId,
                 trackerName,
                 new TrackerCustomizationSettings(true,
-                    false,
+                    true,
                     scaleUnit,
                     false,
                     false,
@@ -101,7 +101,7 @@ namespace ItHappened.UnitTests
             Assert.IsFalse(tracker.CustomizationSettings.IsRatingRequired);
             Assert.IsFalse(tracker.CustomizationSettings.IsGeotagRequired);
             Assert.IsTrue(tracker.CustomizationSettings.IsCommentRequired);
-            Assert.IsFalse(tracker.CustomizationSettings.IsScaleRequired);
+            Assert.IsTrue(tracker.CustomizationSettings.IsScaleRequired);
             Assert.IsTrue(tracker.CustomizationSettings.IsCustomizationRequired);
         }
 
