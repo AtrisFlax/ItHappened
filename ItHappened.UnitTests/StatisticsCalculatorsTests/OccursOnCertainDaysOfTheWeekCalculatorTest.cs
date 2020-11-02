@@ -34,7 +34,7 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
             _eventRepository.AddRangeOfEvents(events);
 
             //act 
-            var fact = new Domain.Statistics.OccursOnCertainDaysOfTheWeekCalculator()
+            var fact = new OccursOnCertainDaysOfTheWeekCalculator()
                 .Calculate(events, tracker, _now).ConvertTo<OccursOnCertainDaysOfTheWeekTrackerFact>().ValueUnsafe();
 
             //assert 
