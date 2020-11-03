@@ -16,13 +16,14 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
         {
             return new EventTracker(Guid.NewGuid(), userId, name, new TrackerCustomizationSettings());
         }
-        
-        public static EventTracker CreateTrackerWithRequiredCustomization(Guid userId, string name, TrackerCustomizationSettings trackerCustomizationSettings)
+
+        public static EventTracker CreateTrackerWithRequiredCustomization(Guid userId, string name,
+            TrackerCustomizationSettings trackerCustomizationSettings)
         {
             return new EventTracker(Guid.NewGuid(), userId, name,
                 trackerCustomizationSettings);
         }
-        
+
         public static EventTracker CreateTrackerWithScale(Guid userId, string scale)
         {
             return new EventTracker(userId, Guid.NewGuid(), "Tracker name",
@@ -33,7 +34,7 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
                     false,
                     false, false));
         }
-        
+
         public static (IReadOnlyCollection<Event> events, List<double> Rating) CreateEventsWithRating(Guid trackerId,
             Guid userId,
             int num)
@@ -142,7 +143,7 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
             return new Event(Guid.NewGuid(),
                 userId,
                 trackerId,
-                DateTimeOffset.UtcNow,
+                DateTimeOffset.UtcNow, "Event title", 
                 new EventCustomParameters(
                     Option<Photo>.None,
                     Option<double>.None,
@@ -157,7 +158,7 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
             return new Event(Guid.NewGuid(),
                 userId,
                 trackerId,
-                dateTime,
+                dateTime, "Event title",
                 new EventCustomParameters(
                     Option<Photo>.None,
                     Option<double>.None,
@@ -172,7 +173,7 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
             return new Event(Guid.NewGuid(),
                 userId,
                 trackerId,
-                DateTimeOffset.UtcNow,
+                DateTimeOffset.UtcNow, "Event title", 
                 new EventCustomParameters(
                     Option<Photo>.None,
                     Option<double>.None,
@@ -188,7 +189,7 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
             return new Event(Guid.NewGuid(),
                 userId,
                 trackerId,
-                dateTime,
+                dateTime, "Event title",
                 new EventCustomParameters(
                     Option<Photo>.None,
                     Option<double>.None,
@@ -203,7 +204,7 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
             return new Event(Guid.NewGuid(),
                 userId,
                 trackerId,
-                DateTimeOffset.UtcNow,
+                DateTimeOffset.UtcNow, "Event title",
                 new EventCustomParameters(
                     Option<Photo>.None,
                     Option<double>.None,
@@ -218,7 +219,7 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
             return new Event(Guid.NewGuid(),
                 userId,
                 trackerId,
-                time,
+                time, "Event title",
                 new EventCustomParameters(
                     Option<Photo>.None,
                     Option<double>.None,
@@ -234,7 +235,7 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
             return new Event(Guid.NewGuid(),
                 userId,
                 trackerId,
-                time,
+                time, "Event title",
                 new EventCustomParameters(
                     Option<Photo>.Some(photo),
                     Option<double>.Some(scale),
@@ -251,7 +252,7 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
             return new Event(Guid.NewGuid(),
                 creatorId,
                 trackerId,
-                DateTimeOffset.UtcNow,
+                DateTimeOffset.UtcNow, "Event title",
                 new EventCustomParameters(
                     Option<Photo>.None,
                     Option<double>.None,
@@ -269,7 +270,7 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
             return new Event(Guid.NewGuid(),
                 creatorId,
                 trackerId,
-                RandomDayFromTo(from, to),
+                RandomDayFromTo(from, to), "Event title",
                 new EventCustomParameters(
                     Option<Photo>.None,
                     Option<double>.None,
@@ -288,7 +289,7 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
             return new Event(Guid.NewGuid(),
                 creatorId,
                 trackerId,
-                RandomDayFromTo(from, to),
+                RandomDayFromTo(from, to), "Event title",
                 new EventCustomParameters(
                     Option<Photo>.None,
                     Option<double>.None,
@@ -307,7 +308,7 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
             return new Event(Guid.NewGuid(),
                 userId,
                 trackerId,
-                fixDate,
+                fixDate, "Event title",
                 new EventCustomParameters(
                     Option<Photo>.None,
                     Option<double>.None,
@@ -317,22 +318,24 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
                 )
             );
         }
+
         public static Event CreateEventFixDate(Guid trackerId, Guid userId, DateTimeOffset fixDate)
         {
             return new Event(Guid.NewGuid(),
                 userId,
                 trackerId,
-                fixDate,
+                fixDate, "Event title",
                 new EventCustomParameters()
             );
         }
+
         public static Event CreateEventWithRatingAndFixDate(Guid trackerId, Guid userId, double rating,
             DateTimeOffset fixDate)
         {
             return new Event(Guid.NewGuid(),
                 userId,
                 trackerId,
-                fixDate,
+                fixDate, "Event title",
                 new EventCustomParameters(
                     Option<Photo>.None,
                     Option<double>.None,
@@ -349,7 +352,7 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
             return new Event(Guid.NewGuid(),
                 userId,
                 trackerId,
-                fixTime,
+                fixTime, "Event title",
                 new EventCustomParameters()
             );
         }
@@ -366,7 +369,7 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
             return new Event(Guid.NewGuid(),
                 creatorId,
                 trackerId,
-                DateTimeOffset.UtcNow,
+                DateTimeOffset.UtcNow, "Event title",
                 new EventCustomParameters(
                     Option<Photo>.None,
                     Option<double>.Some(scale),
@@ -381,7 +384,7 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
             return new Event(Guid.NewGuid(),
                 creatorId,
                 trackerId,
-                dateTime,
+                dateTime, "Event title",
                 new EventCustomParameters(
                     Option<Photo>.None,
                     Option<double>.Some(scale),
@@ -396,7 +399,7 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
             return new Event(Guid.NewGuid(),
                 userId,
                 trackerId,
-                DateTimeOffset.UtcNow,
+                DateTimeOffset.UtcNow, "Event title",
                 new EventCustomParameters(
                     Option<Photo>.None,
                     Option<double>.None,
@@ -411,7 +414,7 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
             return new Event(Guid.NewGuid(),
                 userId,
                 trackerId,
-                dateTime,
+                dateTime, "Event title",
                 new EventCustomParameters(
                     Option<Photo>.None,
                     Option<double>.None,

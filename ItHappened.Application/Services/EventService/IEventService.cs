@@ -6,7 +6,7 @@ namespace ItHappened.Application.Services.EventService
 {
     public interface IEventService
     {
-        Guid CreateEvent(Guid actorId, Guid trackerId, DateTimeOffset eventHappensDate,
+        Guid CreateEvent(Guid actorId, Guid trackerId, DateTimeOffset eventHappensDate, string title,
             EventCustomParameters customParameters);
 
         Event GetEvent(Guid actorId, Guid eventId);

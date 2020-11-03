@@ -16,7 +16,7 @@ namespace ItHappened.UnitTests
         private double _scale;
         private Comment _textComment;
         private EventTracker _tracker;
-
+        private string _title;
 
         [SetUp]
         public void Init()
@@ -29,7 +29,8 @@ namespace ItHappened.UnitTests
             _photo = new Photo(new byte[] {0x1, 0x2, 0x3});
             _rating = 299.0;
             _geoTag = new GeoTag(55.790514, 37.584822);
-            _tracker = new EventTracker(Guid.NewGuid(), Guid.NewGuid(), "Tracker name",
+            _title = "Tracker name";
+            _tracker = new EventTracker(Guid.NewGuid(), Guid.NewGuid(), _title,
                 new TrackerCustomizationSettings());
         }
 
@@ -39,12 +40,14 @@ namespace ItHappened.UnitTests
             //arrange
 
             //act
-            var @event = new Event(_eventId, _creatorId, _tracker.Id, _date, new EventCustomParameters());
+            var @event = new Event(_eventId, _creatorId, _tracker.Id, _date, "Event title",
+                new EventCustomParameters());
 
             //assert
             Assert.AreEqual(_eventId, @event.Id);
             Assert.AreEqual(_creatorId, @event.CreatorId);
             Assert.AreEqual(_date, @event.HappensDate);
+            Assert.AreEqual(_title, @event.Title);
 
             Assert.IsTrue(@event.CustomizationsParameters.Comment.IsNone);
             Assert.IsTrue(@event.CustomizationsParameters.Scale.IsNone);
@@ -62,7 +65,7 @@ namespace ItHappened.UnitTests
             var @event = new Event(_eventId,
                 _creatorId,
                 _tracker.Id,
-                _date,
+                _date, "Event title",
                 new EventCustomParameters(
                     Option<Photo>.Some(_photo),
                     Option<double>.Some(_scale),
@@ -98,7 +101,7 @@ namespace ItHappened.UnitTests
             var @event = new Event(_eventId,
                 _creatorId,
                 _tracker.Id,
-                _date,
+                _date, "Event title",
                 new EventCustomParameters(
                     Option<Photo>.None,
                     Option<double>.Some(_scale),

@@ -53,7 +53,12 @@ namespace ItHappened.Infrastructure.Mappers
             var photo = source.Photo.IsNull() ? Option<Photo>.None : Option<Photo>.Some(new Photo(source.Photo));
             var eventCustomParameters = new EventCustomParameters(photo, scale, rating, geoTag, comment);
             
-            return new Event(source.Id, source.CreatorId, source.TrackerId, source.HappensDate,
+            return new Event(
+                source.Id, 
+                source.CreatorId, 
+                source.TrackerId, 
+                source.HappensDate, 
+                source.Title,
                 eventCustomParameters);
         }
     }

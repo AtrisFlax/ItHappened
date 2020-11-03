@@ -34,7 +34,7 @@ namespace ItHappened.Api.Controllers
         {
             var userId = User.GetUserId();
             var customParameters = _mapper.Map<EventCustomParameters>(request);
-            var eventId = _eventService.CreateEvent(userId, trackerId, request.HappensDate, customParameters);
+            var eventId = _eventService.CreateEvent(userId, trackerId, request.HappensDate, request.Title, customParameters);
             return Ok(_mapper.Map<EventPostResponse>(eventId));
         }
 

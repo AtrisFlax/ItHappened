@@ -35,11 +35,11 @@ namespace ItHappened.UnitTests
             Assert.AreEqual(userId, tracker.CreatorId);
             Assert.AreEqual(tracker.Name, trackerName);
             Assert.AreEqual(scaleUnit, tracker.CustomizationSettings.ScaleMeasurementUnit.ValueUnsafe());
-            Assert.AreEqual(true, tracker.CustomizationSettings.IsPhotoRequired);
-            Assert.AreEqual(true, tracker.CustomizationSettings.IsRatingRequired);
-            Assert.AreEqual(true, tracker.CustomizationSettings.IsGeotagRequired);
-            Assert.AreEqual(true, tracker.CustomizationSettings.IsCommentRequired);
-            Assert.AreEqual(true, tracker.CustomizationSettings.IsScaleRequired);
+            Assert.True( tracker.CustomizationSettings.IsPhotoRequired);
+            Assert.True( tracker.CustomizationSettings.IsRatingRequired);
+            Assert.True( tracker.CustomizationSettings.IsGeotagRequired);
+            Assert.True( tracker.CustomizationSettings.IsCommentRequired);
+            Assert.True( tracker.CustomizationSettings.IsScaleRequired);
         }
 
         [Test]
@@ -214,7 +214,7 @@ namespace ItHappened.UnitTests
             var @event = new Event(eventId,
                 creatorId,
                 trackerId,
-                date,
+                date, "Event title",
                 new EventCustomParameters(
                     Option<Photo>.Some(photo),
                     Option<double>.Some(scale),
@@ -236,7 +236,7 @@ namespace ItHappened.UnitTests
             var @event = new Event(eventId,
                 creatorId,
                 trackerId,
-                date,
+                date, "Event title",
                 new EventCustomParameters(
                     Option<Photo>.Some(photo),
                     Option<double>.Some(scale),

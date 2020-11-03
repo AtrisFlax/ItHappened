@@ -5,6 +5,7 @@ namespace ItHappened.Api.Models.Requests
     public class EventRequest
     {
         public DateTimeOffset HappensDate { get; set; }
+        public string Title { get; set; }
         public string Photo { get; set; }
         public double? Scale { get; set; }
         public double? Rating { get; set; }

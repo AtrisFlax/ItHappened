@@ -63,7 +63,7 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
         
         private static Event CreateEventWithNameAndDateTime(Guid userId, Guid trackerId, string dateTime)
         {
-            return new Event(Guid.NewGuid(), userId, trackerId, DateTime.Parse(dateTime), new EventCustomParameters());
+            return new Event(Guid.NewGuid(), userId, trackerId, DateTime.Parse(dateTime), "Event title", new EventCustomParameters());
         }
     }
 }
