@@ -29,7 +29,7 @@ namespace ItHappened.UnitTests
             _photo = new Photo(new byte[] {0x1, 0x2, 0x3});
             _rating = 299.0;
             _geoTag = new GeoTag(55.790514, 37.584822);
-            _title = "Tracker name";
+            _title = "Event title";
             _tracker = new EventTracker(Guid.NewGuid(), Guid.NewGuid(), _title,
                 new TrackerCustomizationSettings());
         }
@@ -40,7 +40,7 @@ namespace ItHappened.UnitTests
             //arrange
 
             //act
-            var @event = new Event(_eventId, _creatorId, _tracker.Id, _date, "Event title",
+            var @event = new Event(_eventId, _creatorId, _tracker.Id, _date, _title,
                 new EventCustomParameters());
 
             //assert
