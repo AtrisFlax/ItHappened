@@ -1,4 +1,4 @@
-﻿using System.Security.Claims;
+﻿ using System.Security.Claims;
 using ItHappened.Api.Authentication;
 using ItHappened.Api.Models.Requests;
 using ItHappened.Api.Models.Responses;
@@ -28,7 +28,7 @@ namespace ItHappened.Api.Controllers
             return Ok(new UserResponse(userWithToken.User.Id, userWithToken.User.Name, userWithToken.Token));
         }
 
-        [HttpGet]
+        [HttpPost]
         [Route("/login")]
         [ProducesResponseType(200, Type = typeof(UserWithToken))]
         public IActionResult Authenticate([FromBody] UserRequest request)
