@@ -23,7 +23,13 @@ namespace ItHappened.Infrastructure.Repositories
         {
             return _eventTrackers.ContainsKey(trackerId);
         }
-        
+
+        public bool IsExistTrackerWithSameName(Guid creatorId, string trackerName)
+        {
+            return _eventTrackers
+                .All(tracker => tracker.Value.CreatorId != creatorId || tracker.Value.Name != trackerName);
+        }
+
         public IReadOnlyCollection<EventTracker> LoadAllUserTrackers(Guid userId)
         {
             return _eventTrackers

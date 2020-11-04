@@ -6,7 +6,7 @@ namespace ItHappened.Application.Services.TrackerService
 {
     public interface ITrackerService
     {
-        Guid CreateEventTracker(Guid creatorId, string name, TrackerCustomizationSettings customizationSettings);
+        Guid CreateEventTracker(Guid creatorId, string trackerName, TrackerCustomizationSettings customizationSettings);
         EventTracker GetEventTracker(Guid actorId, Guid trackerId);
         IReadOnlyCollection<EventTracker> GetEventTrackers(Guid actorId);
 
