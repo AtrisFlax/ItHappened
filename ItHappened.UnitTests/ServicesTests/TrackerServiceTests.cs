@@ -57,8 +57,8 @@ namespace ItHappened.UnitTests.ServicesTests
         public void TwoTrackersWithSameName()
         {
             var creatorId = Guid.NewGuid();
-            var sameTrackerName = "trackerName";
-            var tracker1Id = _trackerService.CreateEventTracker(creatorId, sameTrackerName,
+            const string sameTrackerName = "trackerName";
+            _trackerService.CreateEventTracker(creatorId, sameTrackerName,
                 new TrackerCustomizationSettings(
                     true,
                     true,
@@ -71,7 +71,7 @@ namespace ItHappened.UnitTests.ServicesTests
 
             Assert.Throws<DuplicateTrackerNameException>(() =>
                 {
-                    var tracker2Id = _trackerService.CreateEventTracker(creatorId, sameTrackerName,
+                    _trackerService.CreateEventTracker(creatorId, sameTrackerName,
                         new TrackerCustomizationSettings(
                             true,
                             true,
@@ -81,7 +81,39 @@ namespace ItHappened.UnitTests.ServicesTests
                             false,
                             false));
                 }
-            );  
+            );
+        }
+
+
+        [Test]
+        public void ChangeTrackerNameToExistTracker()
+        {
+            var creatorId = Guid.NewGuid();
+            const string existTrackerName = "trackerName";
+            var tracker1Id = _trackerService.CreateEventTracker(creatorId, existTrackerName,
+                new TrackerCustomizationSettings(
+                    true,
+                    true,
+                    Option<string>.Some("meter"),
+                    false,
+                    true,
+                    false,
+                    false));
+
+
+            Assert.Throws<DuplicateTrackerNameException>(() =>
+                {
+                    _trackerService.EditEventTracker(creatorId, tracker1Id, existTrackerName,
+                        new TrackerCustomizationSettings(
+                            true,
+                            true,
+                            Option<string>.Some("meter"),
+                            false,
+                            true,
+                            false,
+                            false));
+                }
+            );
         }
 
         [Test]

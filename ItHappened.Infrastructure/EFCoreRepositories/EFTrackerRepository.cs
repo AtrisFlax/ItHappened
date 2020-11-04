@@ -12,7 +12,6 @@ namespace ItHappened.Infrastructure.EFCoreRepositories
     // ReSharper disable once InconsistentNaming
     public class EFTrackerRepository : ITrackerRepository
     {
-        private const int InsertKeyWithDuplicateRowErrorCode = 2601;
         private readonly ItHappenedDbContext _context;
         private readonly IMapper _mapper;
 
