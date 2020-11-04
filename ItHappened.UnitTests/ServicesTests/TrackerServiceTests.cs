@@ -54,9 +54,41 @@ namespace ItHappened.UnitTests.ServicesTests
         }
 
         [Test]
+        public void TwoTrackersWithSameName()
+        {
+            var creatorId = Guid.NewGuid();
+            var sameTrackerName = "trackerName";
+            var tracker1Id = _trackerService.CreateEventTracker(creatorId, sameTrackerName,
+                new TrackerCustomizationSettings(
+                    true,
+                    true,
+                    Option<string>.Some("meter"),
+                    false,
+                    true,
+                    false,
+                    false));
+
+
+            Assert.Throws<DuplicateTrackerNameException>(() =>
+                {
+                    var tracker2Id = _trackerService.CreateEventTracker(creatorId, sameTrackerName,
+                        new TrackerCustomizationSettings(
+                            true,
+                            true,
+                            Option<string>.Some("meter"),
+                            false,
+                            true,
+                            false,
+                            false));
+                }
+            );  
+        }
+
+        [Test]
         public void GetTrackerWhenNoSuchTrackerInRepository_ThrowsException()
         {
-            Assert.Throws<TrackerNotFoundException>(() => _trackerService.GetEventTracker(Guid.NewGuid(), Guid.NewGuid()));
+            Assert.Throws<TrackerNotFoundException>(() =>
+                _trackerService.GetEventTracker(Guid.NewGuid(), Guid.NewGuid()));
         }
 
         [Test]
@@ -64,7 +96,8 @@ namespace ItHappened.UnitTests.ServicesTests
         {
             _trackerRepository.SaveTracker(_tracker);
 
-            Assert.Throws<NoPermissionsForTrackerException>(() => _trackerService.GetEventTracker(Guid.NewGuid(), _tracker.Id));
+            Assert.Throws<NoPermissionsForTrackerException>(() =>
+                _trackerService.GetEventTracker(Guid.NewGuid(), _tracker.Id));
         }
 
         [Test]
@@ -142,7 +175,8 @@ namespace ItHappened.UnitTests.ServicesTests
         [Test]
         public void DeleteTrackerWhenNoSuchTrackerInRepository_ThrowsException()
         {
-            Assert.Throws<TrackerNotFoundException>(() => _trackerService.DeleteEventTracker(Guid.NewGuid(), Guid.NewGuid()));
+            Assert.Throws<TrackerNotFoundException>(() =>
+                _trackerService.DeleteEventTracker(Guid.NewGuid(), Guid.NewGuid()));
         }
 
         [Test]
@@ -150,7 +184,8 @@ namespace ItHappened.UnitTests.ServicesTests
         {
             _trackerRepository.SaveTracker(_tracker);
 
-            Assert.Throws<NoPermissionsForTrackerException>(() => _trackerService.DeleteEventTracker(Guid.NewGuid(), _tracker.Id));
+            Assert.Throws<NoPermissionsForTrackerException>(() =>
+                _trackerService.DeleteEventTracker(Guid.NewGuid(), _tracker.Id));
         }
 
         [Test]
