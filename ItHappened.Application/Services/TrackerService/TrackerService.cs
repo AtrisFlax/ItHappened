@@ -60,6 +60,10 @@ namespace ItHappened.Application.Services.TrackerService
                 throw new NoPermissionsForTrackerException(actorId, trackerId);
             }
 
+            if (_trackerRepository.IsExistTrackerWithSameName(actorId, name))
+            {
+                throw new DuplicateTrackerNameException(name);
+            }
             var updatedTracker = new EventTracker(tracker.Id, tracker.CreatorId, name, customizationSettings);
             _trackerRepository.UpdateTracker(updatedTracker);
         }

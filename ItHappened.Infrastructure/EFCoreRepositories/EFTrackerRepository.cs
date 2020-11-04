@@ -6,13 +6,13 @@ using ItHappened.Application.Errors;
 using ItHappened.Domain;
 using ItHappened.Infrastructure.Mappers;
 using LanguageExt.UnsafeValueAccess;
+using Microsoft.EntityFrameworkCore;
 
 namespace ItHappened.Infrastructure.EFCoreRepositories
 {
     // ReSharper disable once InconsistentNaming
     public class EFTrackerRepository : ITrackerRepository
     {
-        private const int InsertKeyWithDuplicateRowErrorCode = 2601;
         private readonly ItHappenedDbContext _context;
         private readonly IMapper _mapper;
 
@@ -42,28 +42,22 @@ namespace ItHappened.Infrastructure.EFCoreRepositories
 
         public void UpdateTracker(EventTracker eventTracker)
         {
-            var oldTrackerDto = _context.EventTrackers.Find(eventTracker.Id);
-            oldTrackerDto.IsUpdated = true;
-            oldTrackerDto.Name = eventTracker.Name;
-            oldTrackerDto.IsCommentRequired = eventTracker.CustomizationSettings.IsCommentRequired;
-            oldTrackerDto.IsGeotagRequired = eventTracker.CustomizationSettings.IsGeotagRequired;
-            oldTrackerDto.IsRatingRequired = eventTracker.CustomizationSettings.IsRatingRequired;
-            oldTrackerDto.IsPhotoRequired = eventTracker.CustomizationSettings.IsPhotoRequired;
-            oldTrackerDto.IsScaleRequired = eventTracker.CustomizationSettings.IsScaleRequired;
-            oldTrackerDto.IsCustomizationRequired = eventTracker.CustomizationSettings.IsCustomizationRequired;
-            oldTrackerDto.ScaleMeasurementUnit = eventTracker.CustomizationSettings.ScaleMeasurementUnit.ValueUnsafe();
+            var trackerDto = _mapper.Map<EventTrackerDto>(eventTracker);
+            var local = _context.Set<EventTrackerDto>()
+                .Local
+                .FirstOrDefault(entry => entry.Id.Equals(eventTracker.Id));
+            if (local != null)
+            {
+                _context.Entry(local).State = EntityState.Detached;
+            }
+
+            _context.Entry(trackerDto).State = EntityState.Modified;
         }
 
         public void DeleteTracker(Guid eventTrackerId)
         {
-            //TODO test cascade delete 
             var trackerToDeleteDto = _context.EventTrackers.Find(eventTrackerId);
             _context.EventTrackers.Remove(trackerToDeleteDto);
-            //TODO issue #180
-            //Deleting without loading from the database
-            // var toDelete = new EventDto {Id = eventTrackerId};
-            // _context.Entry(toDelete).State = EntityState.Deleted;
-            // _context.SaveChanges();
         }
 
         public bool IsContainTracker(Guid trackerId)
