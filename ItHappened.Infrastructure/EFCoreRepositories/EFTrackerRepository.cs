@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using AutoMapper;
+using ItHappened.Application.Errors;
 using ItHappened.Domain;
 using ItHappened.Infrastructure.Mappers;
 using LanguageExt.UnsafeValueAccess;
@@ -11,6 +12,7 @@ namespace ItHappened.Infrastructure.EFCoreRepositories
     // ReSharper disable once InconsistentNaming
     public class EFTrackerRepository : ITrackerRepository
     {
+        private const int InsertKeyWithDuplicateRowErrorCode = 2601;
         private readonly ItHappenedDbContext _context;
         private readonly IMapper _mapper;
 
@@ -19,7 +21,7 @@ namespace ItHappened.Infrastructure.EFCoreRepositories
             _context = context;
             _mapper = mapper;
         }
-        
+
         public void SaveTracker(EventTracker newTracker)
         {
             var trackerDto = _mapper.Map<EventTrackerDto>(newTracker);
@@ -34,8 +36,8 @@ namespace ItHappened.Infrastructure.EFCoreRepositories
 
         public IReadOnlyCollection<EventTracker> LoadAllUserTrackers(Guid userId)
         {
-           var trackersDto = _context.EventTrackers.Where(tracker => tracker.CreatorId == userId);
-           return _mapper.Map<EventTracker[]>(trackersDto.ToList());
+            var trackersDto = _context.EventTrackers.Where(tracker => tracker.CreatorId == userId);
+            return _mapper.Map<EventTracker[]>(trackersDto.ToList());
         }
 
         public void UpdateTracker(EventTracker eventTracker)
@@ -66,7 +68,12 @@ namespace ItHappened.Infrastructure.EFCoreRepositories
 
         public bool IsContainTracker(Guid trackerId)
         {
-            return _context.EventTrackers.Any(o => o.Id == trackerId);
+            return _context.EventTrackers.Any(tracker => tracker.Id == trackerId);
+        }
+
+        public bool IsExistTrackerWithSameName(Guid creatorId, string trackerName)
+        {
+            return _context.EventTrackers.Any(tracker => tracker.CreatorId == creatorId && tracker.Name == trackerName);
         }
     }
 }
