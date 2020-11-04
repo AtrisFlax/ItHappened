@@ -64,8 +64,6 @@ namespace ItHappened.Application.Services.TrackerService
             {
                 throw new DuplicateTrackerNameException(name);
             }
-            _trackerRepository.SaveTracker(tracker);
-            
             var updatedTracker = new EventTracker(tracker.Id, tracker.CreatorId, name, customizationSettings);
             _trackerRepository.UpdateTracker(updatedTracker);
         }
