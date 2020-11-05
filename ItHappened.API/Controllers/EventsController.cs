@@ -41,10 +41,10 @@ namespace ItHappened.Api.Controllers
         [HttpGet("/trackers/{trackerId}/events/filters")]
         [ProducesResponseType(200, Type = typeof(IEnumerable<EventGetResponse>))]
         public IActionResult GetFilteredEvents([FromRoute] Guid trackerId,
-            [FromQuery] EventFilterRequest eventFilterRequest)
+            [FromQuery] EventFilterDataRequest eventFilterDataRequest)
         {
             var userId = User.GetUserId();
-            var eventFilter = _mapper.Map<EventFilter>(eventFilterRequest);
+            var eventFilter = _mapper.Map<EventFilterData>(eventFilterDataRequest);
             var filteredEvents = _eventFilterable.GetAllFilteredEvents(userId, trackerId, eventFilter);
             return Ok(_mapper.Map<EventGetResponse[]>(filteredEvents));
         }

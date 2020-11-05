@@ -4,7 +4,7 @@ using System;
 namespace ItHappened.Api.Models.Requests
 {
     // @formatter:off
-    public class EventFilterRequest
+    public class EventFilterDataRequest
     {
         [FromQuery(Name = "FromDateTime")]
         public DateTime? FromDateTime { get; set; }

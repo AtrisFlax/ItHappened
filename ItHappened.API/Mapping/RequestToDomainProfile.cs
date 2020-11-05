@@ -23,7 +23,7 @@ namespace ItHappened.Api.Mapping
             CreateMap<EventRequest, EventCustomParameters>()
                 .ConvertUsing(request => EventCustomParameters(request));
 
-            CreateMap<EventFilterRequest, EventFilter>();
+            CreateMap<EventFilterDataRequest, EventFilterData>();
         }
 
         private static EventCustomParameters EventCustomParameters(EventRequest request)

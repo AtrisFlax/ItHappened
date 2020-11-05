@@ -2,7 +2,7 @@
 
 namespace ItHappened.Domain
 {
-    public class EventFilter
+    public class EventFilterData
     {
         public DateTime? FromDateTime { get; private set; }
 

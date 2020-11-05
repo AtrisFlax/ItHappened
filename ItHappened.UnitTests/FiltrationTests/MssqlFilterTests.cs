@@ -19,12 +19,12 @@ namespace ItHappened.UnitTests.FiltrationTests
             //arrange
             var mapperConfig = new MapperConfiguration(cfg => { cfg.AddProfile(new RequestToDomainProfile()); });
             var mapper = new Mapper(mapperConfig);
-            var eventFilterRequest = new EventFilterRequest
+            var eventFilterRequest = new EventFilterDataRequest
             {
                 FromDateTime = new DateTime(2019, 10, 14, 18, 01, 00),
                 ToDateTime = new DateTime(2020, 10, 14, 18, 00, 00)
             };
-            var filterStringPredicates = mapper.Map<EventFilter>(eventFilterRequest);
+            var filterStringPredicates = mapper.Map<EventFilterData>(eventFilterRequest);
 
             //act
             var filter = new MssqlEventsFilter().CreateFilterMsSqlPredicates(filterStringPredicates, TableName);
@@ -41,11 +41,11 @@ namespace ItHappened.UnitTests.FiltrationTests
             //arrange
             var mapperConfig = new MapperConfiguration(cfg => { cfg.AddProfile(new RequestToDomainProfile()); });
             var mapper = new Mapper(mapperConfig);
-            var eventFilterRequest = new EventFilterRequest
+            var eventFilterRequest = new EventFilterDataRequest
             {
                 ToDateTime = new DateTime(2020, 10, 14, 18, 00, 00)
             };
-            var filtersData = mapper.Map<EventFilter>(eventFilterRequest);
+            var filtersData = mapper.Map<EventFilterData>(eventFilterRequest);
 
             //act
             var filterStringPredicates =
@@ -62,11 +62,11 @@ namespace ItHappened.UnitTests.FiltrationTests
             //arrange
             var mapperConfig = new MapperConfiguration(cfg => { cfg.AddProfile(new RequestToDomainProfile()); });
             var mapper = new Mapper(mapperConfig);
-            var eventFilterRequest = new EventFilterRequest
+            var eventFilterRequest = new EventFilterDataRequest
             {
                 FromDateTime = new DateTime(2019, 10, 14, 18, 01, 00),
             };
-            var filterStringPredicates = mapper.Map<EventFilter>(eventFilterRequest);
+            var filterStringPredicates = mapper.Map<EventFilterData>(eventFilterRequest);
 
             //act
             var filter = new MssqlEventsFilter().CreateFilterMsSqlPredicates(filterStringPredicates, TableName);
@@ -82,12 +82,12 @@ namespace ItHappened.UnitTests.FiltrationTests
             //arrange
             var mapperConfig = new MapperConfiguration(cfg => { cfg.AddProfile(new RequestToDomainProfile()); });
             var mapper = new Mapper(mapperConfig);
-            var eventFilterRequest = new EventFilterRequest
+            var eventFilterRequest = new EventFilterDataRequest
             {
                 LowerLimitRating = 2,
                 UpperLimitRating = 5.5
             };
-            var filtersData = mapper.Map<EventFilter>(eventFilterRequest);
+            var filtersData = mapper.Map<EventFilterData>(eventFilterRequest);
 
             //act
             var filterStringPredicates = new MssqlEventsFilter().CreateFilterMsSqlPredicates(filtersData, TableName);
@@ -102,11 +102,11 @@ namespace ItHappened.UnitTests.FiltrationTests
             //arrange
             var mapperConfig = new MapperConfiguration(cfg => { cfg.AddProfile(new RequestToDomainProfile()); });
             var mapper = new Mapper(mapperConfig);
-            var eventFilterRequest = new EventFilterRequest
+            var eventFilterRequest = new EventFilterDataRequest
             {
                 LowerLimitRating = 2,
             };
-            var filtersData = mapper.Map<EventFilter>(eventFilterRequest);
+            var filtersData = mapper.Map<EventFilterData>(eventFilterRequest);
 
             //act
             var filterStringPredicates =
@@ -122,11 +122,11 @@ namespace ItHappened.UnitTests.FiltrationTests
             //arrange
             var mapperConfig = new MapperConfiguration(cfg => { cfg.AddProfile(new RequestToDomainProfile()); });
             var mapper = new Mapper(mapperConfig);
-            var eventFilterRequest = new EventFilterRequest
+            var eventFilterRequest = new EventFilterDataRequest
             {
                 UpperLimitRating = 5.5
             };
-            var filtersData = mapper.Map<EventFilter>(eventFilterRequest);
+            var filtersData = mapper.Map<EventFilterData>(eventFilterRequest);
 
             //act
             var filterStringPredicates =
@@ -142,12 +142,12 @@ namespace ItHappened.UnitTests.FiltrationTests
             //arrange
             var mapperConfig = new MapperConfiguration(cfg => { cfg.AddProfile(new RequestToDomainProfile()); });
             var mapper = new Mapper(mapperConfig);
-            var eventFilterRequest = new EventFilterRequest
+            var eventFilterRequest = new EventFilterDataRequest
             {
                 ScaleLowerLimit = 2,
                 ScaleUpperLimit = 5.5
             };
-            var filtersData = mapper.Map<EventFilter>(eventFilterRequest);
+            var filtersData = mapper.Map<EventFilterData>(eventFilterRequest);
 
             //act
             var filterStringPredicates =
@@ -163,11 +163,11 @@ namespace ItHappened.UnitTests.FiltrationTests
             //arrange
             var mapperConfig = new MapperConfiguration(cfg => { cfg.AddProfile(new RequestToDomainProfile()); });
             var mapper = new Mapper(mapperConfig);
-            var eventFilterRequest = new EventFilterRequest
+            var eventFilterRequest = new EventFilterDataRequest
             {
                 ScaleLowerLimit = 2,
             };
-            var filtersData = mapper.Map<EventFilter>(eventFilterRequest);
+            var filtersData = mapper.Map<EventFilterData>(eventFilterRequest);
 
             //act
             var filterStringPredicates = new MssqlEventsFilter().CreateFilterMsSqlPredicates(filtersData, TableName);
@@ -182,11 +182,11 @@ namespace ItHappened.UnitTests.FiltrationTests
             //arrange
             var mapperConfig = new MapperConfiguration(cfg => { cfg.AddProfile(new RequestToDomainProfile()); });
             var mapper = new Mapper(mapperConfig);
-            var eventFilterRequest = new EventFilterRequest
+            var eventFilterRequest = new EventFilterDataRequest
             {
                 ScaleUpperLimit = 5.5
             };
-            var filtersData = mapper.Map<EventFilter>(eventFilterRequest);
+            var filtersData = mapper.Map<EventFilterData>(eventFilterRequest);
 
             //act
             var filterStringPredicates =
@@ -202,14 +202,14 @@ namespace ItHappened.UnitTests.FiltrationTests
             //arrange
             var mapperConfig = new MapperConfiguration(cfg => { cfg.AddProfile(new RequestToDomainProfile()); });
             var mapper = new Mapper(mapperConfig);
-            var eventFilterRequest = new EventFilterRequest
+            var eventFilterRequest = new EventFilterDataRequest
             {
                 GpsLatLeftCorner = 10.0,
                 GpsLngLeftCorner = 11.0,
                 GpsLatRightCorner = 20.0,
                 GpsLngRightCorner = 21.0
             };
-            var filtersData = mapper.Map<EventFilter>(eventFilterRequest);
+            var filtersData = mapper.Map<EventFilterData>(eventFilterRequest);
 
             //act
             var filterStringPredicates = new MssqlEventsFilter().CreateFilterMsSqlPredicates(filtersData, TableName);
@@ -229,11 +229,11 @@ namespace ItHappened.UnitTests.FiltrationTests
             //arrange
             var mapperConfig = new MapperConfiguration(cfg => { cfg.AddProfile(new RequestToDomainProfile()); });
             var mapper = new Mapper(mapperConfig);
-            var eventFilterRequest = new EventFilterRequest
+            var eventFilterRequest = new EventFilterDataRequest
             {
                 SubstringForMatching = "SomeComment",
             };
-            var filtersData = mapper.Map<EventFilter>(eventFilterRequest);
+            var filtersData = mapper.Map<EventFilterData>(eventFilterRequest);
 
             //act
             var filterStringPredicates = new MssqlEventsFilter().CreateFilterMsSqlPredicates(filtersData, TableName);
@@ -248,7 +248,7 @@ namespace ItHappened.UnitTests.FiltrationTests
             //arrange
             var mapperConfig = new MapperConfiguration(cfg => { cfg.AddProfile(new RequestToDomainProfile()); });
             var mapper = new Mapper(mapperConfig);
-            var eventFilterRequest = new EventFilterRequest
+            var eventFilterRequest = new EventFilterDataRequest
             {
                 FromDateTime = new DateTime(2020, 10, 14, 18, 01, 00),
                 ToDateTime = new DateTime(2019, 10, 14, 18, 00, 00),
@@ -262,7 +262,7 @@ namespace ItHappened.UnitTests.FiltrationTests
                 GpsLatRightCorner = 32.4,
                 GpsLngRightCorner = 78.4
             };
-            var filtersData = mapper.Map<EventFilter>(eventFilterRequest);
+            var filtersData = mapper.Map<EventFilterData>(eventFilterRequest);
 
             //act
             var filterStringPredicates =

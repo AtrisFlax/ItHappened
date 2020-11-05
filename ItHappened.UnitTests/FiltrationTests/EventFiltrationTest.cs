@@ -59,7 +59,7 @@ namespace ItHappened.UnitTests.FiltrationTests
                 .Returns(events);
 
 
-            var eventFilterRequest = new EventFilterRequest
+            var eventFilterRequest = new EventFilterDataRequest
             {
                 FromDateTime = new DateTime(2020, 10, 14, 18, 01, 00),
                 ToDateTime = new DateTime(2019, 10, 14, 18, 00, 00),
@@ -75,7 +75,7 @@ namespace ItHappened.UnitTests.FiltrationTests
             };
             var mapperConfig = new MapperConfiguration(cfg => { cfg.AddProfile(new RequestToDomainProfile()); });
             var mapper = new Mapper(mapperConfig);
-            var filtersData = mapper.Map<EventFilter>(eventFilterRequest);
+            var filtersData = mapper.Map<EventFilterData>(eventFilterRequest);
             var filter = new MssqlEventsFilter();
 
             //act

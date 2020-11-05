@@ -5,6 +5,6 @@ namespace ItHappened.Domain
 {
     public interface IEventFilterable
     {
-        IReadOnlyCollection<Event> GetAllFilteredEvents(Guid actorId, Guid trackerId, EventFilter eventFilter);
+        IReadOnlyCollection<Event> GetAllFilteredEvents(Guid actorId, Guid trackerId, EventFilterData eventFilterData);
     }
 }

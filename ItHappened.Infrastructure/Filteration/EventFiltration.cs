@@ -30,19 +30,18 @@ namespace ItHappened.Infrastructure
         }
 
 
-        public IReadOnlyCollection<Event> GetAllFilteredEvents(Guid actorId, Guid trackerId, EventFilter eventFilter)
+        public IReadOnlyCollection<Event> GetAllFilteredEvents(Guid actorId, Guid trackerId, EventFilterData eventFilterData)
         {
-            var generalPredicate = _mssqlFilter.CreateFilterMsSqlPredicates(eventFilter, TableName);
-            generalPredicate = generalPredicate != string.Empty ? $"and {generalPredicate}" : string.Empty;
+            var generalPredicate = _mssqlFilter.CreateFilterMsSqlPredicates(eventFilterData, TableName);
             var events = _connection
                 .Query<EventDto>(
-                    $@"select * from ItHappenedDB.Events as Events where Events.CreatorId = @ActorId and Events.TrackerId = @TrackerId {generalPredicate}",
+                    @"select * from ItHappenedDB.Events as Events where Events.CreatorId = @ActorId and Events.TrackerId = @TrackerId @GeneralPredicate",
                     new
                     {
                         SqlSchemaAndTableName = SchemaAndTableName,
                         ActorId = actorId,
-                        TrackerId = trackerId//,
-                        //GeneralPredicate = 
+                        TrackerId = trackerId,
+                        GeneralPredicate = generalPredicate != string.Empty ? $"and {generalPredicate}" : string.Empty
                     },
                     _transaction
                 );
