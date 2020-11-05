@@ -209,17 +209,12 @@ namespace ItHappened.Api
             serviceCollection.AddScoped<SaveChangesFilter>();
             serviceCollection.AddControllers(options => { options.Filters.AddService<SaveChangesFilter>(); });
         }
-
-        private string GetConnectionString()
-        {
-            return Configuration.GetValue<string>("ItHappenedConnection");
-        }
-
+        
         private void RegisterTransactionalDapperRepository(IServiceCollection serviceCollection)
         {
             serviceCollection.AddScoped<IDbConnection>(
-                serviceProvider => new SqlConnection(Configuration.GetValue<string>("ConnectionString")));
-
+                serviceProvider => new SqlConnection(GetConnectionString()));
+            
             serviceCollection.AddScoped(serviceProvider =>
             {
                 var connection = serviceProvider.GetService<IDbConnection>();
@@ -228,8 +223,13 @@ namespace ItHappened.Api
                 return connection.BeginTransaction();
             });
             serviceCollection.AddScoped<IEventFilterable, EventFiltration>();
-            serviceCollection.AddScoped<IMssqlFilter, MssqlFilter>();
+            serviceCollection.AddScoped<IMssqlFilter, MssqlEventsFilter>();
             serviceCollection.AddScoped<UnitOfWorkFilter>();
+        }
+        
+        private string GetConnectionString()
+        {
+            return Configuration.GetValue<string>("ItHappenedConnection");
         }
     }
 }

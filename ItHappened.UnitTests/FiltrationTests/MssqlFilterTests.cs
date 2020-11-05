@@ -11,6 +11,8 @@ namespace ItHappened.UnitTests.FiltrationTests
 {
     public class MssqlFilterTests
     {
+        private const string TableName = "TableName";
+
         [Test]
         public void DateFilterUpperAndLowerBound()
         {
@@ -25,11 +27,12 @@ namespace ItHappened.UnitTests.FiltrationTests
             var filterStringPredicates = mapper.Map<EventFilter>(eventFilterRequest);
 
             //act
-            var filter = new MssqlFilter().CreateFilterMsSqlPredicates(filterStringPredicates).ToList();
+            var filter = new MssqlEventsFilter().CreateFilterMsSqlPredicates(filterStringPredicates, TableName);
 
             //
-            Assert.AreEqual(filter[0], "HappensDate >= '2019-10-14T18:01:00'");
-            Assert.AreEqual(filter[1], "HappensDate <= '2020-10-14T18:00:00'");
+            Assert.AreEqual(
+                $"CAST({TableName}.HappensDate AS DATE) >= CAST('20191014 18:01:00.000' AS DATETIME) and CAST({TableName}.HappensDate AS DATE) <= CAST('20201014 18:00:00.000' AS DATETIME)",
+                filter);
         }
 
         [Test]
@@ -45,10 +48,12 @@ namespace ItHappened.UnitTests.FiltrationTests
             var filtersData = mapper.Map<EventFilter>(eventFilterRequest);
 
             //act
-            var filterStringPredicates = new MssqlFilter().CreateFilterMsSqlPredicates(filtersData).ToList();
+            var filterStringPredicates =
+                new MssqlEventsFilter().CreateFilterMsSqlPredicates(filtersData, TableName);
 
             //
-            Assert.AreEqual(filterStringPredicates[0], "HappensDate <= '2020-10-14T18:00:00'");
+            Assert.AreEqual($"CAST({TableName}.HappensDate AS DATE) <= CAST('20201014 18:00:00.000' AS DATETIME)",
+                filterStringPredicates);
         }
 
         [Test]
@@ -64,10 +69,11 @@ namespace ItHappened.UnitTests.FiltrationTests
             var filterStringPredicates = mapper.Map<EventFilter>(eventFilterRequest);
 
             //act
-            var filter = new MssqlFilter().CreateFilterMsSqlPredicates(filterStringPredicates).ToList();
+            var filter = new MssqlEventsFilter().CreateFilterMsSqlPredicates(filterStringPredicates, TableName);
 
             //
-            Assert.AreEqual(filter[0], "HappensDate >= '2019-10-14T18:01:00'");
+            Assert.AreEqual($"CAST({TableName}.HappensDate AS DATE) >= CAST('20191014 18:01:00.000' AS DATETIME)",
+                filter);
         }
 
         [Test]
@@ -84,11 +90,10 @@ namespace ItHappened.UnitTests.FiltrationTests
             var filtersData = mapper.Map<EventFilter>(eventFilterRequest);
 
             //act
-            var filterStringPredicates = new MssqlFilter().CreateFilterMsSqlPredicates(filtersData).ToList();
+            var filterStringPredicates = new MssqlEventsFilter().CreateFilterMsSqlPredicates(filtersData, TableName);
 
             //assert
-            Assert.AreEqual(filterStringPredicates[0], "rating >= 2");
-            Assert.AreEqual(filterStringPredicates[1], "rating <= 5.5");
+            Assert.AreEqual($"{TableName}.rating >= 2 and {TableName}.rating <= 5.5", filterStringPredicates);
         }
 
         [Test]
@@ -104,10 +109,11 @@ namespace ItHappened.UnitTests.FiltrationTests
             var filtersData = mapper.Map<EventFilter>(eventFilterRequest);
 
             //act
-            var filterStringPredicates = new MssqlFilter().CreateFilterMsSqlPredicates(filtersData).ToList();
+            var filterStringPredicates =
+                new MssqlEventsFilter().CreateFilterMsSqlPredicates(filtersData, TableName);
 
             //assert
-            Assert.AreEqual(filterStringPredicates[0], "rating >= 2");
+            Assert.AreEqual(filterStringPredicates, "rating >= 2");
         }
 
         [Test]
@@ -123,10 +129,11 @@ namespace ItHappened.UnitTests.FiltrationTests
             var filtersData = mapper.Map<EventFilter>(eventFilterRequest);
 
             //act
-            var filterStringPredicates = new MssqlFilter().CreateFilterMsSqlPredicates(filtersData).ToList();
+            var filterStringPredicates =
+                new MssqlEventsFilter().CreateFilterMsSqlPredicates(filtersData, TableName);
 
             //assert
-            Assert.AreEqual(filterStringPredicates[0], "rating <= 5.5");
+            Assert.AreEqual(filterStringPredicates, $"{TableName}.rating <= 5.5");
         }
 
         [Test]
@@ -143,11 +150,11 @@ namespace ItHappened.UnitTests.FiltrationTests
             var filtersData = mapper.Map<EventFilter>(eventFilterRequest);
 
             //act
-            var filterStringPredicates = new MssqlFilter().CreateFilterMsSqlPredicates(filtersData).ToList();
+            var filterStringPredicates =
+                new MssqlEventsFilter().CreateFilterMsSqlPredicates(filtersData, TableName);
 
             //assert
-            Assert.AreEqual(filterStringPredicates[0], "scale >= 2");
-            Assert.AreEqual(filterStringPredicates[1], "scale <= 5.5");
+            Assert.AreEqual($"{TableName}.scale >= 2 and {TableName}.scale <= 5.5", filterStringPredicates);
         }
 
         [Test]
@@ -163,10 +170,10 @@ namespace ItHappened.UnitTests.FiltrationTests
             var filtersData = mapper.Map<EventFilter>(eventFilterRequest);
 
             //act
-            var filterStringPredicates = new MssqlFilter().CreateFilterMsSqlPredicates(filtersData).ToList();
+            var filterStringPredicates = new MssqlEventsFilter().CreateFilterMsSqlPredicates(filtersData, TableName);
 
             //assert
-            Assert.AreEqual(filterStringPredicates[0], "scale >= 2");
+            Assert.AreEqual($"{TableName}.scale >= 2", filterStringPredicates);
         }
 
         [Test]
@@ -182,10 +189,11 @@ namespace ItHappened.UnitTests.FiltrationTests
             var filtersData = mapper.Map<EventFilter>(eventFilterRequest);
 
             //act
-            var filterStringPredicates = new MssqlFilter().CreateFilterMsSqlPredicates(filtersData).ToList();
+            var filterStringPredicates =
+                new MssqlEventsFilter().CreateFilterMsSqlPredicates(filtersData, TableName);
 
             //assert
-            Assert.AreEqual(filterStringPredicates[0], "scale <= 5.5");
+            Assert.AreEqual($"{TableName}.scale >= 2", filterStringPredicates);
         }
 
         [Test]
@@ -204,16 +212,17 @@ namespace ItHappened.UnitTests.FiltrationTests
             var filtersData = mapper.Map<EventFilter>(eventFilterRequest);
 
             //act
-            var filterStringPredicates = new MssqlFilter().CreateFilterMsSqlPredicates(filtersData).ToList();
+            var filterStringPredicates = new MssqlEventsFilter().CreateFilterMsSqlPredicates(filtersData, TableName);
 
             //assert
-            Assert.AreEqual(filterStringPredicates[0], "latitudeGeo >= 10");
-            Assert.AreEqual(filterStringPredicates[1], "latitudeGeo <= 20");
-            Assert.AreEqual(filterStringPredicates[2], "longitudeGeo >= 11");
-            Assert.AreEqual(filterStringPredicates[3], "longitudeGeo <= 21");
+            Assert.AreEqual(
+                $"{TableName}.latitudeGeo >= 10 and {TableName}.latitudeGeo <= 20 and {TableName}.longitudeGeo >= 11 and {TableName}.longitudeGeo <= 21",
+                filterStringPredicates);
         }
-        
-        
+
+        //TODO mix Lat\Lng and Left\Right with different skip in eventFilterRequest
+
+
         [Test]
         public void Comment()
         {
@@ -227,12 +236,12 @@ namespace ItHappened.UnitTests.FiltrationTests
             var filtersData = mapper.Map<EventFilter>(eventFilterRequest);
 
             //act
-            var filterStringPredicates = new MssqlFilter().CreateFilterMsSqlPredicates(filtersData).ToList();
+            var filterStringPredicates = new MssqlEventsFilter().CreateFilterMsSqlPredicates(filtersData, TableName);
 
             //assert
-            Assert.AreEqual(filterStringPredicates[0], "comment LIKE 'SomeComment'");
+            Assert.AreEqual($"{TableName}.comment LIKE '%SomeComment%'", filterStringPredicates);
         }
-        
+
         [Test]
         public void AllPredicates()
         {
@@ -256,20 +265,17 @@ namespace ItHappened.UnitTests.FiltrationTests
             var filtersData = mapper.Map<EventFilter>(eventFilterRequest);
 
             //act
-            var filterStringPredicates = new MssqlFilter().CreateFilterMsSqlPredicates(filtersData).ToList();
+            var filterStringPredicates =
+                new MssqlEventsFilter().CreateFilterMsSqlPredicates(filtersData, TableName);
 
             //assert
-            Assert.AreEqual(filterStringPredicates[0], "HappensDate >= '2020-10-14T18:01:00'");
-            Assert.AreEqual(filterStringPredicates[1], "HappensDate <= '2019-10-14T18:00:00'");
-            Assert.AreEqual(filterStringPredicates[2], "scale >= 0.3");
-            Assert.AreEqual(filterStringPredicates[3], "scale <= 400");
-            Assert.AreEqual(filterStringPredicates[4], "rating >= 0.2");
-            Assert.AreEqual(filterStringPredicates[5], "rating <= 0.5");
-            Assert.AreEqual(filterStringPredicates[6], "comment LIKE 'aaa'");
-            Assert.AreEqual(filterStringPredicates[7], "latitudeGeo >= 15.8");
-            Assert.AreEqual(filterStringPredicates[8], "latitudeGeo <= 32.4");
-            Assert.AreEqual(filterStringPredicates[9], "longitudeGeo >= 17.9");
-            Assert.AreEqual(filterStringPredicates[10], "longitudeGeo <= 78.4");
+            Assert.AreEqual(
+$@"CAST({TableName}.HappensDate AS DATE) >= CAST('20201014 18:01:00.000' AS DATETIME) 
+and CAST({TableName}.HappensDate AS DATE) <= CAST('20191014 18:00:00.000' AS DATETIME) and {TableName}.scale >= 0.3 
+and {TableName}.scale <= 400 and {TableName}.rating >= 0.2 and {TableName}.rating <= 0.5 and {TableName}.comment LIKE '%aaa%' 
+and {TableName}.latitudeGeo >= 15.8 and {TableName}.latitudeGeo <= 32.4 and {TableName}.longitudeGeo >= 17.9 
+and {TableName}.longitudeGeo <= 78.4".Replace("\r\n", ""),
+                filterStringPredicates);
         }
     }
 }

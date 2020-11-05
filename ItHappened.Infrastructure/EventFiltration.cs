@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Linq;
+using AutoMapper;
 using Dapper;
 using ItHappened.Domain;
+using ItHappened.Infrastructure.Mappers;
 
 namespace ItHappened.Infrastructure
 {
@@ -12,39 +13,40 @@ namespace ItHappened.Infrastructure
         private readonly IDbConnection _connection;
         private readonly IDbTransaction _transaction;
         private readonly IMssqlFilter _mssqlFilter;
+        private readonly IMapper _mapper;
 
         private const string SchemaName = "ItHappenedDB";
-        private static readonly string SchemaAndTableName = $"{SchemaName}.Events";
+        private const string TableName = "Events";
 
-        public EventFiltration(IDbConnection connection, IDbTransaction transaction, IMssqlFilter mssqlFilter)
+        private static readonly string SchemaAndTableName = $"{SchemaName}.{TableName}";
+
+        public EventFiltration(IDbConnection connection, IDbTransaction transaction, IMssqlFilter mssqlFilter,
+            IMapper mapper)
         {
             _connection = connection ?? throw new ArgumentNullException(nameof(connection));
             _transaction = transaction ?? throw new ArgumentNullException(nameof(transaction));
             _mssqlFilter = mssqlFilter;
+            _mapper = mapper;
         }
+
 
         public IReadOnlyCollection<Event> GetAllFilteredEvents(Guid actorId, Guid trackerId, EventFilter eventFilter)
         {
-            var generalPredicate = CreateGeneralFilterPredicate(eventFilter);
+            var generalPredicate = _mssqlFilter.CreateFilterMsSqlPredicates(eventFilter, TableName);
+            generalPredicate = generalPredicate != string.Empty ? $"and {generalPredicate}" : string.Empty;
             var events = _connection
-                .Query<Event>(
-                    @"select * from @SqlSchemaAndTableName where @ActorId == CreatorId and @TrackerId == TrackerId @GeneralPredicate",
-                    transaction: _transaction,
-                    param: new
+                .Query<EventDto>(
+                    $@"select * from ItHappenedDB.Events as Events where Events.CreatorId = @ActorId and Events.TrackerId = @TrackerId {generalPredicate}",
+                    new
                     {
                         SqlSchemaAndTableName = SchemaAndTableName,
                         ActorId = actorId,
-                        TrackerId = trackerId,
-                        GeneralPredicate = generalPredicate
-                    });
-            return events.ToList();
-        }
-
-        //TODO possible SQL injection. Inside _mssqlFilters.CreateFilterMsSqlPredicates. Concat through interpolation - $"HappensDate >= {eventFilter.FromDateTime} 
-        private string CreateGeneralFilterPredicate(EventFilter eventFilter)
-        {
-            var stringFilterPredicates = _mssqlFilter.CreateFilterMsSqlPredicates(eventFilter).ToList();
-            return !stringFilterPredicates.Any() ? string.Empty : string.Join(" and ", stringFilterPredicates);
+                        TrackerId = trackerId//,
+                        //GeneralPredicate = 
+                    },
+                    _transaction
+                );
+            return _mapper.Map<Event[]>(events);
         }
     }
 }

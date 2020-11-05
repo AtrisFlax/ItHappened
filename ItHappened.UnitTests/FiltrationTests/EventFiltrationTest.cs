@@ -76,10 +76,10 @@ namespace ItHappened.UnitTests.FiltrationTests
             var mapperConfig = new MapperConfiguration(cfg => { cfg.AddProfile(new RequestToDomainProfile()); });
             var mapper = new Mapper(mapperConfig);
             var filtersData = mapper.Map<EventFilter>(eventFilterRequest);
-            var filter = new MssqlFilter();
+            var filter = new MssqlEventsFilter();
 
             //act
-            var eventFiltration = new EventFiltration(dbConnectionMock.Object, dbTransaction.Object, filter);
+            // var eventFiltration = new EventFiltration(dbConnectionMock.Object, dbTransaction.Object, filter);
             //useless moq. Always get arranged events
             // var filteredEventsResult =
                 // eventFiltration.GetAllFilteredEvents(Guid.NewGuid(), Guid.NewGuid(), filtersData);

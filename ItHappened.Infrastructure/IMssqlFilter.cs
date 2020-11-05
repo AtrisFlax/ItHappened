@@ -5,6 +5,6 @@ namespace ItHappened.Infrastructure
 {
     public interface IMssqlFilter
     {
-        public IEnumerable<string> CreateFilterMsSqlPredicates(EventFilter filterData);
+        public string CreateFilterMsSqlPredicates(EventFilter filterData, string tableName);
     }
 }

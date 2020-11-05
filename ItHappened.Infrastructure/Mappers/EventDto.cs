@@ -1,6 +1,5 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations.Schema;
-using ItHappened.Domain;
 
 namespace ItHappened.Infrastructure.Mappers
 {
@@ -18,7 +17,5 @@ namespace ItHappened.Infrastructure.Mappers
         public double? LatitudeGeo { get; set; }
         public double? LongitudeGeo { get; set; }
         public string Comment { get; set; }
-        
-        //public EventTrackerDto EventTrackerDto { get; set; }
     }
 }
