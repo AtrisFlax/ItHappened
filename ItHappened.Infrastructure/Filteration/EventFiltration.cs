@@ -29,7 +29,7 @@ namespace ItHappened.Infrastructure
             _mapper = mapper;
         }
 
-
+        //TODO possible sql injection. SQL Query has interpolation generalPredicateFilter. generalPredicateFilter has interpolation SubstringForMatching then comes from url   
         public IReadOnlyCollection<Event> GetAllFilteredEvents(Guid actorId, Guid trackerId,
             EventFilterData eventFilterData)
         {
@@ -37,13 +37,13 @@ namespace ItHappened.Infrastructure
             var generalPredicateFilter = generalPredicate != string.Empty ? $"and {generalPredicate}" : string.Empty;
             var events = _connection
                 .Query<EventDto>(
-                    $@"select * from ItHappenedDB.Events as Events where Events.CreatorId = @ActorId and Events.TrackerId = @TrackerId @GeneralPredicateFilter",
+                    $@"select * from ItHappenedDB.Events as Events where Events.CreatorId = @ActorId and Events.TrackerId = @TrackerId {generalPredicateFilter}",
                     new
                     {
                         SqlSchemaAndTableName = SchemaAndTableName,
                         ActorId = actorId,
-                        TrackerId = trackerId,
-                        GeneralPredicateFilter = generalPredicateFilter // Can't pass generalPredicateFilter her. "Incorrect syntax near '@GeneralPredicate'.",
+                        TrackerId = trackerId//,
+                        //GeneralPredicateFilter = generalPredicateFilter // Can't pass generalPredicateFilter her. "Incorrect syntax near '@GeneralPredicate'.",
                     },
                     _transaction
                 );
