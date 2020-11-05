@@ -23,12 +23,10 @@ using ItHappened.Infrastructure.Repositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 
@@ -61,16 +59,17 @@ namespace ItHappened.Api
             //FactsToJsonMapper
             services.AddSingleton<IFactsToJsonMapper, FactsToNewtonJsonMapper>();
 
+            
+            //repos
             RegisterEfCoreRepository(services);
-
-
+            RegisterTransactionalDapperRepository(services);
+           
             //app services
             services.AddScoped<IEventService, EventService>();
             services.AddScoped<ITrackerService, TrackerService>();
             services.AddScoped<IBackgroundStatisticGenerator, StatisticGenerator>();
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IStatisticsService, StatisticsService>();
-
 
             //add calculators to statistic services 
             AddMultipleTrackersStatisticsProvider(services);
@@ -139,12 +138,7 @@ namespace ItHappened.Api
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             app.UseMiddleware<ErrorHandlingMiddleware>();
-
-            if (env.IsDevelopment())
-            {
-                //app.UseDeveloperExceptionPage();
-            }
-
+            
             var swaggerOptions = new SwaggerOptions();
             Configuration.GetSection(nameof(SwaggerOptions)).Bind(swaggerOptions);
             app.UseSwagger(options => options.RouteTemplate = swaggerOptions.JsonRoute);
@@ -234,6 +228,7 @@ namespace ItHappened.Api
                 return connection.BeginTransaction();
             });
             serviceCollection.AddScoped<IEventFilterable, EventFiltration>();
+            serviceCollection.AddScoped<IMssqlFilter, MssqlFilter>();
             serviceCollection.AddScoped<UnitOfWorkFilter>();
         }
     }
