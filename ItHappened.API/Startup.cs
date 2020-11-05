@@ -1,3 +1,4 @@
+using System.Data;
 using System.Text;
 using AutoMapper;
 using Hangfire;
@@ -15,12 +16,15 @@ using ItHappened.Application.Services.TrackerService;
 using ItHappened.Application.Services.UserService;
 using ItHappened.Domain;
 using ItHappened.Domain.Statistics;
+using ItHappened.Infrastructure;
 using ItHappened.Infrastructure.EFCoreRepositories;
 using ItHappened.Infrastructure.Mappers;
 using ItHappened.Infrastructure.Repositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc.Filters;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -58,7 +62,7 @@ namespace ItHappened.Api
             services.AddSingleton<IFactsToJsonMapper, FactsToNewtonJsonMapper>();
 
             RegisterEfCoreRepository(services);
-            
+
 
             //app services
             services.AddScoped<IEventService, EventService>();
@@ -66,14 +70,15 @@ namespace ItHappened.Api
             services.AddScoped<IBackgroundStatisticGenerator, StatisticGenerator>();
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IStatisticsService, StatisticsService>();
-            
+
+
             //add calculators to statistic services 
             AddMultipleTrackersStatisticsProvider(services);
             AddSingleTrackerStatisticsProvider(services);
 
             //password hasher 
             services.AddSingleton<IPasswordHasher, PasswordHasher>();
-            
+
             //jwt
             var jwtOptions = new JwtOptions();
             Configuration.GetSection(nameof(JwtOptions)).Bind(jwtOptions);
@@ -152,13 +157,13 @@ namespace ItHappened.Api
             app.UseHttpsRedirection();
 
             app.UseRouting();
-            
+
             app.UseCors(
                 options => options.WithOrigins("http://localhost:3000")
                     .AllowAnyMethod()
                     .AllowAnyHeader()
             );
-            
+
             app.UseAuthentication();
             app.UseAuthorization();
 
@@ -198,9 +203,9 @@ namespace ItHappened.Api
 
         private void RegisterEfCoreRepository(IServiceCollection serviceCollection)
         {
-            serviceCollection.AddSingleton<ISingleFactsRepository, SingleFactsRepository>();  //TODO to EF
-            serviceCollection.AddSingleton<IMultipleFactsRepository, MultipleFactsRepository>();  //TODO to EF
-            
+            serviceCollection.AddSingleton<ISingleFactsRepository, SingleFactsRepository>(); //TODO to EF
+            serviceCollection.AddSingleton<IMultipleFactsRepository, MultipleFactsRepository>(); //TODO to EF
+
             serviceCollection.AddDbContext<ItHappenedDbContext>(builder => builder.UseSqlServer(GetConnectionString()));
             serviceCollection.AddScoped<ITrackerRepository, EFTrackerRepository>();
             serviceCollection.AddScoped<IEventRepository, EFEventsRepository>();
@@ -214,6 +219,22 @@ namespace ItHappened.Api
         private string GetConnectionString()
         {
             return Configuration.GetValue<string>("ItHappenedConnection");
+        }
+
+        private void RegisterTransactionalDapperRepository(IServiceCollection serviceCollection)
+        {
+            serviceCollection.AddScoped<IDbConnection>(
+                serviceProvider => new SqlConnection(Configuration.GetValue<string>("ConnectionString")));
+
+            serviceCollection.AddScoped(serviceProvider =>
+            {
+                var connection = serviceProvider.GetService<IDbConnection>();
+                connection.Open();
+
+                return connection.BeginTransaction();
+            });
+            serviceCollection.AddScoped<IEventFilterable, EventFiltration>();
+            serviceCollection.AddScoped<UnitOfWorkFilter>();
         }
     }
 }
