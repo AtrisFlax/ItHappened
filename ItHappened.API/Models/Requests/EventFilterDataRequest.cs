@@ -18,7 +18,7 @@ namespace ItHappened.Api.Models.Requests
         [FromQuery(Name = "UpperLimitRating")]
         public double? UpperLimitRating { get; set; }
 
-        [FromQuery(Name = "CommentRegexPattern")]
+        [FromQuery(Name = "SubstringForMatching")]
         public string SubstringForMatching { get; set; }
 
         [FromQuery(Name = "ScaleLowerLimit")]
