@@ -31,12 +31,11 @@ namespace ItHappened.Application.Services.UserService
 
         public UserWithToken Register(string loginName, string password)
         {
-            var user = _userRepository.TryFindByLogin(loginName);
-            if (user != null)
+            if (_userRepository.HasUserWithLogin(loginName))
                 throw new UsernameAlreadyInUseException(loginName);
             
-            var hashedPassword = _passwordHasher.Hash(password);
-            user = new User(Guid.NewGuid(), loginName, hashedPassword);
+            var hashedPassword = _passwordHasher.Hash(password);    
+            var user = new User(Guid.NewGuid(), loginName, hashedPassword);
             _userRepository.CreateUser(user);
             RecurringJob.AddOrUpdate($"{user.Id}", () =>
                     _backgroundStatisticGenerator.UpdateUserFacts(user.Id),
@@ -46,10 +45,10 @@ namespace ItHappened.Application.Services.UserService
 
         public UserWithToken Authenticate(string loginName, string password)
         {
-            var user = _userRepository.TryFindByLogin(loginName);
-            if (user == null)
+            if (!_userRepository.HasUserWithLogin(loginName))
                 throw new UserNotFoundException(loginName, password);
 
+            var user = _userRepository.LoadUser(loginName);
             if (!_passwordHasher.Verify(password, user.PasswordHash))
                 throw new UserNotFoundException(loginName, password);
 

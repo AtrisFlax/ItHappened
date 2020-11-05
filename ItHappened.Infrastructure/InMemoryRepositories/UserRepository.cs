@@ -14,9 +14,14 @@ namespace ItHappened.Infrastructure.Repositories
             _users.Add(newUser.Id, newUser);
         }
         
-        public User TryFindByLogin(string login)
+        public User LoadUser(string loginName)
         {
-            return _users.FirstOrDefault(x => x.Value.Name == login).Value;
+            return _users.FirstOrDefault(x => x.Value.Name == loginName).Value;
+        }
+
+        public bool HasUserWithLogin(string loginName)
+        {
+            throw new NotImplementedException();
         }
 
         public IEnumerable<Guid> LoadAllUsersIds()

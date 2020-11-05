@@ -6,7 +6,8 @@ namespace ItHappened.Domain
     public interface IUserRepository
     {
         void CreateUser(User user);
-        User TryFindByLogin(string login);
+        User LoadUser(string loginName);
+        bool HasUserWithLogin(string loginName);
         IEnumerable<Guid> LoadAllUsersIds();
     }
 }

@@ -24,12 +24,17 @@ namespace ItHappened.Infrastructure.EFCoreRepositories
             _context.Users.Add(dtoUser);
         }
 
-        public User TryFindByLogin(string login)
+        public User LoadUser(string loginName)
         {
-            var dtoUser = _context.Users.SingleOrDefault(user => user.Name == login);
-            return _mapper.Map<User>(dtoUser);
+            var dtoUser = _context.Users.Find(user => user.Name == loginName);
+            return _mapper.Map<User>(dtoUser);    
         }
-        
+
+        public bool HasUserWithLogin(string loginName)
+        {
+            return _context.Users.Any(o => o.Name == loginName);
+        }
+
         public IEnumerable<Guid> LoadAllUsersIds()
         {
             throw new NotImplementedException();
