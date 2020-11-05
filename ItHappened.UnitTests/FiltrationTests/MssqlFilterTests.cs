@@ -113,7 +113,7 @@ namespace ItHappened.UnitTests.FiltrationTests
                 new MssqlEventsFilter().CreateFilterMsSqlPredicates(filtersData, TableName);
 
             //assert
-            Assert.AreEqual(filterStringPredicates, "rating >= 2");
+            Assert.AreEqual( $"{TableName}.rating >= 2", filterStringPredicates);
         }
 
         [Test]
@@ -193,7 +193,7 @@ namespace ItHappened.UnitTests.FiltrationTests
                 new MssqlEventsFilter().CreateFilterMsSqlPredicates(filtersData, TableName);
 
             //assert
-            Assert.AreEqual($"{TableName}.scale >= 2", filterStringPredicates);
+            Assert.AreEqual($"{TableName}.scale <= 5.5", filterStringPredicates);
         }
 
         [Test]
