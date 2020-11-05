@@ -11,5 +11,6 @@ namespace ItHappened.Domain
         void UpdateTracker(EventTracker eventTracker);
         void DeleteTracker(Guid trackerId);
         bool IsContainTracker(Guid trackerId);
+        bool IsExistTrackerWithSameName(Guid creatorId, string trackerName);
     }
 }
