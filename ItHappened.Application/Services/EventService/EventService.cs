@@ -75,11 +75,6 @@ namespace ItHappened.Application.Services.EventService
             return _eventRepository.LoadAllTrackerEvents(trackerId);
         }
         
-        public IReadOnlyCollection<Event> GetAllFilteredEvents(Guid actorId, Guid trackerId, IEnumerable<IEventsFilter> eventsFilters)
-        {
-            return EventsFilter.Filter(GetAllTrackerEvents(actorId, trackerId), eventsFilters);
-        }
-        
 
         public void EditEvent(Guid actorId,
             Guid eventId,
