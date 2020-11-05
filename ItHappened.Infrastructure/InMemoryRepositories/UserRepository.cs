@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using ItHappened.Domain;
+using LanguageExt;
 
 namespace ItHappened.Infrastructure.Repositories
 {
@@ -14,14 +14,11 @@ namespace ItHappened.Infrastructure.Repositories
             _users.Add(newUser.Id, newUser);
         }
         
-        public User LoadUser(string loginName)
+        public Option<User> LoadUserByLogin(string login)
         {
-            return _users.FirstOrDefault(x => x.Value.Name == loginName).Value;
-        }
-
-        public bool HasUserWithLogin(string loginName)
-        {
-            throw new NotImplementedException();
+            return _users
+                .Find(x => x.Value.Name == login)
+                .Match((keyValue) => keyValue.Value, Option<User>.None);
         }
 
         public IEnumerable<Guid> LoadAllUsersIds()

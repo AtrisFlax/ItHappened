@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using AutoMapper;
+using ItHappened.Application.Errors;
 using ItHappened.Domain;
 using ItHappened.Infrastructure.Mappers;
+using LanguageExt;
 
 namespace ItHappened.Infrastructure.EFCoreRepositories
 {
@@ -24,17 +26,12 @@ namespace ItHappened.Infrastructure.EFCoreRepositories
             _context.Users.Add(dtoUser);
         }
 
-        public User LoadUser(string loginName)
+        public Option<User> LoadUserByLogin(string login)
         {
-            var dtoUser = _context.Users.Find(user => user.Name == loginName);
-            return _mapper.Map<User>(dtoUser);    
+            var dtoUser = _context.Users.Find(user => user.Name == login);
+            return dtoUser.Match(dto => _mapper.Map<User>(dto), Option<User>.None);
         }
-
-        public bool HasUserWithLogin(string loginName)
-        {
-            return _context.Users.Any(o => o.Name == loginName);
-        }
-
+        
         public IEnumerable<Guid> LoadAllUsersIds()
         {
             throw new NotImplementedException();

@@ -31,7 +31,7 @@ namespace ItHappened.Application.Services.UserService
 
         public UserWithToken Register(string loginName, string password)
         {
-            if (_userRepository.HasUserWithLogin(loginName))
+            if (_userRepository.LoadUserByLogin(loginName).IsSome)
                 throw new UsernameAlreadyInUseException(loginName);
             
             var hashedPassword = _passwordHasher.Hash(password);    
@@ -45,14 +45,14 @@ namespace ItHappened.Application.Services.UserService
 
         public UserWithToken Authenticate(string loginName, string password)
         {
-            if (!_userRepository.HasUserWithLogin(loginName))
-                throw new UserNotFoundException(loginName, password);
-
-            var user = _userRepository.LoadUser(loginName);
-            if (!_passwordHasher.Verify(password, user.PasswordHash))
-                throw new UserNotFoundException(loginName, password);
-
-            return new UserWithToken(user, _jwtIssuer.GenerateToken(user));
+            return _userRepository
+                .LoadUserByLogin(loginName)
+                .Match((user) =>
+            {
+                if (!_passwordHasher.Verify(password, user.PasswordHash))
+                    throw new UserNotFoundException(loginName, password);
+                return new UserWithToken(user, _jwtIssuer.GenerateToken(user));
+            }, () => throw new UserNotFoundException(loginName, password));
         }
     }
 }
