@@ -30,18 +30,20 @@ namespace ItHappened.Infrastructure
         }
 
 
-        public IReadOnlyCollection<Event> GetAllFilteredEvents(Guid actorId, Guid trackerId, EventFilterData eventFilterData)
+        public IReadOnlyCollection<Event> GetAllFilteredEvents(Guid actorId, Guid trackerId,
+            EventFilterData eventFilterData)
         {
             var generalPredicate = _mssqlFilter.CreateFilterMsSqlPredicates(eventFilterData, TableName);
+            var generalPredicateFilter = generalPredicate != string.Empty ? $"and {generalPredicate}" : string.Empty;
             var events = _connection
                 .Query<EventDto>(
-                    @"select * from ItHappenedDB.Events as Events where Events.CreatorId = @ActorId and Events.TrackerId = @TrackerId @GeneralPredicate",
+                    $@"select * from ItHappenedDB.Events as Events where Events.CreatorId = @ActorId and Events.TrackerId = @TrackerId @GeneralPredicateFilter",
                     new
                     {
                         SqlSchemaAndTableName = SchemaAndTableName,
                         ActorId = actorId,
                         TrackerId = trackerId,
-                        GeneralPredicate = generalPredicate != string.Empty ? $"and {generalPredicate}" : string.Empty
+                        GeneralPredicateFilter = generalPredicateFilter // Can't pass generalPredicateFilter her. "Incorrect syntax near '@GeneralPredicate'.",
                     },
                     _transaction
                 );

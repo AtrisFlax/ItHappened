@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using ItHappened.Domain;
+﻿using ItHappened.Domain;
 
 namespace ItHappened.Infrastructure
 {
