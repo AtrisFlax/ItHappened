@@ -23,17 +23,16 @@ namespace ItHappened.Application.Services.EventService
             {
                 throw new TrackerNotFoundException(trackerId);
             }
+
             var tracker = _trackerRepository.LoadTracker(trackerId);
             if (tracker.CreatorId != actorId)
             {
                 throw new NoPermissionsForTrackerException(actorId, trackerId);
             }
-            
-            
+
             var newEvent = new Event(Guid.NewGuid(), actorId, trackerId, eventHappensDate, customParameters);
 
-            if (tracker.CustomizationSettings.IsCustomizationRequired &&
-                !tracker.IsTrackerCustomizationAndEventCustomizationMatch(newEvent))
+            if (!tracker.IsTrackerCustomizationAndEventCustomizationMatch(newEvent))
             {
                 throw new InvalidEventForTrackerException(trackerId);
             }
@@ -42,20 +41,20 @@ namespace ItHappened.Application.Services.EventService
             tracker.IsUpdated = true;
             return newEvent.Id;
         }
-    
+
         public Event GetEvent(Guid actorId, Guid eventId)
         {
             if (!_eventRepository.IsContainEvent(eventId))
             {
                 throw new EventNotFoundException(eventId);
             }
-            
+
             var @event = _eventRepository.LoadEvent(eventId);
             if (actorId != @event.CreatorId)
             {
                 throw new NoPermissionsForEventException(actorId, eventId);
             }
-            
+
             return @event;
         }
 
@@ -65,21 +64,16 @@ namespace ItHappened.Application.Services.EventService
             {
                 throw new TrackerNotFoundException(trackerId);
             }
-            
+
             var tracker = _trackerRepository.LoadTracker(trackerId);
-            if (actorId != tracker.CreatorId) 
+            if (actorId != tracker.CreatorId)
             {
                 throw new NoPermissionsForTrackerException(actorId, trackerId);
             }
-            
+
             return _eventRepository.LoadAllTrackerEvents(trackerId);
         }
-        
-        public IReadOnlyCollection<Event> GetAllFilteredEvents(Guid actorId, Guid trackerId, IEnumerable<IEventsFilter> eventsFilters)
-        {
-            return EventsFilter.Filter(GetAllTrackerEvents(actorId, trackerId), eventsFilters);
-        }
-        
+
 
         public void EditEvent(Guid actorId,
             Guid eventId,
@@ -90,13 +84,13 @@ namespace ItHappened.Application.Services.EventService
             {
                 throw new EventNotFoundException(eventId);
             }
-            
+
             var @event = _eventRepository.LoadEvent(eventId);
             if (actorId != @event.CreatorId)
             {
                 throw new NoPermissionsForEventException(actorId, eventId);
             }
-            
+
             var tracker = _trackerRepository.LoadTracker(@event.TrackerId);
             var updatedEvent = new Event(eventId, @event.CreatorId, @event.TrackerId, timeStamp, customParameters);
             if (tracker.CustomizationSettings.IsCustomizationRequired &&
@@ -104,7 +98,7 @@ namespace ItHappened.Application.Services.EventService
             {
                 throw new InvalidEventForTrackerException(tracker.Id);
             }
-            
+
             _eventRepository.UpdateEvent(updatedEvent);
             tracker.IsUpdated = true;
         }
@@ -115,7 +109,7 @@ namespace ItHappened.Application.Services.EventService
             {
                 throw new EventNotFoundException(eventId);
             }
-            
+
             var @event = _eventRepository.LoadEvent(eventId);
             if (actorId != @event.CreatorId)
             {

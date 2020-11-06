@@ -1,6 +1,7 @@
 ﻿using System;
+using ItHappened.Infrastructure.Mappers;
 
-namespace ItHappened.Infrastructure.Mappers
+namespace ItHappened.Infrastructure.Dto
 {
     public class EventTrackerDto
     {

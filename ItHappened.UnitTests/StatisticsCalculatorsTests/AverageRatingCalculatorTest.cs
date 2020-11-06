@@ -3,7 +3,7 @@ using System.Linq;
 using ItHappened.Domain;
 using ItHappened.Domain.Statistics;
 using ItHappened.Infrastructure;
-using ItHappened.Infrastructure.Repositories;
+using ItHappened.Infrastructure.InMemoryRepositories;
 using LanguageExt.UnsafeValueAccess;
 using NUnit.Framework;
 using static ItHappened.UnitTests.StatisticsCalculatorsTests.TestingMethods;
@@ -17,7 +17,7 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
         private static Random _rand;
         private DateTime _now;
 
-        
+
         [SetUp]
         public void Init()
         {
@@ -40,8 +40,7 @@ namespace ItHappened.UnitTests.StatisticsCalculatorsTests
             //act 
             var fact = new AverageRatingCalculator().Calculate(allEvents, tracker, _now)
                 .ConvertTo<AverageRatingTrackerFact>().ValueUnsafe();
-            
-            
+
 
             //assert 
             Assert.AreEqual(Math.Sqrt(ratings.Average()), fact.Priority);

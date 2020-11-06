@@ -7,7 +7,15 @@ namespace ItHappened.Api.Mapping
 {
     public class RequestToDomainProfile : Profile
     {
-        public RequestToDomainProfile()
+        private readonly IPhotoCoder _photoCoder;
+
+        public RequestToDomainProfile(IPhotoCoder photoCoder)
+        {
+            _photoCoder = photoCoder;
+            CreateMaps();
+        }
+
+        private void CreateMaps()
         {
             CreateMap<CustomizationSettingsRequest, TrackerCustomizationSettings>()
                 .ConstructUsing(request => new TrackerCustomizationSettings(
@@ -22,13 +30,15 @@ namespace ItHappened.Api.Mapping
                 );
             CreateMap<EventRequest, EventCustomParameters>()
                 .ConvertUsing(request => EventCustomParameters(request));
+
+            CreateMap<EventFilterDataRequest, EventFilterData>();
         }
 
-        private static EventCustomParameters EventCustomParameters(EventRequest request)
+        private EventCustomParameters EventCustomParameters(EventRequest request)
         {
             var photo = request.Photo == null
                 ? Option<Photo>.None
-                : Option<Photo>.Some(Photo.Create(Base64Converter.Decode(request.Photo)));
+                : Option<Photo>.Some(new Photo(_photoCoder.Encode(request.Photo)));
             var scale = request.Scale == null ? Option<double>.None : Option<double>.Some(request.Scale.Value);
             var rating = request.Rating == null
                 ? Option<double>.None

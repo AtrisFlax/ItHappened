@@ -20,20 +20,25 @@ namespace ItHappened.Domain
 
         public bool IsTrackerCustomizationAndEventCustomizationMatch(Event @event)
         {
-            return IsCustomizationMatch(CustomizationSettings.IsPhotoRequired, @event.CustomizationsParameters.Photo.IsSome) &&
-                   IsCustomizationMatch(CustomizationSettings.IsCommentRequired, @event.CustomizationsParameters.Comment.IsSome) &&
-                   IsCustomizationMatch(CustomizationSettings.IsRatingRequired, @event.CustomizationsParameters.Rating.IsSome) &&
-                   IsCustomizationMatch(CustomizationSettings.IsGeotagRequired, @event.CustomizationsParameters.GeoTag.IsSome) &&
-                   IsCustomizationMatch(CustomizationSettings.ScaleMeasurementUnit.IsSome, @event.CustomizationsParameters.Scale.IsSome);
+            return IsCustomizationMatch(CustomizationSettings.IsPhotoRequired,
+                       @event.CustomizationsParameters.Photo.IsSome) &&
+                   IsCustomizationMatch(CustomizationSettings.IsCommentRequired,
+                       @event.CustomizationsParameters.Comment.IsSome) &&
+                   IsCustomizationMatch(CustomizationSettings.IsRatingRequired,
+                       @event.CustomizationsParameters.Rating.IsSome) &&
+                   IsCustomizationMatch(CustomizationSettings.IsGeotagRequired,
+                       @event.CustomizationsParameters.GeoTag.IsSome) &&
+                   IsCustomizationMatch(CustomizationSettings.ScaleMeasurementUnit.IsSome,
+                       @event.CustomizationsParameters.Scale.IsSome);
         }
-
-
+        
         private bool IsCustomizationMatch(bool isTrackerRequired, bool isEventHas)
         {
             if (CustomizationSettings.IsCustomizationRequired)
             {
                 return isTrackerRequired == isEventHas;
             }
+
             return true;
         }
     }

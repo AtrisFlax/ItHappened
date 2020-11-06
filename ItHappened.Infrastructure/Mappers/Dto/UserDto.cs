@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace ItHappened.Infrastructure.Mappers
+namespace ItHappened.Infrastructure.Dto
 {
     public class UserDto
     {

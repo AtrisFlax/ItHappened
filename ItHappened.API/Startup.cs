@@ -1,3 +1,4 @@
+using System.Data;
 using System.Text;
 using AutoMapper;
 using Hangfire;
@@ -15,16 +16,17 @@ using ItHappened.Application.Services.TrackerService;
 using ItHappened.Application.Services.UserService;
 using ItHappened.Domain;
 using ItHappened.Domain.Statistics;
+using ItHappened.Infrastructure;
 using ItHappened.Infrastructure.EFCoreRepositories;
+using ItHappened.Infrastructure.InMemoryRepositories;
 using ItHappened.Infrastructure.Mappers;
-using ItHappened.Infrastructure.Repositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 
@@ -46,8 +48,9 @@ namespace ItHappened.Api
             //auto mapper
             var mapperConfig = new MapperConfiguration(cfg =>
             {
-                cfg.AddProfile(new RequestToDomainProfile());
-                cfg.AddProfile(new DomainToResponseProfile());
+                var photoCoder = new Utf8Coder();
+                cfg.AddProfile(new RequestToDomainProfile(photoCoder));
+                cfg.AddProfile(new DomainToResponseProfile(photoCoder));
                 cfg.AddProfile(new DomainToDbMappingProfiles());
                 cfg.AddProfile(new DbToDomainMappingProfiles());
             });
@@ -57,8 +60,10 @@ namespace ItHappened.Api
             //FactsToJsonMapper
             services.AddSingleton<IFactsToJsonMapper, FactsToNewtonJsonMapper>();
 
+
+            //repos
             RegisterEfCoreRepository(services);
-            
+            RegisterTransactionalDapperRepository(services);
 
             //app services
             services.AddScoped<IEventService, EventService>();
@@ -66,14 +71,14 @@ namespace ItHappened.Api
             services.AddScoped<IBackgroundStatisticGenerator, StatisticGenerator>();
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IStatisticsService, StatisticsService>();
-            
+
             //add calculators to statistic services 
             AddMultipleTrackersStatisticsProvider(services);
             AddSingleTrackerStatisticsProvider(services);
 
             //password hasher 
             services.AddSingleton<IPasswordHasher, PasswordHasher>();
-            
+
             //jwt
             var jwtOptions = new JwtOptions();
             Configuration.GetSection(nameof(JwtOptions)).Bind(jwtOptions);
@@ -98,7 +103,7 @@ namespace ItHappened.Api
             {
                 swaggerGenOptions.SwaggerDoc("v1", new OpenApiInfo {Title = "ItHappened API", Version = "v1"});
                 // Bearer token authentication
-                var securityDefinition = new OpenApiSecurityScheme()
+                var securityDefinition = new OpenApiSecurityScheme
                 {
                     Name = "Bearer",
                     BearerFormat = "JWT",
@@ -110,9 +115,9 @@ namespace ItHappened.Api
                 swaggerGenOptions.AddSecurityDefinition("jwt_auth", securityDefinition);
 
                 // Make sure swagger UI requires a Bearer token specified
-                var securityScheme = new OpenApiSecurityScheme()
+                var securityScheme = new OpenApiSecurityScheme
                 {
-                    Reference = new OpenApiReference()
+                    Reference = new OpenApiReference
                     {
                         Id = "jwt_auth",
                         Type = ReferenceType.SecurityScheme
@@ -128,17 +133,15 @@ namespace ItHappened.Api
             //hangfire
             services.AddHangfire(configuration => configuration.UseMemoryStorage());
             services.AddHangfireServer();
+
+            //ignore null properties while Serialization to json
+            services.AddMvc().AddJsonOptions(options =>  options.JsonSerializerOptions.IgnoreNullValues = true);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             app.UseMiddleware<ErrorHandlingMiddleware>();
-
-            if (env.IsDevelopment())
-            {
-                //app.UseDeveloperExceptionPage();
-            }
 
             var swaggerOptions = new SwaggerOptions();
             Configuration.GetSection(nameof(SwaggerOptions)).Bind(swaggerOptions);
@@ -149,16 +152,14 @@ namespace ItHappened.Api
             var jwtOptions = new JwtOptions();
             Configuration.GetSection(nameof(JwtOptions)).Bind(jwtOptions);
 
-            app.UseHttpsRedirection();
-
             app.UseRouting();
-            
+
             app.UseCors(
                 options => options.WithOrigins("http://localhost:3000")
                     .AllowAnyMethod()
                     .AllowAnyHeader()
             );
-            
+
             app.UseAuthentication();
             app.UseAuthorization();
 
@@ -198,9 +199,9 @@ namespace ItHappened.Api
 
         private void RegisterEfCoreRepository(IServiceCollection serviceCollection)
         {
-            serviceCollection.AddSingleton<ISingleFactsRepository, SingleFactsRepository>();  //TODO to EF
-            serviceCollection.AddSingleton<IMultipleFactsRepository, MultipleFactsRepository>();  //TODO to EF
-            
+            serviceCollection.AddSingleton<ISingleFactsRepository, SingleFactsRepository>();
+            serviceCollection.AddSingleton<IMultipleFactsRepository, MultipleFactsRepository>();
+
             serviceCollection.AddDbContext<ItHappenedDbContext>(builder => builder.UseSqlServer(GetConnectionString()));
             serviceCollection.AddScoped<ITrackerRepository, EFTrackerRepository>();
             serviceCollection.AddScoped<IEventRepository, EFEventsRepository>();
@@ -209,6 +210,23 @@ namespace ItHappened.Api
             serviceCollection.AddScoped<IMultipleFactsRepository, EFMultipleFactsRepository>();
             serviceCollection.AddScoped<SaveChangesFilter>();
             serviceCollection.AddControllers(options => { options.Filters.AddService<SaveChangesFilter>(); });
+        }
+
+        private void RegisterTransactionalDapperRepository(IServiceCollection serviceCollection)
+        {
+            serviceCollection.AddScoped<IDbConnection>(
+                serviceProvider => new SqlConnection(GetConnectionString()));
+
+            serviceCollection.AddScoped(serviceProvider =>
+            {
+                var connection = serviceProvider.GetService<IDbConnection>();
+                connection.Open();
+
+                return connection.BeginTransaction();
+            });
+            serviceCollection.AddScoped<IEventFilterable, EventFiltration>();
+            serviceCollection.AddScoped<IMssqlFilter, MssqlEventsFilter>();
+            serviceCollection.AddScoped<UnitOfWorkFilter>();
         }
 
         private string GetConnectionString()

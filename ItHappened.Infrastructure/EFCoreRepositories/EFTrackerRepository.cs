@@ -4,6 +4,7 @@ using System.Linq;
 using AutoMapper;
 using ItHappened.Application.Errors;
 using ItHappened.Domain;
+using ItHappened.Infrastructure.Dto;
 using ItHappened.Infrastructure.Mappers;
 using LanguageExt.UnsafeValueAccess;
 using Microsoft.EntityFrameworkCore;
