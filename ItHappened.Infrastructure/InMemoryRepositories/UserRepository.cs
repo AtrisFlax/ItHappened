@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using ItHappened.Domain;
 
-namespace ItHappened.Infrastructure.InMemoryRepositories
+namespace ItHappened.Infrastructure
 {
     public class UserRepository : IUserRepository
     {
@@ -17,6 +17,11 @@ namespace ItHappened.Infrastructure.InMemoryRepositories
         public User TryFindByLogin(string login)
         {
             return _users.FirstOrDefault(x => x.Value.Name == login).Value;
+        }
+
+        public IEnumerable<Guid> LoadAllUsersIds()
+        {
+            return _users.Keys;
         }
     }
 }

@@ -62,24 +62,24 @@ namespace ItHappened.Infrastructure
             }
 
             //geotag
-            if (filterDataData.GpsLatLeftCorner.HasValue)
+            if (filterDataData.GpsLatLeftDownCorner.HasValue)
             {
-                stringFilterPredicates.Add($"{tableName}.latitudeGeo >= {filterDataData.GpsLatLeftCorner}");
+                stringFilterPredicates.Add($"{tableName}.latitudeGeo >= {filterDataData.GpsLatLeftDownCorner}");
             }
 
-            if (filterDataData.GpsLatRightCorner.HasValue)
+            if (filterDataData.GpsLatRightUpperCorner.HasValue)
             {
-                stringFilterPredicates.Add($"{tableName}.latitudeGeo <= {filterDataData.GpsLatRightCorner}");
+                stringFilterPredicates.Add($"{tableName}.latitudeGeo <= {filterDataData.GpsLatRightUpperCorner}");
             }
 
-            if (filterDataData.GpsLngLeftCorner.HasValue)
+            if (filterDataData.GpsLngLeftDownCorner.HasValue)
             {
-                stringFilterPredicates.Add($"{tableName}.longitudeGeo >= {filterDataData.GpsLngLeftCorner}");
+                stringFilterPredicates.Add($"{tableName}.longitudeGeo >= {filterDataData.GpsLngLeftDownCorner}");
             }
 
-            if (filterDataData.GpsLngRightCorner.HasValue)
+            if (filterDataData.GpsLngRightUpperCorner.HasValue)
             {
-                stringFilterPredicates.Add($"{tableName}.longitudeGeo <= {filterDataData.GpsLngRightCorner}");
+                stringFilterPredicates.Add($"{tableName}.longitudeGeo <= {filterDataData.GpsLngRightUpperCorner}");
             }
 
             return stringFilterPredicates;

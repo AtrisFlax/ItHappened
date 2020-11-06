@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using ItHappened.Domain;
 
-namespace ItHappened.Infrastructure.InMemoryRepositories
+namespace ItHappened.Infrastructure
 {
     public class EventRepository : IEventRepository
     {

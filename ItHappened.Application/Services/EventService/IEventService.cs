@@ -18,5 +18,6 @@ namespace ItHappened.Application.Services.EventService
             EventCustomParameters customParameters);
 
         void DeleteEvent(Guid actorId, Guid eventId);
+        IReadOnlyCollection<Event> GetAllFilteredEvents(Guid userId, Guid trackerId, EventFilterData eventFilter);
     }
 }

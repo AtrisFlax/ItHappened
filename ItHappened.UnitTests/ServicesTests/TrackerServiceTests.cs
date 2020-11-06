@@ -3,7 +3,7 @@ using System.Linq;
 using ItHappened.Application.Errors;
 using ItHappened.Application.Services.TrackerService;
 using ItHappened.Domain;
-using ItHappened.Infrastructure.InMemoryRepositories;
+using ItHappened.Infrastructure;
 using ItHappened.UnitTests.StatisticsCalculatorsTests;
 using LanguageExt;
 using NUnit.Framework;

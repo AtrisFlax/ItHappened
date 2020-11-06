@@ -27,17 +27,17 @@ namespace ItHappened.Api.Models.Requests
         [FromQuery(Name = "ScaleUpperLimit")]
         public double? ScaleUpperLimit { get; set; }
 
-        [FromQuery(Name = "GpsLatLeftCorner")]
-        public double? GpsLatLeftCorner { get; set; }
+        [FromQuery(Name = "GpsLatLeftDownCorner")]
+        public double? GpsLatLeftDownCorner { get; set; }
 
-        [FromQuery(Name = "GpsLngLeftCorner")]
-        public double? GpsLngLeftCorner { get; set; }
+        [FromQuery(Name = "GpsLngLeftDownCorner")]
+        public double? GpsLngLeftDownCorner { get; set; }
 
-        [FromQuery(Name = "GpsLatRightCorner")]
-        public double? GpsLatRightCorner { get; set; }
+        [FromQuery(Name = "GpsLatRightUpperCorner")]
+        public double? GpsLatRightUpperCorner { get; set; }
 
-        [FromQuery(Name = "GpsLngRightCorner")]
-        public double? GpsLngRightCorner { get; set; }
+        [FromQuery(Name = "GpsLngRightUpperCorner")]
+        public double? GpsLngRightUpperCorner { get; set; }
     }
     // @formatter:on 
 }

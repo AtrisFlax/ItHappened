@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using ItHappened.Domain;
 using ItHappened.Domain.Statistics;
-using ItHappened.Infrastructure.InMemoryRepositories;
+using ItHappened.Infrastructure;
 using ItHappened.UnitTests.StatisticsCalculatorsTests;
 using LanguageExt.UnsafeValueAccess;
 using NUnit.Framework;

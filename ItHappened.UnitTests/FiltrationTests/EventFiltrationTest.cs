@@ -68,10 +68,10 @@ namespace ItHappened.UnitTests.FiltrationTests
                 SubstringForMatching = "aaa",
                 ScaleLowerLimit = 0.3,
                 ScaleUpperLimit = 0.2,
-                GpsLatLeftCorner = 15.8,
-                GpsLngLeftCorner = 17.9,
-                GpsLatRightCorner = 32.4,
-                GpsLngRightCorner = 78.4
+                GpsLatLeftDownCorner = 15.8,
+                GpsLngLeftDownCorner = 17.9,
+                GpsLatRightUpperCorner = 32.4,
+                GpsLngRightUpperCorner = 78.4
             };
             var mapperConfig = new MapperConfiguration(cfg => { cfg.AddProfile(new RequestToDomainProfile( new Utf8Coder())); });
             var mapper = new Mapper(mapperConfig);

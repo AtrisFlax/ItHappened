@@ -16,15 +16,13 @@ namespace ItHappened.Api.Controllers
     public class EventsController : ControllerBase
     {
         private readonly IEventService _eventService;
-        private readonly IEventFilterable _eventFilterable;
         private readonly IMapper _mapper;
 
 
-        public EventsController(IEventService eventService, IMapper mapper, IEventFilterable eventFilterable)
+        public EventsController(IEventService eventService, IMapper mapper)
         {
             _eventService = eventService;
             _mapper = mapper;
-            _eventFilterable = eventFilterable;
         }
 
         [HttpPost("/trackers/{trackerId}/events")]
@@ -45,7 +43,7 @@ namespace ItHappened.Api.Controllers
         {
             var userId = User.GetUserId();
             var eventFilter = _mapper.Map<EventFilterData>(eventFilterDataRequest);
-            var filteredEvents = _eventFilterable.GetAllFilteredEvents(userId, trackerId, eventFilter);
+            var filteredEvents = _eventService.GetAllFilteredEvents(userId, trackerId, eventFilter);
             return Ok(_mapper.Map<EventGetResponse[]>(filteredEvents));
         }
 

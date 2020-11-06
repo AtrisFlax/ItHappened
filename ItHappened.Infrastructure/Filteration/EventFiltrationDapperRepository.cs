@@ -8,7 +8,7 @@ using ItHappened.Infrastructure.Dto;
 
 namespace ItHappened.Infrastructure
 {
-    public class EventFiltration : IEventFilterable
+    public class EventFiltrationDapperRepository :  IEventFiltrationRepository
     {
         private readonly IDbConnection _connection;
         private readonly IDbTransaction _transaction;
@@ -20,7 +20,7 @@ namespace ItHappened.Infrastructure
 
         private static readonly string SchemaAndTableName = $"{SchemaName}.{TableName}";
 
-        public EventFiltration(IDbConnection connection, IDbTransaction transaction, IMssqlFilter mssqlFilter,
+        public EventFiltrationDapperRepository(IDbConnection connection, IDbTransaction transaction, IMssqlFilter mssqlFilter,
             IMapper mapper)
         {
             _connection = connection ?? throw new ArgumentNullException(nameof(connection));
