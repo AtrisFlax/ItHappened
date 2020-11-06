@@ -151,8 +151,6 @@ namespace ItHappened.Api
             var jwtOptions = new JwtOptions();
             Configuration.GetSection(nameof(JwtOptions)).Bind(jwtOptions);
 
-            app.UseHttpsRedirection();
-
             app.UseRouting();
 
             app.UseCors(
