@@ -29,9 +29,9 @@ namespace ItHappened.Api.Mapping
                 .ForMember(dest => dest.Photo, opt =>
                     opt.MapFrom(src => src.CustomizationsParameters.Photo.ValueUnsafe()))
                 .ForMember(dest => dest.Rating, opt =>
-                    opt.MapFrom(src => src.CustomizationsParameters.Rating.ValueUnsafe()))
+                    opt.MapFrom(src => src.CustomizationsParameters.Rating.IfNone(null)))
                 .ForMember(dest => dest.Scale, opt =>
-                    opt.MapFrom(src => src.CustomizationsParameters.Scale.ValueUnsafe()))
+                    opt.MapFrom(src => src.CustomizationsParameters.Scale.IfNone(null)))
                 .ForMember(dest => dest.GeoTag, opt =>
                     opt.MapFrom(src => src.CustomizationsParameters.GeoTag.ValueUnsafe()));
 

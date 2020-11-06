@@ -7,7 +7,7 @@ namespace ItHappened.Api.Models.Responses
     {
         public Guid Id { get; set; }
         public DateTimeOffset HappensDate { get; set; }
-        public Photo Photo { get; set; }
+        public string Photo { get; set; }
         public double? Scale { get; set; }
         public double? Rating { get; set; }
         public GeoTag GeoTag { get; set; }

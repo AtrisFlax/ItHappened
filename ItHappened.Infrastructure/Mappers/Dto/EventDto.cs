@@ -1,7 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace ItHappened.Infrastructure.Mappers
+namespace ItHappened.Infrastructure.Dto
 {
     public class EventDto
     {

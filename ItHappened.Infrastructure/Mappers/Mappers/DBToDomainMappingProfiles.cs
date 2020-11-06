@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using ItHappened.Domain;
+using ItHappened.Infrastructure.Dto;
 using LanguageExt;
-using Microsoft.AspNetCore.Routing.Constraints;
 
 namespace ItHappened.Infrastructure.Mappers
 {
@@ -15,21 +15,6 @@ namespace ItHappened.Infrastructure.Mappers
         }
     }
 
-    public class EventTrackerDtoToEventTrackerConverter : ITypeConverter<EventTrackerDto, EventTracker>
-    {
-        public EventTracker Convert(EventTrackerDto source, EventTracker destination, ResolutionContext context)
-        {
-            var scaleMeasurementUnit = source.ScaleMeasurementUnit.IsNull() ? 
-                Option<string>.None : Option<string>.Some(source.ScaleMeasurementUnit);
-            
-            var tracker = new EventTracker(source.Id, source.CreatorId, source.Name,
-                new TrackerCustomizationSettings(source.IsPhotoRequired, source.IsScaleRequired, scaleMeasurementUnit,
-                    source.IsRatingRequired, source.IsGeotagRequired, source.IsCommentRequired,
-                    source.IsCustomizationRequired));
-            return tracker;
-        }
-    }
-    
     public class EventDtoToEventConverter : ITypeConverter<EventDto, Event>
     {
         public Event Convert(EventDto source, Event destination, ResolutionContext context)
@@ -47,10 +32,10 @@ namespace ItHappened.Infrastructure.Mappers
             }
             else
             {
-                geoTag = Option<GeoTag>.Some(new GeoTag(source.LatitudeGeo.Value, source.LongitudeGeo.Value));
+                geoTag = Option<GeoTag>.Some(new GeoTag(source.LatitudeGeo.Value, source.LongitudeGeo.Value)); //TODO  Possible 'System.InvalidOperationException'
             }
 
-            var photo = source.Photo.IsNull() ? Option<Photo>.None : Option<Photo>.Some(new Photo(source.Photo));
+            var photo = source.Photo.Length != 0 ? Option<Photo>.Some(new Photo(source.Photo)) : Option<Photo>.None;
             var eventCustomParameters = new EventCustomParameters(photo, scale, rating, geoTag, comment);
             
             return new Event(source.Id, source.CreatorId, source.TrackerId, source.HappensDate,

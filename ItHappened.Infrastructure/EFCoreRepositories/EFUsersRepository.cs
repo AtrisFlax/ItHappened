@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using AutoMapper;
 using ItHappened.Domain;
-using ItHappened.Infrastructure.Mappers;
+using ItHappened.Infrastructure.Dto;
 
 namespace ItHappened.Infrastructure.EFCoreRepositories
 {
+    // ReSharper disable once InconsistentNaming
     public class EFUserRepository : IUserRepository
     {
         private readonly ItHappenedDbContext _context;
