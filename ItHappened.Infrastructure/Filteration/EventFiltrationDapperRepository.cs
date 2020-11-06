@@ -4,7 +4,7 @@ using System.Data;
 using AutoMapper;
 using Dapper;
 using ItHappened.Domain;
-using ItHappened.Infrastructure.Mappers;
+using ItHappened.Infrastructure.Dto;
 
 namespace ItHappened.Infrastructure
 {

@@ -18,6 +18,7 @@ using ItHappened.Domain;
 using ItHappened.Domain.Statistics;
 using ItHappened.Infrastructure;
 using ItHappened.Infrastructure.EFCoreRepositories;
+
 using ItHappened.Infrastructure.Mappers;
 
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -48,8 +49,9 @@ namespace ItHappened.Api
             //auto mapper
             var mapperConfig = new MapperConfiguration(cfg =>
             {
-                cfg.AddProfile(new RequestToDomainProfile());
-                cfg.AddProfile(new DomainToResponseProfile());
+                var photoCoder = new Utf8Coder();
+                cfg.AddProfile(new RequestToDomainProfile(photoCoder));
+                cfg.AddProfile(new DomainToResponseProfile(photoCoder));
                 cfg.AddProfile(new DomainToDbMappingProfiles());
                 cfg.AddProfile(new DbToDomainMappingProfiles());
             });
@@ -59,11 +61,11 @@ namespace ItHappened.Api
             //FactsToJsonMapper
             services.AddSingleton<IFactsToJsonMapper, FactsToNewtonJsonMapper>();
 
-            
+
             //repos
             RegisterEfCoreRepository(services);
             RegisterTransactionalDapperRepository(services);
-           
+
             //app services
             services.AddScoped<IEventService, EventService>();
             services.AddScoped<ITrackerService, TrackerService>();
@@ -132,13 +134,16 @@ namespace ItHappened.Api
             //hangfire
             services.AddHangfire(configuration => configuration.UseMemoryStorage());
             services.AddHangfireServer();
+
+            //ignore null properties while Serialization to json
+            services.AddMvc().AddJsonOptions(options =>  options.JsonSerializerOptions.IgnoreNullValues = true);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             app.UseMiddleware<ErrorHandlingMiddleware>();
-            
+
             var swaggerOptions = new SwaggerOptions();
             Configuration.GetSection(nameof(SwaggerOptions)).Bind(swaggerOptions);
             app.UseSwagger(options => options.RouteTemplate = swaggerOptions.JsonRoute);
@@ -147,8 +152,6 @@ namespace ItHappened.Api
 
             var jwtOptions = new JwtOptions();
             Configuration.GetSection(nameof(JwtOptions)).Bind(jwtOptions);
-
-            app.UseHttpsRedirection();
 
             app.UseRouting();
 
@@ -198,7 +201,7 @@ namespace ItHappened.Api
         private void RegisterEfCoreRepository(IServiceCollection serviceCollection)
         {
             serviceCollection.AddSingleton<ISingleFactsRepository, SingleFactsRepository>();
-            serviceCollection.AddSingleton<IMultipleFactsRepository, MultipleFactsRepository>(); 
+            serviceCollection.AddSingleton<IMultipleFactsRepository, MultipleFactsRepository>();
 
             serviceCollection.AddDbContext<ItHappenedDbContext>(builder => builder.UseSqlServer(GetConnectionString()));
             serviceCollection.AddScoped<ITrackerRepository, EFTrackerRepository>();
@@ -209,12 +212,12 @@ namespace ItHappened.Api
             serviceCollection.AddScoped<SaveChangesFilter>();
             serviceCollection.AddControllers(options => { options.Filters.AddService<SaveChangesFilter>(); });
         }
-        
+
         private void RegisterTransactionalDapperRepository(IServiceCollection serviceCollection)
         {
             serviceCollection.AddScoped<IDbConnection>(
                 serviceProvider => new SqlConnection(GetConnectionString()));
-            
+
             serviceCollection.AddScoped(serviceProvider =>
             {
                 var connection = serviceProvider.GetService<IDbConnection>();
@@ -226,7 +229,7 @@ namespace ItHappened.Api
             serviceCollection.AddScoped<IMssqlFilter, MssqlEventsFilter>();
             serviceCollection.AddScoped<UnitOfWorkFilter>();
         }
-        
+
         private string GetConnectionString()
         {
             return Configuration.GetValue<string>("ItHappenedConnection");

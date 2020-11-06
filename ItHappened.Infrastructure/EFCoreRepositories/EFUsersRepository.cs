@@ -1,12 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using AutoMapper;
 using ItHappened.Domain;
-using ItHappened.Infrastructure.Mappers;
+using ItHappened.Infrastructure.Dto;
 
 namespace ItHappened.Infrastructure.EFCoreRepositories
 {
+    // ReSharper disable once InconsistentNaming
     public class EFUserRepository : IUserRepository
     {
         private readonly ItHappenedDbContext _context;
@@ -28,11 +27,6 @@ namespace ItHappened.Infrastructure.EFCoreRepositories
         {
             var dtoUser = _context.Users.SingleOrDefault(user => user.Name == login);
             return _mapper.Map<User>(dtoUser);
-        }
-        
-        public IEnumerable<Guid> LoadAllUsersIds()
-        {
-            throw new NotImplementedException();
         }
     }
 }

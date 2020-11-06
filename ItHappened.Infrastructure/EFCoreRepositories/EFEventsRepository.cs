@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using AutoMapper;
 using ItHappened.Domain;
-using ItHappened.Infrastructure.Mappers;
+using ItHappened.Infrastructure.Dto;
 using LanguageExt.UnsafeValueAccess;
 
 namespace ItHappened.Infrastructure.EFCoreRepositories
@@ -40,7 +40,7 @@ namespace ItHappened.Infrastructure.EFCoreRepositories
         public IReadOnlyCollection<Event> LoadAllTrackerEvents(Guid trackerId)
         {
             var eventsDto = _context.Events.Where(@event => @event.TrackerId == trackerId);
-            return _mapper.Map<IQueryable<EventDto>, List<Event>>(eventsDto);
+            return _mapper.Map<Event[]>(eventsDto);
         }
 
         public void UpdateEvent(Event @event)

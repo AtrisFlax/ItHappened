@@ -343,7 +343,7 @@ namespace ItHappened.UnitTests.ServicesTests
         {
             var dbConnectionMock = MockDapper(out var dbTransaction);
 
-            var mapperConfig = new MapperConfiguration(cfg => { cfg.AddProfile(new RequestToDomainProfile()); });
+            var mapperConfig = new MapperConfiguration(cfg => { cfg.AddProfile(new RequestToDomainProfile(new Utf8Coder())); });
             var mapper = new Mapper(mapperConfig);
             var filter = new MssqlEventsFilter();
             var eventFiltrationRepository =

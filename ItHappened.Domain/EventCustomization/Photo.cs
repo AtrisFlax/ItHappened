@@ -10,11 +10,5 @@ namespace ItHappened.Domain
         {
             PhotoBytes = photoBytes;
         }
-
-        public static Photo Create(string photoString)
-        {
-            var photoBytes = Encoding.UTF8.GetBytes(photoString);
-            return new Photo(photoBytes);
-        }
     }
 }
