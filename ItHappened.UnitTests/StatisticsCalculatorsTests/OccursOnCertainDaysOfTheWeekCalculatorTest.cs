@@ -4,7 +4,7 @@ using System.Linq;
 using ItHappened.Domain;
 using ItHappened.Domain.Statistics;
 using ItHappened.Infrastructure;
-using ItHappened.Infrastructure.Repositories;
+using ItHappened.Infrastructure.InMemoryRepositories;
 using LanguageExt.UnsafeValueAccess;
 using NUnit.Framework;
 using static ItHappened.UnitTests.StatisticsCalculatorsTests.StatisticsCalculatorsTestingConstants;

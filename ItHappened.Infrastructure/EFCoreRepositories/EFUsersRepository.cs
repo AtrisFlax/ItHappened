@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using AutoMapper;
 using ItHappened.Domain;
 using ItHappened.Infrastructure.Dto;

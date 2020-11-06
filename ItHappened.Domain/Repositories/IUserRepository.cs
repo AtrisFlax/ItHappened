@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace ItHappened.Domain
+﻿namespace ItHappened.Domain
 {
     public interface IUserRepository
     {
