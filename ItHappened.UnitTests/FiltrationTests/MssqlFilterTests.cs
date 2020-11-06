@@ -204,10 +204,10 @@ namespace ItHappened.UnitTests.FiltrationTests
             var mapper = new Mapper(mapperConfig);
             var eventFilterRequest = new EventFilterDataRequest
             {
-                GpsLatLeftCorner = 10.0,
-                GpsLngLeftCorner = 11.0,
-                GpsLatRightCorner = 20.0,
-                GpsLngRightCorner = 21.0
+                GpsLatLeftDownCorner = 10.0,
+                GpsLngLeftDownCorner = 11.0,
+                GpsLatRightUpperCorner = 20.0,
+                GpsLngRightUpperCorner = 21.0
             };
             var filtersData = mapper.Map<EventFilterData>(eventFilterRequest);
 
@@ -257,10 +257,10 @@ namespace ItHappened.UnitTests.FiltrationTests
                 SubstringForMatching = "aaa",
                 ScaleLowerLimit = 0.3,
                 ScaleUpperLimit = 400,
-                GpsLatLeftCorner = 15.8,
-                GpsLngLeftCorner = 17.9,
-                GpsLatRightCorner = 32.4,
-                GpsLngRightCorner = 78.4
+                GpsLatLeftDownCorner = 15.8,
+                GpsLngLeftDownCorner = 17.9,
+                GpsLatRightUpperCorner = 32.4,
+                GpsLngRightUpperCorner = 78.4
             };
             var filtersData = mapper.Map<EventFilterData>(eventFilterRequest);
 

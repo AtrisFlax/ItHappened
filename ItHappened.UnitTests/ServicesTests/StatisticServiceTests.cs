@@ -5,7 +5,7 @@ using ItHappened.Application.Errors;
 using ItHappened.Application.Services.StatisticService;
 using ItHappened.Domain;
 using ItHappened.Domain.Statistics;
-using ItHappened.Infrastructure.Repositories;
+using ItHappened.Infrastructure;
 using ItHappened.UnitTests.StatisticsCalculatorsTests;
 using LanguageExt.UnsafeValueAccess;
 using NUnit.Framework;

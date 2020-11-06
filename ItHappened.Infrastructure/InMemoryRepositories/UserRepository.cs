@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using ItHappened.Domain;
 
-namespace ItHappened.Infrastructure.Repositories
+namespace ItHappened.Infrastructure
 {
     public class UserRepository : IUserRepository
     {

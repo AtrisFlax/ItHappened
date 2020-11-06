@@ -19,7 +19,7 @@ using ItHappened.Domain.Statistics;
 using ItHappened.Infrastructure;
 using ItHappened.Infrastructure.EFCoreRepositories;
 using ItHappened.Infrastructure.Mappers;
-using ItHappened.Infrastructure.Repositories;
+
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -222,7 +222,7 @@ namespace ItHappened.Api
 
                 return connection.BeginTransaction();
             });
-            serviceCollection.AddScoped<IEventFilterable, EventFiltration>();
+            serviceCollection.AddScoped<IEventFiltrationRepository, EventFiltrationDapperRepository>();
             serviceCollection.AddScoped<IMssqlFilter, MssqlEventsFilter>();
             serviceCollection.AddScoped<UnitOfWorkFilter>();
         }

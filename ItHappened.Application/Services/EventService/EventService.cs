@@ -9,11 +9,14 @@ namespace ItHappened.Application.Services.EventService
     {
         private readonly ITrackerRepository _trackerRepository;
         private readonly IEventRepository _eventRepository;
+        private readonly IEventFiltrationRepository _eventFiltrationRepository;
 
-        public EventService(IEventRepository eventRepository, ITrackerRepository trackerRepository)
+        public EventService(IEventRepository eventRepository, ITrackerRepository trackerRepository,
+            IEventFiltrationRepository eventFiltrationRepository)
         {
             _eventRepository = eventRepository;
             _trackerRepository = trackerRepository;
+            _eventFiltrationRepository = eventFiltrationRepository;
         }
 
         public Guid CreateEvent(Guid actorId, Guid trackerId, DateTimeOffset eventHappensDate,
@@ -119,6 +122,11 @@ namespace ItHappened.Application.Services.EventService
             var tracker = _trackerRepository.LoadTracker(@event.TrackerId);
             _eventRepository.DeleteEvent(eventId);
             tracker.IsUpdated = true;
+        }
+
+        public IReadOnlyCollection<Event> GetAllFilteredEvents(Guid userId, Guid trackerId, EventFilterData eventFilter)
+        {
+            return _eventFiltrationRepository.GetAllFilteredEvents(userId, trackerId, eventFilter);
         }
     }
 }

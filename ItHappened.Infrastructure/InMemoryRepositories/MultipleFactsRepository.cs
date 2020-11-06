@@ -4,7 +4,7 @@ using System.Linq;
 using ItHappened.Domain;
 using ItHappened.Domain.Statistics;
 
-namespace ItHappened.Infrastructure.Repositories
+namespace ItHappened.Infrastructure
 {
     public class MultipleFactsRepository : IMultipleFactsRepository
     {
