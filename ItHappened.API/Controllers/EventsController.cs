@@ -64,8 +64,7 @@ namespace ItHappened.Api.Controllers
         {
             var userId = User.GetUserId();
             var events = _eventService.GetAllTrackerEvents(userId, trackerId);
-            var eventGetResponses = _mapper.Map<EventGetResponse[]>(events);
-            return Ok(eventGetResponses);
+            return Ok(_mapper.Map<EventGetResponse[]>(events));
         }
 
         [HttpPut("/events/{eventId}")]

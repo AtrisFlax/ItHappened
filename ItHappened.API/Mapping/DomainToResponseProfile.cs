@@ -23,9 +23,7 @@ namespace ItHappened.Api.Mapping
                 .ForMember(
                     dest => dest.Comment,
                     opt => opt.MapFrom(
-                        src => src.CustomizationsParameters.Comment.Match(c => c.Text, () => null)
-                    )
-                )
+                        src => src.CustomizationsParameters.Comment.ValueUnsafe().Text))
                 .ForMember(dest => dest.Photo, opt =>
                     opt.MapFrom(src => src.CustomizationsParameters.Photo.ValueUnsafe()))
                 .ForMember(dest => dest.Rating, opt =>
