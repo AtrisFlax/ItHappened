@@ -48,8 +48,9 @@ namespace ItHappened.Api
             //auto mapper
             var mapperConfig = new MapperConfiguration(cfg =>
             {
-                cfg.AddProfile(new RequestToDomainProfile());
-                cfg.AddProfile(new DomainToResponseProfile());
+                var photoCoder = new Utf8Coder();
+                cfg.AddProfile(new RequestToDomainProfile(photoCoder));
+                cfg.AddProfile(new DomainToResponseProfile(photoCoder));
                 cfg.AddProfile(new DomainToDbMappingProfiles());
                 cfg.AddProfile(new DbToDomainMappingProfiles());
             });

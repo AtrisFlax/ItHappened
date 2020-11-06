@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using AutoMapper;
 using ItHappened.Api.Mapping;
 using ItHappened.Api.Models.Requests;
@@ -11,20 +10,30 @@ namespace ItHappened.UnitTests.FiltrationTests
 {
     public class MssqlFilterTests
     {
+        private Mapper _mapper;
         private const string TableName = "TableName";
+
+        [SetUp]
+        public void SetUp()
+        {
+            var mapperConfig = new MapperConfiguration(cfg =>
+            {
+                cfg.AddProfile(new RequestToDomainProfile(new Utf8Coder()));
+            });
+            _mapper = new Mapper(mapperConfig);
+        }
 
         [Test]
         public void DateFilterUpperAndLowerBound()
         {
             //arrange
-            var mapperConfig = new MapperConfiguration(cfg => { cfg.AddProfile(new RequestToDomainProfile()); });
-            var mapper = new Mapper(mapperConfig);
+
             var eventFilterRequest = new EventFilterDataRequest
             {
                 FromDateTime = new DateTime(2019, 10, 14, 18, 01, 00),
                 ToDateTime = new DateTime(2020, 10, 14, 18, 00, 00)
             };
-            var filterStringPredicates = mapper.Map<EventFilterData>(eventFilterRequest);
+            var filterStringPredicates = _mapper.Map<EventFilterData>(eventFilterRequest);
 
             //act
             var filter = new MssqlEventsFilter().CreateFilterMsSqlPredicates(filterStringPredicates, TableName);
@@ -39,13 +48,11 @@ namespace ItHappened.UnitTests.FiltrationTests
         public void DateFilterUpperBound()
         {
             //arrange
-            var mapperConfig = new MapperConfiguration(cfg => { cfg.AddProfile(new RequestToDomainProfile()); });
-            var mapper = new Mapper(mapperConfig);
             var eventFilterRequest = new EventFilterDataRequest
             {
                 ToDateTime = new DateTime(2020, 10, 14, 18, 00, 00)
             };
-            var filtersData = mapper.Map<EventFilterData>(eventFilterRequest);
+            var filtersData = _mapper.Map<EventFilterData>(eventFilterRequest);
 
             //act
             var filterStringPredicates =
@@ -60,13 +67,11 @@ namespace ItHappened.UnitTests.FiltrationTests
         public void DateFilterLowerBound()
         {
             //arrange
-            var mapperConfig = new MapperConfiguration(cfg => { cfg.AddProfile(new RequestToDomainProfile()); });
-            var mapper = new Mapper(mapperConfig);
             var eventFilterRequest = new EventFilterDataRequest
             {
                 FromDateTime = new DateTime(2019, 10, 14, 18, 01, 00),
             };
-            var filterStringPredicates = mapper.Map<EventFilterData>(eventFilterRequest);
+            var filterStringPredicates = _mapper.Map<EventFilterData>(eventFilterRequest);
 
             //act
             var filter = new MssqlEventsFilter().CreateFilterMsSqlPredicates(filterStringPredicates, TableName);
@@ -80,14 +85,12 @@ namespace ItHappened.UnitTests.FiltrationTests
         public void RatingFilterUpperAndLowerBound()
         {
             //arrange
-            var mapperConfig = new MapperConfiguration(cfg => { cfg.AddProfile(new RequestToDomainProfile()); });
-            var mapper = new Mapper(mapperConfig);
             var eventFilterRequest = new EventFilterDataRequest
             {
                 LowerLimitRating = 2,
                 UpperLimitRating = 5.5
             };
-            var filtersData = mapper.Map<EventFilterData>(eventFilterRequest);
+            var filtersData = _mapper.Map<EventFilterData>(eventFilterRequest);
 
             //act
             var filterStringPredicates = new MssqlEventsFilter().CreateFilterMsSqlPredicates(filtersData, TableName);
@@ -100,33 +103,29 @@ namespace ItHappened.UnitTests.FiltrationTests
         public void RatingFilterLowerBound()
         {
             //arrange
-            var mapperConfig = new MapperConfiguration(cfg => { cfg.AddProfile(new RequestToDomainProfile()); });
-            var mapper = new Mapper(mapperConfig);
             var eventFilterRequest = new EventFilterDataRequest
             {
                 LowerLimitRating = 2,
             };
-            var filtersData = mapper.Map<EventFilterData>(eventFilterRequest);
+            var filtersData = _mapper.Map<EventFilterData>(eventFilterRequest);
 
             //act
             var filterStringPredicates =
                 new MssqlEventsFilter().CreateFilterMsSqlPredicates(filtersData, TableName);
 
             //assert
-            Assert.AreEqual( $"{TableName}.rating >= 2", filterStringPredicates);
+            Assert.AreEqual($"{TableName}.rating >= 2", filterStringPredicates);
         }
 
         [Test]
         public void RatingFilterUpperBound()
         {
             //arrange
-            var mapperConfig = new MapperConfiguration(cfg => { cfg.AddProfile(new RequestToDomainProfile()); });
-            var mapper = new Mapper(mapperConfig);
             var eventFilterRequest = new EventFilterDataRequest
             {
                 UpperLimitRating = 5.5
             };
-            var filtersData = mapper.Map<EventFilterData>(eventFilterRequest);
+            var filtersData = _mapper.Map<EventFilterData>(eventFilterRequest);
 
             //act
             var filterStringPredicates =
@@ -140,14 +139,12 @@ namespace ItHappened.UnitTests.FiltrationTests
         public void ScaleFilterUpperAndLowerBound()
         {
             //arrange
-            var mapperConfig = new MapperConfiguration(cfg => { cfg.AddProfile(new RequestToDomainProfile()); });
-            var mapper = new Mapper(mapperConfig);
             var eventFilterRequest = new EventFilterDataRequest
             {
                 ScaleLowerLimit = 2,
                 ScaleUpperLimit = 5.5
             };
-            var filtersData = mapper.Map<EventFilterData>(eventFilterRequest);
+            var filtersData = _mapper.Map<EventFilterData>(eventFilterRequest);
 
             //act
             var filterStringPredicates =
@@ -161,13 +158,11 @@ namespace ItHappened.UnitTests.FiltrationTests
         public void ScaleFilterLowerBound()
         {
             //arrange
-            var mapperConfig = new MapperConfiguration(cfg => { cfg.AddProfile(new RequestToDomainProfile()); });
-            var mapper = new Mapper(mapperConfig);
             var eventFilterRequest = new EventFilterDataRequest
             {
                 ScaleLowerLimit = 2,
             };
-            var filtersData = mapper.Map<EventFilterData>(eventFilterRequest);
+            var filtersData = _mapper.Map<EventFilterData>(eventFilterRequest);
 
             //act
             var filterStringPredicates = new MssqlEventsFilter().CreateFilterMsSqlPredicates(filtersData, TableName);
@@ -180,13 +175,11 @@ namespace ItHappened.UnitTests.FiltrationTests
         public void ScaleFilterUpperBound()
         {
             //arrange
-            var mapperConfig = new MapperConfiguration(cfg => { cfg.AddProfile(new RequestToDomainProfile()); });
-            var mapper = new Mapper(mapperConfig);
             var eventFilterRequest = new EventFilterDataRequest
             {
                 ScaleUpperLimit = 5.5
             };
-            var filtersData = mapper.Map<EventFilterData>(eventFilterRequest);
+            var filtersData = _mapper.Map<EventFilterData>(eventFilterRequest);
 
             //act
             var filterStringPredicates =
@@ -200,8 +193,6 @@ namespace ItHappened.UnitTests.FiltrationTests
         public void GetTagBounds()
         {
             //arrange
-            var mapperConfig = new MapperConfiguration(cfg => { cfg.AddProfile(new RequestToDomainProfile()); });
-            var mapper = new Mapper(mapperConfig);
             var eventFilterRequest = new EventFilterDataRequest
             {
                 GpsLatLeftCorner = 10.0,
@@ -209,7 +200,7 @@ namespace ItHappened.UnitTests.FiltrationTests
                 GpsLatRightCorner = 20.0,
                 GpsLngRightCorner = 21.0
             };
-            var filtersData = mapper.Map<EventFilterData>(eventFilterRequest);
+            var filtersData = _mapper.Map<EventFilterData>(eventFilterRequest);
 
             //act
             var filterStringPredicates = new MssqlEventsFilter().CreateFilterMsSqlPredicates(filtersData, TableName);
@@ -227,13 +218,11 @@ namespace ItHappened.UnitTests.FiltrationTests
         public void Comment()
         {
             //arrange
-            var mapperConfig = new MapperConfiguration(cfg => { cfg.AddProfile(new RequestToDomainProfile()); });
-            var mapper = new Mapper(mapperConfig);
             var eventFilterRequest = new EventFilterDataRequest
             {
                 SubstringForMatching = "SomeComment",
             };
-            var filtersData = mapper.Map<EventFilterData>(eventFilterRequest);
+            var filtersData = _mapper.Map<EventFilterData>(eventFilterRequest);
 
             //act
             var filterStringPredicates = new MssqlEventsFilter().CreateFilterMsSqlPredicates(filtersData, TableName);
@@ -246,8 +235,6 @@ namespace ItHappened.UnitTests.FiltrationTests
         public void AllPredicates()
         {
             //arrange
-            var mapperConfig = new MapperConfiguration(cfg => { cfg.AddProfile(new RequestToDomainProfile()); });
-            var mapper = new Mapper(mapperConfig);
             var eventFilterRequest = new EventFilterDataRequest
             {
                 FromDateTime = new DateTime(2020, 10, 14, 18, 01, 00),
@@ -262,7 +249,7 @@ namespace ItHappened.UnitTests.FiltrationTests
                 GpsLatRightCorner = 32.4,
                 GpsLngRightCorner = 78.4
             };
-            var filtersData = mapper.Map<EventFilterData>(eventFilterRequest);
+            var filtersData = _mapper.Map<EventFilterData>(eventFilterRequest);
 
             //act
             var filterStringPredicates =
@@ -270,7 +257,7 @@ namespace ItHappened.UnitTests.FiltrationTests
 
             //assert
             Assert.AreEqual(
-$@"CAST({TableName}.HappensDate AS DATE) >= CAST('20201014 18:01:00.000' AS DATETIME) 
+                $@"CAST({TableName}.HappensDate AS DATE) >= CAST('20201014 18:01:00.000' AS DATETIME) 
 and CAST({TableName}.HappensDate AS DATE) <= CAST('20191014 18:00:00.000' AS DATETIME) and {TableName}.scale >= 0.3 
 and {TableName}.scale <= 400 and {TableName}.rating >= 0.2 and {TableName}.rating <= 0.5 and {TableName}.comment LIKE '%aaa%' 
 and {TableName}.latitudeGeo >= 15.8 and {TableName}.latitudeGeo <= 32.4 and {TableName}.longitudeGeo >= 17.9 

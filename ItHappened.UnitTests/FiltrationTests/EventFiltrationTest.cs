@@ -73,7 +73,7 @@ namespace ItHappened.UnitTests.FiltrationTests
                 GpsLatRightCorner = 32.4,
                 GpsLngRightCorner = 78.4
             };
-            var mapperConfig = new MapperConfiguration(cfg => { cfg.AddProfile(new RequestToDomainProfile()); });
+            var mapperConfig = new MapperConfiguration(cfg => { cfg.AddProfile(new RequestToDomainProfile( new Utf8Coder())); });
             var mapper = new Mapper(mapperConfig);
             var filtersData = mapper.Map<EventFilterData>(eventFilterRequest);
             var filter = new MssqlEventsFilter();

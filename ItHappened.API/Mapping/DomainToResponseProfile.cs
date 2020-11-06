@@ -2,13 +2,23 @@
 using AutoMapper;
 using ItHappened.Api.Models.Responses;
 using ItHappened.Domain;
+using LanguageExt;
 using LanguageExt.UnsafeValueAccess;
 
 namespace ItHappened.Api.Mapping
 {
     public class DomainToResponseProfile : Profile
     {
-        public DomainToResponseProfile()
+        private readonly IPhotoCoder _photoCoder;
+
+        public DomainToResponseProfile(IPhotoCoder photoCoder)
+        {
+            _photoCoder = photoCoder;
+
+            CreateMaps();
+        }
+
+        private void CreateMaps()
         {
             //To Tracker
             CreateMap<EventTracker, TrackerGetResponse>();
@@ -23,15 +33,17 @@ namespace ItHappened.Api.Mapping
                 .ForMember(
                     dest => dest.Comment,
                     opt => opt.MapFrom(
-                        src => src.CustomizationsParameters.Comment.ValueUnsafe().Text))
-                .ForMember(dest => dest.Photo, opt =>
-                    opt.MapFrom(src => src.CustomizationsParameters.Photo.ValueUnsafe()))
-                .ForMember(dest => dest.Rating, opt =>
-                    opt.MapFrom(src => src.CustomizationsParameters.Rating.IfNone(null)))
-                .ForMember(dest => dest.Scale, opt =>
-                    opt.MapFrom(src => src.CustomizationsParameters.Scale.IfNone(null)))
-                .ForMember(dest => dest.GeoTag, opt =>
-                    opt.MapFrom(src => src.CustomizationsParameters.GeoTag.ValueUnsafe()));
+                        src => src.CustomizationsParameters.Comment.ValueUnsafe().Text
+                    )
+                )
+            .ForMember(dest => dest.Photo, opt =>
+                opt.MapFrom(src => ConvertPhotoBytesToString(src.CustomizationsParameters.Photo)))
+            .ForMember(dest => dest.Rating, opt =>
+                opt.MapFrom(src => src.CustomizationsParameters.Rating.IfNone(null)))
+            .ForMember(dest => dest.Scale, opt =>
+                opt.MapFrom(src => src.CustomizationsParameters.Scale.IfNone(null)))
+            .ForMember(dest => dest.GeoTag, opt =>
+                opt.MapFrom(src => src.CustomizationsParameters.GeoTag.ValueUnsafe()));
 
             //To Event
             CreateMap<Guid, EventPostResponse>()
@@ -44,6 +56,11 @@ namespace ItHappened.Api.Mapping
                     opt.MapFrom(src => src.ScaleMeasurementUnit.ValueUnsafe()))
                 .ForMember(dest => dest.IsCustomizationRequired, opt =>
                     opt.MapFrom(src => src.IsCustomizationRequired));
+        }
+
+        private string ConvertPhotoBytesToString(Option<Photo> photo)
+        {
+            return photo.Match(p => p.PhotoBytes.Length != 0 ? _photoCoder.Decode(p.PhotoBytes) : null, () => null);
         }
     }
 }
