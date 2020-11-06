@@ -30,10 +30,5 @@ namespace ItHappened.Infrastructure.EFCoreRepositories
             var dtoUser = _context.Users.SingleOrDefault(user => user.Name == login);
             return _mapper.Map<User>(dtoUser);
         }
-        
-        public IEnumerable<Guid> LoadAllUsersIds()
-        {
-            throw new NotImplementedException();
-        }
     }
 }

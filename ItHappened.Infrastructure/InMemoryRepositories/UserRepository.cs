@@ -18,10 +18,5 @@ namespace ItHappened.Infrastructure.Repositories
         {
             return _users.FirstOrDefault(x => x.Value.Name == login).Value;
         }
-
-        public IEnumerable<Guid> LoadAllUsersIds()
-        {
-            return _users.Keys;
-        }
     }
 }

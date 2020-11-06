@@ -7,6 +7,5 @@ namespace ItHappened.Domain
     {
         void CreateUser(User user);
         User TryFindByLogin(string login);
-        IEnumerable<Guid> LoadAllUsersIds();
     }
 }
