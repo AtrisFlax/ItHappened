@@ -2,6 +2,7 @@
 
 namespace ItHappened.Domain
 {
+    
     public class EventFilterData
     {
         public DateTime? FromDateTime { get; private set; }
@@ -18,12 +19,12 @@ namespace ItHappened.Domain
 
         public double? ScaleUpperLimit { get; private set; }
 
-        public double? GpsLatLeftCorner { get; private set; }
+        public double? GpsLatLeftDownCorner { get; private set; }
 
-        public double? GpsLngLeftCorner { get; private set; }
+        public double? GpsLngLeftDownCorner { get; private set; }
 
-        public double? GpsLatRightCorner { get; private set; }
+        public double? GpsLatRightUpperCorner { get; private set; }
 
-        public double? GpsLngRightCorner { get; private set; }
+        public double? GpsLngRightUpperCorner { get; private set; }
     }
 }
