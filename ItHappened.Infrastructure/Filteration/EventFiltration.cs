@@ -15,7 +15,7 @@ namespace ItHappened.Infrastructure
         private readonly IMssqlFilter _mssqlFilter;
         private readonly IMapper _mapper;
 
-        private const string SchemaName = "ItHappenedDB";
+        private const string SchemaName = "ItHappenedDB"; //hardcoded schema name 
         private const string TableName = "Events";
 
         private static readonly string SchemaAndTableName = $"{SchemaName}.{TableName}";

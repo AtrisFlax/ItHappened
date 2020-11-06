@@ -102,7 +102,7 @@ namespace ItHappened.Api
             {
                 swaggerGenOptions.SwaggerDoc("v1", new OpenApiInfo {Title = "ItHappened API", Version = "v1"});
                 // Bearer token authentication
-                var securityDefinition = new OpenApiSecurityScheme()
+                var securityDefinition = new OpenApiSecurityScheme
                 {
                     Name = "Bearer",
                     BearerFormat = "JWT",
@@ -114,9 +114,9 @@ namespace ItHappened.Api
                 swaggerGenOptions.AddSecurityDefinition("jwt_auth", securityDefinition);
 
                 // Make sure swagger UI requires a Bearer token specified
-                var securityScheme = new OpenApiSecurityScheme()
+                var securityScheme = new OpenApiSecurityScheme
                 {
-                    Reference = new OpenApiReference()
+                    Reference = new OpenApiReference
                     {
                         Id = "jwt_auth",
                         Type = ReferenceType.SecurityScheme
@@ -197,8 +197,8 @@ namespace ItHappened.Api
 
         private void RegisterEfCoreRepository(IServiceCollection serviceCollection)
         {
-            serviceCollection.AddSingleton<ISingleFactsRepository, SingleFactsRepository>(); //TODO to EF
-            serviceCollection.AddSingleton<IMultipleFactsRepository, MultipleFactsRepository>(); //TODO to EF
+            serviceCollection.AddSingleton<ISingleFactsRepository, SingleFactsRepository>();
+            serviceCollection.AddSingleton<IMultipleFactsRepository, MultipleFactsRepository>(); 
 
             serviceCollection.AddDbContext<ItHappenedDbContext>(builder => builder.UseSqlServer(GetConnectionString()));
             serviceCollection.AddScoped<ITrackerRepository, EFTrackerRepository>();
