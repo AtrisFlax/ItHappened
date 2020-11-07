@@ -58,9 +58,10 @@ namespace ItHappened.Api.Mapping
                     opt.MapFrom(src => src.IsCustomizationRequired));
         }
 
+        
         private string ConvertPhotoBytesToString(Option<Photo> photo)
         {
-            return photo.Match(p => p.PhotoBytes.Length != 0 ? _photoCoder.Decode(p.PhotoBytes) : null, () => null);
-        }
+            return photo.MatchUnsafe(p => p.PhotoBytes.Length != 0 ? _photoCoder.Decode(p.PhotoBytes) : null, () => null);
+        } 
     }
 }
