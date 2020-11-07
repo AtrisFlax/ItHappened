@@ -7,7 +7,7 @@ namespace ItHappened.Application.Errors
     {
         public UserNotFoundException(string loginName, string password)
             : base(HttpStatusCode.NotFound,
-                "User with provided credentials not found",
+                "Login or password provided were incorrect!",
                 new Dictionary<string, object>{{"login", loginName}, {"password", password}})
         {
         }
